@@ -1,6 +1,6 @@
-# 🥭 FeedMango
+# 🥭 Feed Mango
 
-FeedMango is a custom-built RSS feed aggregator platform.
+Feed Mango is a custom-built RSS feed aggregator platform.
 Enter any RSS feed URL and get back a clean, readable list of articles.
 
 Built with Node.js + Vercel serverless functions.
