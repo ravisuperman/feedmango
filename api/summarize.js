@@ -2,8 +2,9 @@ export default async function handler(req, res) {
   const { title, description } = req.query;
   if (!title) return res.status(400).json({ error: 'Missing title parameter' });
 
-  const prompt = 'Analyze this news article and respond in valid JSON only:\n{"summary":"2 sentence summary","category":"one of: Tech, Sports, Finance, Politics, Health, Entertainment, Science, Other","sentiment":"one of: Positive, Neutral, Negative"}\n\nTitle: ' + title + '\nDescription: ' + (description || '');
 
+const prompt = 'You are a news categorizer. Respond ONLY in valid JSON. You MUST pick the most fitting category based on the article title — never use Other unless truly uncategorizable.\n{"summary":"2 sentence summary","category":"MUST be one of: Tech, Sports, Finance, Politics, Health, Entertainment, Science, World, Business, Other","sentiment":"one of: Positive, Neutral, Negative"}\n\nTitle: ' + title + '\nDescription: ' + (description || '');
+  
   const apiKey = process.env.GEMINI_API_KEY;
   const apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + apiKey;
 
