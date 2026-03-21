@@ -1,10 +1,9 @@
 export default async function handler(req, res) {
   const { title, description } = req.query;
-  if (!title) return res.status(400).json({ error: 'Missing title parameter' });
+  if (!title) return res.status(400).json({ error: 'Missing title' });
 
+  const prompt = 'Respond in JSON only: {"summary":"2 sentence summary","category":"Tech or Sports or Finance or Politics or Health or Entertainment or Science or World or Business or Other","sentiment":"Positive or Neutral or Negative"} Article: ' + title + ' ' + (description || '');
 
-const prompt = 'You are a news categorizer. Respond ONLY in valid JSON. You MUST pick the most fitting category based on the article title — never use Other unless truly uncategorizable.\n{"summary":"2 sentence summary","category":"MUST be one of: Tech, Sports, Finance, Politics, Health, Entertainment, Science, World, Business, Other","sentiment":"one of: Positive, Neutral, Negative"}\n\nTitle: ' + title + '\nDescription: ' + (description || '');
-  
   const apiKey = process.env.GEMINI_API_KEY;
   const apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + apiKey;
 
@@ -16,18 +15,22 @@ const prompt = 'You are a news categorizer. Respond ONLY in valid JSON. You MUST
     });
 
     const data = await response.json();
-    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!rawText) {
+      return res.status(200).json({ summary: 'unavailable', category: 'Other', sentiment: 'Neutral', gemini_error: data });
+    }
+
     const cleaned = rawText.replace(/```json|```/g, '').trim();
     const result = JSON.parse(cleaned);
 
-return res.status(200).json({
-      summary: result.summary || 'Summary unavailable',
+    return res.status(200).json({
+      summary: result.summary || 'unavailable',
       category: result.category || 'Other',
-      sentiment: result.sentiment || 'Neutral',
-      _raw: rawText
+      sentiment: result.sentiment || 'Neutral'
     });
-    
+
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    return res.status(200).json({ summary: 'unavailable', category: 'Other', sentiment: 'Neutral', js_error: err.message });
   }
 }
