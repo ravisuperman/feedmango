@@ -1,0 +1,10 @@
+{
+  "name": "feedmango",
+  "version": "1.0.0",
+  "description": "My own RSS feed aggregator platform",
+  "type": "module",
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "rss-parser": "^3.13.0"
+  }
+}
