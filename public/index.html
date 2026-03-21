@@ -22,6 +22,13 @@
     .card h2 a:hover { text-decoration: underline; }
     .card .date { font-size: 12px; color: #888; margin-bottom: 10px; }
     .card p { font-size: 14px; color: #ccc; line-height: 1.6; }
+
+    .meta { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+    .badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: bold; background: #0f3460; color: #00d4ff; border: 1px solid #00d4ff; }
+    .sentiment { font-size: 13px; }
+    .ai-box { margin-top: 10px; padding: 8px; background: #0f3460; border-left: 3px solid #00d4ff; font-size: 13px; color: #a8d8ff; border-radius: 4px; }
+
+    
   </style>
 </head>
 <body>
@@ -65,15 +72,22 @@
                     output.appendChild(card);
 
           // Call AI summarize API for each article and update the card
+
           fetch(`/api/summarize?title=${encodeURIComponent(title)}&description=${encodeURIComponent(desc)}`)
             .then(r => r.json())
             .then(data => {
+              const sentimentEmoji = data.sentiment === 'Positive' ? '😊' : data.sentiment === 'Negative' ? '😟' : '😐';
+              const metaDiv = document.createElement('div');
+              metaDiv.className = 'meta';
+              metaDiv.innerHTML = `<span class="badge">🏷️ ${data.category || 'Other'}</span><span class="sentiment">${sentimentEmoji} ${data.sentiment || 'Neutral'}</span>`;
+              card.insertBefore(metaDiv, card.querySelector('.date'));
               const aiDiv = document.createElement('div');
-              aiDiv.style.cssText = 'margin-top:10px; padding:8px; background:#0f3460; border-left:3px solid #00d4ff; font-size:13px; color:#a8d8ff; border-radius:4px;';
+              aiDiv.className = 'ai-box';
               aiDiv.innerHTML = `🤖 <strong>AI Summary:</strong> ${data.summary}`;
               card.appendChild(aiDiv);
             })
-            .catch(() => {}); // silently skip if AI fails
+            .catch(() => {});
+       
 
         });
       } catch (err) {
