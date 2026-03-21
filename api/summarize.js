@@ -1,6 +1,23 @@
+import { getCache, setCache } from './_cache.js';   // ← LINE 1 (very top)
+
 export default async function handler(req, res) {
   const { title, description } = req.query;
   if (!title) return res.status(400).json({ error: 'Missing title' });
+
+  // Return cached result if available — saves Gemini API quota
+  const cacheKey = 'summary_' + title;
+  const cached = getCache(cacheKey);
+
+    const result_data = { summary: result.summary || 'unavailable', category: result.category || 'Other', sentiment: result.sentiment || 'Neutral' };
+    setCache(cacheKey, result_data);
+    return res.status(200).json(result_data);
+  
+    const result_data = { summary: result.summary || 'unavailable', category: result.category || 'Other', sentiment: result.sentiment || 'Neutral' };
+    setCache(cacheKey, result_data);
+    return res.status(200).json(result_data);
+
+  
+  if (cached) return res.status(200).json(cached);
 
   const prompt = 'Respond in JSON only: {"summary":"2 sentence summary","category":"Tech or Sports or Finance or Politics or Health or Entertainment or Science or World or Business or Other","sentiment":"Positive or Neutral or Negative"} Article: ' + title + ' ' + (description || '');
 
