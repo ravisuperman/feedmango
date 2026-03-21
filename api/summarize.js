@@ -20,11 +20,13 @@ const prompt = 'You are a news categorizer. Respond ONLY in valid JSON. You MUST
     const cleaned = rawText.replace(/```json|```/g, '').trim();
     const result = JSON.parse(cleaned);
 
-    return res.status(200).json({
+return res.status(200).json({
       summary: result.summary || 'Summary unavailable',
       category: result.category || 'Other',
-      sentiment: result.sentiment || 'Neutral'
+      sentiment: result.sentiment || 'Neutral',
+      _raw: rawText
     });
+    
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
