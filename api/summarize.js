@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   try {
     // Call the Gemini API using the secret key stored in Vercel
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -26,7 +26,8 @@ export default async function handler(req, res) {
 
     // Extract the summary text from Gemini's response
     const summary = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Summary unavailable';
-    res.status(200).json({ summary });
+// Temporarily return raw data so we can debug the Gemini response
+    res.status(200).json({ summary, _debug: data });
 
   } catch (err) {
     res.status(500).json({ error: 'Gemini API failed', details: err.message });
