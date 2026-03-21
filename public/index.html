@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🥭 FeedMango</title>
+  <style>
+    body { background:#1a1a2e; color:#e0e0e0; font-family:Arial,sans-serif; display:flex; flex-direction:column; align-items:center; padding:40px 20px; }
+    h1 { color:#00d4ff; }
+    input { width:500px; padding:12px; background:#16213e; border:1px solid #00d4ff; color:#e0e0e0; border-radius:6px; font-size:15px; margin-top:20px; }
+    button { margin-top:15px; padding:12px 30px; background:#00d4ff; color:#1a1a2e; border:none; border-radius:6px; font-size:15px; font-weight:bold; cursor:pointer; }
+    button:hover { background:#00b3d4; }
+    pre { margin-top:30px; width:90%; background:#16213e; border:1px solid #0f3460; color:#a8ff78; padding:20px; border-radius:8px; overflow-x:auto; white-space:pre-wrap; max-height:500px; overflow-y:auto; }
+  </style>
+</head>
+<body>
+  <h1>🥭 FeedMango</h1>
+  <p>Enter any RSS feed URL below and click Fetch</p>
+  <input id="urlInput" type="text" placeholder="e.g. https://feeds.bbci.co.uk/news/rss.xml" />
+  <button onclick="fetchFeed()">Fetch RSS Feed</button>
+  <pre id="output">Your RSS feed will appear here...</pre>
+
+  <script>
+    async function fetchFeed() {
+      const url = document.getElementById('urlInput').value.trim();
+      const output = document.getElementById('output');
+      if (!url) { output.textContent = '⚠️ Please enter a URL.'; return; }
+      output.textContent = 'Loading...';
+      try {
+        const res = await fetch(`/api/fetch?url=${encodeURIComponent(url)}`);
+        const text = await res.text();
+        output.textContent = text;
+      } catch (err) {
+        output.textContent = '❌ Error: ' + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
