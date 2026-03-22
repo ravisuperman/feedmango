@@ -262,14 +262,35 @@
 
   async function fetchAll() {
     var results = await Promise.allSettled(SPORTS.map(fetchSport));
-    var all = [], seen = new Set();
+    var sportArrays = [];
+    
+    // Step 1: Gather each sport's articles and sort them newest-first individually
     results.forEach(function(r) {
-      if (r.status === 'fulfilled') r.value.forEach(function(a) {
-        if (!seen.has(a.link)) { seen.add(a.link); all.push(a); }
-      });
+      if (r.status === 'fulfilled' && r.value.length > 0) {
+        var sorted = r.value.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
+        sportArrays.push(sorted);
+      }
     });
-    return all.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
+
+    // Step 2: The Round-Robin Mixer (Grab 1 from each sport, over and over)
+    var all = [], seen = new Set();
+    var keepGoing = true;
+    while(keepGoing) {
+      keepGoing = false;
+      for (var i = 0; i < sportArrays.length; i++) {
+        if (sportArrays[i].length > 0) {
+          keepGoing = true;
+          var a = sportArrays[i].shift(); // Grab the top article from this sport
+          if (!seen.has(a.link)) { 
+            seen.add(a.link); 
+            all.push(a); 
+          }
+        }
+      }
+    }
+    return all;
   }
+
 
   function buildCard(article, emoji) {
  var card = document.createElement('a');
