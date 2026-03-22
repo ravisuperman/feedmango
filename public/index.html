@@ -3,343 +3,320 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🥭 FeedMango Sports</title>
-  <meta name="description" content="Live sports news aggregator — Cricket, Basketball, Football, Tennis, Athletics, Baseball"/>
+  <title>PEP Sports — Live Sports News</title>
+  <meta name="description" content="PEP Sports — Live sports news for Cricket, Basketball, Football, Tennis, Athletics and Baseball"/>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0e1a; color: #e0e0e0; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; }
 
-    body {
-      background: #0f1117;
-      color: #e0e0e0;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      min-height: 100vh;
-    }
+    /* HEADER */
+    header { background: linear-gradient(135deg,#0d1b2a,#12203a); border-bottom: 2px solid #e63946; padding: 10px 24px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 200; }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 220px; }
+    .mascot { height: 52px; width: auto; }
+    .logo-img { height: 38px; width: auto; }
+    .logo-text { font-size: 22px; font-weight: 900; letter-spacing: -1px; }
+    .logo-text span { color: #e63946; }
+    .logo-text em { color: #4a9eff; font-style: normal; }
+    .header-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .live-badge { display: inline-flex; align-items: center; gap: 5px; background: #e63946; color: white; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 3px; letter-spacing: 1px; text-transform: uppercase; }
+    .live-dot { width: 6px; height: 6px; background: white; border-radius: 50%; animation: pulse 1.2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .header-tagline { font-size: 11px; color: #555; }
+    .header-right { min-width: 180px; text-align: right; font-size: 12px; color: #555; }
 
-    header {
-      background: linear-gradient(135deg, #0d1b2a 0%, #1a1a2e 100%);
-      padding: 24px 20px 20px;
-      text-align: center;
-      border-bottom: 2px solid #00d4ff;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
+    /* TABS */
+    .tabs-bar { background: #0d1b2a; border-bottom: 1px solid #1a2a3a; display: flex; overflow-x: auto; scrollbar-width: none; padding: 0 16px; }
+    .tabs-bar::-webkit-scrollbar { display: none; }
+    .tab { padding: 12px 18px; font-size: 13px; font-weight: 600; color: #888; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
+    .tab:hover { color: #e0e0e0; border-bottom-color: #555; }
+    .tab.active { color: #e63946; border-bottom-color: #e63946; }
 
-    header h1 {
-      color: #00d4ff;
-      font-size: 1.7rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
+    /* TICKER */
+    .ticker-wrap { background: #e63946; overflow: hidden; height: 32px; display: flex; align-items: center; }
+    .ticker-label { background: #a0001e; color: white; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; padding: 0 14px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
+    .ticker-content { display: flex; overflow: hidden; flex: 1; }
+    .ticker-track { display: flex; animation: ticker 50s linear infinite; white-space: nowrap; }
+    .ticker-track:hover { animation-play-state: paused; }
+    .ticker-item { color: white; font-size: 12px; font-weight: 500; padding: 0 28px; display: flex; align-items: center; gap: 8px; }
+    .ticker-item::before { content: '●'; font-size: 6px; opacity: 0.7; }
+    @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
 
-    header p { color: #666; font-size: 12px; margin-top: 4px; }
+    /* LAYOUT */
+    .layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 20px 16px; gap: 20px; align-items: flex-start; }
 
-    .tabs {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-      padding: 14px 16px;
-      background: #0d1b2a;
-      border-bottom: 1px solid #1a2a3a;
-    }
+    /* MAIN PANE */
+    .main-pane { flex: 3; min-width: 0; }
+    .section-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #e63946; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #1a2a3a; }
+    #status { font-size: 12px; color: #666; margin-bottom: 12px; min-height: 20px; }
+    #output { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
 
-    .tab {
-      padding: 8px 20px;
-      border-radius: 20px;
-      border: 1px solid #1e3a5f;
-      background: transparent;
-      color: #aaa;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
+    /* CARDS */
+    .card { background: #12203a; border: 1px solid #1a2e4a; border-radius: 10px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-color: #e63946; }
+    .card-img { width: 100%; height: 170px; object-fit: cover; display: block; }
+    .card-img-placeholder { width: 100%; height: 170px; background: linear-gradient(135deg,#1a2e4a,#0d1b2a); display: flex; align-items: center; justify-content: center; font-size: 40px; }
+    .card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 7px; }
+    .card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .card-source-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: white; background: #e63946; padding: 2px 7px; border-radius: 3px; }
+    .card-author { font-size: 11px; color: #4a9eff; }
+    .card-time { font-size: 11px; color: #555; margin-left: auto; }
+    .card-title { font-size: 14px; font-weight: 600; color: #e8e8e8; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-desc { font-size: 12px; color: #778; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
 
-    .tab:hover { border-color: #00d4ff; color: #00d4ff; }
+    /* SIDEBAR */
+    .sidebar { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
+    .sidebar-section { background: #12203a; border: 1px solid #1a2e4a; border-radius: 10px; overflow: hidden; }
+    .sidebar-title { background: #0d1b2a; padding: 10px 14px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #e63946; border-bottom: 1px solid #1a2e4a; }
+    .sidebar-article { display: flex; gap: 10px; padding: 10px 14px; border-bottom: 1px solid #0d1b2a; text-decoration: none; color: inherit; transition: background 0.15s; }
+    .sidebar-article:hover { background: #0d1b2a; }
+    .sidebar-article:last-child { border-bottom: none; }
+    .sidebar-thumb { width: 64px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
+    .sidebar-thumb-placeholder { width: 64px; height: 50px; border-radius: 6px; background: linear-gradient(135deg,#1a2e4a,#0d1b2a); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .sidebar-text { flex: 1; min-width: 0; }
+    .sidebar-headline { font-size: 12px; font-weight: 600; color: #d0d0d0; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .sidebar-source { font-size: 10px; color: #555; margin-top: 3px; }
 
-    .tab.active {
-      background: #00d4ff;
-      color: #0d1b2a;
-      font-weight: 700;
-      border-color: #00d4ff;
-      box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
-    }
+    /* ADS */
+    .ad-block { background: linear-gradient(135deg,#1a1a3e,#0d1b2a); border: 1px solid #2a2a5a; border-radius: 10px; padding: 20px; text-align: center; }
+    .ad-label { font-size: 9px; color: #444; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .ad-content { border-radius: 8px; padding: 20px; color: white; }
+    .ad-content h3 { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
+    .ad-content p { font-size: 12px; opacity: 0.85; margin-bottom: 12px; }
+    .ad-btn { background: white; border: none; padding: 8px 20px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; transition: transform 0.2s; }
+    .ad-btn:hover { transform: scale(1.05); }
 
-    #status {
-      text-align: center;
-      padding: 10px;
-      color: #666;
-      font-size: 13px;
-      min-height: 36px;
-    }
+    /* SKELETON */
+    .skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .skeleton-card { background: #12203a; border-radius: 10px; overflow: hidden; border: 1px solid #1a2e4a; }
+    .skeleton-img { height: 170px; background: linear-gradient(90deg,#1a2e4a 25%,#1e3550 50%,#1a2e4a 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    .skeleton-body { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .skeleton-line { height: 11px; border-radius: 4px; background: linear-gradient(90deg,#1a2e4a 25%,#1e3550 50%,#1a2e4a 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    .empty { grid-column: 1/-1; text-align: center; color: #444; padding: 60px 20px; font-size: 14px; }
 
-    #output {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 16px 20px 40px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
-    }
+    footer { text-align: center; padding: 16px; color: #333; font-size: 11px; border-top: 1px solid #1a2a3a; margin-top: 20px; }
 
-    .card {
-      background: #16213e;
-      border: 1px solid #1e3a5f;
-      border-radius: 12px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
-      display: flex;
-      flex-direction: column;
-      text-decoration: none;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
-      border-color: #00d4ff;
-    }
-
-    .card-img {
-      width: 100%;
-      height: 190px;
-      object-fit: cover;
-      display: block;
-      background: linear-gradient(135deg, #1e3a5f, #0d1b2a);
-    }
-
-    .card-img-placeholder {
-      width: 100%;
-      height: 190px;
-      background: linear-gradient(135deg, #1a2a4a 0%, #0f1f35 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 48px;
-    }
-
-    .card-body {
-      padding: 16px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .card-source {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: #00d4ff;
-    }
-
-    .card-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: #e8e8e8;
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .card-desc {
-      font-size: 13px;
-      color: #888;
-      line-height: 1.5;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      flex: 1;
-    }
-
-    .card-date {
-      font-size: 11px;
-      color: #555;
-      margin-top: 4px;
-    }
-
-    .empty {
-      grid-column: 1 / -1;
-      text-align: center;
-      color: #555;
-      padding: 60px 20px;
-      font-size: 14px;
-    }
-
-    .skeleton {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
-    }
-
-    .skeleton-card {
-      background: #16213e;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid #1e3a5f;
-    }
-
-    .skeleton-img {
-      height: 190px;
-      background: linear-gradient(90deg, #1e3a5f 25%, #243d60 50%, #1e3a5f 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-    }
-
-    .skeleton-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-
-    .skeleton-line {
-      height: 12px;
-      border-radius: 4px;
-      background: linear-gradient(90deg, #1e3a5f 25%, #243d60 50%, #1e3a5f 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-    }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: #333;
-      font-size: 12px;
-      border-top: 1px solid #1a2a3a;
-    }
-
-    @media (max-width: 600px) {
-      #output { grid-template-columns: 1fr; padding: 12px; }
-      header h1 { font-size: 1.4rem; }
-    }
+    @media (max-width: 900px) { .layout{flex-direction:column} .sidebar{width:100%} .header-right{display:none} }
+    @media (max-width: 600px) { #output{grid-template-columns:1fr} .brand{min-width:unset} }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>🥭 FeedMango Sports</h1>
-    <p>Live sports news — refreshes automatically every 30 minutes</p>
-  </header>
+<header>
+  <div class="brand">
+    <img class="mascot" src="mascot.png" onerror="this.style.display='none'" alt="mascot"/>
+    <img class="logo-img" src="logo.png" onerror="this.outerHTML='<div class=logo-text><span>PEP</span><em>SPORTS</em></div>'" alt="PEP Sports"/>
+  </div>
+  <div class="header-center">
+    <span class="live-badge"><span class="live-dot"></span>LIVE</span>
+    <span class="header-tagline">Sports news from the world's top sources</span>
+  </div>
+  <div class="header-right" id="clockDisplay"></div>
+</header>
 
-  <div class="tabs">
-    <div class="tab active" data-sport="cricket" onclick="loadSport(this)">🏏 Cricket</div>
-    <div class="tab" data-sport="basketball" onclick="loadSport(this)">🏀 Basketball</div>
-    <div class="tab" data-sport="football" onclick="loadSport(this)">⚽ Football</div>
-    <div class="tab" data-sport="tennis" onclick="loadSport(this)">🎾 Tennis</div>
-    <div class="tab" data-sport="athletics" onclick="loadSport(this)">🏃 Athletics</div>
-    <div class="tab" data-sport="baseball" onclick="loadSport(this)">⚾ Baseball</div>
+<div class="tabs-bar">
+  <div class="tab active" data-sport="main" onclick="loadSport(this)">🏆 Main</div>
+  <div class="tab" data-sport="cricket" onclick="loadSport(this)">🏏 Cricket</div>
+  <div class="tab" data-sport="basketball" onclick="loadSport(this)">🏀 Basketball</div>
+  <div class="tab" data-sport="football" onclick="loadSport(this)">⚽ Football</div>
+  <div class="tab" data-sport="tennis" onclick="loadSport(this)">🎾 Tennis</div>
+  <div class="tab" data-sport="athletics" onclick="loadSport(this)">🏃 Athletics</div>
+  <div class="tab" data-sport="baseball" onclick="loadSport(this)">⚾ Baseball</div>
+</div>
+
+<div class="ticker-wrap">
+  <div class="ticker-label">⚡ BREAKING</div>
+  <div class="ticker-content">
+    <div class="ticker-track" id="tickerTrack">
+      <span class="ticker-item">Loading latest sports headlines...</span>
+      <span class="ticker-item">Loading latest sports headlines...</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="main-pane">
+    <div class="section-label" id="sectionLabel">🏆 Top Stories</div>
+    <div id="status"></div>
+    <div id="output">
+      <div class="skeleton-grid">
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:85%"></div><div class="skeleton-line" style="width:65%"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:90%"></div><div class="skeleton-line" style="width:70%"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:80%"></div><div class="skeleton-line" style="width:60%"></div></div></div>
+      </div>
+    </div>
   </div>
 
-  <div id="status"></div>
-  <div id="output"></div>
+  <div class="sidebar">
+    <div class="ad-block">
+      <div class="ad-label">Advertisement</div>
+      <div class="ad-content" style="background:linear-gradient(135deg,#e63946,#c0002a)">
+        <h3>⚡ NIKE</h3>
+        <p>Just Do It. Gear up for the season.</p>
+        <button class="ad-btn" style="color:#e63946">Shop Now</button>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">🔥 Trending Now</div>
+      <div id="trendingList"><div style="padding:14px;color:#444;font-size:12px">Loading...</div></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">🕐 Recent News</div>
+      <div id="recentList"><div style="padding:14px;color:#444;font-size:12px">Loading...</div></div>
+    </div>
+    <div class="ad-block">
+      <div class="ad-label">Advertisement</div>
+      <div class="ad-content" style="background:linear-gradient(135deg,#1a4a8a,#0d2a5a)">
+        <h3>🏆 ESPN+</h3>
+        <p>Stream live sports. Anytime, anywhere.</p>
+        <button class="ad-btn" style="color:#1a4a8a">Try Free</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <footer>🥭 FeedMango — Sports news from the world's top sources</footer>
+<footer>🥭 PEP Sports — Powered by FeedMango · Auto-refreshes every 30 minutes</footer>
 
-  <script>
-    var currentSport = 'cricket';
-    var WORKER_URL = 'https://mango-sports-worker.ravi-kompel.workers.dev';
-    var SPORT_EMOJI = { cricket:'🏏', basketball:'🏀', football:'⚽', tennis:'🎾', athletics:'🏃', baseball:'⚾' };
+<script>
+  var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev';
+  var SPORTS = ['cricket','basketball','football','tennis','athletics','baseball'];
+  var EMOJI = {cricket:'🏏',basketball:'🏀',football:'⚽',tennis:'🎾',athletics:'🏃',baseball:'⚾',main:'🏆'};
+  var LABEL = {cricket:'Cricket',basketball:'Basketball',football:'Football',tennis:'Tennis',athletics:'Athletics',baseball:'Baseball',main:'Top Stories'};
+  var currentSport = 'main';
+  var allCache = [];
 
-    function showSkeleton() {
-      var output = document.getElementById('output');
-      var html = '<div class="skeleton">';
-      for (var i = 0; i < 6; i++) {
-        html += '<div class="skeleton-card">' +
-          '<div class="skeleton-img"></div>' +
-          '<div class="skeleton-body">' +
-            '<div class="skeleton-line" style="width:40%"></div>' +
-            '<div class="skeleton-line" style="width:90%"></div>' +
-            '<div class="skeleton-line" style="width:75%"></div>' +
-            '<div class="skeleton-line" style="width:55%"></div>' +
-          '</div></div>';
+  function updateClock() {
+    var now = new Date();
+    document.getElementById('clockDisplay').textContent =
+      now.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}) + ' · ' +
+      now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  }
+  updateClock(); setInterval(updateClock, 60000);
+
+  function timeAgo(iso) {
+    if (!iso) return '';
+    var m = (Date.now() - new Date(iso).getTime()) / 60000;
+    if (m < 60) return Math.floor(m) + 'm ago';
+    if (m < 1440) return Math.floor(m/60) + 'h ago';
+    return Math.floor(m/1440) + 'd ago';
+  }
+
+  async function fetchSport(sport) {
+    var r = await fetch(WORKER + '/api/news?sport=' + sport);
+    var d = await r.json();
+    var articles = d.articles || [];
+    articles.forEach(function(a) { if (!a.sport) a.sport = sport; });
+    return articles;
+  }
+
+  async function fetchAll() {
+    var results = await Promise.allSettled(SPORTS.map(fetchSport));
+    var all = [], seen = new Set();
+    results.forEach(function(r) {
+      if (r.status === 'fulfilled') r.value.forEach(function(a) {
+        if (!seen.has(a.link)) { seen.add(a.link); all.push(a); }
+      });
+    });
+    return all.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
+  }
+
+  function buildCard(article, emoji) {
+    var card = document.createElement('a');
+    card.className = 'card';
+    card.href = article.link; card.target = '_blank'; card.rel = 'noopener noreferrer';
+    var img = article.image
+      ? '<img class="card-img" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+emoji+'</div>\'">'
+      : '<div class="card-img-placeholder">'+emoji+'</div>';
+    var author = article.author ? '<span class="card-author">✍ '+article.author+'</span>' : '';
+    var time = article.pubDate ? '<span class="card-time">'+timeAgo(article.pubDate)+'</span>' : '';
+    card.innerHTML = img +
+      '<div class="card-body">' +
+        '<div class="card-meta"><span class="card-source-badge">'+article.source+'</span>'+author+time+'</div>' +
+        '<div class="card-title">'+article.title+'</div>' +
+        (article.description ? '<div class="card-desc">'+article.description+'</div>' : '') +
+      '</div>';
+    return card;
+  }
+
+  function buildSidebarItem(article, emoji) {
+    var el = document.createElement('a');
+    el.className = 'sidebar-article';
+    el.href = article.link; el.target = '_blank'; el.rel = 'noopener noreferrer';
+    var thumb = article.image
+      ? '<img class="sidebar-thumb" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+emoji+'</div>\'">'
+      : '<div class="sidebar-thumb-placeholder">'+emoji+'</div>';
+    el.innerHTML = thumb +
+      '<div class="sidebar-text">' +
+        '<div class="sidebar-headline">'+article.title+'</div>' +
+        '<div class="sidebar-source">'+article.source+' · '+timeAgo(article.pubDate)+'</div>' +
+      '</div>';
+    return el;
+  }
+
+  function buildTicker(articles) {
+    if (!articles.length) return;
+    var items = articles.slice(0,20).map(function(a) {
+      return '<span class="ticker-item">'+a.title+'</span>';
+    }).join('');
+    document.getElementById('tickerTrack').innerHTML = items + items;
+  }
+
+  function buildSidebar(all) {
+    var withImg = all.filter(function(a){return a.image;});
+    var trending = withImg.slice(0,6);
+    var tLinks = new Set(trending.map(function(a){return a.link;}));
+    var recent = all.filter(function(a){return !tLinks.has(a.link);}).slice(0,6);
+    var tEl = document.getElementById('trendingList');
+    var rEl = document.getElementById('recentList');
+    tEl.innerHTML = ''; rEl.innerHTML = '';
+    trending.forEach(function(a){ tEl.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
+    recent.forEach(function(a){ rEl.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
+  }
+
+  function showSkeleton() {
+    var html = '<div class="skeleton-grid">';
+    for (var i=0;i<6;i++) html += '<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:85%"></div><div class="skeleton-line" style="width:65%"></div></div></div>';
+    document.getElementById('output').innerHTML = html + '</div>';
+  }
+
+  function loadSport(el) {
+    currentSport = el.getAttribute('data-sport');
+    document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+    el.classList.add('active');
+    document.getElementById('sectionLabel').textContent = EMOJI[currentSport]+' '+LABEL[currentSport];
+    renderNews();
+  }
+
+  async function renderNews() {
+    var status = document.getElementById('status');
+    var output = document.getElementById('output');
+    status.textContent = ''; showSkeleton();
+    try {
+      var articles = currentSport === 'main'
+        ? (allCache.length ? allCache : await fetchAll())
+        : await fetchSport(currentSport);
+      if (!articles.length) {
+        output.innerHTML = '<div class="empty">⏳ News is being fetched...<br>Check back in a moment!</div>';
+        return;
       }
-      html += '</div>';
-      output.innerHTML = html;
+      status.textContent = '✅ '+articles.length+' articles loaded';
+      output.innerHTML = '';
+      articles.forEach(function(a){ output.appendChild(buildCard(a, EMOJI[a.sport||currentSport]||'📰')); });
+    } catch(e) {
+      output.innerHTML = '<div class="empty">❌ '+e.message+'</div>';
     }
+  }
 
-    function loadSport(el) {
-      currentSport = el.getAttribute('data-sport');
-      document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
-      el.classList.add('active');
-      fetchNews(currentSport);
-    }
+  async function init() {
+    var all = await fetchAll();
+    allCache = all;
+    buildTicker(all);
+    buildSidebar(all);
+    renderNews();
+  }
 
-    async function fetchNews(sport) {
-      var status = document.getElementById('status');
-      var output = document.getElementById('output');
-      status.textContent = '';
-      showSkeleton();
-
-      try {
-        var res = await fetch(WORKER_URL + '/api/news?sport=' + sport);
-        var data = await res.json();
-        var articles = data.articles || [];
-
-        if (articles.length === 0) {
-          output.innerHTML = '<div class="empty">' + SPORT_EMOJI[sport] +
-            '<br><br>News is being fetched...<br>Check back in a minute!</div>';
-          return;
-        }
-
-        status.textContent = '✅ ' + articles.length + ' articles loaded';
-        output.innerHTML = '';
-
-        articles.forEach(function(article) {
-          var card = document.createElement('a');
-          card.className = 'card';
-          card.href = article.link;
-          card.target = '_blank';
-          card.rel = 'noopener noreferrer';
-
-          var imgHtml;
-          if (article.image) {
-            imgHtml = '<img class="card-img" src="' + article.image +
-              '" alt="" loading="lazy" onerror="this.parentNode.replaceChild(makePlaceholder(\'' +
-              (SPORT_EMOJI[sport] || '📰') + '\'), this)">';
-          } else {
-            imgHtml = '<div class="card-img-placeholder">' + (SPORT_EMOJI[sport] || '📰') + '</div>';
-          }
-
-          var dateStr = '';
-          if (article.pubDate) {
-            var d = new Date(article.pubDate);
-            dateStr = d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
-          }
-
-          card.innerHTML = imgHtml +
-            '<div class="card-body">' +
-              '<div class="card-source">' + article.source + '</div>' +
-              '<div class="card-title">' + article.title + '</div>' +
-              (article.description ? '<div class="card-desc">' + article.description + '</div>' : '') +
-              '<div class="card-date">' + dateStr + '</div>' +
-            '</div>';
-
-          output.appendChild(card);
-        });
-
-      } catch (err) {
-        output.innerHTML = '<div class="empty">❌ Error loading news: ' + err.message + '</div>';
-      }
-    }
-
-    function makePlaceholder(emoji) {
-      var div = document.createElement('div');
-      div.className = 'card-img-placeholder';
-      div.textContent = emoji;
-      return div;
-    }
-
-    fetchNews('cricket');
-    setInterval(function() { fetchNews(currentSport); }, 30 * 60 * 1000);
-  </script>
-
+  init();
+  setInterval(function(){ allCache=[]; init(); }, 30*60*1000);
+</script>
 </body>
 </html>
