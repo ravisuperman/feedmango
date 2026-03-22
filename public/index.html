@@ -4,92 +4,342 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🥭 FeedMango Sports</title>
+  <meta name="description" content="Live sports news aggregator — Cricket, Basketball, Football, Tennis, Athletics, Baseball"/>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #1a1a2e; color: #e0e0e0; font-family: Arial, sans-serif; }
-    header { background: #16213e; padding: 20px; text-align: center; border-bottom: 2px solid #00d4ff; }
-    header h1 { color: #00d4ff; font-size: 1.8rem; }
-    header p { color: #888; font-size: 13px; margin-top: 4px; }
-    .tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 16px; background: #16213e; }
-    .tab { padding: 8px 18px; border-radius: 20px; border: 1px solid #0f3460; background: #1a1a2e; color: #aaa; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+
+    body {
+      background: #0f1117;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0d1b2a 0%, #1a1a2e 100%);
+      padding: 24px 20px 20px;
+      text-align: center;
+      border-bottom: 2px solid #00d4ff;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header h1 {
+      color: #00d4ff;
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    header p { color: #666; font-size: 12px; margin-top: 4px; }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 16px;
+      background: #0d1b2a;
+      border-bottom: 1px solid #1a2a3a;
+    }
+
+    .tab {
+      padding: 8px 20px;
+      border-radius: 20px;
+      border: 1px solid #1e3a5f;
+      background: transparent;
+      color: #aaa;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
     .tab:hover { border-color: #00d4ff; color: #00d4ff; }
-    .tab.active { background: #00d4ff; color: #1a1a2e; font-weight: bold; border-color: #00d4ff; }
-    #status { text-align: center; padding: 12px; color: #888; font-size: 13px; }
-    #output { max-width: 900px; margin: 20px auto; padding: 0 16px; display: flex; flex-direction: column; gap: 14px; }
-    .card { background: #16213e; border: 1px solid #0f3460; border-radius: 10px; padding: 18px; transition: transform 0.2s, border-color 0.2s; }
-    .card:hover { transform: translateY(-2px); border-color: #00d4ff; }
-    .card h2 { font-size: 1rem; margin-bottom: 8px; }
-    .card h2 a { color: #00d4ff; text-decoration: none; }
-    .card h2 a:hover { text-decoration: underline; }
-    .card .meta { font-size: 12px; color: #666; margin-bottom: 8px; }
-    .card p { font-size: 13px; color: #bbb; line-height: 1.5; }
-    .empty { text-align: center; color: #555; padding: 40px; font-size: 14px; }
-    footer { text-align: center; padding: 20px; color: #444; font-size: 12px; margin-top: 30px; }
+
+    .tab.active {
+      background: #00d4ff;
+      color: #0d1b2a;
+      font-weight: 700;
+      border-color: #00d4ff;
+      box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
+    }
+
+    #status {
+      text-align: center;
+      padding: 10px;
+      color: #666;
+      font-size: 13px;
+      min-height: 36px;
+    }
+
+    #output {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 20px 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #16213e;
+      border: 1px solid #1e3a5f;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      border-color: #00d4ff;
+    }
+
+    .card-img {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      display: block;
+      background: linear-gradient(135deg, #1e3a5f, #0d1b2a);
+    }
+
+    .card-img-placeholder {
+      width: 100%;
+      height: 190px;
+      background: linear-gradient(135deg, #1a2a4a 0%, #0f1f35 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+    }
+
+    .card-body {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card-source {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #00d4ff;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #e8e8e8;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .card-date {
+      font-size: 11px;
+      color: #555;
+      margin-top: 4px;
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: #555;
+      padding: 60px 20px;
+      font-size: 14px;
+    }
+
+    .skeleton {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .skeleton-card {
+      background: #16213e;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #1e3a5f;
+    }
+
+    .skeleton-img {
+      height: 190px;
+      background: linear-gradient(90deg, #1e3a5f 25%, #243d60 50%, #1e3a5f 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    .skeleton-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+
+    .skeleton-line {
+      height: 12px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #1e3a5f 25%, #243d60 50%, #1e3a5f 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #333;
+      font-size: 12px;
+      border-top: 1px solid #1a2a3a;
+    }
+
+    @media (max-width: 600px) {
+      #output { grid-template-columns: 1fr; padding: 12px; }
+      header h1 { font-size: 1.4rem; }
+    }
   </style>
 </head>
 <body>
+
   <header>
     <h1>🥭 FeedMango Sports</h1>
     <p>Live sports news — refreshes automatically every 30 minutes</p>
   </header>
 
   <div class="tabs">
-    <div class="tab active" onclick="loadSport('cricket')">🏏 Cricket</div>
-    <div class="tab" onclick="loadSport('basketball')">🏀 Basketball</div>
-    <div class="tab" onclick="loadSport('football')">⚽ Football</div>
-    <div class="tab" onclick="loadSport('tennis')">🎾 Tennis</div>
-    <div class="tab" onclick="loadSport('athletics')">🏃 Athletics</div>
-    <div class="tab" onclick="loadSport('baseball')">⚾ Baseball</div>
+    <div class="tab active" data-sport="cricket" onclick="loadSport(this)">🏏 Cricket</div>
+    <div class="tab" data-sport="basketball" onclick="loadSport(this)">🏀 Basketball</div>
+    <div class="tab" data-sport="football" onclick="loadSport(this)">⚽ Football</div>
+    <div class="tab" data-sport="tennis" onclick="loadSport(this)">🎾 Tennis</div>
+    <div class="tab" data-sport="athletics" onclick="loadSport(this)">🏃 Athletics</div>
+    <div class="tab" data-sport="baseball" onclick="loadSport(this)">⚾ Baseball</div>
   </div>
 
-  <div id="status">Loading news...</div>
+  <div id="status"></div>
   <div id="output"></div>
+
   <footer>🥭 FeedMango — Sports news from the world's top sources</footer>
 
   <script>
-    let currentSport = 'cricket';
+    var currentSport = 'cricket';
+    var WORKER_URL = 'https://mango-sports-worker.ravi-kompel.workers.dev';
+    var SPORT_EMOJI = { cricket:'🏏', basketball:'🏀', football:'⚽', tennis:'🎾', athletics:'🏃', baseball:'⚾' };
 
-    function loadSport(sport) {
-      currentSport = sport;
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      event.target.classList.add('active');
-      fetchNews(sport);
+    function showSkeleton() {
+      var output = document.getElementById('output');
+      var html = '<div class="skeleton">';
+      for (var i = 0; i < 6; i++) {
+        html += '<div class="skeleton-card">' +
+          '<div class="skeleton-img"></div>' +
+          '<div class="skeleton-body">' +
+            '<div class="skeleton-line" style="width:40%"></div>' +
+            '<div class="skeleton-line" style="width:90%"></div>' +
+            '<div class="skeleton-line" style="width:75%"></div>' +
+            '<div class="skeleton-line" style="width:55%"></div>' +
+          '</div></div>';
+      }
+      html += '</div>';
+      output.innerHTML = html;
+    }
+
+    function loadSport(el) {
+      currentSport = el.getAttribute('data-sport');
+      document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+      el.classList.add('active');
+      fetchNews(currentSport);
     }
 
     async function fetchNews(sport) {
-      const status = document.getElementById('status');
-      const output = document.getElementById('output');
-      status.textContent = 'Loading ' + sport + ' news...';
-      output.innerHTML = '';
+      var status = document.getElementById('status');
+      var output = document.getElementById('output');
+      status.textContent = '';
+      showSkeleton();
+
       try {
-        const res = await fetch('https://mango-sports-worker.ravi-kompel.workers.dev/api/news?sport=' + sport);
-        const data = await res.json();
-        const articles = data.articles || [];
+        var res = await fetch(WORKER_URL + '/api/news?sport=' + sport);
+        var data = await res.json();
+        var articles = data.articles || [];
+
         if (articles.length === 0) {
-          output.innerHTML = '<div class="empty">No news yet. The background job will fetch news shortly. Try again in a minute!</div>';
-          status.textContent = '';
+          output.innerHTML = '<div class="empty">' + SPORT_EMOJI[sport] +
+            '<br><br>News is being fetched...<br>Check back in a minute!</div>';
           return;
         }
+
         status.textContent = '✅ ' + articles.length + ' articles loaded';
-        articles.forEach(article => {
-          const card = document.createElement('div');
+        output.innerHTML = '';
+
+        articles.forEach(function(article) {
+          var card = document.createElement('a');
           card.className = 'card';
-          card.innerHTML =
-            '<h2><a href="' + article.link + '" target="_blank">' + article.title + '</a></h2>' +
-            '<div class="meta">📅 ' + (article.pubDate ? new Date(article.pubDate).toLocaleDateString() : '') + ' &nbsp;|&nbsp; 🔗 ' + article.source + '</div>' +
-            '<p>' + (article.description || '') + '</p>';
+          card.href = article.link;
+          card.target = '_blank';
+          card.rel = 'noopener noreferrer';
+
+          var imgHtml;
+          if (article.image) {
+            imgHtml = '<img class="card-img" src="' + article.image +
+              '" alt="" loading="lazy" onerror="this.parentNode.replaceChild(makePlaceholder(\'' +
+              (SPORT_EMOJI[sport] || '📰') + '\'), this)">';
+          } else {
+            imgHtml = '<div class="card-img-placeholder">' + (SPORT_EMOJI[sport] || '📰') + '</div>';
+          }
+
+          var dateStr = '';
+          if (article.pubDate) {
+            var d = new Date(article.pubDate);
+            dateStr = d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+          }
+
+          card.innerHTML = imgHtml +
+            '<div class="card-body">' +
+              '<div class="card-source">' + article.source + '</div>' +
+              '<div class="card-title">' + article.title + '</div>' +
+              (article.description ? '<div class="card-desc">' + article.description + '</div>' : '') +
+              '<div class="card-date">' + dateStr + '</div>' +
+            '</div>';
+
           output.appendChild(card);
         });
+
       } catch (err) {
-        status.textContent = '❌ Error: ' + err.message;
+        output.innerHTML = '<div class="empty">❌ Error loading news: ' + err.message + '</div>';
       }
     }
 
-    // Load cricket on page open
-    fetchNews('cricket');
+    function makePlaceholder(emoji) {
+      var div = document.createElement('div');
+      div.className = 'card-img-placeholder';
+      div.textContent = emoji;
+      return div;
+    }
 
-    // Auto-refresh every 30 minutes
-    setInterval(() => fetchNews(currentSport), 30 * 60 * 1000);
+    fetchNews('cricket');
+    setInterval(function() { fetchNews(currentSport); }, 30 * 60 * 1000);
   </script>
+
 </body>
 </html>
