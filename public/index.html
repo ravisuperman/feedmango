@@ -348,7 +348,7 @@
       }
       status.textContent = '✅ '+articles.length+' articles loaded';
       output.innerHTML = '';
-      articles.forEach(function(a){ output.appendChild(buildCard(a, EMOJI[a.sport||currentSport]||'📰')); });
+      articles.filter(a => a.image).forEach(function(a){ output.appendChild(buildCard(a, EMOJI[a.sport||currentSport]||'📰')); });
     } catch(e) {
       output.innerHTML = '<div class="empty">❌ '+e.message+'</div>';
     }
