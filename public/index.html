@@ -272,7 +272,12 @@
   }
 
   function buildCard(article, emoji) {
-    card.href = article.link;
+ var card = document.createElement('a');
+    card.className = 'card';
+        card.href = article.link; 
+    card.onclick = function(e) { 
+      e.preventDefault(); 
+      window.open(article.link, '_blank', 'noopener,noreferrer');
     };
 
     var img = article.image
