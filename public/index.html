@@ -316,57 +316,25 @@ card.href = '#';
     return card;
   }
 
-   function buildSidebar(all) {
-    var withImg = all.filter(function(a){return a.image;});
-    
-    // Offset so sidebar doesn't match main page
-    var pool = withImg.length > 15 ? withImg.slice(15) : withImg.reverse(); 
-    
-    var trending = pool.slice(0,6);
-    var tLinks = new Set(trending.map(function(a){return a.link;}));
-    var recent = pool.filter(function(a){return !tLinks.has(a.link);}).slice(0,6);
-    
-    var tEl = document.getElementById('trendingList');
-    var rEl = document.getElementById('recentList');
-    
-    // Create the spinning wheels
-    var tWheel = document.createElement('div'); tWheel.className = 'scroll-wheel';
-    var rWheel = document.createElement('div'); rWheel.className = 'scroll-wheel';
-    
-    // Put the list of articles in TWICE so it loops infinitely in the wheel
-    var tLoop = trending.concat(trending);
-    tLoop.forEach(function(a){ tWheel.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
-    
-    var rLoop = recent.concat(recent);
-    rLoop.forEach(function(a){ rWheel.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
-    
-    // Clear the old lists and attach the spinning wheels
-    tEl.innerHTML = ''; tEl.appendChild(tWheel);
-    rEl.innerHTML = ''; rEl.appendChild(rWheel);
-  }
-
   function buildSidebarItem(article, emoji) {
     var el = document.createElement('a');
     el.className = 'sidebar-article';
-    el.href = article.link; 
+        el.href = article.link; 
     el.onclick = function(e) { 
       e.preventDefault(); 
       window.open(article.link, '_blank', 'noopener,noreferrer'); 
     };
 
     var thumb = article.image
-      ? '<img class="sidebar-thumb" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+emoji+'</div>\'">'
-      : '<div class="sidebar-thumb-placeholder">'+emoji+'</div>';
-
-    el.innerHTML = thumb + 
-      '<div class="sidebar-text">' + 
-        '<div class="sidebar-headline">' + article.title + '</div>' + 
-        '<div class="sidebar-source">' + timeAgo(article.pubDate) + '</div>' + 
-      '</div>';
-      
+      ? '<img class="sidebar-thumb" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+emoji+'<\/div>\'">'
+      : '<div class="sidebar-thumb-placeholder">'+emoji+'<\/div>';
+    el.innerHTML = thumb +
+      '<div class="sidebar-text">' +
+        '<div class="sidebar-headline">'+article.title+'<\/div>' +
+'<div class="sidebar-source">'+timeAgo(article.pubDate)+'<\/div>' +
+      '<\/div>';
     return el;
   }
-
 
   function buildTicker(articles) {
     if (!articles.length) return;
@@ -376,28 +344,23 @@ card.href = '#';
     document.getElementById('tickerTrack').innerHTML = items + items;
   }
 
-    function buildSidebarItem(article, emoji) {
-    var el = document.createElement('a');
-    el.className = 'sidebar-article';
-    el.href = article.link; 
-    el.onclick = function(e) { 
-      e.preventDefault(); 
-      window.open(article.link, '_blank', 'noopener,noreferrer'); 
-    };
-
-    var thumb = article.image
-      ? '<img class="sidebar-thumb" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+emoji+'<\\/div>\'">'
-      : '<div class="sidebar-thumb-placeholder">'+emoji+'</div>';
-
-    el.innerHTML = thumb + 
-      '<div class="sidebar-text">' + 
-        '<div class="sidebar-headline">' + article.title + '</div>' + 
-        '<div class="sidebar-source">' + timeAgo(article.pubDate) + '</div>' + 
-      '</div>';
-      
-    return el;
+  function buildSidebar(all) {
+    var withImg = all.filter(function(a){return a.image;});
+    
+    // SECRET OFFSET: Skip the first 15 articles so the sidebar never matches the top of the main page!
+    var pool = withImg.length > 15 ? withImg.slice(15) : withImg.reverse(); 
+    
+    var trending = pool.slice(0,6);
+    var tLinks = new Set(trending.map(function(a){return a.link;}));
+    var recent = pool.filter(function(a){return !tLinks.has(a.link);}).slice(0,6);
+    
+    var tEl = document.getElementById('trendingList');
+    var rEl = document.getElementById('recentList');
+    tEl.innerHTML = ''; rEl.innerHTML = '';
+    
+    trending.forEach(function(a){ tEl.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
+    recent.forEach(function(a){ rEl.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
   }
-
 
 
   function showSkeleton() {
@@ -444,30 +407,6 @@ card.href = '#';
 
   init();
   setInterval(function(){ allCache=[]; init(); }, 30*60*1000);
-  /* Sidebar Wheel Animation */
-  #trendingList, #recentList {
-    overflow: hidden;   
-    height: 480px;      /* Locks the box height so it acts like a window */
-    position: relative;
-  }
-  
-  .scroll-wheel {
-    display: flex;
-    flex-direction: column;
-    animation: scrollWheel 30s linear infinite; /* 30 seconds for a nice, slow, readable speed */
-  }
-  
-  .scroll-wheel:hover {
-    animation-play-state: paused; /* Freezes the wheel if they hover to click a link! */
-  }
-
-  @keyframes scrollWheel {
-    0%   { transform: translateY(0); }
-    /* Moves the content up exactly halfway, creating a seamless loop */
-    100% { transform: translateY(-50%); } 
-  }
-
-  
 </script>
 </body>
 </html>
