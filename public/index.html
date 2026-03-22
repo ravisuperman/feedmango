@@ -340,9 +340,12 @@ card.href = '#';
     var rLoop = recent.concat(recent);
     rLoop.forEach(function(a){ rWheel.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
     
-    // Clear the old lists and attach the spinning wheels
-    tEl.innerHTML = ''; tEl.appendChild(tWheel);
-    rEl.innerHTML = ''; rEl.appendChild(rWheel);
+  el.innerHTML = thumb + 
+    '<div class="sidebar-text">' + 
+      '<div class="sidebar-headline">' + article.title + '<\/div>' + 
+      '<div class="sidebar-source">' + timeAgo(article.pubDate) + '<\/div>' + 
+    '<\/div>';
+
   }
 
 
