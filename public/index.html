@@ -274,11 +274,12 @@
   function buildCard(article, emoji) {
  var card = document.createElement('a');
     card.className = 'card';
-    card.href = article.link; 
-    card.onclick = function(e) { 
-      e.preventDefault(); 
-      window.open(article.link, '_blank', 'noopener,noreferrer');
-    };
+card.href = '#';
+  card.onclick = function(e) {
+    e.preventDefault();
+    // This tells the browser to strip away toolbars/menus to force a true floating window
+    window.open(article.link, '_blank', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=900,height=700,top=100,left=100');
+  };
 
     var img = article.image
       ? '<img class="card-img" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+emoji+'<\/div>\'">'
