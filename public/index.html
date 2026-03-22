@@ -368,23 +368,28 @@ card.href = '#';
     document.getElementById('tickerTrack').innerHTML = items + items;
   }
 
-  function buildSidebar(all) {
-    var withImg = all.filter(function(a){return a.image;});
-    
-    // SECRET OFFSET: Skip the first 15 articles so the sidebar never matches the top of the main page!
-    var pool = withImg.length > 15 ? withImg.slice(15) : withImg.reverse(); 
-    
-    var trending = pool.slice(0,6);
-    var tLinks = new Set(trending.map(function(a){return a.link;}));
-    var recent = pool.filter(function(a){return !tLinks.has(a.link);}).slice(0,6);
-    
-    var tEl = document.getElementById('trendingList');
-    var rEl = document.getElementById('recentList');
-    tEl.innerHTML = ''; rEl.innerHTML = '';
-    
-    trending.forEach(function(a){ tEl.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
-    recent.forEach(function(a){ rEl.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
+    function buildSidebarItem(article, emoji) {
+    var el = document.createElement('a');
+    el.className = 'sidebar-article';
+    el.href = article.link; 
+    el.onclick = function(e) { 
+      e.preventDefault(); 
+      window.open(article.link, '_blank', 'noopener,noreferrer'); 
+    };
+
+    var thumb = article.image
+      ? '<img class="sidebar-thumb" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+emoji+'<\\/div>\'">'
+      : '<div class="sidebar-thumb-placeholder">'+emoji+'</div>';
+
+    el.innerHTML = thumb + 
+      '<div class="sidebar-text">' + 
+        '<div class="sidebar-headline">' + article.title + '</div>' + 
+        '<div class="sidebar-source">' + timeAgo(article.pubDate) + '</div>' + 
+      '</div>';
+      
+    return el;
   }
+
 
 
   function showSkeleton() {
