@@ -288,8 +288,8 @@ card.href = '#';
     var time = article.pubDate ? '<span class="card-time">'+timeAgo(article.pubDate)+'<\/span>' : '';
     card.innerHTML = img +
       '<div class="card-body">' +
-        '<div class="card-meta"><span class="card-source-badge">'+article.source+'<\/span>'+author+time+'<\/div>' +
-        '<div class="card-title">'+article.title+'<\/div>' +
+'<div class="card-meta">'+author+time+'<\/div>' +
+      '<div class="card-title">'+article.title+'<\/div>' +
         (article.description ? '<div class="card-desc">'+article.description+'<\/div>' : '') +
       '<\/div>';
     return card;
@@ -310,7 +310,7 @@ card.href = '#';
     el.innerHTML = thumb +
       '<div class="sidebar-text">' +
         '<div class="sidebar-headline">'+article.title+'<\/div>' +
-        '<div class="sidebar-source">'+article.source+' · '+timeAgo(article.pubDate)+'<\/div>' +
+'<div class="sidebar-source">'+timeAgo(article.pubDate)+'<\/div>' +
       '<\/div>';
     return el;
   }
