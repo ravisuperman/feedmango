@@ -316,7 +316,7 @@ card.href = '#';
     return card;
   }
 
-  function buildSidebar(all) {
+   function buildSidebar(all) {
     var withImg = all.filter(function(a){return a.image;});
     
     // Offset so sidebar doesn't match main page
@@ -340,25 +340,33 @@ card.href = '#';
     var rLoop = recent.concat(recent);
     rLoop.forEach(function(a){ rWheel.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
     
-  el.innerHTML = thumb + 
-    '<div class="sidebar-text">' + 
-      '<div class="sidebar-headline">' + article.title + '<\/div>' + 
-      '<div class="sidebar-source">' + timeAgo(article.pubDate) + '<\/div>' + 
-    '<\/div>';
-
+    // Clear the old lists and attach the spinning wheels
+    tEl.innerHTML = ''; tEl.appendChild(tWheel);
+    rEl.innerHTML = ''; rEl.appendChild(rWheel);
   }
 
+  function buildSidebarItem(article, emoji) {
+    var el = document.createElement('a');
+    el.className = 'sidebar-article';
+    el.href = article.link; 
+    el.onclick = function(e) { 
+      e.preventDefault(); 
+      window.open(article.link, '_blank', 'noopener,noreferrer'); 
+    };
 
     var thumb = article.image
-      ? '<img class="sidebar-thumb" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+emoji+'<\/div>\'">'
-      : '<div class="sidebar-thumb-placeholder">'+emoji+'<\/div>';
-    el.innerHTML = thumb +
-      '<div class="sidebar-text">' +
-        '<div class="sidebar-headline">'+article.title+'<\/div>' +
-'<div class="sidebar-source">'+timeAgo(article.pubDate)+'<\/div>' +
-      '<\/div>';
+      ? '<img class="sidebar-thumb" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+emoji+'</div>\'">'
+      : '<div class="sidebar-thumb-placeholder">'+emoji+'</div>';
+
+    el.innerHTML = thumb + 
+      '<div class="sidebar-text">' + 
+        '<div class="sidebar-headline">' + article.title + '</div>' + 
+        '<div class="sidebar-source">' + timeAgo(article.pubDate) + '</div>' + 
+      '</div>';
+      
     return el;
   }
+
 
   function buildTicker(articles) {
     if (!articles.length) return;
