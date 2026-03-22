@@ -8,8 +8,6 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: #0a0e1a; color: #e0e0e0; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; }
-
-    /* HEADER */
     header { background: linear-gradient(135deg,#0d1b2a,#12203a); border-bottom: 2px solid #e63946; padding: 10px 24px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 200; }
     .brand { display: flex; align-items: center; gap: 10px; min-width: 220px; }
     .mascot { height: 52px; width: auto; }
@@ -21,17 +19,13 @@
     .live-badge { display: inline-flex; align-items: center; gap: 5px; background: #e63946; color: white; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 3px; letter-spacing: 1px; text-transform: uppercase; }
     .live-dot { width: 6px; height: 6px; background: white; border-radius: 50%; animation: pulse 1.2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-    .header-tagline { font-size: 11px; color: #555; }
-    .header-right { min-width: 180px; text-align: right; font-size: 12px; color: #555; }
-
-    /* TABS */
-    .tabs-bar { background: #0d1b2a; border-bottom: 1px solid #1a2a3a; display: flex; overflow-x: auto; scrollbar-width: none; padding: 0 16px; }
+    .header-tagline { font-size: 11px; color: #ffd166; letter-spacing: 0.3px; }
+    .header-right { min-width: 180px; text-align: right; font-size: 12px; color: #888; }
+    .tabs-bar { background: #0d1b2a; border-bottom: 1px solid #1a2a3a; display: flex; justify-content: center; overflow-x: auto; scrollbar-width: none; padding: 0 16px; }
     .tabs-bar::-webkit-scrollbar { display: none; }
     .tab { padding: 12px 18px; font-size: 13px; font-weight: 600; color: #888; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
     .tab:hover { color: #e0e0e0; border-bottom-color: #555; }
     .tab.active { color: #e63946; border-bottom-color: #e63946; }
-
-    /* TICKER */
     .ticker-wrap { background: #e63946; overflow: hidden; height: 32px; display: flex; align-items: center; }
     .ticker-label { background: #a0001e; color: white; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; padding: 0 14px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
     .ticker-content { display: flex; overflow: hidden; flex: 1; }
@@ -40,17 +34,11 @@
     .ticker-item { color: white; font-size: 12px; font-weight: 500; padding: 0 28px; display: flex; align-items: center; gap: 8px; }
     .ticker-item::before { content: '●'; font-size: 6px; opacity: 0.7; }
     @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-
-    /* LAYOUT */
     .layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 20px 16px; gap: 20px; align-items: flex-start; }
-
-    /* MAIN PANE */
     .main-pane { flex: 3; min-width: 0; }
     .section-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #e63946; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #1a2a3a; }
     #status { font-size: 12px; color: #666; margin-bottom: 12px; min-height: 20px; }
     #output { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-
-    /* CARDS */
     .card { background: #12203a; border: 1px solid #1a2e4a; border-radius: 10px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; display: flex; flex-direction: column; text-decoration: none; color: inherit; }
     .card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-color: #e63946; }
     .card-img { width: 100%; height: 170px; object-fit: cover; display: block; }
@@ -62,8 +50,6 @@
     .card-time { font-size: 11px; color: #555; margin-left: auto; }
     .card-title { font-size: 14px; font-weight: 600; color: #e8e8e8; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .card-desc { font-size: 12px; color: #778; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
-
-    /* SIDEBAR */
     .sidebar { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
     .sidebar-section { background: #12203a; border: 1px solid #1a2e4a; border-radius: 10px; overflow: hidden; }
     .sidebar-title { background: #0d1b2a; padding: 10px 14px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #e63946; border-bottom: 1px solid #1a2e4a; }
@@ -75,17 +61,13 @@
     .sidebar-text { flex: 1; min-width: 0; }
     .sidebar-headline { font-size: 12px; font-weight: 600; color: #d0d0d0; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .sidebar-source { font-size: 10px; color: #555; margin-top: 3px; }
-
-    /* ADS */
     .ad-block { background: linear-gradient(135deg,#1a1a3e,#0d1b2a); border: 1px solid #2a2a5a; border-radius: 10px; padding: 20px; text-align: center; }
     .ad-label { font-size: 9px; color: #444; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
     .ad-content { border-radius: 8px; padding: 20px; color: white; }
     .ad-content h3 { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
     .ad-content p { font-size: 12px; opacity: 0.85; margin-bottom: 12px; }
-    .ad-btn { background: white; border: none; padding: 8px 20px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; transition: transform 0.2s; }
+    .ad-btn { background: white; border: none; padding: 8px 20px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; transition: transform 0.2s; display: inline-block; }
     .ad-btn:hover { transform: scale(1.05); }
-
-    /* SKELETON */
     .skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
     .skeleton-card { background: #12203a; border-radius: 10px; overflow: hidden; border: 1px solid #1a2e4a; }
     .skeleton-img { height: 170px; background: linear-gradient(90deg,#1a2e4a 25%,#1e3550 50%,#1a2e4a 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
@@ -93,9 +75,7 @@
     .skeleton-line { height: 11px; border-radius: 4px; background: linear-gradient(90deg,#1a2e4a 25%,#1e3550 50%,#1a2e4a 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
     @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
     .empty { grid-column: 1/-1; text-align: center; color: #444; padding: 60px 20px; font-size: 14px; }
-
     footer { text-align: center; padding: 16px; color: #333; font-size: 11px; border-top: 1px solid #1a2a3a; margin-top: 20px; }
-
     @media (max-width: 900px) { .layout{flex-direction:column} .sidebar{width:100%} .header-right{display:none} }
     @media (max-width: 600px) { #output{grid-template-columns:1fr} .brand{min-width:unset} }
   </style>
@@ -151,9 +131,12 @@
     <div class="ad-block">
       <div class="ad-label">Advertisement</div>
       <div class="ad-content" style="background:linear-gradient(135deg,#e63946,#c0002a)">
+        <div style="font-size:42px;margin-bottom:6px">👟</div>
         <h3>⚡ NIKE</h3>
         <p>Just Do It. Gear up for the season.</p>
-        <button class="ad-btn" style="color:#e63946">Shop Now</button>
+        <a href="https://www.nike.com" target="_blank" rel="noopener noreferrer">
+          <button class="ad-btn" style="color:#e63946">Explore</button>
+        </a>
       </div>
     </div>
     <div class="sidebar-section">
@@ -166,10 +149,13 @@
     </div>
     <div class="ad-block">
       <div class="ad-label">Advertisement</div>
-      <div class="ad-content" style="background:linear-gradient(135deg,#1a4a8a,#0d2a5a)">
-        <h3>🏆 ESPN+</h3>
-        <p>Stream live sports. Anytime, anywhere.</p>
-        <button class="ad-btn" style="color:#1a4a8a">Try Free</button>
+      <div class="ad-content" style="background:linear-gradient(135deg,#cc0000,#8b0000)">
+        <div style="font-size:42px;margin-bottom:6px">🏃</div>
+        <h3>🔥 REEBOK</h3>
+        <p>Life is Not a Spectator Sport. Move.</p>
+        <a href="https://www.reebok.com" target="_blank" rel="noopener noreferrer">
+          <button class="ad-btn" style="color:#cc0000">Explore</button>
+        </a>
       </div>
     </div>
   </div>
@@ -225,16 +211,16 @@
     card.className = 'card';
     card.href = article.link; card.target = '_blank'; card.rel = 'noopener noreferrer';
     var img = article.image
-      ? '<img class="card-img" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+emoji+'</div>\'">'
-      : '<div class="card-img-placeholder">'+emoji+'</div>';
-    var author = article.author ? '<span class="card-author">✍ '+article.author+'</span>' : '';
-    var time = article.pubDate ? '<span class="card-time">'+timeAgo(article.pubDate)+'</span>' : '';
+      ? '<img class="card-img" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+emoji+'<\/div>\'">'
+      : '<div class="card-img-placeholder">'+emoji+'<\/div>';
+    var author = article.author ? '<span class="card-author">✍ '+article.author+'<\/span>' : '';
+    var time = article.pubDate ? '<span class="card-time">'+timeAgo(article.pubDate)+'<\/span>' : '';
     card.innerHTML = img +
       '<div class="card-body">' +
-        '<div class="card-meta"><span class="card-source-badge">'+article.source+'</span>'+author+time+'</div>' +
-        '<div class="card-title">'+article.title+'</div>' +
-        (article.description ? '<div class="card-desc">'+article.description+'</div>' : '') +
-      '</div>';
+        '<div class="card-meta"><span class="card-source-badge">'+article.source+'<\/span>'+author+time+'<\/div>' +
+        '<div class="card-title">'+article.title+'<\/div>' +
+        (article.description ? '<div class="card-desc">'+article.description+'<\/div>' : '') +
+      '<\/div>';
     return card;
   }
 
@@ -243,20 +229,20 @@
     el.className = 'sidebar-article';
     el.href = article.link; el.target = '_blank'; el.rel = 'noopener noreferrer';
     var thumb = article.image
-      ? '<img class="sidebar-thumb" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+emoji+'</div>\'">'
-      : '<div class="sidebar-thumb-placeholder">'+emoji+'</div>';
+      ? '<img class="sidebar-thumb" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+emoji+'<\/div>\'">'
+      : '<div class="sidebar-thumb-placeholder">'+emoji+'<\/div>';
     el.innerHTML = thumb +
       '<div class="sidebar-text">' +
-        '<div class="sidebar-headline">'+article.title+'</div>' +
-        '<div class="sidebar-source">'+article.source+' · '+timeAgo(article.pubDate)+'</div>' +
-      '</div>';
+        '<div class="sidebar-headline">'+article.title+'<\/div>' +
+        '<div class="sidebar-source">'+article.source+' · '+timeAgo(article.pubDate)+'<\/div>' +
+      '<\/div>';
     return el;
   }
 
   function buildTicker(articles) {
     if (!articles.length) return;
     var items = articles.slice(0,20).map(function(a) {
-      return '<span class="ticker-item">'+a.title+'</span>';
+      return '<span class="ticker-item">'+a.title+'<\/span>';
     }).join('');
     document.getElementById('tickerTrack').innerHTML = items + items;
   }
@@ -275,8 +261,8 @@
 
   function showSkeleton() {
     var html = '<div class="skeleton-grid">';
-    for (var i=0;i<6;i++) html += '<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:85%"></div><div class="skeleton-line" style="width:65%"></div></div></div>';
-    document.getElementById('output').innerHTML = html + '</div>';
+    for (var i=0;i<6;i++) html += '<div class="skeleton-card"><div class="skeleton-img"><\/div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"><\/div><div class="skeleton-line" style="width:85%"><\/div><div class="skeleton-line" style="width:65%"><\/div><\/div><\/div>';
+    document.getElementById('output').innerHTML = html + '<\/div>';
   }
 
   function loadSport(el) {
@@ -296,14 +282,14 @@
         ? (allCache.length ? allCache : await fetchAll())
         : await fetchSport(currentSport);
       if (!articles.length) {
-        output.innerHTML = '<div class="empty">⏳ News is being fetched...<br>Check back in a moment!</div>';
+        output.innerHTML = '<div class="empty">⏳ News being fetched... check back in a moment!<\/div>';
         return;
       }
       status.textContent = '✅ '+articles.length+' articles loaded';
       output.innerHTML = '';
       articles.forEach(function(a){ output.appendChild(buildCard(a, EMOJI[a.sport||currentSport]||'📰')); });
     } catch(e) {
-      output.innerHTML = '<div class="empty">❌ '+e.message+'</div>';
+      output.innerHTML = '<div class="empty">❌ '+e.message+'<\/div>';
     }
   }
 
