@@ -117,13 +117,17 @@
 
 
 @media (max-width: 600px) {
+  #output { grid-template-columns: 1fr; }
+  .brand { min-width: unset; }
+  .header-tagline, .ticker-wrap { display: none !important; }
   .header-icon {
-    width: 26px;      /* Much smaller box */
-    height: 26px;     /* Much smaller box */
-    font-size: 0.85rem; /* Smaller football icon */
-    border-radius: 6px;
+    width: 26px !important;
+    height: 26px !important;
+    font-size: 0.85rem !important;
+    border-radius: 6px !important;
   }
 }
+
 
     
   </style>
