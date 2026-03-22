@@ -62,7 +62,7 @@
       status.textContent = 'Loading ' + sport + ' news...';
       output.innerHTML = '';
       try {
-        const res = await fetch('/api/sports-news?sport=' + sport);
+        const res = await fetch('https://mango-sports-worker.ravi-kompel.workers.dev/api/news?sport=' + sport);
         const data = await res.json();
         const articles = data.articles || [];
         if (articles.length === 0) {
@@ -76,7 +76,7 @@
           card.className = 'card';
           card.innerHTML =
             '<h2><a href="' + article.link + '" target="_blank">' + article.title + '</a></h2>' +
-            '<div class="meta">📅 ' + article.date + ' &nbsp;|&nbsp; 🔗 ' + new URL(article.source).hostname.replace('www.','') + '</div>' +
+            '<div class="meta">📅 ' + (article.pubDate ? new Date(article.pubDate).toLocaleDateString() : '') + ' &nbsp;|&nbsp; 🔗 ' + article.source + '</div>' +
             '<p>' + (article.description || '') + '</p>';
           output.appendChild(card);
         });
