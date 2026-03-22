@@ -346,15 +346,22 @@ card.href = '#';
 
   function buildSidebar(all) {
     var withImg = all.filter(function(a){return a.image;});
-    var trending = withImg.slice(0,6);
+    
+    // SECRET OFFSET: Skip the first 15 articles so the sidebar never matches the top of the main page!
+    var pool = withImg.length > 15 ? withImg.slice(15) : withImg.reverse(); 
+    
+    var trending = pool.slice(0,6);
     var tLinks = new Set(trending.map(function(a){return a.link;}));
-    var recent = all.filter(function(a){return !tLinks.has(a.link);}).slice(0,6);
+    var recent = pool.filter(function(a){return !tLinks.has(a.link);}).slice(0,6);
+    
     var tEl = document.getElementById('trendingList');
     var rEl = document.getElementById('recentList');
     tEl.innerHTML = ''; rEl.innerHTML = '';
+    
     trending.forEach(function(a){ tEl.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
     recent.forEach(function(a){ rEl.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
   }
+
 
   function showSkeleton() {
     var html = '<div class="skeleton-grid">';
