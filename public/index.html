@@ -16,8 +16,27 @@
     /* --- BBC STYLE CHANGES: Light background and dark text --- */
     body { background: #f4f4f4; color: #141414; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; }
     
-    /* --- BBC STYLE CHANGES: Yellow Header --- */
-    header { background: #FFFF5C; color: #000; border-bottom: 2px solid #000; padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; }
+    /* --- THE MAGICAL TRANSPARENT HEADER --- */
+    header { 
+      background: rgba(255, 255, 92, 1); /* Solid yellow by default */
+      color: #000; 
+      border-bottom: 2px solid #000; 
+      padding: 10px 24px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      position: sticky; 
+      top: 0; 
+      z-index: 200; 
+      transition: background 0.3s ease, backdrop-filter 0.3s ease; /* Smooth fade effect! */
+    }
+    
+    /* When scrolled, apply transparency and frosted glass blur */
+    header.scrolled {
+      background: rgba(255, 255, 92, 0.85); /* 85% opacity makes it beautifully semi-transparent */
+      backdrop-filter: blur(8px); /* Blurs whatever slides underneath it */
+      -webkit-backdrop-filter: blur(8px); /* For Safari */
+    }
     
     /* Gap changed to 3px as requested */
     .brand { display: flex; align-items: center; gap: 3px; }
@@ -31,7 +50,6 @@
       flex-shrink: 0;
     }
 
-    
     .logo-text { font-size: 26px; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; }
     .logo-text span { color: #000; }
     /* Added text-transform: lowercase to force "rip" to be small! */
@@ -101,7 +119,7 @@
     @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
     
     /* Layout */
-    .layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 20px 16px; gap: 24px; align-items: flex-start; }
+    .layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 20px 16px; gap: 24px; align-items: stretch; }
     .main-pane { flex: 3; min-width: 0; }
     
     /* --- BBC STYLE CHANGES: Clean white cards with subtle shadow --- */
@@ -124,21 +142,28 @@
     .card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
     .card-source-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #000; background: #FFFF5C; padding: 2px 7px; }
     .card-author { font-size: 11px; color: #333; font-weight: 600; }
-    .card-time { font-size: 11px; color: #666; margin-left: auto; }
+    .card-time { font-size: 11px; color: #666; margin-left: auto; display: none; }
     .card-title { font-size: 19px; font-weight: 800; color: #222; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .card-desc { font-size: 13px; color: #555; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
 
-    /* --- MSN-STYLE CARD SIZES --- */
+    /* --- THE MAGICAL STRETCHING HERO CARDS --- */
     .card-hero {
       grid-column: span 2;
       grid-row: span 2;
     }
     .card-hero .card-img {
-      height: 300px; 
+      height: auto; 
+      flex: 1; /* Tells the image to expand and eat all remaining empty space! */
+    }
+    .card-hero .card-body {
+      flex: none; /* Shrinks the text box to perfectly wrap the text, absolutely no white space! */
     }
     .card-hero .card-title {
       font-size: 24px; 
       -webkit-line-clamp: 4;
+    }
+    .card-hero .card-desc {
+      -webkit-line-clamp: 8; 
     }
 
     .card-wide {
@@ -165,8 +190,7 @@
     .sidebar-thumb-placeholder { width: 70px; height: 55px; border-radius: 4px; background: #eaeaea; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
     .sidebar-text { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;}
     .sidebar-headline { font-size: 13px; font-weight: 700; color: #222; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .sidebar-source { font-size: 11px; color: #666; margin-top: 5px; }
-
+    
     /* --- VERTICAL SCROLLING TICKER --- */
     .trending-container {
       height: 380px; /* Locks the height so it doesn't stretch down the page */
@@ -206,6 +230,40 @@
     
     footer { text-align: center; padding: 20px; color: #666; font-size: 12px; background: #fff; border-top: 1px solid #e0e0e0; margin-top: 20px; }
     
+    /* --- BACK TO TOP BUTTON --- */
+    #backToTop {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 44px;
+      height: 44px;
+      background: #000;
+      color: #FFFF5C;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      z-index: 1000;
+    }
+    #backToTop.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    #backToTop:hover {
+      background: #FFFF5C;
+      color: #000;
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    }
+
     /* --- RESPONSIVE MOBILE MEDIA QUERIES --- */
     @media (max-width: 900px) { 
       .layout{flex-direction:column} 
@@ -231,28 +289,31 @@
       
       /* --- MSN PHASE 1: MOBILE OVERRIDES --- */
       .card-hero, .card-wide { grid-column: span 1; }
-      .card-hero .card-img { height: 200px; }
+      .card-hero .card-img { height: 200px; flex: none; } /* Locked so mobile doesn't stretch */
       .card-hero .card-title { font-size: 20px; }
       .card-wide { flex-direction: column; }
       .card-wide .card-img { width: 100%; height: 180px; }
       .card-wide .card-body { width: 100%; }
+      
+      /* Shrink Back to Top button slightly on mobile */
+      #backToTop { width: 38px; height: 38px; bottom: 20px; right: 20px; }
     }
   </style>
 </head>
 <body>
 
-<header>
- <div class="brand">
+<header id="main-header">
+ <!-- WRAPPED IN AN A-TAG SO CLICKING IT REFRESHES THE PAGE -->
+ <a href="/" class="brand" style="text-decoration: none;">
   <div class="header-icon">
-    <!-- SVG Blue/White Football (Restored & Upgraded!) -->
+    <!-- SVG Blue/White Football -->
     <svg width="34" height="34" viewBox="0 0 512 512" style="display: block;">
-      <!-- This white circle goes behind the ball to hide the yellow header -->
       <circle cx="256" cy="256" r="256" fill="white"/>
       <path fill="#2563eb" d="M256 0c-141.4 0-256 114.6-256 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zM361.3 226.5l-42.6-131c26 14.5 49 33.8 68 56.6l-25.4 74.4zm-105.3-64.8l-84.3-61.2c26-14 55.4-21.8 86.4-21.8 28.5 0 55.7 6.8 80.3 19.3l-82.4 63.7zm-143.2 81.3l-24.6-72.2c18.5-22.1 40.7-40.8 65.6-54.9l-41 127.1zm-32 99.3c-1.5-11-2.4-22.3-2.4-33.8 0-14.7 1.4-29.2 4-43.3l108.2 35.1-41.5 127.8c-26.6-21.2-48.4-49.4-61.9-81.8l-6.4-4zM256 324.9c-29.4 0-56.5-15.5-70.8-40.3l-24.1-41.7 85.5-62.1 85.6 62.2-24.2 41.7c-14.3 24.7-41.5 40.2-72 40.2zm-28.7 107.5l42.6-131.2 57.6-.1 42.4 130.6c-34 19-72.8 29.8-113.9 29.8s-79.9-10.8-113.9-29.8zm116.3-21l-41.3-127.2 108.4-35.3c2.6 14 4 28.4 4 43.1 0 11.5-.8 22.8-2.3 33.8l-7.2 4c-13.7 32.7-35.8 61.1-61.6 81.6z"/>
     </svg>
   </div>
   <div class="logo-text"><span>SPORTS</span><em>rip</em></div>
- </div>
+ </a>
 
   <div class="header-center">
     <span class="live-badge"><span class="live-dot"></span>LIVE</span>
@@ -303,6 +364,7 @@
     <div class="section-label" id="sectionLabel">🏆 Top Stories</div>
     <div id="status"></div>
     <div id="output">
+      <!-- Skeletons go here while loading -->
       <div class="skeleton-grid">
         <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:85%"></div><div class="skeleton-line" style="width:65%"></div></div></div>
         <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:90%"></div><div class="skeleton-line" style="width:70%"></div></div></div>
@@ -355,7 +417,6 @@
     <div class="sidebar-section">
       <div class="sidebar-title">🔥 Trending Now</div>
       <div class="trending-container">
-        <!-- We added the trending-track class here! -->
         <div id="trendingList" class="trending-track">
           <div style="padding:14px;color:#666;font-size:12px">Loading...</div>
         </div>
@@ -367,8 +428,9 @@
       <div id="recentList"><div style="padding:14px;color:#666;font-size:12px">Loading...</div></div>
     </div>
     
-     <!-- NEW TALL NIKE AD -->
-    <div class="ad-block" style="padding: 0; overflow: hidden; border: 1px solid #e0e0e0; background: #000;">
+    <!-- NEW TALL NIKE AD -->
+    <div class="ad-block" style="padding: 0; overflow: hidden; border: 1px solid #e0e0e0; background: #000; position: sticky; top: 80px;">
+
       <div class="ad-label" style="padding: 8px; background: #f4f4f4; border-bottom: 1px solid #eee; margin-bottom: 0;">Advertisement</div>
       
       <!-- Ad Image Container (Set to a tall 500px) -->
@@ -399,15 +461,46 @@
 </div> <!-- Closing the main Layout -->
 
 
-<footer>🥭 SportsRip — <b>Powered by AI</b> · Auto-refreshes every 30 minutes</footer>
+<footer><b>Powered by AI</b></footer>
+
+<!-- --- BACK TO TOP BUTTON --- -->
+<button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Back to Top">
+  <!-- Premium Feather Icon SVG (Clean & Sharp) -->
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 19V5M5 12l7-7 7 7"/>
+  </svg>
+</button>
 
 <script>
   var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev';
   var SPORTS = ['cricket','basketball','football','tennis','athletics','baseball'];
   var EMOJI = {cricket:'🏏',basketball:'🏀',football:'⚽',tennis:'🎾',athletics:'🏃',baseball:'⚾',main:'🏆'};
   var LABEL = {cricket:'Cricket',basketball:'Basketball',football:'Football',tennis:'Tennis',athletics:'Athletics',baseball:'Baseball',main:'Top Stories'};
+  
+  // Upgraded Memory System
   var currentSport = 'main';
   var allCache = [];
+  var sportCache = {}; // Safely remembers individual tabs so we don't spam the API!
+
+  /* --- SCROLL LOGIC (Back to Top & Sticky Header) --- */
+  var backToTopBtn = document.getElementById("backToTop");
+  var mainHeader = document.getElementById("main-header");
+  
+  window.addEventListener("scroll", function() {
+    // 1. Transparent Frosted Glass Header
+    if (window.scrollY > 50) {
+      mainHeader.classList.add("scrolled");
+    } else {
+      mainHeader.classList.remove("scrolled");
+    }
+    
+    // 2. Back to Top Button Fade In
+    if (window.scrollY > 500) {
+      backToTopBtn.classList.add("show");
+    } else {
+      backToTopBtn.classList.remove("show");
+    }
+  });
 
   /* --- MOBILE MENU JAVASCRIPT --- */
   function toggleMobileMenu() {
@@ -422,14 +515,6 @@
       now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
   }
   updateClock(); setInterval(updateClock, 60000);
-
-  function timeAgo(iso) {
-    if (!iso) return '';
-    var m = (Date.now() - new Date(iso).getTime()) / 60000;
-    if (m < 60) return Math.floor(m) + 'm ago';
-    if (m < 1440) return Math.floor(m/60) + 'h ago';
-    return Math.floor(m/1440) + 'd ago';
-  }
 
   async function fetchSport(sport) {
     var r = await fetch(WORKER + '/api/news?sport=' + sport);
@@ -481,14 +566,13 @@
       ? '<img class="card-img" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+emoji+'<\/div>\'">'
       : '<div class="card-img-placeholder">'+emoji+'<\/div>';
     var author = article.author ? '<span class="card-author">✍ '+article.author+'<\/span>' : '';
-    var time = article.pubDate ? '<span class="card-time">'+timeAgo(article.pubDate)+'<\/span>' : '';
     
     /* Replaced source text with "Read More >>" */
     var sourceBadge = '<span class="card-source-badge">Read More &gt;&gt;</span>';
 
     card.innerHTML = img +
       '<div class="card-body">' +
-        '<div class="card-meta">'+sourceBadge+author+time+'<\/div>' +
+        '<div class="card-meta">'+sourceBadge+author+'<\/div>' +
         '<div class="card-title">'+article.title+'<\/div>' +
         (article.description ? '<div class="card-desc">'+article.description+'<\/div>' : '') +
       '<\/div>';
@@ -505,10 +589,10 @@
     var thumb = article.image
       ? '<img class="sidebar-thumb" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+emoji+'<\/div>\'">'
       : '<div class="sidebar-thumb-placeholder">'+emoji+'<\/div>';
+      
     el.innerHTML = thumb +
       '<div class="sidebar-text">' +
         '<div class="sidebar-headline">'+article.title+'<\/div>' +
-        '<div class="sidebar-source">'+timeAgo(article.pubDate)+'<\/div>' +
       '<\/div>';
     return el;
   }
@@ -561,7 +645,7 @@
     if (isMobile) toggleMobileMenu();
 
     document.getElementById('sectionLabel').textContent = EMOJI[currentSport]+' '+LABEL[currentSport];
-    renderNews();
+    renderNews(); // Now intelligently uses memory cache!
   }
 
   async function renderNews() {
@@ -569,9 +653,17 @@
     var output = document.getElementById('output');
     status.textContent = ''; showSkeleton();
     try {
-      var articles = currentSport === 'main'
-        ? (allCache.length ? allCache : await fetchAll())
-        : await fetchSport(currentSport);
+      
+      // 1. Safely load the articles from memory instead of the internet!
+      var articles = [];
+      if (currentSport === 'main') {
+        if (!allCache.length) allCache = await fetchAll();
+        articles = allCache;
+      } else {
+        if (!sportCache[currentSport]) sportCache[currentSport] = await fetchSport(currentSport);
+        articles = sportCache[currentSport];
+      }
+
       if (!articles.length) {
         output.innerHTML = '<div class="empty">⏳ News being fetched... check back in a moment!<\/div>';
         return;
@@ -579,12 +671,19 @@
       status.textContent = '✅ '+articles.length+' articles loaded';
       output.innerHTML = '';
       
-      // --- MSN PHASE 2 PREVIEW: Randomly assigning sizes to the first few articles ---
-      articles.forEach(function(a, index){ 
+      // 2. THE MAGIC SHUFFLE: Mix them up like a deck of cards!
+      var shuffled = articles.slice();
+      for (var i = shuffled.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var temp = shuffled[i]; shuffled[i] = shuffled[j]; shuffled[j] = temp;
+      }
+      
+      // 3. Draw the shuffled cards (The big hero slots stay in place, but the news inside changes!)
+      shuffled.forEach(function(a, index){ 
         var sizeClass = '';
-        if (index === 0 && a.image) sizeClass = 'card-hero'; // First item is always huge hero (if it has an image)
-        else if (index === 4 && a.image) sizeClass = 'card-wide'; // 5th item is a wide bar
-        else if (index === 9 && a.image) sizeClass = 'card-hero'; // 10th item is another hero
+        if (index === 0 && a.image) sizeClass = 'card-hero'; 
+        else if (index === 4 && a.image) sizeClass = 'card-wide'; 
+        else if (index === 9 && a.image) sizeClass = 'card-hero'; 
         
         output.appendChild(buildCard(a, EMOJI[a.sport||currentSport]||'📰', sizeClass)); 
       });
@@ -602,7 +701,18 @@
   }
 
   init();
-  setInterval(function(){ allCache=[]; init(); }, 30*60*1000);
+  
+  // TIMER 1: Every 5 minutes, magically reshuffle the screen using ONLY saved memory!
+  setInterval(function() { 
+    if(allCache.length > 0) { renderNews(); }
+  }, 5 * 60 * 1000);
+
+  // TIMER 2: Every 60 minutes, completely wipe the memory and get real fresh news from Cloudflare Worker
+  setInterval(function() { 
+    allCache = []; 
+    sportCache = {}; 
+    init(); 
+  }, 60 * 60 * 1000);
   
   /* --- SILENT NEWSLETTER SUBMIT --- */
   var newsletterForm = document.getElementById("newsletter-form");
