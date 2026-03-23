@@ -3,41 +3,89 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DEV TESTING — PEP Sports</title>
+  <title>PEP Sports — Live Sports News</title>
+  <meta name="description" content="PEP Sports — Live sports news for Cricket, Basketball, Football, Tennis, Athletics and Baseball"/>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #0a0e1a; color: #e0e0e0; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; }
-    header { background: linear-gradient(135deg,#0d1b2a,#12203a); border-bottom: 2px solid #e63946; padding: 10px 24px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 200; }
-    .brand { display: flex; align-items: center; gap: 10px; min-width: 220px; }
-    .logo-text { font-size: 22px; font-weight: 900; letter-spacing: -1px; }
-    .logo-text span { color: #e63946; }
-    .logo-text em { color: #4a9eff; font-style: normal; }
-    .header-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .live-badge { display: inline-flex; align-items: center; gap: 5px; background: #e63946; color: white; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 3px; letter-spacing: 1px; text-transform: uppercase; }
-    .live-dot { width: 6px; height: 6px; background: white; border-radius: 50%; animation: pulse 1.2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-    .header-tagline { font-size: 11px; color: #FDFFA6; letter-spacing: 0.3px; }
     
-    .header-icon {
-      width: 40px;
-      height: 40px;
-      background: #FFFEA1; 
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
+    /* --- BBC STYLE CHANGES: Light background and dark text --- */
+    body { background: #f4f4f4; color: #141414; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; }
+    
+    /* --- BBC STYLE CHANGES: Yellow Header --- */
+    header { background: #fed500; color: #000; border-bottom: 2px solid #000; padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; }
+    
+    .brand { display: flex; align-items: center; gap: 3px; }
+    
+    /* --- BBC STYLE CHANGES: Dark icon to contrast yellow --- */
+     .header-icon {
+      width: 40px; height: 40px; 
+      background: transparent; /* Removes the black box */
+      display: flex; align-items: center; justify-content: center; 
+      font-size: 2.2rem; /* Makes it full-sized */
       flex-shrink: 0;
     }
 
-    .header-right { min-width: 180px; text-align: right; font-size: 12px; color: #888; }
-    .tabs-bar { background: #0d1b2a; border-bottom: 1px solid #1a2a3a; display: flex; justify-content: center; overflow-x: auto; scrollbar-width: none; padding: 0 16px; }
+    
+    .logo-text { font-size: 26px; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; }
+    .logo-text span { color: #000; }
+    .logo-text em { color: #333; font-style: normal; font-weight: 600; }
+    
+    .header-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .live-badge { display: inline-flex; align-items: center; gap: 5px; background: #cc0000; color: white; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 3px; letter-spacing: 1px; text-transform: uppercase; }
+    .live-dot { width: 6px; height: 6px; background: white; border-radius: 50%; animation: pulse 1.2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .header-tagline { font-size: 11px; color: #333; font-weight: 600; letter-spacing: 0.3px; }
+    
+    .header-right { text-align: right; font-size: 12px; color: #333; font-weight: 600; }
+
+    /* --- MOBILE MENU BUTTON STYLES (Hidden on Desktop) --- */
+    .hamburger-menu {
+      display: none; /* Hidden by default */
+      background: transparent;
+      border: 2px solid #000;
+      padding: 6px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #000;
+      text-transform: uppercase;
+    }
+    .hamburger-menu:hover { background: #000; color: #fed500; }
+
+    /* --- BBC STYLE CHANGES: Black Desktop Tabs Bar --- */
+    .tabs-bar { background: #000; border-bottom: 1px solid #222; display: flex; justify-content: center; overflow-x: auto; scrollbar-width: none; padding: 0 16px; }
     .tabs-bar::-webkit-scrollbar { display: none; }
-    .tab { padding: 12px 18px; font-size: 13px; font-weight: 600; color: #888; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
-    .tab:hover { color: #e0e0e0; border-bottom-color: #555; }
-    .tab.active { color: #e63946; border-bottom-color: #e63946; }
-    .ticker-wrap { background: #e63946; overflow: hidden; height: 32px; display: flex; align-items: center; }
-    .ticker-label { background: #a0001e; color: white; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; padding: 0 14px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
+    .tab { padding: 12px 18px; font-size: 13px; font-weight: 700; color: #fff; cursor: pointer; border-bottom: 4px solid transparent; white-space: nowrap; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
+    .tab:hover { color: #fed500; }
+    .tab.active { color: #fed500; border-bottom-color: #fed500; } /* Yellow underline for active */
+
+    /* --- MOBILE DROP-DOWN MENU STYLES --- */
+    .mobile-navigation {
+      display: none; 
+      background: #000;
+      flex-direction: column;
+    }
+    .mobile-navigation.open {
+      display: flex; /* Shown when toggled via JS */
+    }
+    .mobile-navigation a {
+      color: #fff;
+      padding: 15px 24px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #333;
+    }
+    .mobile-navigation a:hover, .mobile-navigation a.active {
+      color: #fed500;
+      border-left: 4px solid #fed500;
+      padding-left: 20px;
+    }
+
+    /* Ticker */
+    .ticker-wrap { background: #cc0000; overflow: hidden; height: 32px; display: flex; align-items: center; }
+    .ticker-label { background: #990000; color: white; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; padding: 0 14px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
     .ticker-content { display: flex; overflow: hidden; flex: 1; }
     .ticker-track { display: flex; animation: ticker 50s linear infinite; white-space: nowrap; }
     .ticker-track:hover { animation-play-state: paused; }
@@ -45,63 +93,83 @@
     .ticker-item::before { content: '●'; font-size: 6px; opacity: 0.7; }
     @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
     
-    .layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 20px 16px; gap: 20px; align-items: flex-start; }
+    /* Layout */
+    .layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 20px 16px; gap: 24px; align-items: flex-start; }
     .main-pane { flex: 3; min-width: 0; }
-    .section-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #e63946; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #1a2a3a; }
+    
+    /* --- BBC STYLE CHANGES: Clean white cards with subtle shadow --- */
+    .section-label { font-size: 16px; font-weight: 800; text-transform: uppercase; color: #222; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #fed500; }
     #status { font-size: 12px; color: #666; margin-bottom: 12px; min-height: 20px; }
     #output { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-    .card { background: #12203a; border: 1px solid #1a2e4a; border-radius: 10px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; display: flex; flex-direction: column; text-decoration: none; color: inherit; }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-color: #e63946; }
-    .card-img { width: 100%; height: 170px; object-fit: cover; display: block; }
-    .card-img-placeholder { width: 100%; height: 170px; background: linear-gradient(135deg,#1a2e4a,#0d1b2a); display: flex; align-items: center; justify-content: center; font-size: 40px; }
-    .card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 7px; }
+    
+    .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 0px; overflow: hidden; transition: box-shadow 0.2s; display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .card-img { width: 100%; height: 180px; object-fit: cover; display: block; border-bottom: 1px solid #eee; }
+    .card-img-placeholder { width: 100%; height: 180px; background: #eaeaea; display: flex; align-items: center; justify-content: center; font-size: 40px; border-bottom: 1px solid #eee; }
+    .card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
     .card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .card-author { font-size: 11px; color: #4a9eff; }
-    .card-time { font-size: 11px; color: #555; margin-left: auto; }
-    .card-title { font-size: 14px; font-weight: 600; color: #e8e8e8; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    .card-desc { font-size: 12px; color: #778; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
+    .card-source-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #000; background: #fed500; padding: 2px 7px; }
+    .card-author { font-size: 11px; color: #333; font-weight: 600; }
+    .card-time { font-size: 11px; color: #666; margin-left: auto; }
+    .card-title { font-size: 19px; font-weight: 800; color: #222; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-desc { font-size: 13px; color: #555; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
     
-    .sidebar { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
-    .sidebar-section { background: #12203a; border: 1px solid #1a2e4a; border-radius: 10px; overflow: hidden; }
-    .sidebar-title { background: #0d1b2a; padding: 10px 14px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #e63946; border-bottom: 1px solid #1a2e4a; }
+    /* Sidebar */
+    .sidebar { width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 24px; }
+    .sidebar-section { background: #fff; border: 1px solid #e0e0e0; border-radius: 0px; overflow: hidden; }
+    .sidebar-title { background: #000; padding: 12px 16px; font-size: 13px; font-weight: 800; text-transform: uppercase; color: #fed500; }
+    .sidebar-article { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #eee; text-decoration: none; color: inherit; transition: background 0.15s; }
+    .sidebar-article:hover { background: #f9f9f9; }
+    .sidebar-article:last-child { border-bottom: none; }
+    .sidebar-thumb { width: 70px; height: 55px; border-radius: 4px; object-fit: cover; flex-shrink: 0; }
+    .sidebar-thumb-placeholder { width: 70px; height: 55px; border-radius: 4px; background: #eaeaea; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .sidebar-text { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;}
+    .sidebar-headline { font-size: 13px; font-weight: 700; color: #222; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .sidebar-source { font-size: 11px; color: #666; margin-top: 5px; }
     
-    /* SCROLLING SIDEBAR LOGIC */
-    #trendingList, #recentList { height: 380px; overflow: hidden; position: relative; }
-    .scroll-wheel { display: flex; flex-direction: column; animation: wheelScroll 35s linear infinite; }
-    .scroll-wheel:hover { animation-play-state: paused; }
-    @keyframes wheelScroll { 0%{transform:translateY(0)} 100%{transform:translateY(-50%)} }
-    
-    .sidebar-article { display: flex; gap: 10px; padding: 10px 14px; border-bottom: 1px solid #0d1b2a; text-decoration: none; color: inherit; transition: background 0.15s; }
-    .sidebar-article:hover { background: #0d1b2a; }
-    .sidebar-thumb { width: 64px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
-    .sidebar-thumb-placeholder { width: 64px; height: 50px; border-radius: 6px; background: linear-gradient(135deg,#1a2e4a,#0d1b2a); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-    .sidebar-text { flex: 1; min-width: 0; }
-    .sidebar-headline { font-size: 12px; font-weight: 600; color: #d0d0d0; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .sidebar-source { font-size: 10px; color: #555; margin-top: 3px; }
-    
-    .ad-block { background: linear-gradient(135deg,#1a1a3e,#0d1b2a); border: 1px solid #2a2a5a; border-radius: 10px; padding: 20px; text-align: center; }
-    .ad-label { font-size: 9px; color: #444; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-    .ad-content { border-radius: 8px; padding: 20px; color: white; }
+    /* Ad block */
+    .ad-block { background: #fff; border: 1px solid #e0e0e0; padding: 20px; text-align: center; }
+    .ad-label { font-size: 9px; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .ad-content { padding: 20px; color: white; }
     .ad-content h3 { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
-    .ad-content p { font-size: 12px; opacity: 0.85; margin-bottom: 12px; }
-    .ad-btn { background: white; border: none; padding: 8px 20px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; transition: transform 0.2s; display: inline-block; }
-    .ad-btn:hover { transform: scale(1.05); }
+    .ad-content p { font-size: 12px; opacity: 0.9; margin-bottom: 12px; }
+    .ad-btn { background: white; border: none; padding: 8px 20px; font-size: 12px; font-weight: 700; cursor: pointer; transition: transform 0.2s; display: inline-block; text-transform: uppercase; }
+    .ad-btn:hover { transform: scale(1.05); background: #000; color: #fff !important; }
     
+    /* Skeletons */
     .skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-    .skeleton-card { background: #12203a; border-radius: 10px; overflow: hidden; border: 1px solid #1a2e4a; }
-    .skeleton-img { height: 170px; background: linear-gradient(90deg,#1a2e4a 25%,#1e3550 50%,#1a2e4a 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-    .skeleton-body { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
-    .skeleton-line { height: 11px; border-radius: 4px; background: linear-gradient(90deg,#1a2e4a 25%,#1e3550 50%,#1a2e4a 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    .skeleton-card { background: #fff; border: 1px solid #e0e0e0; }
+    .skeleton-img { height: 180px; background: linear-gradient(90deg,#eaeaea 25%,#f5f5f5 50%,#eaeaea 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    .skeleton-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .skeleton-line { height: 12px; background: linear-gradient(90deg,#eaeaea 25%,#f5f5f5 50%,#eaeaea 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
     @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-    .empty { grid-column: 1/-1; text-align: center; color: #444; padding: 60px 20px; font-size: 14px; }
-    footer { text-align: center; padding: 16px; color: #333; font-size: 11px; border-top: 1px solid #1a2a3a; margin-top: 20px; }
+    .empty { grid-column: 1/-1; text-align: center; color: #666; padding: 60px 20px; font-size: 14px; }
     
-    @media (max-width: 900px) { .layout{flex-direction:column} .sidebar{width:100%} .header-right{display:none} }
-    @media (max-width: 600px) {
-      #output { grid-template-columns: 1fr; }
-      .brand { min-width: unset; }
-      .header-tagline, .ticker-wrap { display: none !important; }
-      .header-icon { width: 26px !important; height: 26px !important; font-size: 0.85rem !important; border-radius: 6px !important; }
+    footer { text-align: center; padding: 20px; color: #666; font-size: 12px; background: #fff; border-top: 1px solid #e0e0e0; margin-top: 20px; }
+    
+    /* --- RESPONSIVE MOBILE MEDIA QUERIES --- */
+    @media (max-width: 900px) { 
+      .layout{flex-direction:column} 
+      .sidebar{width:100%} 
+    }
+    
+    @media (max-width: 768px) {
+      .header-center { display: none; } /* Hide tagline on phone */
+      .header-right { display: none; } /* Hide clock on phone */
+      
+      /* Show hamburger, hide regular tabs */
+      .hamburger-menu { display: flex; }
+      .tabs-bar { display: none; } 
+    }
+
+    @media (max-width: 600px) { 
+      #output{grid-template-columns:1fr} 
+      .brand{min-width:unset} 
+      .ticker-wrap { display: none; }
+      header { padding: 12px 16px; }
+
+            /* THIS IS THE NEW LINE YOU ADD */
+      .card-title { font-size: 20px; line-height: 1.2; }
     }
   </style>
 </head>
@@ -109,25 +177,52 @@
 
 <header>
  <div class="brand">
-  <div class="header-icon">⚽</div>
+  <div class="header-icon">
+    <!-- SVG Blue Football -->
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <path d="M12 12l3.5 2 1.5-3.5-3-4-2 1.5z"></path>
+      <path d="M12 12l-3.5 2-1.5-3.5 3-4 2 1.5z"></path>
+      <path d="M15.5 14l2 4-2.5 1.5-1.5-2z"></path>
+      <path d="M8.5 14l-2 4 2.5 1.5 1.5-2z"></path>
+    </svg>
+  </div>
   <div class="logo-text"><span>PEP</span><em>Sports</em></div>
-</div>
+ </div>
+
 
   <div class="header-center">
     <span class="live-badge"><span class="live-dot"></span>LIVE</span>
-    <span class="header-tagline">Testing Sports news from the world's top sources</span>
+    <span class="header-tagline">Sports news from the world's top sources</span>
   </div>
   <div class="header-right" id="clockDisplay"></div>
+
+  <!-- --- THE NEW MOBILE BUTTON --- -->
+  <button id="mobile-menu-btn" class="hamburger-menu" onclick="toggleMobileMenu()">
+    ☰ Menu
+  </button>
 </header>
 
+<!-- --- THE NEW MOBILE DROP-DOWN MENU --- -->
+<nav id="mobile-nav" class="mobile-navigation">
+  <a href="#" class="mobile-tab active" data-sport="main" onclick="loadSport(this, true)">🏆 Top Stories</a>
+  <a href="#" class="mobile-tab" data-sport="cricket" onclick="loadSport(this, true)">🏏 Cricket</a>
+  <a href="#" class="mobile-tab" data-sport="basketball" onclick="loadSport(this, true)">🏀 Basketball</a>
+  <a href="#" class="mobile-tab" data-sport="football" onclick="loadSport(this, true)">⚽ Football</a>
+  <a href="#" class="mobile-tab" data-sport="tennis" onclick="loadSport(this, true)">🎾 Tennis</a>
+  <a href="#" class="mobile-tab" data-sport="athletics" onclick="loadSport(this, true)">🏃 Athletics</a>
+  <a href="#" class="mobile-tab" data-sport="baseball" onclick="loadSport(this, true)">⚾ Baseball</a>
+</nav>
+
+<!-- The existing Desktop Tabs -->
 <div class="tabs-bar">
-  <div class="tab active" data-sport="main" onclick="loadSport(this)">🏆 Main</div>
-  <div class="tab" data-sport="cricket" onclick="loadSport(this)">🏏 Cricket</div>
-  <div class="tab" data-sport="basketball" onclick="loadSport(this)">🏀 Basketball</div>
-  <div class="tab" data-sport="football" onclick="loadSport(this)">⚽ Football</div>
-  <div class="tab" data-sport="tennis" onclick="loadSport(this)">🎾 Tennis</div>
-  <div class="tab" data-sport="athletics" onclick="loadSport(this)">🏃 Athletics</div>
-  <div class="tab" data-sport="baseball" onclick="loadSport(this)">⚾ Baseball</div>
+  <div class="tab active" data-sport="main" onclick="loadSport(this, false)">🏆 Main</div>
+  <div class="tab" data-sport="cricket" onclick="loadSport(this, false)">🏏 Cricket</div>
+  <div class="tab" data-sport="basketball" onclick="loadSport(this, false)">🏀 Basketball</div>
+  <div class="tab" data-sport="football" onclick="loadSport(this, false)">⚽ Football</div>
+  <div class="tab" data-sport="tennis" onclick="loadSport(this, false)">🎾 Tennis</div>
+  <div class="tab" data-sport="athletics" onclick="loadSport(this, false)">🏃 Athletics</div>
+  <div class="tab" data-sport="baseball" onclick="loadSport(this, false)">⚾ Baseball</div>
 </div>
 
 <div class="ticker-wrap">
@@ -144,54 +239,74 @@
   <div class="main-pane">
     <div class="section-label" id="sectionLabel">🏆 Top Stories</div>
     <div id="status"></div>
-    <div id="output"></div>
+    <div id="output">
+      <div class="skeleton-grid">
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:85%"></div><div class="skeleton-line" style="width:65%"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:90%"></div><div class="skeleton-line" style="width:70%"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:80%"></div><div class="skeleton-line" style="width:60%"></div></div></div>
+      </div>
+    </div>
   </div>
 
   <div class="sidebar">
-    <div class="ad-block" style="padding:0;overflow:hidden;border-radius:10px;">
-      <div class="ad-label" style="padding:6px 14px;">Advertisement</div>
+
+    <div class="ad-block" style="padding:0;overflow:hidden;">
+      <div class="ad-label" style="padding:6px 14px; background: #f4f4f4; border-bottom: 1px solid #eee;">Advertisement</div>
       <div style="position:relative;width:100%;aspect-ratio:16/9;">
-        <iframe src="https://www.youtube.com/embed/Bcpu-jqAL6w?autoplay=1&mute=1&loop=1&playlist=Bcpu-jqAL6w&controls=0&rel=0&modestbranding=1" style="width:100%;height:100%;border:none;display:block;position:absolute;top:0;left:0;" allow="autoplay; encrypted-media" title="Nike Ad"></iframe>
+        <iframe
+          src="https://www.youtube.com/embed/Bcpu-jqAL6w?autoplay=1&mute=1&loop=1&playlist=Bcpu-jqAL6w&controls=0&rel=0&modestbranding=1"
+          style="width:100%;height:100%;border:none;display:block;position:absolute;top:0;left:0;"
+          allow="autoplay; encrypted-media"
+          title="Nike Ad">
+        </iframe>
         <div style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;"></div>
       </div>
-      <div style="background:linear-gradient(135deg,#e63946,#c0002a);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="background:#000;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
         <div style="color:white;font-size:14px;font-weight:800;">⚡ NIKE — Just Do It.</div>
-        <a href="https://www.nike.com" target="_blank" rel="noopener noreferrer"><button class="ad-btn" style="color:#e63946">Explore →</button></a>
+        <a href="https://www.nike.com" target="_blank" rel="noopener noreferrer">
+          <button class="ad-btn" style="color:#000">Explore →</button>
+        </a>
       </div>
     </div>
-    
+
     <div class="sidebar-section">
       <div class="sidebar-title">🔥 Trending Now</div>
-      <div id="trendingList"><div style="padding:14px;color:#444;font-size:12px">Loading...</div></div>
+      <div id="trendingList"><div style="padding:14px;color:#666;font-size:12px">Loading...</div></div>
     </div>
-    
     <div class="sidebar-section">
       <div class="sidebar-title">🕐 Recent News</div>
-      <div id="recentList"><div style="padding:14px;color:#444;font-size:12px">Loading...</div></div>
+      <div id="recentList"><div style="padding:14px;color:#666;font-size:12px">Loading...</div></div>
     </div>
     
     <div class="ad-block">
-      <div class="ad-label">Advertisement</div>
-      <div class="ad-content" style="background:linear-gradient(135deg,#cc0000,#8b0000)">
+      <div class="ad-label" style="border-bottom: 1px solid #eee; padding-bottom: 5px;">Advertisement</div>
+      <div class="ad-content" style="background:linear-gradient(135deg,#cc0000,#8b0000); margin-top: 10px;">
         <div style="font-size:42px;margin-bottom:6px">🏃</div>
         <h3>🔥 REEBOK</h3>
         <p>Life is Not a Spectator Sport. Move.</p>
-        <a href="https://www.reebok.com" target="_blank" rel="noopener noreferrer"><button class="ad-btn" style="color:#cc0000">Explore</button></a>
+        <a href="https://www.reebok.com" target="_blank" rel="noopener noreferrer">
+          <button class="ad-btn" style="color:#cc0000">Explore</button>
+        </a>
       </div>
     </div>
   </div>
 </div>
 
-<footer>🥭 PEP Sports TEST DEV BRANCH — Powered by FeedMango</footer>
+<footer>🥭 PEP Sports — Powered by FeedMango · Auto-refreshes every 30 minutes</footer>
 
 <script>
-  // Pointing straight to the Dev sandbox Database!
-  var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev';
+  var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev';
   var SPORTS = ['cricket','basketball','football','tennis','athletics','baseball'];
   var EMOJI = {cricket:'🏏',basketball:'🏀',football:'⚽',tennis:'🎾',athletics:'🏃',baseball:'⚾',main:'🏆'};
   var LABEL = {cricket:'Cricket',basketball:'Basketball',football:'Football',tennis:'Tennis',athletics:'Athletics',baseball:'Baseball',main:'Top Stories'};
   var currentSport = 'main';
   var allCache = [];
+
+  /* --- MOBILE MENU JAVASCRIPT --- */
+  function toggleMobileMenu() {
+    var nav = document.getElementById('mobile-nav');
+    nav.classList.toggle('open');
+  }
 
   function updateClock() {
     var now = new Date();
@@ -220,6 +335,7 @@
   async function fetchAll() {
     var results = await Promise.allSettled(SPORTS.map(fetchSport));
     var sportArrays = [];
+    
     results.forEach(function(r) {
       if (r.status === 'fulfilled' && r.value.length > 0) {
         var sorted = r.value.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
@@ -234,8 +350,11 @@
       for (var i = 0; i < sportArrays.length; i++) {
         if (sportArrays[i].length > 0) {
           keepGoing = true;
-          var a = sportArrays[i].shift(); 
-          if (!seen.has(a.link)) { seen.add(a.link); all.push(a); }
+          var a = sportArrays[i].shift();
+          if (!seen.has(a.link)) { 
+            seen.add(a.link); 
+            all.push(a); 
+          }
         }
       }
     }
@@ -250,17 +369,23 @@
       e.preventDefault();
       window.open(article.link, '_blank', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=900,height=700,top=100,left=100');
     };
+
     var img = article.image
-      ? '<img class="card-img" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+emoji+'</div>\'">'
-      : '<div class="card-img-placeholder">'+emoji+'</div>';
-    var author = article.author ? '<span class="card-author">✍ '+article.author+'</span>' : '';
-    var time = article.pubDate ? '<span class="card-time">'+timeAgo(article.pubDate)+'</span>' : '';
+      ? '<img class="card-img" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+emoji+'<\/div>\'">'
+      : '<div class="card-img-placeholder">'+emoji+'<\/div>';
+    var author = article.author ? '<span class="card-author">✍ '+article.author+'<\/span>' : '';
+    var time = article.pubDate ? '<span class="card-time">'+timeAgo(article.pubDate)+'<\/span>' : '';
+    
+    /* BBC style: Adding source badge */
+    var sourceText = article.source ? article.source : 'PEP';
+    var sourceBadge = '<span class="card-source-badge">'+sourceText+'</span>';
+
     card.innerHTML = img +
       '<div class="card-body">' +
-        '<div class="card-meta">'+author+time+'</div>' +
-        '<div class="card-title">'+article.title+'</div>' +
-        (article.description ? '<div class="card-desc">'+article.description+'</div>' : '') +
-      '</div>';
+        '<div class="card-meta">'+sourceBadge+author+time+'<\/div>' +
+        '<div class="card-title">'+article.title+'<\/div>' +
+        (article.description ? '<div class="card-desc">'+article.description+'<\/div>' : '') +
+      '<\/div>';
     return card;
   }
 
@@ -274,27 +399,26 @@
     };
 
     var thumb = article.image
-      ? '<img class="sidebar-thumb" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+emoji+'</div>\'">'
-      : '<div class="sidebar-thumb-placeholder">'+emoji+'</div>';
+      ? '<img class="sidebar-thumb" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+emoji+'<\/div>\'">'
+      : '<div class="sidebar-thumb-placeholder">'+emoji+'<\/div>';
     el.innerHTML = thumb +
       '<div class="sidebar-text">' +
-        '<div class="sidebar-headline">'+article.title+'</div>' +
-        '<div class="sidebar-source">'+timeAgo(article.pubDate)+'</div>' +
-      '</div>';
+        '<div class="sidebar-headline">'+article.title+'<\/div>' +
+        '<div class="sidebar-source">'+timeAgo(article.pubDate)+'<\/div>' +
+      '<\/div>';
     return el;
   }
 
   function buildTicker(articles) {
     if (!articles.length) return;
     var items = articles.slice(0,20).map(function(a) {
-      return '<span class="ticker-item">'+a.title+'</span>';
+      return '<span class="ticker-item">'+a.title+'<\/span>';
     }).join('');
     document.getElementById('tickerTrack').innerHTML = items + items;
   }
 
   function buildSidebar(all) {
     var withImg = all.filter(function(a){return a.image;});
-    // Offset so sidebar doesn't duplicate the main page items
     var pool = withImg.length > 15 ? withImg.slice(15) : withImg.reverse(); 
     
     var trending = pool.slice(0,6);
@@ -305,31 +429,32 @@
     var rEl = document.getElementById('recentList');
     tEl.innerHTML = ''; rEl.innerHTML = '';
     
-    if (trending.length > 0) {
-      var tWheel = document.createElement('div'); tWheel.className = 'scroll-wheel';
-      var tLoop = trending.concat(trending);
-      tLoop.forEach(function(a){ tWheel.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
-      tEl.appendChild(tWheel);
-    }
-    
-    if (recent.length > 0) {
-      var rWheel = document.createElement('div'); rWheel.className = 'scroll-wheel';
-      var rLoop = recent.concat(recent);
-      rLoop.forEach(function(a){ rWheel.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
-      rEl.appendChild(rWheel);
-    }
+    trending.forEach(function(a){ tEl.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
+    recent.forEach(function(a){ rEl.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
   }
 
   function showSkeleton() {
     var html = '<div class="skeleton-grid">';
-    for (var i=0;i<6;i++) html += '<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:85%"></div><div class="skeleton-line" style="width:65%"></div></div></div>';
-    document.getElementById('output').innerHTML = html + '</div>';
+    for (var i=0;i<6;i++) html += '<div class="skeleton-card"><div class="skeleton-img"><\/div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"><\/div><div class="skeleton-line" style="width:85%"><\/div><div class="skeleton-line" style="width:65%"><\/div><\/div><\/div>';
+    document.getElementById('output').innerHTML = html + '<\/div>';
   }
 
-  function loadSport(el) {
+  /* --- UPDATE: Handle active states for BOTH desktop and mobile tabs --- */
+  function loadSport(el, isMobile) {
     currentSport = el.getAttribute('data-sport');
+    
+    // Reset all tabs
     document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
-    el.classList.add('active');
+    document.querySelectorAll('.mobile-tab').forEach(function(t){t.classList.remove('active');});
+    
+    // Set the clicked tab to active, and its corresponding counterpart
+    document.querySelectorAll('[data-sport="'+currentSport+'"]').forEach(function(t) {
+      t.classList.add('active');
+    });
+
+    // Close mobile menu if clicked from there
+    if (isMobile) toggleMobileMenu();
+
     document.getElementById('sectionLabel').textContent = EMOJI[currentSport]+' '+LABEL[currentSport];
     renderNews();
   }
@@ -343,14 +468,14 @@
         ? (allCache.length ? allCache : await fetchAll())
         : await fetchSport(currentSport);
       if (!articles.length) {
-        output.innerHTML = '<div class="empty">⏳ News being fetched... check back in a moment!</div>';
+        output.innerHTML = '<div class="empty">⏳ News being fetched... check back in a moment!<\/div>';
         return;
       }
       status.textContent = '✅ '+articles.length+' articles loaded';
       output.innerHTML = '';
-      articles.filter(a => a.image).forEach(function(a){ output.appendChild(buildCard(a, EMOJI[a.sport||currentSport]||'📰')); });
+      articles.forEach(function(a){ output.appendChild(buildCard(a, EMOJI[a.sport||currentSport]||'📰')); });
     } catch(e) {
-      output.innerHTML = '<div class="empty">❌ '+e.message+'</div>';
+      output.innerHTML = '<div class="empty">❌ '+e.message+'<\/div>';
     }
   }
 
