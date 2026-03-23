@@ -12,14 +12,15 @@
     body { background: #f4f4f4; color: #141414; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; }
     
     /* --- BBC STYLE CHANGES: Yellow Header --- */
-    header { background: #fed500; color: #000; border-bottom: 2px solid #000; padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; }
+    header { background: #FFFF5C; color: #000; border-bottom: 2px solid #000; padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; }
     
     .brand { display: flex; align-items: center; gap: 3px; }
     
     /* --- BBC STYLE CHANGES: Dark icon to contrast yellow --- */
      .header-icon {
       width: 40px; height: 40px; 
-      background: transparent; /* Removes the black box */
+     /*  background: transparent; Removes the black box */
+        background: FFFF5C;
       display: flex; align-items: center; justify-content: center; 
       font-size: 2.2rem; /* Makes it full-sized */
       flex-shrink: 0;
@@ -50,14 +51,14 @@
       color: #000;
       text-transform: uppercase;
     }
-    .hamburger-menu:hover { background: #000; color: #fed500; }
+    .hamburger-menu:hover { background: #000; color: #FFFF5C; }
 
     /* --- BBC STYLE CHANGES: Black Desktop Tabs Bar --- */
     .tabs-bar { background: #000; border-bottom: 1px solid #222; display: flex; justify-content: center; overflow-x: auto; scrollbar-width: none; padding: 0 16px; }
     .tabs-bar::-webkit-scrollbar { display: none; }
     .tab { padding: 12px 18px; font-size: 13px; font-weight: 700; color: #fff; cursor: pointer; border-bottom: 4px solid transparent; white-space: nowrap; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
-    .tab:hover { color: #fed500; }
-    .tab.active { color: #fed500; border-bottom-color: #fed500; } /* Yellow underline for active */
+    .tab:hover { color: #FFFF5C; }
+    .tab.active { color: #FFFF5C; border-bottom-color: #FFFF5C; } /* Yellow underline for active */
 
     /* --- MOBILE DROP-DOWN MENU STYLES --- */
     .mobile-navigation {
@@ -78,8 +79,8 @@
       border-bottom: 1px solid #333;
     }
     .mobile-navigation a:hover, .mobile-navigation a.active {
-      color: #fed500;
-      border-left: 4px solid #fed500;
+      color: #FFFF5C;
+      border-left: 4px solid #FFFF5C;
       padding-left: 20px;
     }
 
@@ -98,7 +99,7 @@
     .main-pane { flex: 3; min-width: 0; }
     
     /* --- BBC STYLE CHANGES: Clean white cards with subtle shadow --- */
-    .section-label { font-size: 16px; font-weight: 800; text-transform: uppercase; color: #222; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #fed500; }
+    .section-label { font-size: 16px; font-weight: 800; text-transform: uppercase; color: #222; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #FFFF5C; }
     #status { font-size: 12px; color: #666; margin-bottom: 12px; min-height: 20px; }
     #output { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
     
@@ -108,7 +109,7 @@
     .card-img-placeholder { width: 100%; height: 180px; background: #eaeaea; display: flex; align-items: center; justify-content: center; font-size: 40px; border-bottom: 1px solid #eee; }
     .card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
     .card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .card-source-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #000; background: #fed500; padding: 2px 7px; }
+    .card-source-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #000; background: #FFFF5C; padding: 2px 7px; }
     .card-author { font-size: 11px; color: #333; font-weight: 600; }
     .card-time { font-size: 11px; color: #666; margin-left: auto; }
     .card-title { font-size: 19px; font-weight: 800; color: #222; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
@@ -117,7 +118,7 @@
     /* Sidebar */
     .sidebar { width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 24px; }
     .sidebar-section { background: #fff; border: 1px solid #e0e0e0; border-radius: 0px; overflow: hidden; }
-    .sidebar-title { background: #000; padding: 12px 16px; font-size: 13px; font-weight: 800; text-transform: uppercase; color: #fed500; }
+    .sidebar-title { background: #000; padding: 12px 16px; font-size: 13px; font-weight: 800; text-transform: uppercase; color: #FFFF5C; }
     .sidebar-article { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #eee; text-decoration: none; color: inherit; transition: background 0.15s; }
     .sidebar-article:hover { background: #f9f9f9; }
     .sidebar-article:last-child { border-bottom: none; }
