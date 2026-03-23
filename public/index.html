@@ -434,12 +434,20 @@
   }
 
   async function fetchSport(sport) {
-    var r = await fetch(WORKER + '/api/news?sport=' + sport);
+    // Adding a unique timestamp (&t=...) and no-store rules absolutely forces fresh data every time!
+    var r = await fetch(WORKER + '/api/news?sport=' + sport + '&t=' + Date.now(), { 
+        cache: 'no-store',
+        headers: {
+            'Pragma': 'no-cache',
+            'Cache-Control': 'no-cache'
+        }
+    });
     var d = await r.json();
     var articles = d.articles || [];
     articles.forEach(function(a) { if (!a.sport) a.sport = sport; });
     return articles;
   }
+
 
   async function fetchAll() {
     var results = await Promise.allSettled(SPORTS.map(fetchSport));
