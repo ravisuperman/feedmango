@@ -16,8 +16,27 @@
     /* --- BBC STYLE CHANGES: Light background and dark text --- */
     body { background: #f4f4f4; color: #141414; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; }
     
-    /* --- BBC STYLE CHANGES: Yellow Header --- */
-    header { background: #FFFF5C; color: #000; border-bottom: 2px solid #000; padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; }
+    /* --- THE MAGICAL TRANSPARENT HEADER --- */
+    header { 
+      background: rgba(255, 255, 92, 1); /* Solid yellow by default */
+      color: #000; 
+      border-bottom: 2px solid #000; 
+      padding: 10px 24px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      position: sticky; 
+      top: 0; 
+      z-index: 200; 
+      transition: background 0.3s ease, backdrop-filter 0.3s ease; /* Smooth fade effect! */
+    }
+    
+    /* When scrolled, apply transparency and frosted glass blur */
+    header.scrolled {
+      background: rgba(255, 255, 92, 0.85); /* 85% opacity makes it beautifully semi-transparent */
+      backdrop-filter: blur(8px); /* Blurs whatever slides underneath it */
+      -webkit-backdrop-filter: blur(8px); /* For Safari */
+    }
     
     /* Gap changed to 3px as requested */
     .brand { display: flex; align-items: center; gap: 3px; }
@@ -123,6 +142,7 @@
     .card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
     .card-source-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #000; background: #FFFF5C; padding: 2px 7px; }
     .card-author { font-size: 11px; color: #333; font-weight: 600; }
+    .card-time { font-size: 11px; color: #666; margin-left: auto; display: none; }
     .card-title { font-size: 19px; font-weight: 800; color: #222; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .card-desc { font-size: 13px; color: #555; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
 
@@ -282,7 +302,7 @@
 </head>
 <body>
 
-<header>
+<header id="main-header">
  <!-- WRAPPED IN AN A-TAG SO CLICKING IT REFRESHES THE PAGE -->
  <a href="/" class="brand" style="text-decoration: none;">
   <div class="header-icon">
@@ -462,9 +482,19 @@
   var allCache = [];
   var sportCache = {}; // Safely remembers individual tabs so we don't spam the API!
 
-  /* --- BACK TO TOP LOGIC --- */
+  /* --- SCROLL LOGIC (Back to Top & Sticky Header) --- */
   var backToTopBtn = document.getElementById("backToTop");
+  var mainHeader = document.getElementById("main-header");
+  
   window.addEventListener("scroll", function() {
+    // 1. Transparent Frosted Glass Header
+    if (window.scrollY > 50) {
+      mainHeader.classList.add("scrolled");
+    } else {
+      mainHeader.classList.remove("scrolled");
+    }
+    
+    // 2. Back to Top Button Fade In
     if (window.scrollY > 500) {
       backToTopBtn.classList.add("show");
     } else {
@@ -537,12 +567,9 @@
       : '<div class="card-img-placeholder">'+emoji+'<\/div>';
     var author = article.author ? '<span class="card-author">✍ '+article.author+'<\/span>' : '';
     
-    // TIMESTAMP REMOVED HERE
-    
     /* Replaced source text with "Read More >>" */
     var sourceBadge = '<span class="card-source-badge">Read More &gt;&gt;</span>';
 
-    // REMOVED `+time+` FROM THE HTML INJECTION BELOW
     card.innerHTML = img +
       '<div class="card-body">' +
         '<div class="card-meta">'+sourceBadge+author+'<\/div>' +
@@ -563,7 +590,6 @@
       ? '<img class="sidebar-thumb" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+emoji+'<\/div>\'">'
       : '<div class="sidebar-thumb-placeholder">'+emoji+'<\/div>';
       
-    // TIMESTAMP / SOURCE REMOVED HERE FOR A CLEANER LOOK
     el.innerHTML = thumb +
       '<div class="sidebar-text">' +
         '<div class="sidebar-headline">'+article.title+'<\/div>' +
