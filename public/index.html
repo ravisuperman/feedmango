@@ -31,7 +31,6 @@
       flex-shrink: 0;
     }
 
-    
     .logo-text { font-size: 26px; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; }
     .logo-text span { color: #000; }
     /* Added text-transform: lowercase to force "rip" to be small! */
@@ -367,9 +366,8 @@
       <div id="recentList"><div style="padding:14px;color:#666;font-size:12px">Loading...</div></div>
     </div>
     
-     <!-- NEW TALL NIKE AD -->
-   <!-- NEW TALL NIKE AD -->
-<div class="ad-block" style="padding: 0; overflow: hidden; border: 1px solid #e0e0e0; background: #000; position: sticky; top: 80px;">
+    <!-- NEW TALL NIKE AD -->
+    <div class="ad-block" style="padding: 0; overflow: hidden; border: 1px solid #e0e0e0; background: #000; position: sticky; top: 80px;">
 
       <div class="ad-label" style="padding: 8px; background: #f4f4f4; border-bottom: 1px solid #eee; margin-bottom: 0;">Advertisement</div>
       
@@ -440,15 +438,6 @@
     articles.forEach(function(a) { if (!a.sport) a.sport = sport; });
     return articles;
   }
-
-
-    });
-    var d = await r.json();
-    var articles = d.articles || [];
-    articles.forEach(function(a) { if (!a.sport) a.sport = sport; });
-    return articles;
-  }
-
 
   async function fetchAll() {
     var results = await Promise.allSettled(SPORTS.map(fetchSport));
