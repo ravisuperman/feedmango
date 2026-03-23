@@ -331,7 +331,8 @@
       <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 6px; color: #FFFF5C; text-transform: uppercase; letter-spacing: 0.5px;">Get the Daily Brief</h3>
       <p style="font-size: 12px; color: #ccc; margin-bottom: 18px; line-height: 1.4;">Join 15,000+ fans getting the biggest sports headlines delivered straight to their inbox every morning.</p>
       
-      <form action="https://formspree.io/f/YOUR_UNIQUE_LINK_HERE" method="POST" style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+      <!-- ADDED ID="newsletter-form" HERE -->
+      <form id="newsletter-form" action="https://formspree.io/f/YOUR_UNIQUE_LINK_HERE" method="POST" style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
         <input type="email" name="email" placeholder="Enter your email address..." required 
                style="width: 100%; padding: 12px 14px; border: none; border-radius: 4px; font-size: 13px; font-family: inherit; outline: none; text-align: center;">
         <button type="submit" 
@@ -595,6 +596,47 @@
 
   init();
   setInterval(function(){ allCache=[]; init(); }, 30*60*1000);
+  
+  /* --- SILENT NEWSLETTER SUBMIT --- */
+  var newsletterForm = document.getElementById("newsletter-form");
+  if (newsletterForm) {
+    newsletterForm.addEventListener("submit", async function(event) {
+      event.preventDefault(); // Mute default redirect
+      
+      var form = event.target;
+      var button = form.querySelector("button");
+      var originalText = button.textContent;
+      
+      // Change button text while sending
+      button.textContent = "Subscribing...";
+      
+      try {
+        var response = await fetch(form.action, {
+          method: form.method,
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+        
+        if (response.ok) {
+          button.textContent = "✅ Subscribed!";
+          button.style.background = "#4CAF50"; // Turn button green
+          button.style.color = "#fff";
+          form.reset(); // Clear the email box
+        } else {
+          button.textContent = "❌ Error. Try again.";
+        }
+      } catch (error) {
+        button.textContent = "❌ Error. Try again.";
+      }
+      
+      // Reset button back to normal after 4 seconds
+      setTimeout(function() {
+        button.textContent = "Subscribe Now";
+        button.style.background = "#FFFF5C";
+        button.style.color = "#000";
+      }, 4000);
+    });
+  }
 </script>
 </body>
 </html>
