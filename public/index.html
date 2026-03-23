@@ -483,9 +483,8 @@
     var author = article.author ? '<span class="card-author">✍ '+article.author+'<\/span>' : '';
     var time = article.pubDate ? '<span class="card-time">'+timeAgo(article.pubDate)+'<\/span>' : '';
     
-    /* BBC style: Adding source badge */
-    var sourceText = article.source ? article.source : 'PEP';
-    var sourceBadge = '<span class="card-source-badge">'+sourceText+'</span>';
+    /* Replaced source text with "Read More >>" */
+    var sourceBadge = '<span class="card-source-badge">Read More &gt;&gt;</span>';
 
     card.innerHTML = img +
       '<div class="card-body">' +
