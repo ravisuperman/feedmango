@@ -434,14 +434,13 @@
   }
 
   async function fetchSport(sport) {
-    // The timestamp (&t=...) changes every millisecond, perfectly forcing fresh data
-    // without triggering security (CORS) blocks!
-    var r = await fetch(WORKER + '/api/news?sport=' + sport + '&t=' + Date.now());
+    var r = await fetch(WORKER + '/api/news?sport=' + sport);
     var d = await r.json();
     var articles = d.articles || [];
     articles.forEach(function(a) { if (!a.sport) a.sport = sport; });
     return articles;
   }
+
 
     });
     var d = await r.json();
