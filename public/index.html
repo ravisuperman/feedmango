@@ -406,8 +406,11 @@
   var SPORTS = ['cricket','basketball','football','tennis','athletics','baseball'];
   var EMOJI = {cricket:'🏏',basketball:'🏀',football:'⚽',tennis:'🎾',athletics:'🏃',baseball:'⚾',main:'🏆'};
   var LABEL = {cricket:'Cricket',basketball:'Basketball',football:'Football',tennis:'Tennis',athletics:'Athletics',baseball:'Baseball',main:'Top Stories'};
+  
+  // Upgraded Memory System
   var currentSport = 'main';
   var allCache = [];
+  var sportCache = {}; // Safely remembers individual tabs so we don't spam the API!
 
   /* --- MOBILE MENU JAVASCRIPT --- */
   function toggleMobileMenu() {
@@ -561,7 +564,7 @@
     if (isMobile) toggleMobileMenu();
 
     document.getElementById('sectionLabel').textContent = EMOJI[currentSport]+' '+LABEL[currentSport];
-    renderNews();
+    renderNews(); // Now intelligently uses memory cache!
   }
 
   async function renderNews() {
@@ -569,9 +572,17 @@
     var output = document.getElementById('output');
     status.textContent = ''; showSkeleton();
     try {
-      var articles = currentSport === 'main'
-        ? (allCache.length ? allCache : await fetchAll())
-        : await fetchSport(currentSport);
+      
+      // 1. Safely load the articles from memory instead of the internet!
+      var articles = [];
+      if (currentSport === 'main') {
+        if (!allCache.length) allCache = await fetchAll();
+        articles = allCache;
+      } else {
+        if (!sportCache[currentSport]) sportCache[currentSport] = await fetchSport(currentSport);
+        articles = sportCache[currentSport];
+      }
+
       if (!articles.length) {
         output.innerHTML = '<div class="empty">⏳ News being fetched... check back in a moment!<\/div>';
         return;
@@ -579,12 +590,19 @@
       status.textContent = '✅ '+articles.length+' articles loaded';
       output.innerHTML = '';
       
-      // --- MSN PHASE 2 PREVIEW: Randomly assigning sizes to the first few articles ---
-      articles.forEach(function(a, index){ 
+      // 2. THE MAGIC SHUFFLE: Mix them up like a deck of cards!
+      var shuffled = articles.slice();
+      for (var i = shuffled.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var temp = shuffled[i]; shuffled[i] = shuffled[j]; shuffled[j] = temp;
+      }
+      
+      // 3. Draw the shuffled cards (The big hero slots stay in place, but the news inside changes!)
+      shuffled.forEach(function(a, index){ 
         var sizeClass = '';
-        if (index === 0 && a.image) sizeClass = 'card-hero'; // First item is always huge hero (if it has an image)
-        else if (index === 4 && a.image) sizeClass = 'card-wide'; // 5th item is a wide bar
-        else if (index === 9 && a.image) sizeClass = 'card-hero'; // 10th item is another hero
+        if (index === 0 && a.image) sizeClass = 'card-hero'; 
+        else if (index === 4 && a.image) sizeClass = 'card-wide'; 
+        else if (index === 9 && a.image) sizeClass = 'card-hero'; 
         
         output.appendChild(buildCard(a, EMOJI[a.sport||currentSport]||'📰', sizeClass)); 
       });
@@ -602,7 +620,18 @@
   }
 
   init();
-  setInterval(function(){ allCache=[]; init(); }, 30*60*1000);
+  
+  // TIMER 1: Every 5 minutes, magically reshuffle the screen using ONLY saved memory!
+  setInterval(function() { 
+    if(allCache.length > 0) { renderNews(); }
+  }, 5 * 60 * 1000);
+
+  // TIMER 2: Every 60 minutes, completely wipe the memory and get real fresh news from Cloudflare Worker
+  setInterval(function() { 
+    allCache = []; 
+    sportCache = {}; 
+    init(); 
+  }, 60 * 60 * 1000);
   
   /* --- SILENT NEWSLETTER SUBMIT --- */
   var newsletterForm = document.getElementById("newsletter-form");
