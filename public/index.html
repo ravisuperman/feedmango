@@ -664,10 +664,17 @@
         articles = sportCache[currentSport];
       }
 
-      if (!articles.length) {
-        output.innerHTML = '<div class="empty">⏳ News being fetched... check back in a moment!<\/div>';
+       if (!articles.length) {
+        output.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 80px 20px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;">
+            <img src="https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=400&q=80" alt="No News" style="max-width: 220px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            <h2 style="font-size: 26px; font-weight: 900; color: #111; margin-bottom: 10px; text-transform: uppercase;">No ${LABEL[currentSport]} News Today!</h2>
+            <p style="color: #666; font-size: 15px; max-width: 450px; margin: 0 auto; line-height: 1.5;">We only display articles with high-quality thumbnail images to ensure a premium experience. It looks like our publishers haven't released any visual stories for ${LABEL[currentSport]} yet. Check back later!</p>
+          </div>
+        `;
         return;
       }
+
       status.textContent = '✅ '+articles.length+' articles loaded';
       output.innerHTML = '';
       
