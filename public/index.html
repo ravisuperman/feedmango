@@ -148,12 +148,30 @@
     #backToTop.show { opacity: 1; visibility: visible; transform: translateY(0); }
     #backToTop:hover { background: #FFFF5C; color: #000; transform: translateY(-5px) scale(1.05); box-shadow: 0 6px 16px rgba(0,0,0,0.4); }
 
-    /* === UPDATED: FAB POSITION EXACTLY 50px BELOW THE TRUE CENTER EQUATOR === */
+   /* === UPDATED: ULTRATHIN DESKTOP FAB BUTTON === */
     .fab-container { position: fixed; right: 0; top: calc(50% + 50px); transform: translateY(-50%); z-index: 999; display: flex; flex-direction: column; align-items: flex-end; }
-    .fab-btn { width: 34px; padding: 14px 0; border-radius: 6px 0 0 6px; background: #000; color: #FFFF5C; border: 2px solid #FFFF5C; border-right: none; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; box-shadow: -4px 4px 15px rgba(0,0,0,0.3); transition: transform 0.2s, background 0.2s; font-size: 10px; font-weight: 900; letter-spacing: 1px; }
-    .fab-btn:hover { transform: scale(1.05); transform-origin: right center; background: #222; }
+    
+    .fab-btn { 
+      width: 25px; 
+      padding: 10px 0; 
+      border-radius: 4px 0 0 4px; 
+      background: #000; 
+      /* THIN 1px YELLOW OUTLINE! */
+      color: #FFFF5C; 
+      border: 1px solid #FFFF5C; 
+      border-right: none; 
+      display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; 
+      box-shadow: -2px 4px 12px rgba(0,0,0,0.3); 
+      transition: transform 0.2s, background 0.2s; 
+      font-size: 9px; 
+      font-weight: 900; 
+      letter-spacing: 1px; 
+    }
+    
+    .fab-btn:hover { transform: scale(1.03); transform-origin: right center; background: #222; }
     .fab-btn span { display: block; line-height: 1.1; margin-top: 2px; }
-    .fab-menu { position: absolute; right: 44px; top: 50%; transform: translateY(-50%) scale(0.9); opacity: 0; visibility: hidden; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 8px 0; width: 180px; transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); transform-origin: right center; overflow: hidden; }
+ /* Pulled the popup menu slightly closer (.right: 35px) to mathematically align with the new thin button */
+    .fab-menu { position: absolute; right: 35px; top: 50%; transform: translateY(-50%) scale(0.9); opacity: 0; visibility: hidden; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 8px 0; width: 180px; transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); transform-origin: right center; overflow: hidden; }
     .fab-menu.open { opacity: 1; visibility: visible; transform: translateY(-50%) scale(1); }
     .fab-item { display: block; padding: 12px 20px; color: #111; text-decoration: none; font-size: 13px; font-weight: 800; text-transform: uppercase; border-left: 3px solid transparent; cursor: pointer; transition: all 0.15s; }
     .fab-item:hover, .fab-item.active { background: #f9f9f9; color: #000; border-left-color: #000; padding-left: 24px; }
