@@ -6,53 +6,39 @@
   
   <title>AI News - Live Sports</title>
   
-  <!-- The New Football Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22><circle cx=%22256%22 cy=%22256%22 r=%22256%22 fill=%22white%22/><path fill=%22%232563eb%22 d=%22M256 0c-141.4 0-256 114.6-256 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zM361.3 226.5l-42.6-131c26 14.5 49 33.8 68 56.6l-25.4 74.4zm-105.3-64.8l-84.3-61.2c26-14 55.4-21.8 86.4-21.8 28.5 0 55.7 6.8 80.3 19.3l-82.4 63.7zm-143.2 81.3l-24.6-72.2c18.5-22.1 40.7-40.8 65.6-54.9l-41 127.1zm-32 99.3c-1.5-11-2.4-22.3-2.4-33.8 0-14.7 1.4-29.2 4-43.3l108.2 35.1-41.5 127.8c-26.6-21.2-48.4-49.4-61.9-81.8l-6.4-4zM256 324.9c-29.4 0-56.5-15.5-70.8-40.3l-24.1-41.7 85.5-62.1 85.6 62.2-24.2 41.7c-14.3 24.7-41.5 40.2-72 40.2zm-28.7 107.5l42.6-131.2 57.6-.1 42.4 130.6c-34 19-72.8 29.8-113.9 29.8s-79.9-10.8-113.9-29.8zm116.3-21l-41.3-127.2 108.4-35.3c2.6 14 4 28.4 4 43.1 0 11.5-.8 22.8-2.3 33.8l-7.2 4c-13.7 32.7-35.8 61.1-61.6 81.6z%22/></svg>">
   
   <meta name="description" content="SportsRip — Live sports news for Cricket, Basketball, Football, Tennis, kabaddi and Baseball"/>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
-    /* --- BBC STYLE CHANGES: Light background and dark text --- */
     body { background: #f4f4f4; color: #141414; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; }
     
-    /* --- THE MAGICAL TRANSPARENT HEADER --- */
     header { 
-      background: rgba(255, 255, 92, 1); /* Solid yellow by default */
+      background: rgba(255, 255, 92, 1); 
       color: #000; 
       border-bottom: 2px solid #000; 
-      padding: 10px 24px; 
+      padding: 6px 20px;  
       display: flex; 
       align-items: center; 
       justify-content: space-between; 
       position: sticky; 
       top: 0; 
       z-index: 200; 
-      transition: background 0.3s ease, backdrop-filter 0.3s ease; /* Smooth fade effect! */
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
     }
     
-    /* When scrolled, apply transparency and frosted glass blur */
-    header.scrolled {
-      background: rgba(255, 255, 92, 0.85); /* 85% opacity makes it beautifully semi-transparent */
-      backdrop-filter: blur(8px); /* Blurs whatever slides underneath it */
-      -webkit-backdrop-filter: blur(8px); /* For Safari */
+    header.hide-curtain {
+      transform: translateY(-100%);
     }
     
-    /* Gap changed to 3px as requested */
-    .brand { display: flex; align-items: center; gap: 3px; }
+    .brand { display: flex; align-items: center; gap: 6px; }
     
-    /* --- BBC STYLE CHANGES: Dark icon to contrast yellow --- */
-     .header-icon {
-      width: 40px; height: 40px; 
-      background: transparent; 
-      display: flex; align-items: center; justify-content: center; 
-      font-size: 2.2rem; 
-      flex-shrink: 0;
-    }
+    .header-icon { width: 34px; height: 34px; background: transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .header-icon img { width: 100%; height: 100%; object-fit: contain; }
 
-    .logo-text { font-size: 26px; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; }
+    .logo-text { font-size: 24px; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; }
     .logo-text span { color: #000; }
-    /* Added text-transform: lowercase to force "rip" to be small! */
     .logo-text em { color: #333; font-style: normal; font-weight: 500; text-transform: lowercase; }
     
     .header-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
@@ -61,54 +47,24 @@
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
     .header-tagline { font-size: 11px; color: #333; font-weight: 600; letter-spacing: 0.3px; }
     
-    .header-right { text-align: right; font-size: 12px; color: #333; font-weight: 600; }
+    .header-right { text-align: right; }
+    .date-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.1); padding: 5px 12px; border-radius: 6px; font-family: monospace; font-size: 11px; font-weight: 800; color: #111; letter-spacing: -0.3px; }
+    .date-badge-icon { font-size: 14px; }
 
-    /* --- MOBILE MENU BUTTON STYLES (Hidden on Desktop) --- */
-    .hamburger-menu {
-      display: none; /* Hidden by default */
-      background: transparent;
-      border: 2px solid #000;
-      padding: 6px 12px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      color: #000;
-      text-transform: uppercase;
-    }
+    .hamburger-menu { display: none; background: transparent; border: 2px solid #000; padding: 6px 12px; font-size: 14px; font-weight: 700; cursor: pointer; color: #000; text-transform: uppercase; margin-left: auto; }
     .hamburger-menu:hover { background: #000; color: #FFFF5C; }
 
-    /* --- BBC STYLE CHANGES: Black Desktop Tabs Bar --- */
     .tabs-bar { background: #000; border-bottom: 1px solid #222; display: flex; justify-content: center; overflow-x: auto; scrollbar-width: none; padding: 0 16px; }
     .tabs-bar::-webkit-scrollbar { display: none; }
     .tab { padding: 12px 18px; font-size: 13px; font-weight: 700; color: #fff; cursor: pointer; border-bottom: 4px solid transparent; white-space: nowrap; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
     .tab:hover { color: #FFFF5C; }
-    .tab.active { color: #FFFF5C; border-bottom-color: #FFFF5C; } /* Yellow underline for active */
+    .tab.active { color: #FFFF5C; border-bottom-color: #FFFF5C; }
 
-    /* --- MOBILE DROP-DOWN MENU STYLES --- */
-    .mobile-navigation {
-      display: none; 
-      background: #000;
-      flex-direction: column;
-    }
-    .mobile-navigation.open {
-      display: flex; /* Shown when toggled via JS */
-    }
-    .mobile-navigation a {
-      color: #fff;
-      padding: 15px 24px;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 14px;
-      text-transform: uppercase;
-      border-bottom: 1px solid #333;
-    }
-    .mobile-navigation a:hover, .mobile-navigation a.active {
-      color: #FFFF5C;
-      border-left: 4px solid #FFFF5C;
-      padding-left: 20px;
-    }
+    .mobile-navigation { display: none; background: #000; flex-direction: column; }
+    .mobile-navigation.open { display: flex; }
+    .mobile-navigation a { color: #fff; padding: 15px 24px; text-decoration: none; font-weight: 700; font-size: 14px; text-transform: uppercase; border-bottom: 1px solid #333; }
+    .mobile-navigation a:hover, .mobile-navigation a.active { color: #FFFF5C; border-left: 4px solid #FFFF5C; padding-left: 20px; }
 
-    /* Ticker */
     .ticker-wrap { background: #cc0000; overflow: hidden; height: 32px; display: flex; align-items: center; }
     .ticker-label { background: #990000; color: white; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; padding: 0 14px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
     .ticker-content { display: flex; overflow: hidden; flex: 1; }
@@ -118,21 +74,13 @@
     .ticker-item::before { content: '●'; font-size: 6px; opacity: 0.7; }
     @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
     
-    /* Layout */
     .layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 20px 16px; gap: 24px; align-items: stretch; }
     .main-pane { flex: 3; min-width: 0; }
     
-    /* --- BBC STYLE CHANGES: Clean white cards with subtle shadow --- */
     .section-label { font-size: 16px; font-weight: 800; text-transform: uppercase; color: #222; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #FFFF5C; }
     #status { font-size: 12px; color: #666; margin-bottom: 12px; min-height: 20px; }
     
-    /* --- MSN PHASE 1: GRID UPDATES --- */
-    #output { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-      gap: 16px; 
-      grid-auto-flow: dense; /* Packs the different sized cards tightly */
-    }
+    #output { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; grid-auto-flow: dense; }
     
     .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 0px; overflow: hidden; transition: box-shadow 0.2s; display: flex; flex-direction: column; text-decoration: none; color: inherit; }
     .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
@@ -141,45 +89,20 @@
     .card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
     .card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
     .card-source-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #000; background: #FFFF5C; padding: 2px 7px; }
-    .card-author { font-size: 11px; color: #333; font-weight: 600; }
-    .card-time { font-size: 11px; color: #666; margin-left: auto; display: none; }
+    .card-author { font-size: 11px; color: #333; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; }
     .card-title { font-size: 19px; font-weight: 800; color: #222; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .card-desc { font-size: 13px; color: #555; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
 
-    /* --- THE MAGICAL STRETCHING HERO CARDS --- */
-    .card-hero {
-      grid-column: span 2;
-      grid-row: span 2;
-    }
-    .card-hero .card-img {
-      height: auto; 
-      flex: 1; /* Tells the image to expand and eat all remaining empty space! */
-    }
-    .card-hero .card-body {
-      flex: none; /* Shrinks the text box to perfectly wrap the text, absolutely no white space! */
-    }
-    .card-hero .card-title {
-      font-size: 24px; 
-      -webkit-line-clamp: 4;
-    }
-    .card-hero .card-desc {
-      -webkit-line-clamp: 8; 
-    }
+    .card-hero { grid-column: span 2; grid-row: span 2; }
+    .card-hero .card-img { height: auto; flex: 1; }
+    .card-hero .card-body { flex: none; }
+    .card-hero .card-title { font-size: 24px; -webkit-line-clamp: 4; }
+    .card-hero .card-desc { -webkit-line-clamp: 8; }
 
-    .card-wide {
-      grid-column: span 2;
-      flex-direction: row; 
-    }
-    .card-wide .card-img {
-      width: 40%;
-      height: 100%;
-    }
-    .card-wide .card-body {
-      width: 60%;
-      justify-content: center;
-    }
+    .card-wide { grid-column: span 2; flex-direction: row; }
+    .card-wide .card-img { width: 40%; height: 100%; }
+    .card-wide .card-body { width: 60%; justify-content: center; }
     
-    /* Sidebar */
     .sidebar { width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 24px; }
     .sidebar-section { background: #fff; border: 1px solid #e0e0e0; border-radius: 0px; overflow: hidden; }
     .sidebar-title { background: #000; padding: 12px 16px; font-size: 13px; font-weight: 800; text-transform: uppercase; color: #FFFF5C; }
@@ -191,26 +114,11 @@
     .sidebar-text { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;}
     .sidebar-headline { font-size: 13px; font-weight: 700; color: #222; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     
-    /* --- VERTICAL SCROLLING TICKER --- */
-    .trending-container {
-      height: 380px; /* Locks the height so it doesn't stretch down the page */
-      overflow: hidden; /* Hides the items that scroll out of bounds */
-      position: relative;
-    }
-    .trending-track {
-      display: flex;
-      flex-direction: column;
-      animation: scrollVertical 25s linear infinite; /* 25s seamless loop */
-    }
-    .trending-track:hover {
-      animation-play-state: paused;  /* Pauses when the user hovers to click! */
-    }
-    @keyframes scrollVertical {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-50%); } 
-    }
+    .trending-container { height: 380px; overflow: hidden; position: relative; }
+    .trending-track { display: flex; flex-direction: column; animation: scrollVertical 25s linear infinite; }
+    .trending-track:hover { animation-play-state: paused; }
+    @keyframes scrollVertical { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
     
-    /* Ad block */
     .ad-block { background: #fff; border: 1px solid #e0e0e0; padding: 20px; text-align: center; }
     .ad-label { font-size: 9px; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
     .ad-content { padding: 20px; color: white; }
@@ -219,7 +127,6 @@
     .ad-btn { background: white; border: none; padding: 8px 20px; font-size: 12px; font-weight: 700; cursor: pointer; transition: transform 0.2s; display: inline-block; text-transform: uppercase; }
     .ad-btn:hover { transform: scale(1.05); background: #000; color: #fff !important; }
     
-    /* Skeletons */
     .skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
     .skeleton-card { background: #fff; border: 1px solid #e0e0e0; }
     .skeleton-img { height: 180px; background: linear-gradient(90deg,#eaeaea 25%,#f5f5f5 50%,#eaeaea 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
@@ -230,544 +137,43 @@
     
     footer { text-align: center; padding: 20px; color: #666; font-size: 12px; background: #fff; border-top: 1px solid #e0e0e0; margin-top: 20px; }
     
-    /* --- BACK TO TOP BUTTON --- */
-    #backToTop {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      width: 44px;
-      height: 44px;
-      background: #000;
-      color: #FFFF5C;
-      border: none;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(20px);
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      z-index: 1000;
-    }
-    #backToTop.show {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-    #backToTop:hover {
-      background: #FFFF5C;
-      color: #000;
-      transform: translateY(-5px) scale(1.05);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-    }
+    #backToTop { position: fixed; bottom: 30px; right: 30px; width: 44px; height: 44px; background: #000; color: #FFFF5C; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); z-index: 1000; }
+    #backToTop.show { opacity: 1; visibility: visible; transform: translateY(0); }
+    #backToTop:hover { background: #FFFF5C; color: #000; transform: translateY(-5px) scale(1.05); box-shadow: 0 6px 16px rgba(0,0,0,0.4); }
 
-    /* --- RESPONSIVE MOBILE MEDIA QUERIES --- */
-    @media (max-width: 900px) { 
-      .layout{flex-direction:column} 
-      .sidebar{width:100%} 
-    }
-    
-    @media (max-width: 768px) {
-      .header-center { display: none; } /* Hide tagline on phone */
-      .header-right { display: none; } /* Hide clock on phone */
-      
-      /* Show hamburger, hide regular tabs */
-      .hamburger-menu { display: flex; }
-      .tabs-bar { display: none; } 
-    }
+    /* === ULTRATHIN DESKTOP FAB BUTTON === */
+    .fab-container { position: fixed; right: 0; top: calc(50% + 50px); transform: translateY(-50%); z-index: 999; display: flex; flex-direction: column; align-items: flex-end; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+    .fab-container.show { opacity: 1; visibility: visible; }    
+    .fab-btn { width: 25px; padding: 10px 0; border-radius: 4px 0 0 4px; background: #000; color: #FFFF5C; border: 1px solid #FFFF5C; border-right: none; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; box-shadow: -2px 4px 12px rgba(0,0,0,0.3); transition: transform 0.2s, background 0.2s, opacity 0.3s ease; font-size: 9px; font-weight: 900; letter-spacing: 1px; opacity: 0.25; }
+    .fab-btn:hover { transform: scale(1.03); transform-origin: right center; background: #222; opacity: 0.5; }
+    .fab-btn span { display: block; line-height: 1.1; margin-top: 2px; }
+    .fab-menu { position: absolute; right: 35px; top: 50%; transform: translateY(-50%) scale(0.9); opacity: 0; visibility: hidden; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 8px 0; width: 180px; transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); transform-origin: right center; overflow: hidden; }
+    .fab-menu.open { opacity: 1; visibility: visible; transform: translateY(-50%) scale(1); }
+    .fab-item { display: block; padding: 12px 20px; color: #111; text-decoration: none; font-size: 13px; font-weight: 800; text-transform: uppercase; border-left: 3px solid transparent; cursor: pointer; transition: all 0.15s; }
+    .fab-item:hover, .fab-item.active { background: #f9f9f9; color: #000; border-left-color: #000; padding-left: 24px; }
+    .fab-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 998; display: none; background: rgba(0,0,0,0.1); }
+    .fab-overlay.open { display: block; }
 
+    @media (max-width: 900px) { .layout{flex-direction:column} .sidebar{width:100%} }
+    @media (max-width: 768px) { .header-center{display:none;} .header-right{display:none;} .hamburger-menu{display:block;} .tabs-bar{display:none;} }
     @media (max-width: 600px) { 
-      #output{grid-template-columns:1fr} 
-      .brand{min-width:unset} 
-      .ticker-wrap { display: none; }
-      header { padding: 12px 16px; }
-
-      .card-title { font-size: 20px; line-height: 1.2; }
+      /* --- SLEEK MOBILE MENU FIX --- */
+      .fab-btn { width: 26px; padding: 10px 0; font-size: 9px; border-width: 1.5px; }
+      .fab-btn svg { width: 14px; height: 14px; margin-bottom: 4px !important; }
+      .fab-menu { right: 36px; }
       
-      /* --- MSN PHASE 1: MOBILE OVERRIDES --- */
-      .card-hero, .card-wide { grid-column: span 1; }
-      .card-hero .card-img { height: 200px; flex: none; } /* Locked so mobile doesn't stretch */
-      .card-hero .card-title { font-size: 20px; }
-      .card-wide { flex-direction: column; }
-      .card-wide .card-img { width: 100%; height: 180px; }
-      .card-wide .card-body { width: 100%; }
-      
-      /* Shrink Back to Top button slightly on mobile */
-      #backToTop { width: 38px; height: 38px; bottom: 20px; right: 20px; }
+      #output{grid-template-columns:1fr} .brand{min-width:unset} .ticker-wrap{display:none;} header{padding:8px 16px;}
+      .card-title{font-size:20px;line-height:1.2;} .card-hero,.card-wide{grid-column:span 1;}
+      .card-hero .card-img{height:200px;flex:none;} .card-hero .card-title{font-size:20px;}
+      .card-wide{flex-direction:column;} .card-wide .card-img{width:100%;height:180px;} .card-wide .card-body{width:100%;}
+      #backToTop{width:38px;height:38px;bottom:20px;right:20px;}
     }
   </style>
 </head>
 <body>
 
 <header id="main-header">
- <!-- WRAPPED IN AN A-TAG SO CLICKING IT REFRESHES THE PAGE -->
  <a href="/" class="brand" style="text-decoration: none;">
   <div class="header-icon">
-    <!-- SVG Blue/White Football -->
-    <svg width="34" height="34" viewBox="0 0 512 512" style="display: block;">
-      <circle cx="256" cy="256" r="256" fill="white"/>
-      <path fill="#2563eb" d="M256 0c-141.4 0-256 114.6-256 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zM361.3 226.5l-42.6-131c26 14.5 49 33.8 68 56.6l-25.4 74.4zm-105.3-64.8l-84.3-61.2c26-14 55.4-21.8 86.4-21.8 28.5 0 55.7 6.8 80.3 19.3l-82.4 63.7zm-143.2 81.3l-24.6-72.2c18.5-22.1 40.7-40.8 65.6-54.9l-41 127.1zm-32 99.3c-1.5-11-2.4-22.3-2.4-33.8 0-14.7 1.4-29.2 4-43.3l108.2 35.1-41.5 127.8c-26.6-21.2-48.4-49.4-61.9-81.8l-6.4-4zM256 324.9c-29.4 0-56.5-15.5-70.8-40.3l-24.1-41.7 85.5-62.1 85.6 62.2-24.2 41.7c-14.3 24.7-41.5 40.2-72 40.2zm-28.7 107.5l42.6-131.2 57.6-.1 42.4 130.6c-34 19-72.8 29.8-113.9 29.8s-79.9-10.8-113.9-29.8zm116.3-21l-41.3-127.2 108.4-35.3c2.6 14 4 28.4 4 43.1 0 11.5-.8 22.8-2.3 33.8l-7.2 4c-13.7 32.7-35.8 61.1-61.6 81.6z"/>
-    </svg>
-  </div>
-  <div class="logo-text"><span>SPORTS</span><em>rip</em></div>
- </a>
-
-  <div class="header-center">
-    <span class="live-badge"><span class="live-dot"></span>LIVE</span>
-    <span class="header-tagline">Sports news from the world's top sources</span>
-  </div>
-  <div class="header-right" id="clockDisplay"></div>
-
-  <!-- --- THE NEW MOBILE BUTTON --- -->
-  <button id="mobile-menu-btn" class="hamburger-menu" onclick="toggleMobileMenu()">
-    ☰ Menu
-  </button>
-</header>
-
-<!-- --- THE NEW MOBILE DROP-DOWN MENU --- -->
-<nav id="mobile-nav" class="mobile-navigation">
-  <a href="#" class="mobile-tab active" data-sport="main" onclick="loadSport(this, true)">🏆 Top Stories</a>
-  <a href="#" class="mobile-tab" data-sport="cricket" onclick="loadSport(this, true)">🏏 Cricket</a>
-  <a href="#" class="mobile-tab" data-sport="basketball" onclick="loadSport(this, true)">🏀 Basketball</a>
-  <a href="#" class="mobile-tab" data-sport="football" onclick="loadSport(this, true)">⚽ Football</a>
-  <a href="#" class="mobile-tab" data-sport="tennis" onclick="loadSport(this, true)">🎾 Tennis</a>
-  <a href="#" class="mobile-tab" data-sport="kabaddi" onclick="loadSport(this, true)">🤼 kabaddi</a>
-  <a href="#" class="mobile-tab" data-sport="baseball" onclick="loadSport(this, true)">⚾ Baseball</a>
-</nav>
-
-<!-- The existing Desktop Tabs -->
-<div class="tabs-bar">
-  <div class="tab active" data-sport="main" onclick="loadSport(this, false)">🏆 Main</div>
-  <div class="tab" data-sport="cricket" onclick="loadSport(this, false)">🏏 Cricket</div>
-  <div class="tab" data-sport="basketball" onclick="loadSport(this, false)">🏀 Basketball</div>
-  <div class="tab" data-sport="football" onclick="loadSport(this, false)">⚽ Football</div>
-  <div class="tab" data-sport="tennis" onclick="loadSport(this, false)">🎾 Tennis</div>
-  <div class="tab" data-sport="kabaddi" onclick="loadSport(this, false)">🤼 kabaddi</div>
-  <div class="tab" data-sport="baseball" onclick="loadSport(this, false)">⚾ Baseball</div>
-</div>
-
-<div class="ticker-wrap">
-  <div class="ticker-label">⚡ BREAKING</div>
-  <div class="ticker-content">
-    <div class="ticker-track" id="tickerTrack">
-      <span class="ticker-item">Loading latest sports headlines...</span>
-      <span class="ticker-item">Loading latest sports headlines...</span>
-    </div>
-  </div>
-</div>
-
-<div class="layout">
-  <div class="main-pane">
-    <div class="section-label" id="sectionLabel">🏆 Top Stories</div>
-    <div id="status"></div>
-    <div id="output">
-      <!-- Skeletons go here while loading -->
-      <div class="skeleton-grid">
-        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:85%"></div><div class="skeleton-line" style="width:65%"></div></div></div>
-        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:90%"></div><div class="skeleton-line" style="width:70%"></div></div></div>
-        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:80%"></div><div class="skeleton-line" style="width:60%"></div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="sidebar">
-
-    <div class="ad-block" style="padding:0;overflow:hidden;">
-      <div class="ad-label" style="padding:6px 14px; background: #f4f4f4; border-bottom: 1px solid #eee;">Advertisement</div>
-      <div style="position:relative;width:100%;aspect-ratio:16/9;">
-        <iframe
-          src="https://www.youtube.com/embed/Bcpu-jqAL6w?autoplay=1&mute=1&loop=1&playlist=Bcpu-jqAL6w&controls=0&rel=0&modestbranding=1"
-          style="width:100%;height:100%;border:none;display:block;position:absolute;top:0;left:0;"
-          allow="autoplay; encrypted-media"
-          title="Nike Ad">
-        </iframe>
-        <div style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;"></div>
-      </div>
-      <div style="background:#000;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
-        <div style="color:white;font-size:14px;font-weight:800;">⚡ NIKE — Just Do It.</div>
-        <a href="https://www.nike.com" target="_blank" rel="noopener noreferrer">
-          <button class="ad-btn" style="color:#000">Explore →</button>
-        </a>
-      </div>
-    </div>
-
-    <!-- ============================================== -->
-    <!-- NEWSLETTER SUBSCRIBE BLOCK                     -->
-    <!-- ============================================== -->
-    <div class="sidebar-section" style="border: 1px solid #eaeaea; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-radius: 0px; padding: 24px 20px; background: linear-gradient(135deg, #111, #222); color: white; display: flex; flex-direction: column; align-items: center; text-align: center;">
-      <div style="font-size: 32px; margin-bottom: 8px;">📬</div>
-      <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 6px; color: #FFFF5C; text-transform: uppercase; letter-spacing: 0.5px;">Get the Daily Brief</h3>
-      <p style="font-size: 12px; color: #ccc; margin-bottom: 18px; line-height: 1.4;">Join 15,000+ fans getting the biggest sports headlines delivered straight to their inbox every morning.</p>
-      
-      <form id="newsletter-form" action="https://formspree.io/f/meerbpky" method="POST" style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
-        <input type="email" name="email" placeholder="Enter your email address..." required 
-               style="width: 100%; padding: 12px 14px; border: none; border-radius: 4px; font-size: 13px; font-family: inherit; outline: none; text-align: center;">
-        <button type="submit" 
-                style="width: 100%; background: #FFFF5C; color: #000; border: none; padding: 12px; border-radius: 4px; font-size: 13px; font-weight: 800; cursor: pointer; text-transform: uppercase;">
-          Subscribe Now
-        </button>
-      </form>
-      <div style="font-size: 10px; color: #888; margin-top: 12px;">We respect your inbox. No spam.</div>
-    </div>
-    <!-- ============================================== -->
-
-    <div class="sidebar-section">
-      <div class="sidebar-title">🔥 Trending Now</div>
-      <div class="trending-container">
-        <div id="trendingList" class="trending-track">
-          <div style="padding:14px;color:#666;font-size:12px">Loading...</div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="sidebar-section">
-      <div class="sidebar-title">🕐 Recent News</div>
-      <div id="recentList"><div style="padding:14px;color:#666;font-size:12px">Loading...</div></div>
-    </div>
-    
-    <!-- NEW TALL NIKE AD -->
-    <div class="ad-block" style="padding: 0; overflow: hidden; border: 1px solid #e0e0e0; background: #000; position: sticky; top: 80px;">
-
-      <div class="ad-label" style="padding: 8px; background: #f4f4f4; border-bottom: 1px solid #eee; margin-bottom: 0;">Advertisement</div>
-      
-      <!-- Ad Image Container (Set to a tall 500px) -->
-      <div style="position: relative; width: 100%; height: 500px; background: url('https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80') center/cover; display: flex; flex-direction: column; justify-content: flex-end; padding: 24px;">
-        
-        <!-- Dark Gradient Overlay (so the white text is readable) -->
-        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 70%); z-index: 1;"></div>
-        
-        <!-- Ad Text Content -->
-        <div style="position: relative; z-index: 2; text-align: left;">
-          
-          <!-- Nike Logo SVG -->
-          <svg width="60" height="30" viewBox="0 0 24 24" fill="white" style="margin-bottom: 10px;">
-            <path d="M24 8.25C19.38 8.65 14.28 11.23 8.51 15.69C5.39 18.11 2.82 19.33 1.07 18.78C-0.65 18.23-1.01 14.54 2.37 9.87C3.52 8.27 4.97 6.47 5.01 6.43C5.01 6.43 3.64 8.13 2.51 9.87C1.35 11.66 0.16 14.07 0.96 15.5C1.86 17.11 4.2 16.99 7.37 14.81C10.58 12.61 14.7 9.17 18.15 6.96C20.48 5.46 22.42 4.79 23.96 5.56C25.46 6.32 25.13 7.84 24 8.25Z"/>
-          </svg>
-          
-          <h3 style="color: #fff; font-size: 32px; font-weight: 900; line-height: 1.1; margin-bottom: 8px; text-transform: uppercase;">Defy <br>Gravity.</h3>
-          <p style="color: #ccc; font-size: 13px; margin-bottom: 20px;">The new Jordan collection is here. Elevate your game like never before.</p>
-          
-          <a href="https://www.nike.in" target="_blank" rel="noopener noreferrer">
-            <button class="ad-btn" style="background: #fff; color: #000; border: none; padding: 12px 24px; font-size: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase;">Shop Nike</button>
-          </a>
-        </div>
-      </div>
-    </div>
-
-  </div> <!-- Closing the Sidebar -->
-</div> <!-- Closing the main Layout -->
-
-
-<footer><b>Powered by AI</b></footer>
-
-<!-- --- BACK TO TOP BUTTON --- -->
-<button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Back to Top">
-  <!-- Premium Feather Icon SVG (Clean & Sharp) -->
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 19V5M5 12l7-7 7 7"/>
-  </svg>
-</button>
-
-<script>
-  var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev';
-  var SPORTS = ['cricket','basketball','football','tennis','kabaddi','baseball'];
-  var EMOJI = {cricket:'🏏',basketball:'🏀',football:'⚽',tennis:'🎾',kabaddi:'🤼',baseball:'⚾',main:'🏆'};
- var LABEL = {cricket:'Cricket',basketball:'Basketball',football:'Football',tennis:'Tennis',kabaddi:'kabaddi',baseball:'Baseball',main:'Top Stories'};
-  
-  // Upgraded Memory System
-  var currentSport = 'main';
-  var allCache = [];
-  var sportCache = {}; // Safely remembers individual tabs so we don't spam the API!
-
-  /* --- SCROLL LOGIC (Back to Top & Sticky Header) --- */
-  var backToTopBtn = document.getElementById("backToTop");
-  var mainHeader = document.getElementById("main-header");
-  
-  window.addEventListener("scroll", function() {
-    // 1. Transparent Frosted Glass Header
-    if (window.scrollY > 50) {
-      mainHeader.classList.add("scrolled");
-    } else {
-      mainHeader.classList.remove("scrolled");
-    }
-    
-    // 2. Back to Top Button Fade In
-    if (window.scrollY > 500) {
-      backToTopBtn.classList.add("show");
-    } else {
-      backToTopBtn.classList.remove("show");
-    }
-  });
-
-  /* --- MOBILE MENU JAVASCRIPT --- */
-  function toggleMobileMenu() {
-    var nav = document.getElementById('mobile-nav');
-    nav.classList.toggle('open');
-  }
-
-  function updateClock() {
-    var now = new Date();
-    document.getElementById('clockDisplay').textContent =
-      now.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}) + ' · ' +
-      now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  }
-  updateClock(); setInterval(updateClock, 60000);
-
-  async function fetchSport(sport) {
-    var r = await fetch(WORKER + '/api/news?sport=' + sport);
-    var d = await r.json();
-    var articles = d.articles || [];
-    articles.forEach(function(a) { if (!a.sport) a.sport = sport; });
-    return articles;
-  }
-
-  async function fetchAll() {
-    var results = await Promise.allSettled(SPORTS.map(fetchSport));
-    var sportArrays = [];
-    
-    results.forEach(function(r) {
-      if (r.status === 'fulfilled' && r.value.length > 0) {
-        var sorted = r.value.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
-        sportArrays.push(sorted);
-      }
-    });
-
-    var all = [], seen = new Set();
-    var keepGoing = true;
-    while(keepGoing) {
-      keepGoing = false;
-      for (var i = 0; i < sportArrays.length; i++) {
-        if (sportArrays[i].length > 0) {
-          keepGoing = true;
-          var a = sportArrays[i].shift();
-          if (!seen.has(a.link)) { 
-            seen.add(a.link); 
-            all.push(a); 
-          }
-        }
-      }
-    }
-    return all;
-  }
-
-   function buildCard(article, emoji, sizeClass) {
-    var card = document.createElement('a');
-    
-    // --- MSN PHASE 1: Add the size class (e.g. card-hero, card-wide) ---
-    card.className = 'card ' + (sizeClass || '');
-    card.href = article.link;
-    card.target = '_blank';
-    card.rel = 'noopener noreferrer';
-
-    var img = article.image
-      ? '<img class="card-img" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+emoji+'<\/div>\'">'
-      : '<div class="card-img-placeholder">'+emoji+'<\/div>';
-    var author = article.author ? '<span class="card-author">✍ '+article.author+'<\/span>' : '';
-    
-    /* Replaced source text with "Read More >>" */
-    var sourceBadge = '<span class="card-source-badge">Read More &gt;&gt;</span>';
-
-    card.innerHTML = img +
-      '<div class="card-body">' +
-        '<div class="card-meta">'+sourceBadge+author+'<\/div>' +
-        '<div class="card-title">'+article.title+'<\/div>' +
-        (article.description ? '<div class="card-desc">'+article.description+'<\/div>' : '') +
-      '<\/div>';
-    return card;
-  }
-
-  function buildSidebarItem(article, emoji) {
-    var el = document.createElement('a');
-    el.className = 'sidebar-article';
-    el.href = article.link; 
-    el.target = '_blank';
-    el.rel = 'noopener noreferrer';
-    
-    var thumb = article.image
-      ? '<img class="sidebar-thumb" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+emoji+'<\/div>\'">'
-      : '<div class="sidebar-thumb-placeholder">'+emoji+'<\/div>';
-      
-    el.innerHTML = thumb +
-      '<div class="sidebar-text">' +
-        '<div class="sidebar-headline">'+article.title+'<\/div>' +
-      '<\/div>';
-    return el;
-  }
-
-  function buildTicker(articles) {
-    if (!articles.length) return;
-    var items = articles.slice(0,20).map(function(a) {
-      return '<span class="ticker-item">'+a.title+'<\/span>';
-    }).join('');
-    document.getElementById('tickerTrack').innerHTML = items + items;
-  }
-
-  function buildSidebar(all) {
-    var withImg = all.filter(function(a){return a.image;});
-    var pool = withImg.length > 15 ? withImg.slice(15) : withImg.reverse(); 
-    
-    var trending = pool.slice(0,6);
-    var tLinks = new Set(trending.map(function(a){return a.link;}));
-    var recent = pool.filter(function(a){return !tLinks.has(a.link);}).slice(0,6);
-    
-    var tEl = document.getElementById('trendingList');
-    var rEl = document.getElementById('recentList');
-    tEl.innerHTML = ''; rEl.innerHTML = '';
-    
-    // Append the original items
-    trending.forEach(function(a){ tEl.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
-    
-    // DUPLICATE the items for the seamless CSS scrolling loop!
-    trending.forEach(function(a){ tEl.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
-
-    recent.forEach(function(a){ rEl.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
-  }
-
-  function showSkeleton() {
-    var html = '<div class="skeleton-grid">';
-    for (var i=0;i<6;i++) html += '<div class="skeleton-card"><div class="skeleton-img"><\/div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"><\/div><div class="skeleton-line" style="width:85%"><\/div><div class="skeleton-line" style="width:65%"><\/div><\/div><\/div>';
-    document.getElementById('output').innerHTML = html + '<\/div>';
-  }
-
-  function loadSport(el, isMobile) {
-    currentSport = el.getAttribute('data-sport');
-    
-    document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
-    document.querySelectorAll('.mobile-tab').forEach(function(t){t.classList.remove('active');});
-    
-    document.querySelectorAll('[data-sport="'+currentSport+'"]').forEach(function(t) {
-      t.classList.add('active');
-    });
-
-    if (isMobile) toggleMobileMenu();
-
-    document.getElementById('sectionLabel').textContent = EMOJI[currentSport]+' '+LABEL[currentSport];
-    renderNews(); // Now intelligently uses memory cache!
-  }
-
-  async function renderNews() {
-    var status = document.getElementById('status');
-    var output = document.getElementById('output');
-    status.textContent = ''; showSkeleton();
-    try {
-      
-      // 1. Safely load the articles from memory instead of the internet!
-      var articles = [];
-      if (currentSport === 'main') {
-        if (!allCache.length) allCache = await fetchAll();
-        articles = allCache;
-      } else {
-        if (!sportCache[currentSport]) sportCache[currentSport] = await fetchSport(currentSport);
-        articles = sportCache[currentSport];
-      }
-
-      if (!articles.length) {
-        // Safety check to prevent "UNDEFINED"
-        var sportName = LABEL[currentSport] || currentSport || 'SPORTS';
-        
-        output.innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; padding: 80px 20px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;">
-            
-            <!-- Giant Premium Cartoon Emoji (Works perfectly everywhere!) -->
-            <div style="font-size: 140px; line-height: 1; margin-bottom: 20px; text-shadow: 0 10px 20px rgba(0,0,0,0.15);">🏃‍♂️💨</div>
-            
-            <h2 style="font-size: 26px; font-weight: 900; color: #111; margin-bottom: 10px; text-transform: uppercase;">NO ${sportName} NEWS TODAY!</h2>
-            <p style="color: #666; font-size: 15px; max-width: 450px; margin: 0 auto; line-height: 1.5;">We only display articles with high-quality thumbnail images to ensure a premium experience. It looks like our publishers haven't released any visual stories for ${sportName} yet. Check back later!</p>
-          </div>
-        `;
-        return;
-      }
-
-
-      status.textContent = '✅ '+articles.length+' articles loaded';
-      output.innerHTML = '';
-      
-      // 2. THE MAGIC SHUFFLE: Mix them up like a deck of cards!
-      var shuffled = articles.slice();
-      for (var i = shuffled.length - 1; i > 0; i--) {
-          var j = Math.floor(Math.random() * (i + 1));
-          var temp = shuffled[i]; shuffled[i] = shuffled[j]; shuffled[j] = temp;
-      }
-      
-      // 3. Draw the shuffled cards (The big hero slots stay in place, but the news inside changes!)
-      shuffled.forEach(function(a, index){ 
-        var sizeClass = '';
-        if (index === 0 && a.image) sizeClass = 'card-hero'; 
-        else if (index === 4 && a.image) sizeClass = 'card-wide'; 
-        else if (index === 9 && a.image) sizeClass = 'card-hero'; 
-        
-        output.appendChild(buildCard(a, EMOJI[a.sport||currentSport]||'📰', sizeClass)); 
-      });
-    } catch(e) {
-      output.innerHTML = '<div class="empty">❌ '+e.message+'<\/div>';
-    }
-  }
-
-  async function init() {
-    var all = await fetchAll();
-    allCache = all;
-    buildTicker(all);
-    buildSidebar(all);
-    renderNews();
-  }
-
-  init();
-  
-  // TIMER 1: Every 5 minutes, magically reshuffle the screen using ONLY saved memory!
-  setInterval(function() { 
-    if(allCache.length > 0) { renderNews(); }
-  }, 5 * 60 * 1000);
-
-  // TIMER 2: Every 60 minutes, completely wipe the memory and get real fresh news from Cloudflare Worker
-  setInterval(function() { 
-    allCache = []; 
-    sportCache = {}; 
-    init(); 
-  }, 60 * 60 * 1000);
-  
-  /* --- SILENT NEWSLETTER SUBMIT --- */
-  var newsletterForm = document.getElementById("newsletter-form");
-  if (newsletterForm) {
-    newsletterForm.addEventListener("submit", async function(event) {
-      event.preventDefault(); // Mute default redirect
-      
-      var form = event.target;
-      var button = form.querySelector("button");
-      var originalText = button.textContent;
-      
-      // Change button text while sending
-      button.textContent = "Subscribing...";
-      
-      try {
-        var response = await fetch(form.action, {
-          method: form.method,
-          body: new FormData(form),
-          headers: { 'Accept': 'application/json' }
-        });
-        
-        if (response.ok) {
-          button.textContent = "✅ Subscribed!";
-          button.style.background = "#4CAF50"; // Turn button green
-          button.style.color = "#fff";
-          form.reset(); // Clear the email box
-        } else {
-          button.textContent = "❌ Error. Try again.";
-        }
-      } catch (error) {
-        button.textContent = "❌ Error. Try again.";
-      }
-      
-      // Reset button back to normal after 4 seconds
-      setTimeout(function() {
-        button.textContent = "Subscribe Now";
-        button.style.background = "#FFFF5C";
-        button.style.color = "#000";
-      }, 4000);
-    });
-  }
-</script>
-</body>
-</html>
+    <!-- YOUR MASCOT LOGO -->
+    <img src="data:image/png;base64,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
