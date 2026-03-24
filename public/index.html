@@ -125,14 +125,6 @@
     .trending-track:hover { animation-play-state: paused; }
     @keyframes scrollVertical { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
     
-    .ad-block { background: #fff; border: 1px solid #e0e0e0; padding: 20px; text-align: center; }
-    .ad-label { font-size: 9px; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-    .ad-content { padding: 20px; color: white; }
-    .ad-content h3 { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
-    .ad-content p { font-size: 12px; opacity: 0.9; margin-bottom: 12px; }
-    .ad-btn { background: white; border: none; padding: 8px 20px; font-size: 12px; font-weight: 700; cursor: pointer; transition: transform 0.2s; display: inline-block; text-transform: uppercase; }
-    .ad-btn:hover { transform: scale(1.05); background: #000; color: #fff !important; }
-    
     .skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
     .skeleton-card { background: #fff; border: 1px solid #e0e0e0; }
     .skeleton-img { height: 180px; background: linear-gradient(90deg,#eaeaea 25%,#f5f5f5 50%,#eaeaea 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
@@ -254,16 +246,17 @@
   </div>
 
   <div class="sidebar">
-    <div class="ad-block" style="padding:0;overflow:hidden;">
-      <div class="ad-label" style="padding:6px 14px; background: #f4f4f4; border-bottom: 1px solid #eee;">Advertisement</div>
-      <div style="position:relative;width:100%;aspect-ratio:16/9;">
-<iframe src="https://www.youtube.com/embed/Bcpu-jqAL6w?autoplay=1&mute=1&loop=1&playlist=Bcpu-jqAL6w&controls=0&rel=0&modestbranding=1" loading="lazy" style="width:100%;height:100%;border:none;display:block;position:absolute;top:0;left:0;" allow="autoplay; encrypted-media" title="Nike Ad"></iframe>
 
-        <div style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;"></div>
-      </div>
-      <div style="background:#000;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
-        <div style="color:white;font-size:14px;font-weight:800;">⚡ NIKE — Just Do It.</div>
-        <a href="https://www.nike.com" target="_blank" rel="noopener noreferrer"><button class="ad-btn" style="color:#000">Explore →</button></a>
+    <!-- SCENIC WIDGET 1: SWITZERLAND GREENERY (Replaces top Nike video ad) -->
+    <div class="sidebar-section" style="padding:0;overflow:hidden;border:1px solid #e0e0e0;background:#000;">
+      <div class="sidebar-title" style="background:#222;color:#fff;text-align:center;letter-spacing:2px;font-size:11px;">🌍 BEAUTIFUL DESTINATIONS</div>
+      <div style="position:relative;width:100%;aspect-ratio:16/9;background:url('https://images.unsplash.com/photo-1464817739973-0128fe77aaa1?auto=format&fit=crop&w=600&q=80') center/cover;">
+        <!-- Transparent dark gradient for text legibility -->
+        <div style="position:absolute;bottom:0;left:0;width:100%;height:60%;background:linear-gradient(to top, rgba(0,0,0,0.8), transparent);z-index:1;"></div>
+        <div style="position:absolute;bottom:0;left:0;padding:16px;z-index:2;width:100%;">
+          <h3 style="color:#fff;font-size:18px;font-weight:800;margin-bottom:2px;text-transform:uppercase;">Lauterbrunnen</h3>
+          <p style="color:#ccc;font-size:11px;margin:0;">The valley of 72 waterfalls.</p>
+        </div>
       </div>
     </div>
 
@@ -292,19 +285,18 @@
       <div id="recentList"><div style="padding:14px;color:#666;font-size:12px">Loading...</div></div>
     </div>
     
-    <!-- NEW TALL NIKE AD -->
-    <div class="ad-block" style="padding: 0; overflow: hidden; border: 1px solid #e0e0e0; background: #000; position: sticky; top: 80px;">
-      <div class="ad-label" style="padding: 8px; background: #f4f4f4; border-bottom: 1px solid #eee; margin-bottom: 0;">Advertisement</div>
-      <div style="position: relative; width: 100%; height: 500px; background: url('https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80') center/cover; display: flex; flex-direction: column; justify-content: flex-end; padding: 24px;">
-        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 70%); z-index: 1;"></div>
+    <!-- SCENIC WIDGET 2: SWITZERLAND GREENERY (Replaces tall Nike banner ad) -->
+    <div class="sidebar-section" style="padding: 0; overflow: hidden; border: 1px solid #e0e0e0; background: #000; position: sticky; top: 80px;">
+      <div class="sidebar-title" style="background: #222; color: #fff; text-align: center; letter-spacing: 2px;">🌍 TRAVEL INSPIRATION</div>
+      <div style="position: relative; width: 100%; height: 500px; background: url('https://images.unsplash.com/photo-1527668752968-14ce70a6a7ea?auto=format&fit=crop&w=600&q=80') center/cover; display: flex; flex-direction: column; justify-content: flex-end; padding: 24px;">
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 60%); z-index: 1;"></div>
         <div style="position: relative; z-index: 2; text-align: left;">
-          <svg width="60" height="30" viewBox="0 0 24 24" fill="white" style="margin-bottom: 10px;"><path d="M24 8.25C19.38 8.65 14.28 11.23 8.51 15.69C5.39 18.11 2.82 19.33 1.07 18.78C-0.65 18.23-1.01 14.54 2.37 9.87C3.52 8.27 4.97 6.47 5.01 6.43C5.01 6.43 3.64 8.13 2.51 9.87C1.35 11.66 0.16 14.07 0.96 15.5C1.86 17.11 4.2 16.99 7.37 14.81C10.58 12.61 14.7 9.17 18.15 6.96C20.48 5.46 22.42 4.79 23.96 5.56C25.46 6.32 25.13 7.84 24 8.25Z"/></svg>
-          <h3 style="color: #fff; font-size: 32px; font-weight: 900; line-height: 1.1; margin-bottom: 8px; text-transform: uppercase;">Defy <br>Gravity.</h3>
-          <p style="color: #ccc; font-size: 13px; margin-bottom: 20px;">The new Jordan collection is here. Elevate your game like never before.</p>
-          <a href="https://www.nike.in" target="_blank" rel="noopener noreferrer"><button class="ad-btn" style="background: #fff; color: #000; border: none; padding: 12px 24px; font-size: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase;">Shop Nike</button></a>
+          <h3 style="color: #fff; font-size: 32px; font-weight: 900; line-height: 1.1; margin-bottom: 8px; text-transform: uppercase;">Discover<br>Switzerland.</h3>
+          <p style="color: #ccc; font-size: 13px; line-height: 1.4; margin-bottom: 0;">Experience the breathtaking tranquility and lush green beauty of the Swiss Alps right from your screen.</p>
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -325,12 +317,12 @@
 </div>
 
 <button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Back to Top">
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
 <script>
   // EXACT WORKER - YOUR DEV ENVIRONMENT
-  var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev';
+  var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev';
   
   // All 14 Sports
   var PRIORITY_SPORTS = ['f1','cricket','basketball','baseball','football','tennis','kabaddi','boxing','golf','athletics','rugby','olympics','nfl','badminton'];
