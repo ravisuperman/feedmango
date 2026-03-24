@@ -519,7 +519,7 @@
     renderNews(); 
   }
 
-  async function renderNews() {
+    async function renderNews() {
     var status = document.getElementById('status');
     var output = document.getElementById('output');
     status.textContent = ''; showSkeleton();
@@ -572,18 +572,27 @@
       shuffleArray(archiveArticles);
       var finalDisplayOrder = vipArticles.concat(archiveArticles);
       
+      // === THE FRAGMENT OPTIMIZATION (Zero Repaint Stuttering) ===
+      var fragment = document.createDocumentFragment();
+      
       finalDisplayOrder.forEach(function(a, index){ 
         var sizeClass = '';
         if (index === 0 && a.image) sizeClass = 'card-hero'; 
         else if (index === 4 && a.image) sizeClass = 'card-wide'; 
         else if (index === 9 && a.image) sizeClass = 'card-hero'; 
-        output.appendChild(buildCard(a, EMOJI[a.sport||'main']||'📰', sizeClass)); 
+        
+        // Append to invisible memory fragment, NOT the actual screen
+        fragment.appendChild(buildCard(a, EMOJI[a.sport||'main']||'📰', sizeClass)); 
       });
+      
+      // Inject all completely assembled cards identically into the screen at once!
+      output.appendChild(fragment);
 
     } catch(e) {
       output.innerHTML = '<div class="empty">❌ '+e.message+'<\/div>';
     }
   }
+
 
   async function init() {
     var results = await Promise.allSettled(PRIORITY_SPORTS.map(fetchSport));
