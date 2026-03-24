@@ -357,7 +357,7 @@
   /* === NEW HEADER CURTAIN LOGIC SCROLL TRACKER === */
   var lastScrollY = window.scrollY;
   
-   window.addEventListener("scroll", function() {
+  window.addEventListener("scroll", function() {
     var currentScroll = window.scrollY;
     
     // HIDE CURTAIN when violently scrolling down, SHOW when scrolling up seamlessly 
@@ -369,17 +369,13 @@
     
     lastScrollY = currentScroll;
     
-    // === NEW LOGIC: HIDE FLOATING MENU ITEM WHEN AT THE VERY TOP ===
+    // LOGIC: HIDE FLOATING MENU ITEM WHEN AT THE VERY TOP 
     var fabContainer = document.querySelector('.fab-container');
     if (fabContainer) {
-      // Show the menu button only after scrolling exactly 150px down!
       if (currentScroll > 150) {
         fabContainer.classList.add("show");
       } else {
-        // We hit the top! Hide the button.
         fabContainer.classList.remove("show");
-        
-        // Also force close the popup menu if it was accidentally left open!
         document.getElementById('fabMenu').classList.remove('open');
         document.getElementById('fabOverlay').classList.remove('open');
       }
@@ -388,7 +384,9 @@
     // BACK TO TOP BUTTON LOGIC
     if (currentScroll > 500) backToTopBtn.classList.add("show");
     else backToTopBtn.classList.remove("show");
-  });
+    
+  }, { passive: true });  // <-- THIS IS THE PASSIVE LISTENER OPTIMIZATION!
+
 
   function toggleMobileMenu() {
     var nav = document.getElementById('mobile-nav');
