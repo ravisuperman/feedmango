@@ -162,6 +162,10 @@
       border-right: none; 
       display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; 
       box-shadow: -2px 4px 12px rgba(0,0,0,0.3); 
+            /* THE NEW GHOSTING LOGIC - 75% invisible */
+      opacity: 0.25; 
+      /* Make sure opacity is animated too! */
+      transition: transform 0.2s, background 0.2s, opacity 0.3s ease; 
       transition: transform 0.2s, background 0.2s; 
       font-size: 9px; 
       font-weight: 900; 
@@ -181,6 +185,12 @@
     @media (max-width: 900px) { .layout{flex-direction:column} .sidebar{width:100%} }
     @media (max-width: 768px) { .header-center{display:none;} .header-right{display:none;} .hamburger-menu{display:block;} .tabs-bar{display:none;} }
     @media (max-width: 600px) { 
+
+            /* --- SLEEK MOBILE MENU FIX --- */
+      .fab-btn { width: 26px; padding: 10px 0; font-size: 9px; border-width: 1.5px; }
+      .fab-btn svg { width: 14px; height: 14px; margin-bottom: 4px !important; }
+      .fab-menu { right: 36px; }
+      /* ----------------------------- */
       #output{grid-template-columns:1fr} .brand{min-width:unset} .ticker-wrap{display:none;} header{padding:8px 16px;}
       .card-title{font-size:20px;line-height:1.2;} .card-hero,.card-wide{grid-column:span 1;}
       .card-hero .card-img{height:200px;flex:none;} .card-hero .card-title{font-size:20px;}
