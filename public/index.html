@@ -6,7 +6,6 @@
   
   <title>AI News - Live Sports</title>
   
-  <!-- The New Football Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22><circle cx=%22256%22 cy=%22256%22 r=%22256%22 fill=%22white%22/><path fill=%22%232563eb%22 d=%22M256 0c-141.4 0-256 114.6-256 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zM361.3 226.5l-42.6-131c26 14.5 49 33.8 68 56.6l-25.4 74.4zm-105.3-64.8l-84.3-61.2c26-14 55.4-21.8 86.4-21.8 28.5 0 55.7 6.8 80.3 19.3l-82.4 63.7zm-143.2 81.3l-24.6-72.2c18.5-22.1 40.7-40.8 65.6-54.9l-41 127.1zm-32 99.3c-1.5-11-2.4-22.3-2.4-33.8 0-14.7 1.4-29.2 4-43.3l108.2 35.1-41.5 127.8c-26.6-21.2-48.4-49.4-61.9-81.8l-6.4-4zM256 324.9c-29.4 0-56.5-15.5-70.8-40.3l-24.1-41.7 85.5-62.1 85.6 62.2-24.2 41.7c-14.3 24.7-41.5 40.2-72 40.2zm-28.7 107.5l42.6-131.2 57.6-.1 42.4 130.6c-34 19-72.8 29.8-113.9 29.8s-79.9-10.8-113.9-29.8zm116.3-21l-41.3-127.2 108.4-35.3c2.6 14 4 28.4 4 43.1 0 11.5-.8 22.8-2.3 33.8l-7.2 4c-13.7 32.7-35.8 61.1-61.6 81.6z%22/></svg>">
   
   <meta name="description" content="SportsRip — Live sports news from around the world"/>
@@ -37,13 +36,7 @@
     
     .brand { display: flex; align-items: center; gap: 3px; }
     
-     .header-icon {
-      width: 40px; height: 40px; 
-      background: transparent; 
-      display: flex; align-items: center; justify-content: center; 
-      font-size: 2.2rem; 
-      flex-shrink: 0;
-    }
+     .header-icon { width: 40px; height: 40px; background: transparent; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; flex-shrink: 0; }
 
     .logo-text { font-size: 26px; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; }
     .logo-text span { color: #000; }
@@ -57,17 +50,7 @@
     
     .header-right { text-align: right; font-size: 12px; color: #333; font-weight: 600; }
 
-    .hamburger-menu {
-      display: none; 
-      background: transparent;
-      border: 2px solid #000;
-      padding: 6px 12px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      color: #000;
-      text-transform: uppercase;
-    }
+    .hamburger-menu { display: none; background: transparent; border: 2px solid #000; padding: 6px 12px; font-size: 14px; font-weight: 700; cursor: pointer; color: #000; text-transform: uppercase; }
     .hamburger-menu:hover { background: #000; color: #FFFF5C; }
 
     .tabs-bar { background: #000; border-bottom: 1px solid #222; display: flex; justify-content: center; overflow-x: auto; scrollbar-width: none; padding: 0 16px; }
@@ -78,13 +61,8 @@
 
     .mobile-navigation { display: none; background: #000; flex-direction: column; }
     .mobile-navigation.open { display: flex; }
-    .mobile-navigation a {
-      color: #fff; padding: 15px 24px; text-decoration: none; font-weight: 700;
-      font-size: 14px; text-transform: uppercase; border-bottom: 1px solid #333;
-    }
-    .mobile-navigation a:hover, .mobile-navigation a.active {
-      color: #FFFF5C; border-left: 4px solid #FFFF5C; padding-left: 20px;
-    }
+    .mobile-navigation a { color: #fff; padding: 15px 24px; text-decoration: none; font-weight: 700; font-size: 14px; text-transform: uppercase; border-bottom: 1px solid #333; }
+    .mobile-navigation a:hover, .mobile-navigation a.active { color: #FFFF5C; border-left: 4px solid #FFFF5C; padding-left: 20px; }
 
     .ticker-wrap { background: #cc0000; overflow: hidden; height: 32px; display: flex; align-items: center; }
     .ticker-label { background: #990000; color: white; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; padding: 0 14px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
@@ -111,7 +89,6 @@
     .card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
     .card-source-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #000; background: #FFFF5C; padding: 2px 7px; }
     .card-author { font-size: 11px; color: #333; font-weight: 600; }
-    .card-time { font-size: 11px; color: #666; margin-left: auto; display: none; }
     .card-title { font-size: 19px; font-weight: 800; color: #222; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .card-desc { font-size: 13px; color: #555; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
 
@@ -196,12 +173,12 @@
 
 <!-- --- THE DYNAMIC MOBILE DROP-DOWN MENU --- -->
 <nav id="mobile-nav" class="mobile-navigation">
-  <!-- Tabs will be beautifully injected here into the wild by JavaScript! -->
+  <!-- Tabs cleanly injected here into the wild by JavaScript! -->
 </nav>
 
 <!-- The DYNAMIC Desktop Tabs -->
 <div class="tabs-bar" id="desktopTabs">
-  <!-- Tabs will be injected here automatically based on news availability! -->
+  <!-- Tabs beautifully injected here automatically based on news availability! -->
 </div>
 
 <div class="ticker-wrap">
@@ -291,22 +268,24 @@
   var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev';
   
   // Phase 2: All 14 Sports defined in strict priority order!
-var PRIORITY_SPORTS = ['f1','cricket','basketball','baseball','football','tennis','kabaddi','boxing','golf','athletics','rugby','olympics','nfl','badminton'];
+  var PRIORITY_SPORTS = ['f1','cricket','basketball','baseball','football','tennis','kabaddi','boxing','golf','athletics','rugby','olympics','nfl','badminton'];
   
+  // Updated carefully to include the "Other" category magic!
   var EMOJI = {
     cricket:'🏏', basketball:'🏀', football:'⚽', baseball:'⚾', tennis:'🎾', kabaddi:'🤼',
-    f1:'🏎️', boxing:'🥊', golf:'⛳', athletics:'🏃', rugby:'🏉', olympics:'🏅', nfl:'🏈', badminton:'🏸', main:'🏆'
+    f1:'🏎️', boxing:'🥊', golf:'⛳', athletics:'🏃', rugby:'🏉', olympics:'🏅', nfl:'🏈', badminton:'🏸', main:'🏆', other:'🌍'
   };
   
   var LABEL = {
     cricket:'Cricket', basketball:'Basketball', football:'Football', baseball:'Baseball', tennis:'Tennis', kabaddi:'Kabaddi',
-    f1:'Formula 1', boxing:'Boxing', golf:'Golf', athletics:'Athletics', rugby:'Rugby', olympics:'Olympics', nfl:'NFL', badminton:'Badminton', main:'Top Stories'
+    f1:'Formula 1', boxing:'Boxing', golf:'Golf', athletics:'Athletics', rugby:'Rugby', olympics:'Olympics', nfl:'NFL', badminton:'Badminton', main:'Top Stories', other:'Other Sports'
   };
   
   var currentSport = 'main';
   var allCache = [];
   var sportCache = {}; 
-  var activeTabs = []; // Will dynamically hold the 6 surviving sports
+  var activeTabs = []; // Holds the top 6 thriving sports
+  var otherTabs = [];  // Holds ALL the other remaining sports with visual news!
 
   /* --- SCROLL LOGIC --- */
   var backToTopBtn = document.getElementById("backToTop");
@@ -397,16 +376,24 @@ var PRIORITY_SPORTS = ['f1','cricket','basketball','baseball','football','tennis
     document.getElementById('output').innerHTML = html + '<\/div>';
   }
 
-  // --- DYNAMIC TAB INJECTOR ---
-  function generateTabs(tabsList) {
+  // --- DYNAMIC TAB HTML INJECTOR ---
+  function generateTabs(tabsList, hasOther) {
     var desktopHTML = '<div class="tab active" data-sport="main" onclick="loadSport(\'main\', false)">🏆 Main</div>';
     var mobileHTML = '<a href="#" class="mobile-tab active" data-sport="main" onclick="loadSport(\'main\', true)">🏆 Top Stories</a>';
     
+    // Inject exactly the 6 winners into your beautiful navigation bar!
     tabsList.forEach(function(sport) {
         var labelHTML = EMOJI[sport] + ' ' + LABEL[sport];
         desktopHTML += '<div class="tab" data-sport="' + sport + '" onclick="loadSport(\'' + sport + '\', false)">' + labelHTML + '</div>';
         mobileHTML +=  '<a href="#" class="mobile-tab" data-sport="' + sport + '" onclick="loadSport(\'' + sport + '\', true)">' + labelHTML + '</a>';
     });
+
+    // If we have 7 or more sports, elegantly gather the rest into a giant "Other Sports" tab!
+    if (hasOther) {
+        var otherHTML = EMOJI['other'] + ' ' + LABEL['other'];
+        desktopHTML += '<div class="tab" data-sport="other" onclick="loadSport(\'other\', false)">' + otherHTML + '</div>';
+        mobileHTML +=  '<a href="#" class="mobile-tab" data-sport="other" onclick="loadSport(\'other\', true)">' + otherHTML + '</a>';
+    }
 
     document.getElementById('desktopTabs').innerHTML = desktopHTML;
     document.getElementById('mobile-nav').innerHTML = mobileHTML;
@@ -463,58 +450,72 @@ var PRIORITY_SPORTS = ['f1','cricket','basketball','baseball','football','tennis
         if (index === 0 && a.image) sizeClass = 'card-hero'; 
         else if (index === 4 && a.image) sizeClass = 'card-wide'; 
         else if (index === 9 && a.image) sizeClass = 'card-hero'; 
-        output.appendChild(buildCard(a, EMOJI[a.sport||currentSport]||'📰', sizeClass)); 
+        output.appendChild(buildCard(a, EMOJI[a.sport||'main']||'📰', sizeClass)); 
       });
     } catch(e) {
       output.innerHTML = '<div class="empty">❌ '+e.message+'<\/div>';
     }
   }
 
-  // THE NEW INTELLIGENT INIT SYSTEM
+  // === THE NEW INTELLIGENT INIT SYSTEM ===
   async function init() {
     var results = await Promise.allSettled(PRIORITY_SPORTS.map(fetchSport));
     var sportArrays = {};
     
-    // Save everything directly to memory cache
-        results.forEach(function(r, i) {
+    // Load and correctly duplicate arrays into Cache memory so it doesn't break individual tabs!
+    results.forEach(function(r, i) {
       var sportKey = PRIORITY_SPORTS[i];
       if (r.status === 'fulfilled' && r.value.length > 0) {
         var sorted = r.value.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
-        sportArrays[sportKey] = sorted.slice(); // MAGIC FIX: Duplicates the cards safely!
-          sportArrays[sportKey] = sorted.slice();
+        sportArrays[sportKey] = sorted.slice(); // Protect the main array
+        sportCache[sportKey] = sorted; // Keeps individual tabs successfully populated!
       } else {
         sportCache[sportKey] = [];
       }
     });
 
-
-    // Pick top 6 sports that actually have articles
+    // 1. Cleverly pick Top 6 visual sports, and put the rest in the overflow bin
     activeTabs = [];
+    otherTabs = [];
     for (var s of PRIORITY_SPORTS) {
       if (sportArrays[s] && sportArrays[s].length > 0) {
-        activeTabs.push(s);
-        if (activeTabs.length === 6) break; // Stop exactly at 6!
+        if (activeTabs.length < 6) {
+          activeTabs.push(s);
+        } else {
+          otherTabs.push(s);
+        }
       }
     }
 
-    // If extremely unfortunate day where everything fails, default to original 6 to avoid a blank top bar
+    // Safety fallback just in case all Cloudflare fetching catastrophically failed today
     if (activeTabs.length === 0) {
       activeTabs = ['cricket','basketball','football','baseball','tennis','kabaddi'];
     }
 
-    // Magically draw the HTML tabs!
-    generateTabs(activeTabs);
+    // 2. Formulate the massive "Other Sports" array
+    var otherArticles = [];
+    otherTabs.forEach(function(sk) {
+      otherArticles = otherArticles.concat(sportCache[sk]);
+    });
+    otherArticles.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
+    
+    // Save it as a dedicated virtual internal sport category so the tab clicks nicely into it!
+    sportCache['other'] = otherArticles;
 
-    // Build the 'Main' mega-feed from only those 6 active sports
+    // 3. Magically draw the exact HTML tabs!
+    generateTabs(activeTabs, otherArticles.length > 0);
+
+    // 4. Build the 'Main' mega-feed from EVERY successful sport!
     var all = [], seen = new Set();
+    var allSportsEver = activeTabs.concat(otherTabs);
     var keepGoing = true;
     while(keepGoing) {
       keepGoing = false;
-      for (var i = 0; i < activeTabs.length; i++) {
-        var sk = activeTabs[i];
+      for (var i = 0; i < allSportsEver.length; i++) {
+        var sk = allSportsEver[i];
         if (sportArrays[sk] && sportArrays[sk].length > 0) {
           keepGoing = true;
-          var a = sportArrays[sk].shift();
+          var a = sportArrays[sk].shift(); // This safely shifts because we used .slice() earlier!
           if (!seen.has(a.link)) { 
             seen.add(a.link); 
             all.push(a); 
@@ -527,7 +528,7 @@ var PRIORITY_SPORTS = ['f1','cricket','basketball','baseball','football','tennis
     buildTicker(all);
     buildSidebar(all);
     
-    // Default page layout loads 'Main' feed and selects it in the bar
+    // Default layout loads the 'Main' feed logic
     if(document.querySelector('.tab[data-sport="main"]')) {
       loadSport('main', false);
     } else {
