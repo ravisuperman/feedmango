@@ -476,16 +476,17 @@ var PRIORITY_SPORTS = ['f1','cricket','basketball','baseball','football','tennis
     var sportArrays = {};
     
     // Save everything directly to memory cache
-    results.forEach(function(r, i) {
+        results.forEach(function(r, i) {
       var sportKey = PRIORITY_SPORTS[i];
       if (r.status === 'fulfilled' && r.value.length > 0) {
         var sorted = r.value.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
-        sportArrays[sportKey] = sorted;
+        sportArrays[sportKey] = sorted.slice(); // MAGIC FIX: Duplicates the cards safely!
         sportCache[sportKey] = sorted; 
       } else {
         sportCache[sportKey] = [];
       }
     });
+
 
     // Pick top 6 sports that actually have articles
     activeTabs = [];
