@@ -481,7 +481,7 @@ var PRIORITY_SPORTS = ['f1','cricket','basketball','baseball','football','tennis
       if (r.status === 'fulfilled' && r.value.length > 0) {
         var sorted = r.value.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
         sportArrays[sportKey] = sorted.slice(); // MAGIC FIX: Duplicates the cards safely!
-        sportCache[sportKey] = sorted; 
+          sportArrays[sportKey] = sorted.slice();
       } else {
         sportCache[sportKey] = [];
       }
