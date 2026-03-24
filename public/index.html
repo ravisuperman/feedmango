@@ -174,12 +174,10 @@
 
 <!-- --- THE DYNAMIC MOBILE DROPs-DOWN MENU --- -->
 <nav id="mobile-nav" class="mobile-navigation">
-  <!-- Tabs cleanly injected here into the wild by JavaScript! -->
 </nav>
 
 <!-- The DYNAMIC Desktop Tabs -->
 <div class="tabs-bar" id="desktopTabs">
-  <!-- Tabs beautifully injected here automatically based on news availability! -->
 </div>
 
 <div class="ticker-wrap">
@@ -266,7 +264,8 @@
 </button>
 
 <script>
-  var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev';
+  // MAGIC FIX: Officially points to your pristine DEV backend instance to test everything!
+  var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev';
   
   // Phase 2: All 14 Sports defined in strict priority order!
   var PRIORITY_SPORTS = ['f1','cricket','basketball','baseball','football','tennis','kabaddi','boxing','golf','athletics','rugby','olympics','nfl','badminton'];
@@ -429,7 +428,7 @@
         var sportName = LABEL[currentSport] || currentSport || 'SPORTS';
         output.innerHTML = `
           <div style="grid-column: 1/-1; text-align: center; padding: 80px 20px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;">
-            <div style="font-size: 140px; line-height: 1; margin-bottom: 20px; text-shadow: 0 10px 20px rgba(0,0,0,0.15);">🏃‍♂️💨</div>
+            <div style="font-size: 140px; line-height: 1; margin-bottom: 20px; text-shadow: 0 10px 20px rgba(0,0,0,0.15);">🏃♂️💨</div>
             <h2 style="font-size: 26px; font-weight: 900; color: #111; margin-bottom: 10px; text-transform: uppercase;">NO ${sportName} NEWS TODAY!</h2>
             <p style="color: #666; font-size: 15px; max-width: 450px; margin: 0 auto; line-height: 1.5;">We only display articles with high-quality thumbnail images to ensure a premium experience. It looks like our publishers haven't released any visual stories for ${sportName} yet. Check back later!</p>
           </div>
