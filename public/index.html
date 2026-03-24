@@ -499,7 +499,7 @@
     renderNews(); 
   }
 
-    async function renderNews() {
+  async function renderNews() {
     var status = document.getElementById('status');
     var output = document.getElementById('output');
     status.textContent = ''; showSkeleton();
@@ -554,15 +554,23 @@
       
       // === THE FRAGMENT OPTIMIZATION (Zero Repaint Stuttering) ===
       var fragment = document.createDocumentFragment();
+      var drawnCount = 0; // We keep track of drawn cards to maintain the beautiful CSS grid layout!
       
-      finalDisplayOrder.forEach(function(a, index){ 
+      finalDisplayOrder.forEach(function(a) { 
+        
+        // 🛡️ FRONTEND SANITIZER: Immediately hide any Sky Sports "Cricket" article that isn't actually about cricket!
+        if (a.source === 'Sky Sports Cricket' && (!a.link || !a.link.toLowerCase().includes('cricket'))) {
+            return; // Skip drawing this card entirely!
+        }
+
         var sizeClass = '';
-        if (index === 0 && a.image) sizeClass = 'card-hero'; 
-        else if (index === 4 && a.image) sizeClass = 'card-wide'; 
-        else if (index === 9 && a.image) sizeClass = 'card-hero'; 
+        if (drawnCount === 0 && a.image) sizeClass = 'card-hero'; 
+        else if (drawnCount === 4 && a.image) sizeClass = 'card-wide'; 
+        else if (drawnCount === 9 && a.image) sizeClass = 'card-hero'; 
         
         // Append to invisible memory fragment, NOT the actual screen
         fragment.appendChild(buildCard(a, EMOJI[a.sport||'main']||'📰', sizeClass)); 
+        drawnCount++;
       });
       
       // Inject all completely assembled cards identically into the screen at once!
