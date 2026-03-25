@@ -61,18 +61,36 @@
     .hamburger.active .line2 { opacity: 0; }
     .hamburger.active .line3 { transform: rotate(-45deg) translate(5px, -5px); }
 
+  /* 📱 COMPACT MOBILE DROPDOWN */
     .mobile-menu { 
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-      background: var(--espn-blue); z-index: 1000; 
-      display: none; /* 🛠️ HIDDEN BY DEFAULT ON DESKTOP */
-      flex-direction: column; align-items: center; justify-content: center; 
-      transform: translateY(-100%); transition: transform 0.4s ease; 
-      padding-top: 48px; 
+      position: fixed; 
+      top: 58px; 
+      right: 1px; 
+      width: 240px; 
+      height: auto; 
+      max-height: calc(100vh - 70px);
+      background: var(--espn-blue); 
+      z-index: 1000; 
+      display: none; 
+      flex-direction: column; 
+      border-radius: 0 0 0 16px; 
+      box-shadow: -5px 5px 20px rgba(0,0,0,0.3);
+      overflow-y: auto;
+      padding: 10px 0;
+      border: 1px solid rgba(255,255,255,0.1);
     }
-    .mobile-menu.active { display: flex; transform: translateY(0); }
-    .mobile-tab { color: #fff; font-size: 24px; font-weight: 800; padding: 15px 0; text-decoration: none; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; width: 100%; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .mobile-tab.active { color: var(--yell); }
-
+    .mobile-menu.active { display: flex; animation: slideIn 0.3s ease-out; }
+    @keyframes slideIn { 
+      from { transform: translateX(20px); opacity: 0; } 
+      to { transform: translateX(0); opacity: 1; } 
+    }
+    .mobile-tab { 
+      color: #fff; font-size: 16px; font-weight: 700; padding: 14px 24px; 
+      text-decoration: none; cursor: pointer; text-transform: none; 
+      border-bottom: 1px solid rgba(255,255,255,0.05); text-align: left; width: 100%; 
+    }
+    .mobile-tab:hover { background: rgba(255,255,255,0.1); }
+    .mobile-tab.active { color: var(--yell); background: rgba(0,0,0,0.1); }
     .ticker-wrap { display: none; }
     
     .layout-box { flex: 1; width: 100%; }
@@ -198,7 +216,6 @@
     var menu = document.getElementById('mobileMenu');
     ham.classList.toggle('active');
     menu.classList.toggle('active');
-    document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : 'auto';
   }
 
   async function fetchSport(s) {
