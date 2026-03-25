@@ -17,6 +17,7 @@
     
     body { background: var(--bg-gray); color: #141414; font-family: 'Assistant', sans-serif; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
     
+    /* 🏏 STRETCHED HEADER WITH 1PX LEFT GAP & ROUNDED TOP-LEFT */
     header { 
       background: var(--espn-blue); 
       color: #fff; 
@@ -28,17 +29,19 @@
       top: 0; 
       z-index: 1000; 
       box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-      border-radius: 12px 0 0 0; 
+      border-radius: 12px 0 0 0; /* Only top-left rounded as requested */
       margin-top: 10px; 
       width: calc(100% - 1px); 
       margin-left: 1px; 
     }
     
-    .brand { display: flex; align-items: center; text-decoration: none; margin-right: 30px; flex-shrink: 0; z-index: 1001; }
+    /* 🏟️ ESPN STYLE LOGO (UNMOVED) */
+    .brand { display: flex; align-items: center; text-decoration: none; margin-right: 30px; flex-shrink: 0; }
     .logo-text { font-size: 26px; font-weight: 900; letter-spacing: -2px; text-transform: uppercase; line-height: 1; font-style: italic; }
     .logo-text span { color: #fff; background: #cc0000; padding: 0 2px; }
     .logo-text em { color: var(--whitish-blue); font-style: italic; font-weight: 500; text-transform: lowercase; margin-left: 1px; }
 
+    /* CENTERED MENU & MIXED CASE */
     .nav-tabs { 
       display: flex; 
       height: 100%; 
@@ -46,26 +49,16 @@
       overflow-x: auto; 
       scrollbar-width: none; 
       flex: 1; 
-      justify-content: center;
+      justify-content: center; /* Center the menu items in the bar */
+      -webkit-overflow-scrolling: touch;
     }
     .nav-tabs::-webkit-scrollbar { display: none; }
     .tab { height: 100%; display: flex; align-items: center; padding: 0 14px; font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.7); cursor: pointer; text-transform: none; white-space: nowrap; transition: 0.2s; border-bottom: 3px solid transparent; }
+    .tab:hover { color: #fff; }
     .tab.active { color: #fff; border-bottom-color: #fff; background: rgba(0,0,0,0.15); }
 
-    #clockDisplay { font-size: 11px; color: rgba(255,255,255,0.9); font-weight: 600; white-space: nowrap; }
-
-    .hamburger { display: none; flex-direction: column; gap: 4px; cursor: pointer; padding: 8px; z-index: 1001; margin-left: auto; }
-    .hamburger div { width: 22px; height: 3px; background: #fff; border-radius: 2px; transition: 0.3s; }
-    .hamburger.active .line1 { transform: rotate(45deg) translate(5px, 5px); }
-    .hamburger.active .line2 { opacity: 0; }
-    .hamburger.active .line3 { transform: rotate(-45deg) translate(5px, -5px); }
-
-    .mobile-menu { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--espn-blue); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: translateY(-100%); transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1); padding-top: 48px; }
-    .mobile-menu.active { transform: translateY(0); }
-    .mobile-tab { color: #fff; font-size: 24px; font-weight: 800; padding: 15px 0; text-decoration: none; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; width: 100%; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .mobile-tab.active { color: var(--yell); }
-
-    .ticker-wrap { display: none; }
+    /* 🔴 TICKER DISABLED (INVISIBLE BUT KEPT) */
+    .ticker-wrap { display: none; background: #111; height: 32px; align-items: center; position: relative; overflow: hidden; }
     
     .layout-box { flex: 1; width: 100%; }
     .layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 25px 24px; gap: 12px; align-items: flex-start; }
@@ -89,33 +82,52 @@
     .card-hero .card-img { width: 60%; height: 100%; border-radius: 12px 0 0 12px; }
     .card-hero .card-body { width: 40%; justify-content: center; }
 
+    /* 📌 DYNAMIC STICKY SIDEBAR FIXED */
     .sidebar { width: 340px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; align-self: stretch; }
     .sidebar-section { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden; }
-    .sticky-widget { position: sticky; top: 58px; z-index: 100; align-self: flex-start; } 
+    
+    /* Sticky logic for 'Recent Updates' widget */
+    .sticky-widget { 
+      position: sticky; 
+      top: 58px; /* Sticks right below the sticky header (48px header + 10px top margin) */
+      z-index: 100;
+      align-self: flex-start;
+    } 
+    
     .sidebar-title { border-top: 4px solid var(--espn-blue); padding: 14px 18px; font-size: 14px; font-weight: 800; text-transform: uppercase; background: #fdfdfd; border-bottom: 1px solid #eee; }
+
     .trending-container { height: 420px; overflow: hidden; }
     .trending-track { display: flex; flex-direction: column; animation: scrollVertical 35s linear infinite; }
+    .trending-track:hover { animation-play-state: paused; }
+    @keyframes scrollVertical { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
+
     .sidebar-article { display: flex; gap: 14px; padding: 12px 18px; border-bottom: 1px solid #eee; text-decoration: none; color: inherit; align-items: center; }
+    .sidebar-article:hover { background: #fbfbfb; }
+    
     .sidebar-thumb { width: 132px; height: 100px; object-fit: cover; flex-shrink: 0; background: #eee; border-radius: 8px; }
+    
     .sidebar-headline { font-size: 13.5px; font-weight: 700; line-height: 1.3; margin-bottom: 5px; }
     .sidebar-source { font-size: 10px; color: var(--espn-blue); font-weight: 800; text-transform: uppercase; }
+
+    /* 🕙 SMALLER DATE IN HEADER */
+    #clockDisplay { font-size: 11px; color: rgba(255,255,255,0.9); font-weight: 600; white-space: nowrap; }
 
     footer { padding: 15px 24px; background: #fff; border-top: 1px solid #ddd; text-align: center; margin-top: auto; }
     .disclaimer { font-size: 11px; color: #444; font-weight: 700; max-width: 900px; margin: 0 auto; line-height: 1.4; letter-spacing: 0.1px; }
 
+    /* 🏹 ENHANCED BACK TO TOP */
     #backToTop { position: fixed; bottom: 30px; right: 25px; width: 32px; height: 32px; background: var(--espn-blue); color: white; border: none; border-radius: 4px; display: none; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; font-size: 18px; font-weight: 800; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: 0.3s opacity; }
     
+    /* 📱 MOBILE FIXES */
     @media (max-width: 1000px) { 
         header { width: 100%; border-radius: 0; margin-top: 0; margin-left:0; padding: 0 15px; }
-        .nav-tabs, #clockDisplay { display: none; }
-        .hamburger { display: flex; }
         .layout{flex-direction:column; padding: 20px 15px;} 
         .sidebar{width:100%} 
         .sticky-widget{position:static;} 
         .card-hero{flex-direction:column; height:auto; grid-column: auto;} 
         .card-hero .card-img{width:100%; height:220px; border-radius: 12px 12px 0 0;} 
         .card-hero .card-body { width: 100%; }
-        #output { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+        .nav-tabs { justify-content: flex-start; }
     }
 
     @media (max-width: 600px) {
@@ -123,7 +135,9 @@
         #output { grid-template-columns: 1fr; gap: 15px; }
         .brand { margin-right: 15px; }
         .logo-text { font-size: 20px; letter-spacing: -1px; }
+        .tab { padding: 0 10px; font-size: 13px; }
         .section-label { font-size: 17px; }
+        #clockDisplay { font-size: 10px; }
     }
   </style>
 </head>
@@ -135,19 +149,14 @@
  </a>
  <nav class="nav-tabs" id="desktopTabs"></nav>
  <div class="header-right" id="clockDisplay"></div>
- <div class="hamburger" id="hamburger" onclick="toggleMenu()">
-   <div class="line1"></div>
-   <div class="line2"></div>
-   <div class="line3"></div>
- </div>
 </header>
 
-<div class="mobile-menu" id="mobileMenu"></div>
+<div class="ticker-wrap"><div class="ticker-label">BREAKING</div><div class="ticker-content"><div class="ticker-track" id="tickerTrack"></div></div></div>
 
 <div class="layout-box">
 <div class="layout">
   <div class="main-pane">
-    <div class="section-label" id="sectionLabel">🏏 IPL 2026</div>
+    <div class="section-label" id="sectionLabel">🏆 Top Stories</div>
     <div id="output"></div>
   </div>
 
@@ -161,6 +170,7 @@
       <div class="trending-container"><div id="trendingList" class="trending-track"></div></div>
     </div>
 
+    <!-- 📌 STICKS RIGHT BELOW HEADER -->
     <div class="sidebar-section sticky-widget">
       <div class="sidebar-title">Recent Updates</div>
       <div id="recentList"></div>
@@ -179,30 +189,26 @@
   var EMOJI = {ipl:'🏏', f1:'🏎️', cricket:'🏏', basketball:'🏀', football:'⚽', baseball:'⚾', tennis:'🎾', kabaddi:'🤼', boxing:'🥊', golf:'⛳', athletics:'🏃', rugby:'🏉', olympics:'🏅', nfl:'🏈', badminton:'🏸', main:'🏆'};
   var LABEL = {ipl:'IPL 2026', f1:'Formula 1', cricket:'Cricket', basketball:'NBA', football:'Soccer', baseball:'MLB', tennis:'Tennis', kabaddi:'Kabaddi', boxing:'Boxing', golf:'Golf', athletics:'Athletics', rugby:'Rugby', olympics:'Olympics', nfl:'NFL', badminton:'Badminton', main:'Top Stories'};
   
-  var currentSport = 'ipl'; var allCache = []; var sportCache = {};
+  var currentSport = 'main'; var allCache = []; var sportCache = {};
 
   function cleanText(h) { if(!h) return ""; var d = document.createElement('div'); d.innerHTML = h; return d.textContent || d.innerText || ""; }
-  function updateClock() { var n = new Date(); if(document.getElementById('clockDisplay')) document.getElementById('clockDisplay').innerHTML = n.toLocaleDateString('en-GB',{day:'numeric',month:'short'}) + ' · ' + n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }
+  function updateClock() { var n = new Date(); document.getElementById('clockDisplay').innerHTML = n.toLocaleDateString('en-GB',{day:'numeric',month:'short'}) + ' · ' + n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }
   updateClock(); setInterval(updateClock, 60000);
 
-  function toggleMenu() {
-    var ham = document.getElementById('hamburger');
-    var menu = document.getElementById('mobileMenu');
-    ham.classList.toggle('active');
-    menu.classList.toggle('active');
-    document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : 'auto';
-  }
-
+  // 🚀 BACK TO TOP VISIBILITY LOGIC
   window.onscroll = function() {
     var btn = document.getElementById("backToTop");
-    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) { btn.style.display = "flex"; } else { btn.style.display = "none"; }
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+      btn.style.display = "flex";
+    } else {
+      btn.style.display = "none";
+    }
   };
 
   async function fetchSport(s) {
     try {
       var r = await fetch(WORKER + '/api/news?sport=' + s); var d = await r.json(); var a = d.articles || [];
-      // 🏏 RELAXED IPL FILTER: Removed mandatory image check to ensure content appears
-      if (s === 'ipl') { var re = /\b(ipl|csk|rcb|mi|kkr|srh|pbks|dc|rr|lsg|gt|dhoni|kohli|rohit|chennai|mumbai|tata|league|cricket|duckett)\b/i; a = a.filter(x => re.test((x.title + " " + (x.description || "")).toLowerCase())); }
+      if (s === 'ipl') { var re = /\b(ipl|csk|rcb|mi|kkr|srh|pbks|dc|rr|lsg|gt|dhoni|kohli|rohit|chennai|mumbai|tata|league|cricket)\b/i; a = a.filter(x => x.image && re.test((x.title + " " + (x.description || "")).toLowerCase())); }
       a.forEach(x => { if(!x.sport) x.sport=s; }); return a;
     } catch(e) { return []; }
   }
@@ -210,7 +216,7 @@
   function buildCard(a, e, size) {
     var c = document.createElement('a'); c.className = 'card ' + (size || ''); c.href = a.link; c.target = '_blank';
     var img = a.image ? '<img class="card-img" src="'+a.image+'" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+e+'</div>\'">' : '<div class="card-img-placeholder">'+e+'</div>';
-    var d = cleanText(a.description || ""); if (!d || d.trim().length < 5) d = "Discover the latest updates, breaking news, and in-depth analysis from the world of sports. Stay informed with our complete coverage.";
+    var d = cleanText(a.description || ""); if (!d || d.trim().length < 5) d = "Discover the full story with all the details crafted just for you. There’s even more depth and insight waiting beyond this short preview. Click to reach the complete article.";
     c.innerHTML = img + '<div class="card-body"><div class="card-meta"><span class="read-more-badge">READ MORE &gt;&gt;</span><span class="card-source">📰 '+(a.source||'SPORTSrip')+'</span></div><div class="card-title">'+a.title+'</div><div class="card-desc">'+d+'</div></div>';
     return c;
   }
@@ -227,28 +233,18 @@
     var a = currentSport === 'main' ? allCache : (sportCache[currentSport] || []);
     if (!a.length) { o.innerHTML = '<div style="grid-column:1/-1; padding:60px; text-align:center;">No stories found.</div>'; return; }
     o.innerHTML = ''; var f = document.createDocumentFragment(); var count = 0;
-    a.forEach(x => { if (x.source === 'Sky Sports Cricket' && (!x.link || !x.link.toLowerCase().includes('cricket'))) return; 
-    var s = (count === 0 && x.image && window.innerWidth > 1000) ? 'card-hero' : ''; 
-    f.appendChild(buildCard(x, EMOJI[x.sport] || '✨', s)); count++; });
+    a.forEach(x => { if (x.source === 'Sky Sports Cricket' && (!x.link || !x.link.toLowerCase().includes('cricket'))) return; var s = (count === 0 && x.image) ? 'card-hero' : ''; f.appendChild(buildCard(x, EMOJI[x.sport] || '✨', s)); count++; });
     o.appendChild(f);
   }
 
   function generateTabs(list) {
-    var activeTabs = ['main', 'ipl'];
-    list.forEach(s => { if(s !== 'ipl') activeTabs.push(s); });
-    var desktopH = ''; var mobileH = '';
-    activeTabs.forEach(s => {
-      var activeClass = s === currentSport ? ' active' : '';
-      desktopH += '<div class="tab'+activeClass+'" data-sport="'+s+'" onclick="setActive(\''+s+'\')">'+LABEL[s]+'</div>';
-      mobileH += '<div class="mobile-tab'+activeClass+'" data-sport="'+s+'" onclick="setActive(\''+s+'\'); toggleMenu();">'+LABEL[s]+'</div>';
-    });
-    document.getElementById('desktopTabs').innerHTML = desktopH;
-    document.getElementById('mobileMenu').innerHTML = mobileH;
+    var h = '<div class="tab active" data-sport="main" onclick="setActive(\'main\')">All Sports</div>';
+    list.forEach(s => { h += '<div class="tab" data-sport="'+s+'" onclick="setActive(\''+s+'\')">'+LABEL[s]+'</div>'; });
+    document.getElementById('desktopTabs').innerHTML = h;
   }
 
   function setActive(k) {
-    currentSport = k; 
-    document.querySelectorAll('.tab, .mobile-tab').forEach(t=>t.classList.toggle('active', t.dataset.sport===k));
+    currentSport = k; document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.sport===k));
     document.getElementById('sectionLabel').innerHTML = (EMOJI[k]||'🏆') + ' ' + (LABEL[k]||'News');
     window.scrollTo({top: 0, behavior: 'smooth'}); renderNews();
   }
@@ -256,14 +252,16 @@
   async function init() {
     var res = await Promise.allSettled(PRIORITY_SPORTS.map(fetchSport));
     var sa = {}; res.forEach((r, i) => { if (r.status === 'fulfilled' && r.value.length) { sportCache[PRIORITY_SPORTS[i]] = r.value.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate)); sa[PRIORITY_SPORTS[i]] = sportCache[PRIORITY_SPORTS[i]].slice(); } });
-    var active = []; for (var s of PRIORITY_SPORTS) { if (sportCache[s] && sportCache[s].length && active.length < 10) active.push(s); }
+    var active = []; for (var s of PRIORITY_SPORTS) { if (sportCache[s] && sportCache[s].length && active.length < 8) active.push(s); }
     var all = [], seen = new Set(), keep = true; while(keep) { keep = false; active.forEach(sk => { if (sa[sk] && sa[sk].length) { keep = true; var a = sa[sk].shift(); if (!seen.has(a.link)) { seen.add(a.link); all.push(a); } } }); }
     allCache = all; generateTabs(active);
     if (all.length) {
+      var ticks = all.slice(0,12).map(a=>'<span class="ticker-item">'+a.title+'</span>').join(''); document.getElementById('tickerTrack').innerHTML = ticks + ticks;
       var tr = document.getElementById('trendingList'); tr.innerHTML = ''; all.filter(x=>x.image).slice(0,6).forEach(a=>tr.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')));
+      document.getElementById('trendingList').innerHTML += document.getElementById('trendingList').innerHTML;
       var rc = document.getElementById('recentList'); rc.innerHTML = ''; all.slice(6, 11).forEach(a=>rc.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')));
     }
-    setActive('ipl');
+    setActive('main');
   }
   init();
 </script>
