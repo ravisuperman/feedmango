@@ -12,20 +12,22 @@
   <style>
     :root { --espn-blue: #035bb0; --whitish-blue: #94bdff; --bg-gray: #f2f2f2; --yell: #ffff00; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body { background: var(--bg-gray); color: #141414; font-family: 'Assistant', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
     
     header { background: var(--espn-blue); color: #fff; padding: 0 24px; display: flex; align-items: center; height: 56px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
     
-    /* 🏏 PERFECT 1PX GAP ALIGNMENT */
-    .brand { display: flex; align-items: center; gap: 1px; text-decoration: none; margin-right: 30px; height: 100%; }
+    /* 🏏 RAZOR-SHARP 1PX LOGO ALIGNMENT */
+    .brand { display: flex; align-items: center; gap: 1px !important; text-decoration: none; margin-right: 30px; }
     .header-icon { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; }
-    .logo-text { font-size: 26px; font-weight: 800; letter-spacing: -1.5px; text-transform: uppercase; line-height: 1; display: flex; align-items: baseline; }
+    .logo-text { font-size: 26px; font-weight: 800; letter-spacing: -1.5px; text-transform: uppercase; line-height: 1; margin-top: 2px; }
     .logo-text span { color: #ffffff; }
     .logo-text em { color: var(--whitish-blue); font-style: normal; font-weight: 500; text-transform: lowercase; }
 
     .nav-tabs { display: flex; height: 100%; align-items: center; overflow-x: auto; scrollbar-width: none; flex: 1; margin-right: 20px; }
     .nav-tabs::-webkit-scrollbar { display: none; }
     .tab { height: 100%; display: flex; align-items: center; padding: 0 14px; font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.7); cursor: pointer; text-transform: uppercase; white-space: nowrap; transition: 0.2s; border-bottom: 3px solid transparent; }
+    .tab:hover { color: #fff; }
     .tab.active { color: #fff; border-bottom-color: #fff; background: rgba(0,0,0,0.15); }
 
     .ticker-wrap { background: #111; height: 32px; display: flex; align-items: center; position: relative; overflow: hidden; }
@@ -51,11 +53,14 @@
 
     .card-hero { grid-column: span 2; flex-direction: row; height: 340px; }
     .card-hero .card-img { width: 60%; height: 100%; }
-    .card-hero .card-body { width: 40%; justify-content: center; }
+    .card-hero .card-body { width: 40%; padding: 28px; justify-content: center; }
 
-    /* 📌 STICKY SIDEBAR LOGIC */
-    .sidebar { width: 340px; flex-shrink: 0; display: flex; flex-direction: column; gap: 30px; position: sticky; top: 76px; }
+    /* 📌 DYNAMIC STICKY SIDEBAR */
+    .sidebar { width: 340px; flex-shrink: 0; display: flex; flex-direction: column; gap: 30px; }
     .sidebar-section { background: #fff; border: 1px solid #e0e0e0; border-radius: 4px; overflow: hidden; }
+    /* Only the last section sticks once reached */
+    .sticky-widget { position: sticky; top: 76px; } 
+    
     .sidebar-title { border-top: 4px solid var(--espn-blue); padding: 14px 18px; font-size: 14px; font-weight: 800; text-transform: uppercase; background: #fdfdfd; border-bottom: 1px solid #eee; }
 
     .trending-container { height: 420px; overflow: hidden; }
@@ -64,17 +69,21 @@
     @keyframes scrollVertical { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
 
     .sidebar-article { display: flex; gap: 14px; padding: 15px 18px; border-bottom: 1px solid #eee; text-decoration: none; color: inherit; align-items: center; }
-    .sidebar-thumb { width: 85px; height: 65px; object-fit: cover; flex-shrink: 0; background: #eee; }
+    .sidebar-article:hover { background: #fbfbfb; }
+    
+    /* 📸 THUMBNAILS INCREASED BY 25% */
+    .sidebar-thumb { width: 106px; height: 80px; object-fit: cover; flex-shrink: 0; background: #eee; border-radius: 2px; }
+    
     .sidebar-headline { font-size: 13.5px; font-weight: 700; line-height: 1.35; margin-bottom: 5px; }
     .sidebar-source { font-size: 10px; color: var(--espn-blue); font-weight: 800; text-transform: uppercase; }
 
-    /* 📢 BOLD VISIBLE FOOTER */
-    footer { padding: 50px 24px; background: #fff; border-top: 1px solid #ccc; text-align: center; margin-top: auto; }
-    .disclaimer { font-size: 14px; color: #333; font-weight: 700; max-width: 900px; margin: 0 auto; line-height: 1.6; letter-spacing: 0.2px; }
+    /* 📢 SLEEK PROFESSIONAL FOOTER */
+    footer { padding: 15px 24px; background: #fff; border-top: 1px solid #ddd; text-align: center; margin-top: auto; }
+    .disclaimer { font-size: 11px; color: #444; font-weight: 700; max-width: 900px; margin: 0 auto; line-height: 1.4; letter-spacing: 0.1px; }
 
     #backToTop { position: fixed; bottom: 30px; right: 25px; width: 42px; height: 42px; background: var(--espn-blue); color: white; border: none; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; font-size: 20px; font-weight: 800; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
     
-    @media (max-width: 1000px) { .layout{flex-direction:column} .sidebar{width:100%; position:static;} .card-hero{flex-direction:column; height:auto;} .card-hero .card-img{width:100%; height:220px;} }
+    @media (max-width: 1000px) { .layout{flex-direction:column} .sidebar{width:100%} .sticky-widget{position:static;} .card-hero{flex-direction:column; height:auto;} .card-hero .card-img{width:100%; height:220px;} }
   </style>
 </head>
 <body>
@@ -82,12 +91,13 @@
 <header id="main-header">
  <a href="/" class="brand">
   <div class="header-icon">
-    <!-- ⚽ FIXED CROSS-GLOBE ICON -->
+    <!-- ⚽ HIGH-DEFINITION LOGO ICON -->
     <svg viewBox="0 0 24 24" width="28" height="28">
-      <circle cx="12" cy="12" r="10.5" fill="none" stroke="#fff" stroke-width="2.2"/>
-      <path d="M12 1.5v21M1.5 12h21" stroke="#fff" stroke-width="1.8"/>
+      <circle cx="12" cy="12" r="10.5" fill="none" stroke="#fff" stroke-width="2.3"/>
+      <path d="M12 1.5v21M1.5 12h21" stroke="#fff" stroke-width="2"/>
     </svg>
   </div>
+  <!-- 1PX GAP APPLIED BELOW -->
   <div class="logo-text"><span>SPORTS</span><em>rip</em></div>
  </a>
  <nav class="nav-tabs" id="desktopTabs"></nav>
@@ -113,7 +123,8 @@
       <div class="trending-container"><div id="trendingList" class="trending-track"></div></div>
     </div>
 
-    <div class="sidebar-section">
+    <!-- 📌 THIS SECTION BECOMES STICKY AFTER SCROLLING THE OTHERS -->
+    <div class="sidebar-section sticky-widget">
       <div class="sidebar-title">Recent Updates</div>
       <div id="recentList"></div>
     </div>
