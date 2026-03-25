@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SPORTSrip — Live News Portal</title>
+  <title>SPORTSrip — Live Sports Feed</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
   
   <style>
-    :root { --espn-blue: #035bb0; --whitish-blue: #94bdff; --bg-gray: #f4f4f4; --yell: #ffff00; }
+    :root { --espn-blue: #035bb0; --whitish-blue: #94bdff; --bg-gray: #f2f2f2; --yell: #ffff00; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg-gray); color: #141414; font-family: 'Assistant', sans-serif; min-height: 100vh; }
+    body { background: var(--bg-gray); color: #141414; font-family: 'Assistant', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
     
     header { background: var(--espn-blue); color: #fff; padding: 0 24px; display: flex; align-items: center; height: 56px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
     .brand { display: flex; align-items: center; gap: 8px; text-decoration: none; margin-right: 30px; }
@@ -26,11 +26,12 @@
     .tab.active { color: #fff; border-bottom-color: #fff; background: rgba(0,0,0,0.15); }
 
     .ticker-wrap { background: #111; height: 32px; display: flex; align-items: center; position: relative; overflow: hidden; }
-    .ticker-label { background: #cc0000; color: white; font-size: 11px; font-weight: 800; padding: 0 15px; height: 100%; display: flex; align-items: center; position: relative; z-index: 20; }
+    .ticker-label { background: #cc0000; color: white; font-size: 11px; font-weight: 800; padding: 0 15px; height: 100%; display: flex; align-items: center; z-index: 20; position: relative; }
     .ticker-track { display: flex; animation: ticker 100s linear infinite; }
     .ticker-item { color: #eee; font-size: 13px; padding: 0 30px; display: flex; align-items: center; font-weight: 600; white-space: nowrap; }
     @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
     
+    .layout-box { flex: 1; }
     .layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 25px 24px; gap: 30px; }
     .main-pane { flex: 3; min-width: 0; }
     .section-label { font-size: 19px; font-weight: 800; text-transform: uppercase; border-left: 6px solid var(--espn-blue); padding-left: 14px; margin-bottom: 20px; }
@@ -38,7 +39,7 @@
     #output { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 20px; }
     .card { background: #fff; border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; text-decoration: none; color: inherit; box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: 0.25s; border-bottom: 1px solid #ddd; }
     .card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
-    .card-img { width: 100%; height: 185px; object-fit: cover; }
+    .card-img { width: 100%; height: 185px; object-fit: cover; background: #eee; }
     .card-body { padding: 18px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
     .read-more-badge { color: #000; background: var(--yell); padding: 3px 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; border-radius: 2px; }
     .card-source { font-size: 11px; color: #666; font-weight: 600; text-transform: uppercase; opacity: 0.8; }
@@ -59,11 +60,15 @@
     @keyframes scrollVertical { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
 
     .sidebar-article { display: flex; gap: 14px; padding: 15px 18px; border-bottom: 1px solid #eee; text-decoration: none; color: inherit; align-items: center; }
-    .sidebar-thumb { width: 85px; height: 65px; object-fit: cover; flex-shrink: 0; }
+    .sidebar-thumb { width: 85px; height: 65px; object-fit: cover; flex-shrink: 0; background: #eee; }
     .sidebar-headline { font-size: 13.5px; font-weight: 700; line-height: 1.35; margin-bottom: 5px; }
     .sidebar-source { font-size: 10px; color: var(--espn-blue); font-weight: 800; text-transform: uppercase; }
 
-    #backToTop { position: fixed; bottom: 30px; right: 25px; width: 42px; height: 42px; background: var(--espn-blue); color: white; border: none; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; font-size: 20px; font-weight: 800; }
+    /* FOOTER STYLING */
+    footer { padding: 40px 24px; background: #fff; border-top: 1px solid #ddd; text-align: center; margin-top: auto; }
+    .disclaimer { font-size: 12px; color: #888; max-width: 800px; margin: 0 auto; line-height: 1.6; }
+
+    #backToTop { position: fixed; bottom: 30px; right: 25px; width: 42px; height: 42px; background: var(--espn-blue); color: white; border: none; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; font-size: 20px; font-weight: 800; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
     
     @media (max-width: 1000px) { .layout{flex-direction:column} .sidebar{width:100%} .card-hero{flex-direction:column; height:auto;} .card-hero .card-img{width:100%; height:220px;} }
   </style>
@@ -83,6 +88,7 @@
 
 <div class="ticker-wrap"><div class="ticker-label">BREAKING</div><div class="ticker-content"><div class="ticker-track" id="tickerTrack"></div></div></div>
 
+<div class="layout-box">
 <div class="layout">
   <div class="main-pane">
     <div class="section-label" id="sectionLabel">🏆 Top Stories</div>
@@ -90,9 +96,9 @@
   </div>
 
   <div class="sidebar">
-    <!-- 🐑 SHEEP IMAGE ABOVE TRENDING -->
+    <!-- KIDS IMAGE -->
     <div class="sidebar-section">
-      <img src="sheep.jpg" alt="Sheep" style="width:100%; height:auto; display:block;" onerror="this.src='https://images.pexels.com/photos/288621/pexels-photo-288621.jpeg?auto=compress&cs=tinysrgb&w=600'">
+      <img src="https://images.pexels.com/photos/8941571/pexels-photo-8941571.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Kids Sports" style="width:100%; height:auto; display:block;">
     </div>
 
     <div class="sidebar-section">
@@ -105,20 +111,30 @@
       <div id="recentList"></div>
     </div>
 
-    <!-- 🗼 EIFFEL TOWER BELOW RECENT (Extra Tall) -->
-    <div class="sidebar-section" style="border:none; background:transparent;">
-      <img src="https://images.pexels.com/photos/699466/pexels-photo-699466.jpeg?auto=compress&cs=tinysrgb&h=1000" alt="Eiffel Tower" style="width:100%; height:950px; object-fit:cover; border-radius:4px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+    <!-- TALL EIFFEL TOWER (With ID for smart hiding) -->
+    <div id="towerSection" class="sidebar-section" style="border:none; background:transparent;">
+      <img src="https://images.pexels.com/photos/1530298/pexels-photo-1530298.jpeg?auto=compress&cs=tinysrgb&h=1200" alt="Eiffel Tower" style="width:100%; height:980px; object-fit:cover; border-radius:4px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
     </div>
   </div>
 </div>
+</div>
+
+<footer>
+  <div class="disclaimer">
+    Disclaimer: Headlines are sourced from official RSS feeds of their respective publishers. All rights and copyrights remain with the original content owners.
+  </div>
+</footer>
 
 <button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
 
 <script>
   var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev';
   var PRIORITY_SPORTS = ['ipl','f1','cricket','basketball','baseball','football','tennis','kabaddi','boxing','golf','athletics','rugby','olympics','nfl','badminton'];
-  var EMOJI = {ipl:'🏏', f1:'🏎️', cricket:'🏏', basketball:'🏀', football:'⚽', baseball:'⚾', tennis:'🎾', kabaddi:'🤼', main:'🏆'};
-  var LABEL = {ipl:'IPL 2026', f1:'Formula 1', cricket:'Cricket', basketball:'NBA', football:'Soccer', baseball:'MLB', tennis:'Tennis', kabaddi:'Kabaddi', main:'Top Stories'};
+  
+  // FIXED: ADDED ALL MISSING LABELS & EMOJIS
+  var EMOJI = {ipl:'🏏', f1:'🏎️', cricket:'🏏', basketball:'🏀', football:'⚽', baseball:'⚾', tennis:'🎾', kabaddi:'🤼', boxing:'🥊', golf:'⛳', athletics:'🏃', rugby:'🏉', olympics:'🏅', nfl:'🏈', badminton:'🏸', main:'🏆'};
+  var LABEL = {ipl:'IPL 2026', f1:'Formula 1', cricket:'Cricket', basketball:'NBA', football:'Soccer', baseball:'MLB', tennis:'Tennis', kabaddi:'Kabaddi', boxing:'Boxing', golf:'Golf', athletics:'Athletics', rugby:'Rugby', olympics:'Olympics', nfl:'NFL', badminton:'Badminton', main:'Top Stories'};
+  
   var currentSport = 'main'; var allCache = []; var sportCache = {};
 
   function cleanText(h) { if(!h) return ""; var d = document.createElement('div'); d.innerHTML = h; return d.textContent || d.innerText || ""; }
@@ -136,8 +152,7 @@
   function buildCard(a, e, size) {
     var c = document.createElement('a'); c.className = 'card ' + (size || ''); c.href = a.link; c.target = '_blank';
     var img = a.image ? '<img class="card-img" src="'+a.image+'" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+e+'</div>\'">' : '<div class="card-img-placeholder">'+e+'</div>';
-    var d = cleanText(a.description || "");
-    if (!d || d.trim().length < 5) d = "Discover the full story with all the details crafted just for you. There’s even more depth and insight waiting beyond this short preview. Click to reach the complete article.";
+    var d = cleanText(a.description || ""); if (!d || d.trim().length < 5) d = "Discover the full story with all the details crafted just for you. There’s even more depth and insight waiting beyond this short preview. Click to reach the complete article.";
     c.innerHTML = img + '<div class="card-body"><div class="card-meta"><span class="read-more-badge">READ MORE &gt;&gt;</span><span class="card-source">📰 '+(a.source||'SPORTSrip')+'</span></div><div class="card-title">'+a.title+'</div><div class="card-desc">'+d+'</div></div>';
     return c;
   }
@@ -152,6 +167,11 @@
   async function renderNews() {
     var o = document.getElementById('output'); o.innerHTML = 'Connecting...';
     var a = currentSport === 'main' ? allCache : (sportCache[currentSport] || []);
+    
+    // SMART HIDE LOGIC FOR EIFFEL TOWER
+    var tower = document.getElementById('towerSection');
+    if (tower) tower.style.display = (a.length > 5) ? 'block' : 'none';
+
     if (!a.length) { o.innerHTML = '<div style="grid-column:1/-1; padding:60px; text-align:center;">No stories found.</div>'; return; }
     o.innerHTML = ''; var f = document.createDocumentFragment(); var count = 0;
     a.forEach(x => { if (x.source === 'Sky Sports Cricket' && (!x.link || !x.link.toLowerCase().includes('cricket'))) return; var s = (count === 0 && x.image) ? 'card-hero' : ''; f.appendChild(buildCard(x, EMOJI[x.sport] || '✨', s)); count++; });
