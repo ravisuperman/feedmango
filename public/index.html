@@ -3,172 +3,116 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SPORTSrip — Live News Aggregator</title>
   
-  <title>AI News - LiveSports</title>
+  <!-- Premium Sports Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
   
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><circle cx=%2212%22 cy=%2212%22 r=%2210.5%22 fill=%22%23f26522%22 stroke=%22%23111%22 stroke-width=%223%22/><path d=%22M12 1.5v21M1.5 12h21%22 stroke=%22%23111%22 stroke-width=%223%22/></svg>">  
-  <meta name="description" content="SPORTSrip — Live sports news from around the world"/>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><circle cx=%2212%22 cy=%2212%22 r=%2210.5%22 fill=%22%23035bb0%22 stroke=%22%23fff%22 stroke-width=%223%22/><path d=%22M12 1.5v21M1.5 12h21%22 stroke=%22%23fff%22 stroke-width=%223%22/></svg>">  
+
   <style>
+    :root { --espn-blue: #035bb0; --espn-dark: #121212; --bg-gray: #f2f2f2; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
-    body { background: #f4f4f4; color: #141414; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; }
+    body { background: var(--bg-gray); color: #141414; font-family: 'Assistant', sans-serif; min-height: 100vh; }
     
+    /* ESPN PREMIUM HEADER */
     header { 
-      background: rgba(255, 255, 92, 1); 
-      color: #000; 
-      border-bottom: 2px solid #000; 
-      padding: 6px 20px;  
+      background: var(--espn-blue); 
+      color: #fff; 
+      padding: 0 24px;  
       display: flex; 
       align-items: center; 
-      justify-content: space-between; 
+      height: 56px;
       position: sticky; 
       top: 0; 
-      z-index: 200; 
-      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+      z-index: 1000; 
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
     
-    header.hide-curtain { transform: translateY(-100%); }
-    
-    .brand { display: flex; align-items: center; gap: 6px; }
-    .header-icon { width: 34px; height: 34px; background: transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .header-icon img { width: 100%; height: 100%; object-fit: contain; }
-    .logo-text { font-size: 24px; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; }
-    .logo-text span { color: #000; }
-    .logo-text em { color: #333; font-style: normal; font-weight: 500; text-transform: lowercase; }
-    
-    .header-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .live-badge { display: inline-flex; align-items: center; gap: 5px; background: #cc0000; color: white; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 3px; letter-spacing: 1px; text-transform: uppercase; }
-    .live-dot { width: 6px; height: 6px; background: white; border-radius: 50%; animation: pulse 1.2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-    .header-tagline { font-size: 11px; color: #333; font-weight: 600; letter-spacing: 0.3px; }
-    
-    .header-right { text-align: right; }
-    .date-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.1); padding: 5px 12px; border-radius: 6px; font-family: monospace; font-size: 11px; font-weight: 800; color: #111; letter-spacing: -0.3px; }
-    .date-badge-icon { font-size: 14px; }
+    .brand { display: flex; align-items: center; gap: 8px; text-decoration: none; color: #fff; margin-right: 30px; }
+    .header-icon { width: 32px; height: 32px; fill: #fff; }
+    .logo-text { font-size: 26px; font-weight: 800; letter-spacing: -1.5px; text-transform: uppercase; }
+    .logo-text em { font-style: normal; font-weight: 400; text-transform: lowercase; }
 
-    .hamburger-menu { display: none; background: transparent; border: 2px solid #000; padding: 6px 12px; font-size: 14px; font-weight: 700; cursor: pointer; color: #000; text-transform: uppercase; margin-left: auto; }
-    .hamburger-menu:hover { background: #000; color: #FFFF5C; }
+    /* INTEGRATED NAVIGATION */
+    .nav-tabs { display: flex; height: 100%; align-items: center; overflow-x: auto; scrollbar-width: none; flex: 1; }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .tab { height: 100%; display: flex; align-items: center; padding: 0 14px; font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.85); cursor: pointer; text-transform: uppercase; white-space: nowrap; transition: 0.2s; border-bottom: 3px solid transparent; }
+    .tab:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    .tab.active { color: #fff; border-bottom-color: #fff; background: rgba(0,0,0,0.1); }
 
-    .tabs-bar { background: #000; border-bottom: 1px solid #222; display: flex; justify-content: center; overflow-x: auto; scrollbar-width: none; padding: 0 16px; }
-    .tabs-bar::-webkit-scrollbar { display: none; }
-    .tab { padding: 12px 18px; font-size: 13px; font-weight: 700; color: #fff; cursor: pointer; border-bottom: 4px solid transparent; white-space: nowrap; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
-    .tab:hover { color: #FFFF5C; }
-    .tab.active { color: #FFFF5C; border-bottom-color: #FFFF5C; }
+    .header-right { display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 600; opacity: 0.9; }
 
-    .mobile-navigation { display: none; background: #000; flex-direction: column; }
-    .mobile-navigation.open { display: flex; }
-    .mobile-navigation a { color: #fff; padding: 15px 24px; text-decoration: none; font-weight: 700; font-size: 14px; text-transform: uppercase; border-bottom: 1px solid #333; }
-    .mobile-navigation a:hover, .mobile-navigation a.active { color: #FFFF5C; border-left: 4px solid #FFFF5C; padding-left: 20px; }
-
-    .ticker-wrap { background: #cc0000; overflow: hidden; height: 32px; display: flex; align-items: center; }
-    .ticker-label { background: #990000; color: white; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; padding: 0 14px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
-    .ticker-content { display: flex; overflow: hidden; flex: 1; }
-    .ticker-track { display: flex; animation: ticker 100s linear infinite; white-space: nowrap; }
-    .ticker-track:hover { animation-play-state: paused; }
-    .ticker-item { color: white; font-size: 12px; font-weight: 500; padding: 0 28px; display: flex; align-items: center; gap: 8px; }
-    .ticker-item::before { content: '●'; font-size: 6px; opacity: 0.7; }
+    /* TICKER */
+    .ticker-wrap { background: #000; overflow: hidden; height: 28px; display: flex; align-items: center; border-bottom: 1px solid #333; }
+    .ticker-label { background: #cc0000; color: white; font-size: 10px; font-weight: 800; padding: 0 12px; height: 100%; display: flex; align-items: center; text-transform: uppercase; }
+    .ticker-track { display: flex; animation: ticker 80s linear infinite; white-space: nowrap; }
+    .ticker-item { color: white; font-size: 12px; padding: 0 25px; display: flex; align-items: center; font-weight: 600; }
     @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
     
-    .layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 20px 16px; gap: 24px; align-items: stretch; }
+    .layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 20px 24px; gap: 28px; }
     .main-pane { flex: 3; min-width: 0; }
     
-    .section-label { font-size: 16px; font-weight: 800; text-transform: uppercase; color: #222; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #FFFF5C; }
-    #status { font-size: 12px; color: #666; margin-bottom: 12px; min-height: 20px; }
+    .section-label { font-size: 18px; font-weight: 800; text-transform: uppercase; color: #111; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; border-left: 5px solid var(--espn-blue); padding-left: 12px; }
     
-    #output { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; grid-auto-flow: dense; }
+    #output { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
     
-    .card { background: #fff; border: none; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; text-decoration: none; color: inherit; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-    .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-    .card-img { width: 100%; height: 180px; font-size: 40px; object-fit: cover; display: flex; align-items: center; justify-content: center; }
-    .card-img-placeholder { width: 100%; height: 180px; background: #eaeaea; display: flex; align-items: center; justify-content: center; font-size: 40px; border-bottom: none; }
-    .card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+    /* PROFESSIONAL NEWS CARDS */
+    .card { background: #fff; border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; text-decoration: none; color: inherit; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: 0.2s; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.12); }
+    .card-img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
+    .card-img-placeholder { width: 100%; height: 180px; background: #eaeaea; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+    .card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .card-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .card-source-badge { font-size: 10px; font-weight: 800; color: #fff; background: var(--espn-blue); padding: 2px 6px; text-transform: uppercase; border-radius: 2px; }
+    .card-title { font-size: 18px; font-weight: 800; color: #111; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-desc { font-size: 13px; color: #444; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
-    .card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .card-source-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #000; background: #FFFF5C; padding: 2px 7px; }
-    .card-author { font-size: 11px; color: #333; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; }
-    .card-title { font-size: 19px; font-weight: 800; color: #222; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    .card-desc { font-size: 13px; color: #555; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
+    .card-hero { grid-column: span 2; grid-row: span 1; flex-direction: row; height: 320px; }
+    .card-hero .card-img { width: 60%; height: 100%; }
+    .card-hero .card-body { width: 40%; padding: 24px; justify-content: center; }
+    .card-hero .card-title { font-size: 26px; -webkit-line-clamp: 4; }
 
-    .card-hero { grid-column: span 2; grid-row: span 2; }
-    .card-hero .card-img { height: auto; flex: 1; }
-    .card-hero .card-body { flex: none; }
-    .card-hero .card-title { font-size: 24px; -webkit-line-clamp: 4; }
-    .card-hero .card-desc { -webkit-line-clamp: 8; }
-
-    .card-wide { grid-column: span 2; flex-direction: row; }
-    .card-wide .card-img { width: 40%; height: 100%; }
-    .card-wide .card-body { width: 60%; justify-content: center; }
-    
-    .sidebar { width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 24px; }
-    .sidebar-section { background: #fff; border: 1px solid #e0e0e0; border-radius: 0px; overflow: hidden; }
-    .sidebar-title { background: #000; padding: 12px 16px; font-size: 13px; font-weight: 800; text-transform: uppercase; color: #FFFF5C; }
-    .sidebar-article { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #eee; text-decoration: none; color: inherit; transition: background 0.15s; }
+    /* CLEAN SIDEBAR */
+    .sidebar { width: 340px; flex-shrink: 0; display: flex; flex-direction: column; gap: 30px; }
+    .sidebar-section { background: #fff; border: 1px solid #e0e0e0; border-radius: 4px; overflow: hidden; }
+    .sidebar-title { border-top: 3px solid var(--espn-blue); padding: 12px 16px; font-size: 14px; font-weight: 800; text-transform: uppercase; color: #111; background: #fafafa; border-bottom: 1px solid #eee; }
+    .sidebar-article { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #eee; text-decoration: none; color: inherit; align-items: center; }
     .sidebar-article:hover { background: #f9f9f9; }
     .sidebar-article:last-child { border-bottom: none; }
-    .sidebar-thumb { width: 70px; height: 55px; border-radius: 4px; object-fit: cover; flex-shrink: 0; }
-    .sidebar-thumb-placeholder { width: 70px; height: 55px; border-radius: 4px; background: #eaeaea; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-    .sidebar-text { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;}
-    .sidebar-headline { font-size: 13px; font-weight: 700; color: #222; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .sidebar-source { font-size: 10px; color: #888; font-weight: 700; text-transform: uppercase; margin-top: 5px; }
+    .sidebar-thumb { width: 80px; height: 60px; border-radius: 2px; object-fit: cover; flex-shrink: 0; background: #eee; }
+    .sidebar-text { flex: 1; min-width: 0; }
+    .sidebar-headline { font-size: 13px; font-weight: 700; color: #222; line-height: 1.3; margin-bottom: 4px; }
+    .sidebar-source { font-size: 10px; color: var(--espn-blue); font-weight: 800; text-transform: uppercase; }
 
-    .trending-container { height: 380px; overflow: hidden; position: relative; }
-    .trending-track { display: flex; flex-direction: column; animation: scrollVertical 25s linear infinite; }
-    .trending-track:hover { animation-play-state: paused; }
-    @keyframes scrollVertical { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
+    /* BLUE SQUARE BACK TO TOP */
+    #backToTop { position: fixed; bottom: 30px; right: 20px; width: 40px; height: 40px; background: var(--espn-blue); color: white; border: none; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-size: 18px; font-weight: bold; }
+    #backToTop:hover { background: #024a8e; }
 
-    .skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-    .skeleton-card { background: #fff; border: 1px solid #e0e0e0; }
-    .skeleton-img { height: 180px; background: linear-gradient(90deg,#eaeaea 25%,#f5f5f5 50%,#eaeaea 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-    .skeleton-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-    .skeleton-line { height: 12px; background: linear-gradient(90deg,#eaeaea 25%,#f5f5f5 50%,#eaeaea 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-    
-    .fab-container { position: fixed; right: 0; top: calc(50% + 50px); transform: translateY(-50%); z-index: 999; display: flex; flex-direction: column; align-items: flex-end; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
-    .fab-container.show { opacity: 1; visibility: visible; }    
-    .fab-btn { width: 25px; padding: 10px 0; border-radius: 4px 0 0 4px; background: #000; color: #FFFF5C; border: 1px solid #FFFF5C; border-right: none; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; box-shadow: -2px 4px 12px rgba(0,0,0,0.3); font-size: 9px; font-weight: 900; letter-spacing: 1px; }
-    .fab-btn span { display: block; line-height: 1.1; margin-top: 2px; }
-    .fab-menu { position: absolute; right: 35px; top: 50%; transform: translateY(-50%) scale(0.9); opacity: 0; visibility: hidden; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 8px 0; width: 180px; transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); transform-origin: right center; overflow: hidden; }
-    .fab-menu.open { opacity: 1; visibility: visible; transform: translateY(-50%) scale(1); }
-    .fab-item { display: block; padding: 12px 20px; color: #111; text-decoration: none; font-size: 13px; font-weight: 800; text-transform: uppercase; border-left: 3px solid transparent; cursor: pointer; transition: all 0.15s; }
-    .fab-item:hover, .fab-item.active { background: #f9f9f9; color: #000; border-left-color: #000; padding-left: 24px; }
-    .fab-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 998; display: none; background: rgba(0,0,0,0.1); }
-    .fab-overlay.open { display: block; }
-
-    @media (max-width: 900px) { .layout{flex-direction:column} .sidebar{width:100%} }
-    @media (max-width: 768px) { .header-center{display:none;} .header-right{display:none;} .hamburger-menu{display:block;} .tabs-bar{display:none;} }
-    @media (max-width: 600px) { 
-      .fab-btn { width: 26px; padding: 10px 0; font-size: 9px; border-width: 1.5px; }
-      #output{grid-template-columns:1fr} header{padding:8px 16px;}
-      #backToTop{width:38px;height:38px;bottom:20px;right:20px;}
-    }
+    @media (max-width: 1000px) { .layout{flex-direction:column} .sidebar{width:100%} .card-hero{flex-direction:column; height:auto;} .card-hero .card-img{width:100%; height:200px;} .card-hero .card-body{width:100%} }
   </style>
 </head>
 <body>
 
 <header id="main-header">
- <a href="/" class="brand" style="text-decoration: none;">
+ <a href="/" class="brand">
   <div class="header-icon">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" height="100%">
-      <circle cx="12" cy="12" r="11" fill="#ea580c" stroke="#111" stroke-width="2"/>
-      <path d="M12 1v22M1 12h22M6.5 2.5a11 11 0 0 0 0 19M17.5 2.5a11 11 0 0 1 0 19" stroke="#111" stroke-width="1.8" fill="none"/>
-    </svg>
+    <svg viewBox="0 0 24 24" width="30" height="30"><circle cx="12" cy="12" r="11" fill="#fff"/><circle cx="12" cy="12" r="9" fill="none" stroke="var(--espn-blue)" stroke-width="2"/><path d="M12 3v18M3 12h18" stroke="var(--espn-blue)" stroke-width="2"/></svg>
   </div>
   <div class="logo-text"><span>SPORTS</span><em>rip</em></div>
  </a>
-  <div class="header-center">
-    <span class="live-badge"><span class="live-dot"></span>LIVE</span>
-    <span class="header-tagline">Sports news from the world's top sources</span>
-  </div>
-  <div class="header-right" id="clockDisplay"></div>
-  <button id="mobile-menu-btn" class="hamburger-menu" onclick="toggleMobileMenu()">☰ Menu</button>
+ 
+ <nav class="nav-tabs" id="desktopTabs"></nav>
+ 
+ <div class="header-right" id="clockDisplay"></div>
 </header>
 
-<nav id="mobile-nav" class="mobile-navigation"></nav>
-<div class="tabs-bar" id="desktopTabs"></div>
-
 <div class="ticker-wrap">
-  <div class="ticker-label">⚡ BREAKING</div>
-  <div class="ticker-content">
+  <div class="ticker-label">BREAKING</div>
+  <div class="ticker-content" style="flex:1">
     <div class="ticker-track" id="tickerTrack"></div>
   </div>
 </div>
@@ -176,200 +120,137 @@
 <div class="layout">
   <div class="main-pane">
     <div class="section-label" id="sectionLabel">🏆 Top Stories</div>
-    <div id="status"></div>
     <div id="output"></div>
   </div>
 
   <div class="sidebar">
-    <div class="sidebar-section" style="padding:0;overflow:hidden;border:1px solid #e0e0e0;background:#fff;display:flex;">
-      <img src="https://images.pexels.com/photos/1761279/pexels-photo-1761279.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Switzerland Greenery" style="width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;display:block;margin:0;padding:0;border:none;">
-    </div>
-
     <div class="sidebar-section">
-      <div class="sidebar-title">🔥 Trending Now</div>
-      <div class="trending-container">
-        <div id="trendingList" class="trending-track"></div>
-      </div>
+      <div class="sidebar-title">Trending Now</div>
+      <div id="trendingList"></div>
     </div>
 
-    <div class="sidebar-section" style="margin: 0 16px; border: 1px solid #333; box-shadow: 0 8px 24px rgba(0,0,0,0.15); border-radius: 8px; padding: 16px 14px; background: linear-gradient(rgba(17,17,17,0.85), rgba(17,17,17,0.92)), url('https://images.pexels.com/photos/399187/pexels-photo-399187.jpeg?auto=compress&cs=tinysrgb&w=600') center/cover; color: white; display: flex; flex-direction: column; align-items: center; text-align: center;">
-      <h3 style="font-size: 15px; font-weight: 800; color: #FFFF5C; text-transform: uppercase;">Get the Daily Brief</h3>
-      <form id="newsletter-form" action="https://formspree.io/f/meerbpky" method="POST" style="width: 100%;">
-        <input type="email" name="email" placeholder="Enter email..." required style="width: 100%; padding: 8px; border-radius: 4px; font-size: 12px; margin-bottom: 8px;">
-        <button type="submit" style="width: 100%; background: #FFFF5C; color: #000; border: none; padding: 8px; font-weight: 800; cursor: pointer;">Subscribe</button>
+    <div class="sidebar-section" style="padding: 24px; background: linear-gradient(135deg, #eee 0%, #fff 100%); text-align: center;">
+      <h3 style="font-size: 15px; font-weight: 800; color: #111; text-transform: uppercase;">Get the Daily Brief</h3>
+      <p style="font-size: 12px; margin: 8px 0 16px; color: #555;">The top sports headlines in your inbox daily.</p>
+      <form style="display:flex; flex-direction:column; gap:8px;">
+        <input type="email" placeholder="Your email address" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;">
+        <button style="background: var(--espn-blue); color: #fff; border: none; padding: 10px; font-weight: 800; border-radius: 4px; cursor: pointer;">SUBSCRIBE</button>
       </form>
     </div>
     
     <div class="sidebar-section">
-      <div class="sidebar-title">🕐 Recent News</div>
+      <div class="sidebar-title">Recent Updates</div>
       <div id="recentList"></div>
     </div>
   </div>
 </div>
 
-<footer><b>Disclaimer: Headlines are sourced from official RSS feeds. All rights remain with copyright owners.</b></footer>
-
-<div class="fab-overlay" id="fabOverlay" onclick="toggleFabMenu()"></div>
-<div class="fab-container">
-  <div class="fab-menu" id="fabMenu"></div>
-  <button class="fab-btn" onclick="toggleFabMenu()"><span>M</span><span>E</span><span>N</span><span>U</span></button>
-</div>
-
-<button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" style="position:fixed;bottom:30px;right:12px;width:34px;height:34px;background:#000;color:#FFFF5C;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:1000">⬆</button>
+<button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
 
 <script>
   var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev';
-  
   var PRIORITY_SPORTS = ['ipl','f1','cricket','basketball','baseball','football','tennis','kabaddi','boxing','golf','athletics','rugby','olympics','nfl','badminton'];
-  
-  var EMOJI = {
-    ipl:'🏏', cricket:'🏏', basketball:'🏀', football:'⚽', baseball:'⚾', tennis:'🎾', kabaddi:'🤼',
-    f1:'🏎️', boxing:'🥊', golf:'⛳', athletics:'🏃', rugby:'🏉', olympics:'🏅', nfl:'🏈', badminton:'🏸', main:'🏆', other:'🌍'
-  };
-  
-  var LABEL = {
-    ipl:'TATA IPL', cricket:'Cricket', basketball:'Basketball', football:'Football', baseball:'Baseball', tennis:'Tennis', kabaddi:'Kabaddi',
-    f1:'Formula 1', boxing:'Boxing', golf:'Golf', athletics:'Athletics', rugby:'Rugby', olympics:'Olympics', nfl:'NFL', badminton:'Badminton', main:'Top Stories', other:'Other Sports'
-  };
+  var EMOJI = {ipl:'🏏', cricket:'🏏', basketball:'🏀', football:'⚽', baseball:'⚾', tennis:'🎾', kabaddi:'🤼', f1:'🏎️', boxing:'🥊', 
+               golf:'⛳', athletics:'🏃', rugby:'🏉', olympics:'🏅', nfl:'🏈', badminton:'🏸', main:'🏆'};
+  var LABEL = {ipl:'IPL 2026', cricket:'Cricket', basketball:'NBA', football:'Soccer', baseball:'MLB', tennis:'Tennis', kabaddi:'Kabaddi',
+               f1:'F1 Racing', boxing:'Boxing', golf:'Golf', athletics:'Athletics', rugby:'Rugby', olympics:'Olympics', nfl:'NFL', badminton:'Badminton', main:'All Story'};
   
   var currentSport = 'main';
-  var allCache = [];
-  var sportCache = {}; 
+  var allCache = []; var sportCache = {};
 
-  function cleanText(html) {
-    if (!html) return "";
-    var d = document.createElement('div'); d.innerHTML = html;
-    return d.textContent || d.innerText || "";
-  }
-
-  window.addEventListener("scroll", function() {
-    var scroll = window.scrollY;
-    var head = document.getElementById("main-header");
-    if (scroll > 60) head.classList.add("hide-curtain"); else head.classList.remove("hide-curtain");
-    var fab = document.querySelector('.fab-container');
-    if (scroll > 150) fab.classList.add("show"); else fab.classList.remove("show");
-  });
-
-  function toggleMobileMenu() { document.getElementById('mobile-nav').classList.toggle('open'); }
-  function toggleFabMenu() { document.getElementById('fabMenu').classList.toggle('open'); document.getElementById('fabOverlay').classList.toggle('open'); }
+  function cleanText(html) { if(!html) return ""; var d = document.createElement('div'); d.innerHTML = html; return d.textContent || d.innerText || ""; }
 
   function updateClock() {
-    var now = new Date();
-    document.getElementById('clockDisplay').innerHTML = '<div class="date-badge">📅 ' + now.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}) + ' · ' + now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) + '</div>';
+    var n = new Date();
+    document.getElementById('clockDisplay').innerHTML = n.toLocaleDateString('en-GB',{day:'numeric',month:'short'}) + ' · ' + n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
   }
   updateClock(); setInterval(updateClock, 60000);
 
-  async function fetchSport(sport) {
+  async function fetchSport(s) {
     try {
-      var r = await fetch(WORKER + '/api/news?sport=' + sport);
-      var d = await r.json();
-      var articles = d.articles || [];
-      if (sport === 'ipl') {
-        var regex = /\b(ipl|csk|rcb|mi|kkr|srh|pbks|dc|rr|lsg|gt|dhoni|kohli|rohit|chennai|mumbai|tata|league|cricket)\b/i;
-        articles = articles.filter(function(a) { return a.image && regex.test((a.title + " " + (a.description || "")).toLowerCase()); });
+      var r = await fetch(WORKER + '/api/news?sport=' + s);
+      var d = await r.json(); var a = d.articles || [];
+      if (s === 'ipl') {
+          var re = /\b(ipl|csk|rcb|mi|kkr|srh|pbks|dc|rr|lsg|gt|dhoni|kohli|rohit|chennai|mumbai|tata|league|cricket)\b/i;
+          a = a.filter(function(x) { return x.image && re.test((x.title + " " + (x.description || "")).toLowerCase()); });
       }
-      articles.forEach(function(a) { if (!a.sport) a.sport = sport; });
-      return articles;
+      a.forEach(function(x) { if(!x.sport) x.sport=s; }); return a;
     } catch(e) { return []; }
   }
 
-  function buildCard(article, emoji, sizeClass) {
-    var card = document.createElement('a');
-    card.className = 'card ' + (sizeClass || '');
-    card.href = article.link; card.target = '_blank';
-    var img = article.image ? '<img class="card-img" src="'+article.image+'" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+emoji+'</div>\'">' : '<div class="card-img-placeholder">'+emoji+'</div>';
-    var sourceData = '<span class="card-author">📰 '+(article.source||'SPORTSrip')+'</span>';
-    var desc = cleanText(article.description || "");
-    
-    // 🏏 FALLBACK TEXT FOR MISSING DESCRIPTIONS
-    if (!desc || desc.trim().length < 5) {
-      desc = "Discover the full story with all the details crafted just for you. There’s even more depth and insight waiting beyond this short preview. Please click the news title to reach the complete article.";
-    }
-
-    card.innerHTML = img + '<div class="card-body"><div class="card-meta"><span class="card-source-badge">Read More &gt;&gt;</span>'+sourceData+'</div><div class="card-title">'+article.title+'</div><div class="card-desc">'+desc+'</div></div>';
-    return card;
+  function buildCard(a, e, size) {
+    var c = document.createElement('a'); c.className = 'card ' + (size || ''); c.href = a.link; c.target = '_blank';
+    var img = a.image ? '<img class="card-img" src="'+a.image+'" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+e+'</div>\'">' : '<div class="card-img-placeholder">'+e+'</div>';
+    var d = cleanText(a.description || "");
+    if (!d || d.trim().length < 5) d = "Discover the full story with all the details crafted just for you. There’s even more depth and insight waiting beyond this short preview. Please click the news title to reach the complete article.";
+    c.innerHTML = img + '<div class="card-body"><div class="card-meta"><span class="card-source-badge">'+(a.source||'News')+'</span></div><div class="card-title">'+a.title+'</div><div class="card-desc">'+d+'</div></div>';
+    return c;
   }
 
-  function buildSidebarItem(a, emoji) {
+  function buildSidebarItem(a, e) {
     var el = document.createElement('a'); el.className = 'sidebar-article'; el.href = a.link; el.target = '_blank';
-    var thumb = a.image ? '<img class="sidebar-thumb" src="'+a.image+'" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+emoji+'</div>\'">' : '<div class="sidebar-thumb-placeholder">'+emoji+'</div>';
-    el.innerHTML = thumb + '<div class="sidebar-text"><div class="sidebar-headline">'+a.title+'</div><div class="sidebar-source">'+(a.source||'')+'</div></div>';
+    var thumb = a.image ? '<img class="sidebar-thumb" src="'+a.image+'" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+e+'</div>\'">' : '<div class="sidebar-thumb-placeholder">'+e+'</div>';
+    el.innerHTML = thumb + '<div class="sidebar-text"><div class="sidebar-headline">'+a.title+'</div><div class="sidebar-source">'+(a.source||'SPORTSrip')+'</div></div>';
     return el;
   }
 
   async function renderNews() {
-    var output = document.getElementById('output');
-    output.innerHTML = 'Loading...';
-    var articles = currentSport === 'main' ? allCache : (sportCache[currentSport] || []);
-    if (!articles.length) { output.innerHTML = '<div class="empty">No News Found.</div>'; return; }
-    output.innerHTML = '';
-    var frag = document.createDocumentFragment();
-    var count = 0;
-    articles.forEach(function(a) {
-      if (a.source === 'Sky Sports Cricket' && (!a.link || !a.link.toLowerCase().includes('cricket'))) return;
-      var size = '';
-      if (count === 0 && a.image) size = 'card-hero';
-      else if (count === 4 && a.image) size = 'card-wide';
-      frag.appendChild(buildCard(a, EMOJI[a.sport] || '📰', size));
-      count++;
+    var o = document.getElementById('output'); o.innerHTML = 'Synchronizing...';
+    var a = currentSport === 'main' ? allCache : (sportCache[currentSport] || []);
+    if (!a.length) { o.innerHTML = '<div style="grid-column:1/-1; padding:40px; text-align:center;">No stories found in this category.</div>'; return; }
+    o.innerHTML = '';
+    var f = document.createDocumentFragment(); var count = 0;
+    a.forEach(function(x) {
+      if (x.source === 'Sky Sports Cricket' && (!x.link || !x.link.toLowerCase().includes('cricket'))) return;
+      var s = (count === 0 && x.image) ? 'card-hero' : '';
+      f.appendChild(buildCard(x, EMOJI[x.sport] || '🏆', s)); count++;
     });
-    output.appendChild(frag);
+    o.appendChild(f);
   }
 
   function generateTabs(list) {
-    var html = '<div class="tab active" data-sport="main" onclick="loadSport(\'main\')">🏆 Main</div>';
-    var fab = '<div class="fab-item active" data-sport="main" onclick="loadSport(\'main\'); toggleFabMenu();">🏆 Main</div>';
-    list.forEach(function(s) {
-        var label = EMOJI[s] + ' ' + LABEL[s];
-        html += '<div class="tab" data-sport="'+s+'" onclick="loadSport(\''+s+'\')">'+label+'</div>';
-        fab += '<div class="fab-item" data-sport="'+s+'" onclick="loadSport(\''+s+'\'); toggleFabMenu();">'+label+'</div>';
-    });
-    document.getElementById('desktopTabs').innerHTML = html;
-    document.getElementById('fabMenu').innerHTML = fab;
+    var h = '<div class="tab active" data-sport="main" onclick="setActive(\'main\')">Top Stories</div>';
+    list.forEach(function(s) { h += '<div class="tab" data-sport="'+s+'" onclick="setActive(\''+s+'\')">'+LABEL[s]+'</div>'; });
+    document.getElementById('desktopTabs').innerHTML = h;
   }
 
-  function loadSport(key) {
-    currentSport = key;
-    document.querySelectorAll('.tab, .fab-item').forEach(function(t){ t.classList.remove('active'); });
-    document.querySelectorAll('[data-sport="'+key+'"]').forEach(function(t){ t.classList.add('active'); });
-    document.getElementById('sectionLabel').innerHTML = EMOJI[key] + ' ' + LABEL[key];
-    window.scrollTo({top: 0, behavior: 'smooth'});
-    renderNews();
+  function setActive(k) {
+    currentSport = k;
+    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.sport===k));
+    document.getElementById('sectionLabel').innerHTML = (EMOJI[k]||'🏆') + ' ' + (LABEL[k]||'News');
+    window.scrollTo({top: 0, behavior: 'smooth'}); renderNews();
   }
 
   async function init() {
-    var results = await Promise.allSettled(PRIORITY_SPORTS.map(fetchSport));
-    var sportArrays = {};
-    results.forEach(function(r, i) {
-      if (r.status === 'fulfilled' && r.value.length > 0) {
-        sportCache[PRIORITY_SPORTS[i]] = r.value.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
-        sportArrays[PRIORITY_SPORTS[i]] = sportCache[PRIORITY_SPORTS[i]].slice();
+    var res = await Promise.allSettled(PRIORITY_SPORTS.map(fetchSport));
+    var sa = {};
+    res.forEach(function(r, i) {
+      if (r.status === 'fulfilled' && r.value.length) {
+        sportCache[PRIORITY_SPORTS[i]] = r.value.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+        sa[PRIORITY_SPORTS[i]] = sportCache[PRIORITY_SPORTS[i]].slice();
       }
     });
+
     var active = [];
-    for (var s of PRIORITY_SPORTS) { if (sportCache[s] && sportCache[s].length) { if (active.length < 7) active.push(s); } }
+    for (var s of PRIORITY_SPORTS) { if (sportCache[s] && sportCache[s].length && active.length < 8) active.push(s); }
+
     var all = [], seen = new Set(), keep = true;
     while(keep) {
       keep = false;
-      active.forEach(function(sk) {
-        if (sportArrays[sk] && sportArrays[sk].length) { keep = true; var a = sportArrays[sk].shift(); if (!seen.has(a.link)) { seen.add(a.link); all.push(a); } }
-      });
+      active.forEach(sk => { if (sa[sk] && sa[sk].length) { keep = true; var a = sa[sk].shift(); if (!seen.has(a.link)) { seen.add(a.link); all.push(a); } } });
     }
-    allCache = all;
-    generateTabs(active);
+    
+    allCache = all; generateTabs(active);
     if (all.length) {
-      var ticker = all.slice(0,15).map(function(a){ return '<span class="ticker-item">'+a.title+'</span>'; }).join('');
-      document.getElementById('tickerTrack').innerHTML = ticker + ticker;
-      var side = all.filter(function(a){return a.image;}).slice(0,6);
-      var tList = document.getElementById('trendingList'); tList.innerHTML = '';
-      side.forEach(function(a){ tList.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
-      var rList = document.getElementById('recentList'); rList.innerHTML = '';
-      all.slice(6, 12).forEach(function(a){ rList.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
+      document.getElementById('tickerTrack').innerHTML = all.slice(0,12).map(a=>'<span class="ticker-item">'+a.title+'</span>').join('') + all.slice(0,12).map(a=>'<span class="ticker-item">'+a.title+'</span>').join('');
+      var tr = document.getElementById('trendingList'); tr.innerHTML = '';
+      all.filter(x=>x.image).slice(0,6).forEach(a=>tr.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')));
+      var rc = document.getElementById('recentList'); rc.innerHTML = '';
+      all.slice(6, 11).forEach(a=>rc.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')));
     }
-    loadSport('main');
+    setActive('main');
   }
   init();
 </script>
 </body>
 </html>
-<ctrl46>,Complexity:3,Description:<ctrl46>Integrated specific fallback text for articles missing descriptions in index.html.<ctrl46>,EmptyFile:false,IsArtifact:false,Overwrite:true,TargetFile:<ctrl46>C:\Users\ravik\.gemini\antigravity\scratch\mango-frontend\index.html<ctrl46>}
