@@ -17,7 +17,6 @@
       background: rgba(255, 255, 92, 1); 
       color: #000; 
       border-bottom: 2px solid #000; 
-      /* REDUCED PADDING to shrink the header height and give more room to the news content! */
       padding: 6px 20px;  
       display: flex; 
       align-items: center; 
@@ -25,21 +24,13 @@
       position: sticky; 
       top: 0; 
       z-index: 200; 
-      /* The exact smooth CSS transition logic to make it act like a silky curtain */
       transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
     }
     
-    /* Dynamically assigned class to hide the entire curtain upwards by exactly its own height */
-    header.hide-curtain {
-      transform: translateY(-100%);
-    }
+    header.hide-curtain { transform: translateY(-100%); }
     
     .brand { display: flex; align-items: center; gap: 6px; }
-    
-    /* THINNER, SLEEKER LOGOs CONTAINER */
     .header-icon { width: 34px; height: 34px; background: transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .header-icon img { width: 100%; height: 100%; object-fit: contain; }
-
     .logo-text { font-size: 24px; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; }
     .logo-text span { color: #000; }
     .logo-text em { color: #333; font-style: normal; font-weight: 500; text-transform: lowercase; }
@@ -50,16 +41,13 @@
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
     .header-tagline { font-size: 11px; color: #333; font-weight: 600; letter-spacing: 0.3px; }
     
-    /* THE NEW STYLIZED CALENDAR DATE BADGE */
     .header-right { text-align: right; }
     .date-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.1); padding: 5px 12px; border-radius: 6px; font-family: monospace; font-size: 11px; font-weight: 800; color: #111; letter-spacing: -0.3px; }
-    .date-badge-icon { font-size: 14px; }
 
     .hamburger-menu { display: none; background: transparent; border: 2px solid #000; padding: 6px 12px; font-size: 14px; font-weight: 700; cursor: pointer; color: #000; text-transform: uppercase; margin-left: auto; }
     .hamburger-menu:hover { background: #000; color: #FFFF5C; }
 
     .tabs-bar { background: #000; border-bottom: 1px solid #222; display: flex; justify-content: center; overflow-x: auto; scrollbar-width: none; padding: 0 16px; }
-    .tabs-bar::-webkit-scrollbar { display: none; }
     .tab { padding: 12px 18px; font-size: 13px; font-weight: 700; color: #fff; cursor: pointer; border-bottom: 4px solid transparent; white-space: nowrap; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
     .tab:hover { color: #FFFF5C; }
     .tab.active { color: #FFFF5C; border-bottom-color: #FFFF5C; }
@@ -67,15 +55,10 @@
     .mobile-navigation { display: none; background: #000; flex-direction: column; }
     .mobile-navigation.open { display: flex; }
     .mobile-navigation a { color: #fff; padding: 15px 24px; text-decoration: none; font-weight: 700; font-size: 14px; text-transform: uppercase; border-bottom: 1px solid #333; }
-    .mobile-navigation a:hover, .mobile-navigation a.active { color: #FFFF5C; border-left: 4px solid #FFFF5C; padding-left: 20px; }
 
     .ticker-wrap { background: #cc0000; overflow: hidden; height: 32px; display: flex; align-items: center; }
     .ticker-label { background: #990000; color: white; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; padding: 0 14px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
-    .ticker-content { display: flex; overflow: hidden; flex: 1; }
     .ticker-track { display: flex; animation: ticker 100s linear infinite; white-space: nowrap; }
-    .ticker-track:hover { animation-play-state: paused; }
-    .ticker-item { color: white; font-size: 12px; font-weight: 500; padding: 0 28px; display: flex; align-items: center; gap: 8px; }
-    .ticker-item::before { content: '●'; font-size: 6px; opacity: 0.7; }
     @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
     
     .layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 20px 16px; gap: 24px; align-items: stretch; }
@@ -86,133 +69,75 @@
     
     #output { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; grid-auto-flow: dense; }
     
-    /* ======================================================== */
-    /* THE PREMIUM GLASSMORPHISM FLOATING CARD UPGRADE          */
-    /* ======================================================== */
+    /* THE PREMIUM CARD DESIGN (Updated with Title-on-top layout) */
     .card { background: #fff; border: none; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; text-decoration: none; color: inherit; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
     .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-    .card-img { width: 100%; height: 180px; object-fit: cover; display: block; border-bottom: none; }
-    .card-img-placeholder { width: 100%; height: 180px; background: #eaeaea; display: flex; align-items: center; justify-content: center; font-size: 40px; border-bottom: none; }
+    
+    .card-img-wrapper { 
+      position: relative; 
+      width: 100%; 
+      height: 0; 
+      padding-top: 56.25%; /* Fixed 16:9 Aspect Ratio */
+      overflow: hidden; 
+      background: #eee; 
+    }
+    .card-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; transition: transform 0.6s ease; }
+    .card-img-placeholder { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #eaeaea; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+    
     .card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
-    /* ======================================================== */
-
-    .card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
     .card-source-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #000; background: #FFFF5C; padding: 2px 7px; }
     .card-author { font-size: 11px; color: #333; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; }
-    .card-title { font-size: 19px; font-weight: 800; color: #222; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    .card-desc { font-size: 13px; color: #555; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
+    .card-title { font-size: 19px; font-weight: 800; color: #222; line-height: 1.3; margin-bottom: 5px; }
+    .card-desc { font-size: 13px; color: #555; line-height: 1.5; margin-top: 10px; }
 
+    /* Special Grid Overrides for Featured Cards */
     .card-hero { grid-column: span 2; grid-row: span 2; }
-    .card-hero .card-img { height: auto; flex: 1; }
-    .card-hero .card-body { flex: none; }
-    .card-hero .card-title { font-size: 24px; -webkit-line-clamp: 4; }
-    .card-hero .card-desc { -webkit-line-clamp: 8; }
+    .card-hero .card-img-wrapper { padding-top: 70%; } /* Slightly taller for hero items */
+    .card-hero .card-title { font-size: 24px; }
 
     .card-wide { grid-column: span 2; flex-direction: row; }
-    .card-wide .card-img { width: 40%; height: 100%; }
+    .card-wide .card-img-wrapper { width: 40%; padding-top: 0; height: auto; min-height: 200px; }
     .card-wide .card-body { width: 60%; justify-content: center; }
     
     .sidebar { width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 24px; }
-    .sidebar-section { background: #fff; border: 1px solid #e0e0e0; border-radius: 0px; overflow: hidden; }
+    .sidebar-section { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden; }
     .sidebar-title { background: #000; padding: 12px 16px; font-size: 13px; font-weight: 800; text-transform: uppercase; color: #FFFF5C; }
     .sidebar-article { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #eee; text-decoration: none; color: inherit; transition: background 0.15s; }
     .sidebar-article:hover { background: #f9f9f9; }
-    .sidebar-article:last-child { border-bottom: none; }
-    .sidebar-thumb { width: 70px; height: 55px; border-radius: 4px; object-fit: cover; flex-shrink: 0; }
-    .sidebar-thumb-placeholder { width: 70px; height: 55px; border-radius: 4px; background: #eaeaea; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-    .sidebar-text { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center;}
-    .sidebar-headline { font-size: 13px; font-weight: 700; color: #222; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .sidebar-source { font-size: 10px; color: #888; font-weight: 700; text-transform: uppercase; margin-top: 5px; }
     
     .trending-container { height: 380px; overflow: hidden; position: relative; }
     .trending-track { display: flex; flex-direction: column; animation: scrollVertical 25s linear infinite; }
-    .trending-track:hover { animation-play-state: paused; }
     @keyframes scrollVertical { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
     
-    .skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-    .skeleton-card { background: #fff; border: 1px solid #e0e0e0; }
-    .skeleton-img { height: 180px; background: linear-gradient(90deg,#eaeaea 25%,#f5f5f5 50%,#eaeaea 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-    .skeleton-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-    .skeleton-line { height: 12px; background: linear-gradient(90deg,#eaeaea 25%,#f5f5f5 50%,#eaeaea 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-    .empty { grid-column: 1/-1; text-align: center; color: #666; padding: 60px 20px; font-size: 14px; }
+    .fab-container { position: fixed; right: 0; top: calc(50% + 50px); transform: translateY(-50%); z-index: 999; display: flex; flex-direction: column; align-items: flex-end; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+    .fab-container.show { opacity: 1; visibility: visible; }    
+    .fab-btn { width: 25px; padding: 10px 0; border-radius: 4px 0 0 4px; background: #000; color: #FFFF5C; border: 1px solid #FFFF5C; border-right: none; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; box-shadow: -2px 4px 12px rgba(0,0,0,0.3); font-size: 9px; font-weight: 900; letter-spacing: 1px; }
     
-    footer { text-align: center; padding: 20px; color: #666; font-size: 12px; background: #fff; border-top: 1px solid #e0e0e0; margin-top: 20px; }
-    
-    #backToTop { position: fixed; bottom: 30px; right: 12px; width: 34px; height: 34px; background: #000; color: #FFFF5C; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); z-index: 1000; }
-    #backToTop.show { opacity: 1; visibility: visible; transform: translateY(0); }
-    #backToTop:hover { background: #FFFF5C; color: #000; transform: translateY(-5px) scale(1.05); box-shadow: 0 6px 16px rgba(0,0,0,0.4); }
-
-   /* === UPDATED: ULTRATHIN DESKTOP FAB BUTTON === */
-.fab-container { position: fixed; right: 0; top: calc(50% + 50px); transform: translateY(-50%); z-index: 999; display: flex; flex-direction: column; align-items: flex-end; 
-      /* HIDES IT BY DEFAULT AT THE TOP */
-      opacity: 0; 
-      visibility: hidden; 
-      transition: opacity 0.3s ease, visibility 0.3s ease; 
-    }
-    
-    /* Javascript will add this class to reveal it smoothly! */
-    .fab-container.show {
-      opacity: 1;
-      visibility: visible;
-    }    
-    .fab-btn { 
-      width: 25px; 
-      padding: 10px 0; 
-      border-radius: 4px 0 0 4px; 
-      background: #000; 
-      /* THIN 1px YELLOW OUTLINE! */
-      color: #FFFF5C; 
-      border: 1px solid #FFFF5C; 
-      border-right: none; 
-      display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; 
-      box-shadow: -2px 4px 12px rgba(0,0,0,0.3); 
-      transition: transform 0.2s, background 0.2s, opacity 0.3s ease; 
-      transition: transform 0.2s, background 0.2s; 
-      font-size: 9px; 
-      font-weight: 900; 
-      letter-spacing: 1px; 
-    }
-    
-    .fab-btn:hover { transform: scale(1.03); transform-origin: right center; background: #222; }
-    .fab-btn span { display: block; line-height: 1.1; margin-top: 2px; }
- /* Pulled the popup menu slightly closer (.right: 35px) to mathematically align with the new thin button */
-    .fab-menu { position: absolute; right: 35px; top: 50%; transform: translateY(-50%) scale(0.9); opacity: 0; visibility: hidden; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 8px 0; width: 180px; transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); transform-origin: right center; overflow: hidden; }
+    .fab-menu { position: absolute; right: 35px; top: 50%; transform: translateY(-50%) scale(0.9); opacity: 0; visibility: hidden; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 8px 0; width: 180px; transition: all 0.2s ease; transform-origin: right center; overflow: hidden; }
     .fab-menu.open { opacity: 1; visibility: visible; transform: translateY(-50%) scale(1); }
-    .fab-item { display: block; padding: 12px 20px; color: #111; text-decoration: none; font-size: 13px; font-weight: 800; text-transform: uppercase; border-left: 3px solid transparent; cursor: pointer; transition: all 0.15s; }
-    .fab-item:hover, .fab-item.active { background: #f9f9f9; color: #000; border-left-color: #000; padding-left: 24px; }
+    .fab-item { display: block; padding: 12px 20px; color: #111; text-decoration: none; font-size: 13px; font-weight: 800; text-transform: uppercase; transition: all 0.15s; }
+    .fab-item:hover, .fab-item.active { background: #f9f9f9; border-left: 3px solid #000; }
     .fab-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 998; display: none; background: rgba(0,0,0,0.1); }
     .fab-overlay.open { display: block; }
 
-    @media (max-width: 900px) { .layout{flex-direction:column} .sidebar{width:100%} }
-    @media (max-width: 768px) { .header-center{display:none;} .header-right{display:none;} .hamburger-menu{display:block;} .tabs-bar{display:none;} }
-    @media (max-width: 600px) { 
+    #backToTop { position: fixed; bottom: 30px; right: 12px; width: 34px; height: 34px; background: #000; color: #FFFF5C; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 1000; }
+    #backToTop.show { opacity: 1; visibility: visible; }
 
-      /* --- SLEEK MOBILE MENU FIX --- */
-      .fab-btn { width: 26px; padding: 10px 0; font-size: 9px; border-width: 1.5px; }
-      .fab-btn svg { width: 14px; height: 14px; margin-bottom: 4px !important; }
-      .fab-menu { right: 36px; }
-      /* ----------------------------- */
-      #output{grid-template-columns:1fr} .brand{min-width:unset} .ticker-wrap{display:none;} header{padding:8px 16px;}
-      .card-title{font-size:20px;line-height:1.2;} .card-hero,.card-wide{grid-column:span 1;}
-      .card-hero .card-img{height:200px;flex:none;} .card-hero .card-title{font-size:20px;}
-      .card-wide{flex-direction:column;} .card-wide .card-img{width:100%;height:180px;} .card-wide .card-body{width:100%;}
-      #backToTop{width:38px;height:38px;bottom:20px;right:20px;}
-    }
+    @media (max-width: 900px) { .layout{flex-direction:column} .sidebar{width:100%} }
+    @media (max-width: 600px) { #output{grid-template-columns:1fr} .card-hero,.card-wide{grid-column:span 1; flex-direction: column;} }
   </style>
 </head>
 <body>
 
 <header id="main-header">
  <a href="/" class="brand" style="text-decoration: none;">
-  <!-- YOUR MASCOT LOGO APPLIED HERE -->
   <div class="header-icon">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" height="100%">
       <circle cx="12" cy="12" r="11" fill="#ea580c" stroke="#111" stroke-width="2"/>
       <path d="M12 1v22M1 12h22M6.5 2.5a11 11 0 0 0 0 19M17.5 2.5a11 11 0 0 1 0 19" stroke="#111" stroke-width="1.8" fill="none"/>
     </svg>
   </div>
-
   <div class="logo-text"><span>SPORTS</span><em>rip</em></div>
  </a>
   <div class="header-center">
@@ -229,10 +154,7 @@
 <div class="ticker-wrap">
   <div class="ticker-label">⚡ BREAKING</div>
   <div class="ticker-content">
-    <div class="ticker-track" id="tickerTrack">
-      <span class="ticker-item">Loading latest sports headlines...</span>
-      <span class="ticker-item">Loading latest sports headlines...</span>
-    </div>
+    <div class="ticker-track" id="tickerTrack"></div>
   </div>
 </div>
 
@@ -240,166 +162,107 @@
   <div class="main-pane">
     <div class="section-label" id="sectionLabel">🏆 Top Stories</div>
     <div id="status"></div>
-    <div id="output">
-      <div class="skeleton-grid">
-        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:85%"></div><div class="skeleton-line" style="width:65%"></div></div></div>
-        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:90%"></div><div class="skeleton-line" style="width:70%"></div></div></div>
-        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:80%"></div><div class="skeleton-line" style="width:60%"></div></div></div>
-      </div>
-    </div>
+    <div id="output"></div>
   </div>
 
   <div class="sidebar">
-
-    <!-- PURE GREENERY IMAGE WIDGET (Replaces top Nike video ad) -->
     <div class="sidebar-section" style="padding:0;overflow:hidden;border:1px solid #e0e0e0;background:#fff;display:flex;">
-      <img src="https://images.pexels.com/photos/1761279/pexels-photo-1761279.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Switzerland Greenery" style="width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;display:block;margin:0;padding:0;border:none;">
+      <img src="https://images.pexels.com/photos/1761279/pexels-photo-1761279.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Switzerland Greenery" style="width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;">
     </div>
 
     <div class="sidebar-section">
       <div class="sidebar-title">🔥 Trending Now</div>
-      <div class="trending-container">
-        <div id="trendingList" class="trending-track"><div style="padding:14px;color:#666;font-size:12px">Loading...</div></div>
-      </div>
+      <div class="trending-container"><div id="trendingList" class="trending-track"></div></div>
     </div>
 
-    <!-- NEWSLETTERs (SLEEK, SHRINKED, FLOATING WITH STADIUM BACKGROUND) -->
-    <div class="sidebar-section" style="margin: 0 16px; border: 1px solid #333; box-shadow: 0 8px 24px rgba(0,0,0,0.15); border-radius: 8px; padding: 16px 14px; background: linear-gradient(rgba(17,17,17,0.85), rgba(17,17,17,0.92)), url('https://images.pexels.com/photos/399187/pexels-photo-399187.jpeg?auto=compress&cs=tinysrgb&w=600') center/cover; color: white; display: flex; flex-direction: column; align-items: center; text-align: center;">
-      <div style="font-size: 24px; margin-bottom: 4px;">📬</div>
-      <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 4px; color: #FFFF5C; text-transform: uppercase; letter-spacing: 0.5px;">Get the Daily Brief</h3>
-      <p style="font-size: 11px; color: #ccc; margin-bottom: 14px; line-height: 1.4;">Join 15,000+ fans getting the biggest sports headlines delivered straight to their inbox.</p>
-      
-      <form id="newsletter-form" action="https://formspree.io/f/meerbpky" method="POST" style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
-        <input type="email" name="email" placeholder="Enter your email..." required style="width: 100%; padding: 8px 12px; border: none; border-radius: 4px; font-size: 12px; font-family: inherit; outline: none; text-align: center;">
-        <button type="submit" style="width: 100%; background: #FFFF5C; color: #000; border: none; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase;">Subscribe Now</button>
+    <div class="sidebar-section" style="margin: 0 16px; border: 1px solid #333; box-shadow: 0 8px 24px rgba(0,0,0,0.15); border-radius: 8px; padding: 16px; background: linear-gradient(rgba(11,11,11,0.85), rgba(11,11,11,0.92)), url('https://images.pexels.com/photos/399187/pexels-photo-399187.jpeg?auto=compress&cs=tinysrgb&w=600') center/cover; color: white; text-align: center;">
+      <h3 style="font-size: 14px; margin-bottom: 5px; color: #FFFF5C;">Daily Brief</h3>
+      <form id="newsletter-form" action="https://formspree.io/f/meerbpky" method="POST">
+        <input type="email" name="email" placeholder="Email..." required style="width: 100%; padding: 8px; border-radius: 4px; font-size: 11px; margin-bottom: 8px;">
+        <button type="submit" style="background:#FFFF5C; border:none; padding: 8px; width:100%; font-weight:800; cursor:pointer;">Subscribe</button>
       </form>
-      <div style="font-size: 9px; color: #aaa; margin-top: 10px;">We respect your inbox. No spam.</div>
     </div>
     
     <div class="sidebar-section">
-      <div class="sidebar-title">🕐 Recent News</div>
-      <div id="recentList"><div style="padding:14px;color:#666;font-size:12px">Loading...</div></div>
+      <div class="sidebar-title">🕐 Recent</div>
+      <div id="recentList"></div>
     </div>
-    
-    <!-- PURE EIFFEL TOWER DAYLIGHT WIDGET (Replaces tall Nike banner ad) -->
-    <div class="sidebar-section" style="padding:0;overflow:hidden;border:1px solid #e0e0e0;background:#fff;position:sticky;top:80px;display:flex;">
-      <img src="https://images.pexels.com/photos/338515/pexels-photo-338515.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Eiffel Tower Paris Daylight" style="width:100%;height:500px;object-fit:cover;display:block;margin:0;padding:0;border:none;">
-    </div>
-
   </div>
 </div>
 
+<footer><b>Disclaimer: Headlines are sourced from official RSS feeds. All rights remain with original owners.</b></footer>
 
-<footer>
-  <b>Disclaimer: Headlines are sourced from official RSS feeds of their respective publishers. All rights and copyrights remain with the original content owners.</b>
-</footer>
-
-<!-- === THE PREMUIM EDGE-ALIGNED QUICK MENU === -->
 <div class="fab-overlay" id="fabOverlay" onclick="toggleFabMenu()"></div>
 <div class="fab-container">
-  <div class="fab-menu" id="fabMenu">
-    <!-- Dynamic quick links neatly injected here -->
-  </div>
-  <button class="fab-btn" onclick="toggleFabMenu()" title="Quick Navigation">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px">
-      <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
-    </svg>
-    <span>M</span><span>E</span><span>N</span><span>U</span>
-  </button>
+  <div class="fab-menu" id="fabMenu"></div>
+  <button class="fab-btn" onclick="toggleFabMenu()"><span>M</span><span>E</span><span>N</span><span>U</span></button>
 </div>
 
-<button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Back to Top">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-</button>
+<button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">⬆</button>
 
 <script>
-    // EXACT WORKER - YOUR DEV ENVIRONMENT
   var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev';
   
-  // All 14 Sports
-  var PRIORITY_SPORTS = ['f1','cricket','basketball','baseball','football','tennis','kabaddi','boxing','golf','athletics','rugby','olympics','nfl','badminton'];
+  // 🏏 ADDED IPL AT THE START (BEFORE FORMULA ONE)
+  var PRIORITY_SPORTS = ['ipl','f1','cricket','basketball','baseball','football','tennis','kabaddi','boxing','golf','athletics','rugby','olympics','nfl','badminton'];
   
   var EMOJI = {
-    cricket:'🏏', basketball:'🏀', football:'⚽', baseball:'⚾', tennis:'🎾', kabaddi:'🤼',
+    ipl:'🏏', cricket:'🏏', basketball:'🏀', football:'⚽', baseball:'⚾', tennis:'🎾', kabaddi:'🤼',
     f1:'🏎️', boxing:'🥊', golf:'⛳', athletics:'🏃', rugby:'🏉', olympics:'🏅', nfl:'🏈', badminton:'🏸', main:'🏆', other:'🌍'
   };
   
   var LABEL = {
-    cricket:'Cricket', basketball:'Basketball', football:'Football', baseball:'Baseball', tennis:'Tennis', kabaddi:'Kabaddi',
+    ipl:'TATA IPL', cricket:'Cricket', basketball:'Basketball', football:'Football', baseball:'Baseball', tennis:'Tennis', kabaddi:'Kabaddi',
     f1:'Formula 1', boxing:'Boxing', golf:'Golf', athletics:'Athletics', rugby:'Rugby', olympics:'Olympics', nfl:'NFL', badminton:'Badminton', main:'Top Stories', other:'Other Sports'
   };
   
   var currentSport = 'main';
   var allCache = [];
   var sportCache = {}; 
-  var activeTabs = []; 
-  var otherTabs = [];  
 
-  var backToTopBtn = document.getElementById("backToTop");
-  var mainHeader = document.getElementById("main-header");
-  
-  /* === NEW HEADER CURTAIN LOGIC SCROLL TRACKER === */
-  var lastScrollY = window.scrollY;
-  
+  // Sanitizer to prevent double-image bugs from RSS descriptions
+  function cleanText(html) {
+    var d = document.createElement('div'); d.innerHTML = html;
+    return d.textContent || d.innerText || "";
+  }
+
+  /* --- UI CONTROLS --- */
   window.addEventListener("scroll", function() {
-    var currentScroll = window.scrollY;
+    var scroll = window.scrollY;
+    var head = document.getElementById("main-header");
+    if (scroll > 100) head.classList.add("hide-curtain"); else head.classList.remove("hide-curtain");
     
-    // HIDE CURTAIN when violently scrolling down, SHOW when scrolling up seamlessly 
-    if (currentScroll > 60 && currentScroll > lastScrollY) {
-      mainHeader.classList.add("hide-curtain");
-    } else {
-      mainHeader.classList.remove("hide-curtain");
-    }
+    var fab = document.querySelector('.fab-container');
+    if (scroll > 150) fab.classList.add("show"); else fab.classList.remove("show");
     
-    lastScrollY = currentScroll;
-    
-    // LOGIC: HIDE FLOATING MENU ITEM WHEN AT THE VERY TOP 
-    var fabContainer = document.querySelector('.fab-container');
-    if (fabContainer) {
-      if (currentScroll > 150) {
-        fabContainer.classList.add("show");
-      } else {
-        fabContainer.classList.remove("show");
-        document.getElementById('fabMenu').classList.remove('open');
-        document.getElementById('fabOverlay').classList.remove('open');
-      }
-    }
-    
-    // BACK TO TOP BUTTON LOGIC
-    if (currentScroll > 500) backToTopBtn.classList.add("show");
-    else backToTopBtn.classList.remove("show");
-    
-  }, { passive: true });  // <-- THIS IS THE PASSIVE LISTENER OPTIMIZATION!
+    var btt = document.getElementById("backToTop");
+    if (scroll > 500) btt.classList.add("show"); else btt.classList.remove("show");
+  });
 
+  function toggleMobileMenu() { document.getElementById('mobile-nav').classList.toggle('open'); }
+  function toggleFabMenu() { document.getElementById('fabMenu').classList.toggle('open'); document.getElementById('fabOverlay').classList.toggle('open'); }
 
-  function toggleMobileMenu() {
-    var nav = document.getElementById('mobile-nav');
-    nav.classList.toggle('open');
-  }
-
-  // === NEW FLOATING MENU TOGGLE ===
-  function toggleFabMenu() {
-    document.getElementById('fabMenu').classList.toggle('open');
-    document.getElementById('fabOverlay').classList.toggle('open');
-  }
-
-
-  // === UPDATED CALENDAR DISPLAY COMPONENT ===
   function updateClock() {
     var now = new Date();
-    var dayString = now.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
-    var timeString = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-    
-    document.getElementById('clockDisplay').innerHTML = 
-      '<div class="date-badge"><span class="date-badge-icon">📅</span> ' + dayString + ' · ' + timeString + '</div>';
+    document.getElementById('clockDisplay').innerHTML = '<div class="date-badge">📅 ' + now.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}) + ' · ' + now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) + '</div>';
   }
   updateClock(); setInterval(updateClock, 60000);
 
+  /* --- DATA FETCHING --- */
   async function fetchSport(sport) {
     try {
       var r = await fetch(WORKER + '/api/news?sport=' + sport);
       var d = await r.json();
       var articles = d.articles || [];
+      
+      // 🛡️ STRICT IPL FILTER (Matches our development logic)
+      if (sport === 'ipl') {
+        var regex = /\b(ipl|csk|rcb|mi|kkr|srh|pbks|dc|rr|lsg|gt|dhoni|kohli|rohit|chennai|mumbai|tata|league|cricket)\b/i;
+        articles = articles.filter(function(a) {
+           return a.image && regex.test((a.title + " " + (a.description || "")).toLowerCase());
+        });
+      }
+
       articles.forEach(function(a) { if (!a.sport) a.sport = sport; });
       return articles;
     } catch(e) { return []; }
@@ -408,280 +271,128 @@
   function buildCard(article, emoji, sizeClass) {
     var card = document.createElement('a');
     card.className = 'card ' + (sizeClass || '');
-    card.href = article.link; card.target = '_blank'; card.rel = 'noopener noreferrer';
+    card.href = article.link; card.target = '_blank';
+    
+    var source = article.source ? '📰 ' + article.source : 'IPL News';
+    var desc = cleanText(article.description || "");
 
-    var img = article.image
-      ? '<img class="card-img" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+emoji+'<\/div>\'">'
-      : '<div class="card-img-placeholder">'+emoji+'<\/div>';
-      
-    var sourceData = article.source ? '<span class="card-author">📰 '+article.source+'<\/span>' : '';
-    var readMoreBadge = '<span class="card-source-badge">Read More &gt;&gt;</span>';
+    // 🏏 NEW PREMIUM LAYOUT: Title at Top, Image in Middle, Desc at Bottom
+    var html = '';
+    html += '<div class="card-body">';
+    html += '  <div class="card-meta"><span class="card-source-badge">Read More</span><span class="card-author">' + source + '</span></div>';
+    html += '  <div class="card-title">' + article.title + '</div>';
+    html += '</div>';
+    html += '<div class="card-img-wrapper">';
+    if (article.image) {
+        html += '<img class="card-img" src="' + article.image + '" onerror="this.src=\'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=800\'">';
+    } else {
+        html += '<div class="card-img-placeholder">' + emoji + '</div>';
+    }
+    html += '</div>';
+    html += '<div class="card-body">';
+    html += '  <div class="card-desc">' + desc + '</div>';
+    html += '</div>';
 
-    card.innerHTML = img +
-      '<div class="card-body"><div class="card-meta">'+readMoreBadge+sourceData+'<\/div><div class="card-title">'+article.title+'<\/div>' +
-      (article.description ? '<div class="card-desc">'+article.description+'<\/div>' : '') + '<\/div>';
+    card.innerHTML = html;
     return card;
   }
 
-  function buildSidebarItem(article, emoji) {
-    var el = document.createElement('a');
-    el.className = 'sidebar-article'; el.href = article.link; el.target = '_blank'; el.rel = 'noopener noreferrer';
-    var thumb = article.image
-      ? '<img class="sidebar-thumb" src="'+article.image+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+emoji+'<\/div>\'">'
-      : '<div class="sidebar-thumb-placeholder">'+emoji+'<\/div>';
-      
-    var sourceText = article.source ? '<div class="sidebar-source">'+article.source+'</div>' : '';
-    el.innerHTML = thumb + '<div class="sidebar-text"><div class="sidebar-headline">'+article.title+'<\/div>'+sourceText+'<\/div>';
+  function buildSidebarItem(a, emoji) {
+    var el = document.createElement('a'); el.className = 'sidebar-article'; el.href = a.link; el.target = '_blank';
+    var img = a.image ? '<img class="sidebar-thumb" src="'+a.image+'">' : '<div class="sidebar-thumb-placeholder">'+emoji+'</div>';
+    el.innerHTML = img + '<div class="sidebar-text"><div class="sidebar-headline">'+a.title+'</div><div class="sidebar-source">'+(a.source||'')+'</div></div>';
     return el;
   }
 
-  function buildTicker(articles) {
-    if (!articles.length) return;
-    var items = articles.slice(0,20).map(function(a) { return '<span class="ticker-item">'+a.title+'<\/span>'; }).join('');
-    document.getElementById('tickerTrack').innerHTML = items + items;
-  }
-
-  function buildSidebar(all) {
-    var withImg = all.filter(function(a){return a.image;});
-    var pool = withImg.length > 15 ? withImg.slice(15) : withImg.reverse(); 
-    var trending = pool.slice(0,6);
-    var tLinks = new Set(trending.map(function(a){return a.link;}));
-    var recent = pool.filter(function(a){return !tLinks.has(a.link);}).slice(0,6);
-    
-    var tEl = document.getElementById('trendingList'); var rEl = document.getElementById('recentList');
-    tEl.innerHTML = ''; rEl.innerHTML = '';
-    
-    trending.forEach(function(a){ tEl.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
-    trending.forEach(function(a){ tEl.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
-    recent.forEach(function(a){ rEl.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
-  }
-
-  function showSkeleton() {
-    var html = '<div class="skeleton-grid">';
-    for (var i=0;i<6;i++) html += '<div class="skeleton-card"><div class="skeleton-img"><\/div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"><\/div><div class="skeleton-line" style="width:85%"><\/div><div class="skeleton-line" style="width:65%"><\/div><\/div><\/div>';
-    document.getElementById('output').innerHTML = html + '<\/div>';
-  }
-
-  function generateTabs(tabsList, hasOther) {
-    var desktopHTML = '<div class="tab active" data-sport="main" onclick="loadSport(\'main\', false)">🏆 Main</div>';
-    var mobileHTML = '<a href="#" class="mobile-tab active" data-sport="main" onclick="loadSport(\'main\', true)">🏆 Top Stories</a>';
-    var fabHTML = '<div class="fab-item active" data-sport="main" onclick="loadSport(\'main\', false); toggleFabMenu();">🏆 Main</div>';
-    
-    tabsList.forEach(function(sport) {
-        var labelHTML = EMOJI[sport] + ' ' + LABEL[sport];
-        desktopHTML += '<div class="tab" data-sport="' + sport + '" onclick="loadSport(\'' + sport + '\', false)">' + labelHTML + '</div>';
-        mobileHTML +=  '<a href="#" class="mobile-tab" data-sport="' + sport + '" onclick="loadSport(\'' + sport + '\', true)">' + labelHTML + '</a>';
-        fabHTML += '<div class="fab-item" data-sport="' + sport + '" onclick="loadSport(\'' + sport + '\', false); toggleFabMenu();">' + labelHTML + '</div>';
-    });
-
-    if (hasOther) {
-        var otherHTML = EMOJI['other'] + ' ' + LABEL['other'];
-        desktopHTML += '<div class="tab" data-sport="other" onclick="loadSport(\'other\', false)">' + otherHTML + '</div>';
-        mobileHTML +=  '<a href="#" class="mobile-tab" data-sport="other" onclick="loadSport(\'other\', true)">' + otherHTML + '</a>';
-        fabHTML += '<div class="fab-item" data-sport="other" onclick="loadSport(\'other\', false); toggleFabMenu();">' + otherHTML + '</div>';
-    }
-
-    document.getElementById('desktopTabs').innerHTML = desktopHTML;
-    document.getElementById('mobile-nav').innerHTML = mobileHTML;
-    document.getElementById('fabMenu').innerHTML = fabHTML;
-  }
-
-  function loadSport(sportKey, isMobile) {
-    currentSport = sportKey;
-    document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
-    document.querySelectorAll('.mobile-tab').forEach(function(t){ t.classList.remove('active'); });
-    document.querySelectorAll('.fab-item').forEach(function(t){ t.classList.remove('active'); });
-    
-    document.querySelectorAll('[data-sport="'+currentSport+'"]').forEach(function(t) { t.classList.add('active'); });
-
-    if (isMobile && document.getElementById('mobile-nav').classList.contains('open')) toggleMobileMenu();
-    document.getElementById('sectionLabel').textContent = EMOJI[currentSport]+' '+LABEL[currentSport];
-    
-    // === EXACT REQUEST: AUTOMATICALLY SCROLL TO THE DEAD TOP OF THE PAGE EVERY SINGLE CLICK ===
-    window.scrollTo({top: 0, behavior: 'smooth'});
-    
-    renderNews(); 
-  }
-
   async function renderNews() {
-    var status = document.getElementById('status');
     var output = document.getElementById('output');
-    status.textContent = ''; showSkeleton();
+    output.innerHTML = 'Loading news...';
     
-    try {
-      var articles = [];
-      if (currentSport === 'main') {
-        articles = allCache;
-      } else {
-        articles = sportCache[currentSport] || [];
-      }
+    var articles = currentSport === 'main' ? allCache : (sportCache[currentSport] || []);
+    if (!articles.length) { output.innerHTML = '<div class="empty">No News Found Today.</div>'; return; }
 
-      if (!articles.length) {
-        var sportName = LABEL[currentSport] || currentSport || 'SPORTS';
-        output.innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; padding: 80px 20px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;">
-            <div style="font-size: 140px; line-height: 1; margin-bottom: 20px; text-shadow: 0 10px 20px rgba(0,0,0,0.15);">🏃♂️💨</div>
-            <h2 style="font-size: 26px; font-weight: 900; color: #111; margin-bottom: 10px; text-transform: uppercase;">NO ${sportName} NEWS TODAY!</h2>
-            <p style="color: #666; font-size: 15px; max-width: 450px; margin: 0 auto; line-height: 1.5;">We only display articles with high-quality thumbnail images to ensure a premium experience. It looks like our publishers haven't released any visual stories for ${sportName} yet. Check back later!</p>
-          </div>
-        `;
-        return;
-      }
-
-      status.textContent = '✅ '+articles.length+' articles loaded';
-      output.innerHTML = '';
-      
-      var now = Date.now();
-      var vipArticles = [];
-      var archiveArticles = [];
-      
-      articles.forEach(function(a) {
-        var ageInHours = (now - new Date(a.pubDate).getTime()) / 3600000;
-        if (ageInHours <= 24) {
-          vipArticles.push(a);
-        } else {
-          archiveArticles.push(a);
-        }
-      });
-      
-      function shuffleArray(arr) {
-        for (var i = arr.length - 1; i > 0; i--) {
-          var j = Math.floor(Math.random() * (i + 1));
-          var temp = arr[i]; arr[i] = arr[j]; arr[j] = temp;
-        }
-        return arr;
-      }
-      
-      shuffleArray(vipArticles);
-      shuffleArray(archiveArticles);
-      var finalDisplayOrder = vipArticles.concat(archiveArticles);
-      
-      // === THE FRAGMENT OPTIMIZATION (Zero Repaint Stuttering) ===
-      var fragment = document.createDocumentFragment();
-      var drawnCount = 0; // We keep track of drawn cards to maintain the beautiful CSS grid layout!
-      
-      finalDisplayOrder.forEach(function(a) { 
-        
-        // 🛡️ FRONTEND SANITIZER: Immediately hide any Sky Sports "Cricket" article that isn't actually about cricket!
-        if (a.source === 'Sky Sports Cricket' && (!a.link || !a.link.toLowerCase().includes('cricket'))) {
-            return; // Skip drawing this card entirely!
-        }
-
-        var sizeClass = '';
-        if (drawnCount === 0 && a.image) sizeClass = 'card-hero'; 
-        else if (drawnCount === 4 && a.image) sizeClass = 'card-wide'; 
-        else if (drawnCount === 9 && a.image) sizeClass = 'card-hero'; 
-        
-        // Append to invisible memory fragment, NOT the actual screen
-        fragment.appendChild(buildCard(a, EMOJI[a.sport||'main']||'📰', sizeClass)); 
-        drawnCount++;
-      });
-      
-      // Inject all completely assembled cards identically into the screen at once!
-      output.appendChild(fragment);
-
-    } catch(e) {
-      output.innerHTML = '<div class="empty">❌ '+e.message+'<\/div>';
-    }
+    output.innerHTML = '';
+    var frag = document.createDocumentFragment();
+    var count = 0;
+    
+    articles.forEach(function(a) {
+      if (a.source === 'Sky Sports Cricket' && (!a.link || !a.link.toLowerCase().includes('cricket'))) return;
+      var size = '';
+      if (count === 0 && a.image) size = 'card-hero';
+      else if (count === 4 && a.image) size = 'card-wide';
+      frag.appendChild(buildCard(a, EMOJI[a.sport] || '📰', size));
+      count++;
+    });
+    output.appendChild(frag);
   }
 
+  function generateTabs(list, hasOther) {
+    var html = '<div class="tab active" data-sport="main" onclick="loadSport(\'main\')">🏆 Main</div>';
+    var fab = '<div class="fab-item active" data-sport="main" onclick="loadSport(\'main\'); toggleFabMenu();">🏆 Main</div>';
+    list.forEach(function(s) {
+        var label = EMOJI[s] + ' ' + LABEL[s];
+        html += '<div class="tab" data-sport="'+s+'" onclick="loadSport(\''+s+'\')">'+label+'</div>';
+        fab += '<div class="fab-item" data-sport="'+s+'" onclick="loadSport(\''+s+'\'); toggleFabMenu();">'+label+'</div>';
+    });
+    document.getElementById('desktopTabs').innerHTML = html;
+    document.getElementById('fabMenu').innerHTML = fab;
+  }
+
+  function loadSport(key) {
+    currentSport = key;
+    document.querySelectorAll('.tab, .fab-item').forEach(function(t){ t.classList.remove('active'); });
+    document.querySelectorAll('[data-sport="'+key+'"]').forEach(function(t){ t.classList.add('active'); });
+    document.getElementById('sectionLabel').textContent = EMOJI[key] + ' ' + LABEL[key];
+    window.scrollTo({top: 0, behavior: 'smooth'});
+    renderNews();
+  }
 
   async function init() {
     var results = await Promise.allSettled(PRIORITY_SPORTS.map(fetchSport));
-    var sportArrays = {};
+    var active = [], all = [], seen = new Set();
     
     results.forEach(function(r, i) {
-      var sportKey = PRIORITY_SPORTS[i];
+      var sk = PRIORITY_SPORTS[i];
       if (r.status === 'fulfilled' && r.value.length > 0) {
-        var sorted = r.value.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
-        sportArrays[sportKey] = sorted.slice(); 
-        sportCache[sportKey] = sorted; 
-      } else {
-        sportCache[sportKey] = [];
+        sportCache[sk] = r.value.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
+        if (active.length < 6) active.push(sk);
       }
     });
 
-    activeTabs = [];
-    otherTabs = [];
-    for (var s of PRIORITY_SPORTS) {
-      if (sportArrays[s] && sportArrays[s].length > 0) {
-        if (activeTabs.length < 6) { activeTabs.push(s); } 
-        else { otherTabs.push(s); }
-      }
-    }
-
-    if (activeTabs.length === 0) {
-      activeTabs = ['cricket','basketball','football','baseball','tennis','kabaddi'];
-    }
-
-    var otherArticles = [];
-    otherTabs.forEach(function(sk) {
-      otherArticles = otherArticles.concat(sportCache[sk]);
-    });
-    otherArticles.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
-    
-    sportCache['other'] = otherArticles;
-
-    generateTabs(activeTabs, otherArticles.length > 0);
-
-    var all = [], seen = new Set();
-    var allSportsEver = activeTabs.concat(otherTabs);
-    var keepGoing = true;
-    while(keepGoing) {
-      keepGoing = false;
-      for (var i = 0; i < allSportsEver.length; i++) {
-        var sk = allSportsEver[i];
-        if (sportArrays[sk] && sportArrays[sk].length > 0) {
-          keepGoing = true;
-          var a = sportArrays[sk].shift(); 
-          if (!seen.has(a.link)) { 
-            seen.add(a.link); 
-            all.push(a); 
-          }
+    // Merge logic
+    var keep = true, pool = active.slice();
+    while(keep) {
+      keep = false;
+      pool.forEach(function(sk) {
+        if (sportCache[sk] && sportCache[sk].length) {
+          keep = true;
+          var a = sportCache[sk].shift(); // use a copy for allCache
+          if (!seen.has(a.link)) { seen.add(a.link); all.push(a); }
         }
-      }
+      });
     }
+    // Restore cache for tabs
+    results.forEach(function(r, i) { if (r.status === 'fulfilled') sportCache[PRIORITY_SPORTS[i]] = r.value; });
     
     allCache = all;
-    buildTicker(all);
-    buildSidebar(all);
+    generateTabs(active, false);
     
-    if(document.querySelector('.tab[data-sport="main"]')) {
-      loadSport('main', false);
-    } else {
-      renderNews(); 
+    if (all.length) {
+      var ticker = all.slice(0,15).map(function(a){ return '<span class="ticker-item">'+a.title+'</span>'; }).join('');
+      document.getElementById('tickerTrack').innerHTML = ticker + ticker;
+      
+      var side = all.filter(function(a){return a.image;}).slice(0,8);
+      var tList = document.getElementById('trendingList'); tList.innerHTML = '';
+      side.forEach(function(a){ tList.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
+      
+      var rList = document.getElementById('recentList'); rList.innerHTML = '';
+      all.slice(10, 16).forEach(function(a){ rList.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'📰')); });
     }
+    loadSport('main');
   }
 
   init();
-  
-  setInterval(function() { if(allCache.length > 0) { renderNews(); } }, 5 * 60 * 1000);
-  setInterval(function() { allCache = []; sportCache = {}; init(); }, 60 * 60 * 1000);
-  
-  /* --- NEWSLETTER SUBMIT --- */
-  var newsletterForm = document.getElementById("newsletter-form");
-  if (newsletterForm) {
-    newsletterForm.addEventListener("submit", async function(event) {
-      event.preventDefault(); 
-      var form = event.target;
-      var button = form.querySelector("button");
-      button.textContent = "Subscribing...";
-      try {
-        var response = await fetch(form.action, { method: form.method, body: new FormData(form), headers: { 'Accept': 'application/json' } });
-        if (response.ok) {
-          button.textContent = "✅ Subscribed!";
-          button.style.background = "#4CAF50"; button.style.color = "#fff";
-          form.reset(); 
-        } else {
-          button.textContent = "❌ Error. Try again.";
-        }
-      } catch (error) { button.textContent = "❌ Error. Try again."; }
-      
-      setTimeout(function() {
-        button.textContent = "Subscribe Now"; button.style.background = "#FFFF5C"; button.style.color = "#000";
-      }, 4000);
-    });
-  }
+  setInterval(init, 60 * 60 * 1000);
 </script>
 </body>
 </html>
