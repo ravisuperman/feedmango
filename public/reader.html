@@ -61,7 +61,8 @@
 </div>
 
 <script>
-    const API = "https://rss-engine-core.anu-kompel.workers.dev";
+    /* Pointing to your active Mango worker which has the live news data! */
+const API = "https://mango-sports-worker.ravi-kompel.workers.dev";
     
     function updateClock() { document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}); }
     setInterval(updateClock, 1000); updateClock();
