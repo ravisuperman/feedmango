@@ -8,23 +8,20 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Assistant', sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
-        /* SIDEBAR (PRO SPORTS STYLE) */
-        .sidebar { width: 280px; background: var(--espn-blue); color: #fff; display: flex; flex-direction: column; padding: 30px 0; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
+        .sidebar { width: 280px; background: var(--espn-blue); color: #fff; display: flex; flex-direction: column; padding: 30px 0; flex-shrink: 0; }
         .logo { padding: 0 24px; margin-bottom: 40px; font-size: 24px; font-weight: 900; letter-spacing: -2px; font-style: italic; }
         .logo span { background: var(--espn-red); padding: 0 4px; }
         .logo em { font-weight: 500; text-transform: lowercase; font-style: italic; color: #94bdff; margin-left: 2px; }
 
         .nav-item { padding: 15px 24px; color: rgba(255,255,255,0.7); cursor: pointer; font-weight: 700; transition: 0.2s; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .nav-item:hover { background: rgba(0,0,0,0.1); color: #fff; }
-        .nav-item.active { background: rgba(0,0,0,0.2); color: #fff; border-left: 5px solid #fff; }
+        .nav-item.active { background: rgba(0,0,0,0.3); color: #fff; border-left: 6px solid #fff; }
 
-        /* MAIN AREA */
         .main { flex: 1; display: flex; flex-direction: column; }
         .header { height: 75px; background: #fff; border-bottom: 1px solid #ddd; display: flex; align-items: center; padding: 0 40px; justify-content: space-between; }
         .feed-container { flex: 1; overflow-y: auto; padding: 40px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
 
-        /* HIGH-DENSITY CARDS */
         .card { background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #eee; transition: 0.25s; cursor: pointer; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .img-box { width: 100%; height: 180px; background: #eee; }
@@ -40,12 +37,12 @@
 
 <div class="sidebar">
     <div class="logo"><span>SPORTS</span><em>rip</em></div>
-    <div class="nav-item active" onclick="load('all')">📅 All News</div>
-    <div class="nav-item" onclick="load('ipl')">🏏 IPL Cricket</div>
-    <div class="nav-item" onclick="load('f1')">🏎️ Formula 1</div>
-    <div class="nav-item" onclick="load('basketball')">🏀 NBA Basketball</div>
-    <div class="nav-item" onclick="load('football')">⚽ Soccer</div>
-    <div class="nav-item" onclick="load('tech')">💻 Tech News</div>
+    <div class="nav-item active" data-cat="all" onclick="load('all')">📅 All News</div>
+    <div class="nav-item" data-cat="ipl" onclick="load('ipl')">🏏 IPL Cricket</div>
+    <div class="nav-item" data-cat="f1" onclick="load('f1')">🏎️ Formula 1</div>
+    <div class="nav-item" data-cat="basketball" onclick="load('basketball')">🏀 NBA Basketball</div>
+    <div class="nav-item" data-cat="football" onclick="load('football')">⚽ Soccer</div>
+    <div class="nav-item" data-cat="tech" onclick="load('tech')">💻 Tech News</div>
 </div>
 
 <div class="main">
@@ -55,31 +52,48 @@
     </div>
     
     <div class="feed-container">
-        <div id="loader">Waking up the engine...</div>
+        <div id="loader">Retrieving your news stream...</div>
         <div id="feed" class="grid"></div>
     </div>
 </div>
 
 <script>
-    /* Pointing to your active Mango worker which has the live news data! */
-const API = "https://mango-sports-worker.ravi-kompel.workers.dev";
+    const API = "https://mango-sports-worker.ravi-kompel.workers.dev";
     
-    function updateClock() { document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}); }
+    function updateClock() { 
+        document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}); 
+    }
     setInterval(updateClock, 1000); updateClock();
 
     async function load(cat) {
         const grid = document.getElementById('feed');
         const loader = document.getElementById('loader');
-        grid.innerHTML = ''; loader.style.display = 'block';
+        grid.innerHTML = ''; 
+        loader.style.display = 'block';
+        loader.innerText = "Retrieving " + cat.toUpperCase() + " news...";
 
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.innerText.toLowerCase().includes(cat)));
+        // Strict Tab Switching
+        document.querySelectorAll('.nav-item').forEach(i => {
+           i.classList.toggle('active', i.getAttribute('data-cat') === cat);
+        });
+
+        document.getElementById('viewTitle').innerText = cat === 'all' ? 'Top Stories' : cat;
 
         try {
             const url = cat === 'all' ? `${API}/api/news` : `${API}/api/news?sport=${cat}`;
             const res = await fetch(url);
-            const items = await res.json();
+            const data = await res.json();
+            
+            // Correctly handle either raw array or { articles: [] }
+            const items = data.articles || data;
             
             loader.style.display = 'none';
+            if (!items || items.length === 0) {
+                loader.style.display = 'block';
+                loader.innerText = "No news found for this category.";
+                return;
+            }
+
             items.forEach(a => {
                 const card = document.createElement('div');
                 card.className = 'card';
@@ -93,7 +107,10 @@ const API = "https://mango-sports-worker.ravi-kompel.workers.dev";
                 `;
                 grid.appendChild(card);
             });
-        } catch (e) { loader.innerText = "Connection lost. Reconnecting..."; }
+        } catch (e) { 
+            loader.style.display = 'block';
+            loader.innerText = "Connection lost. Reconnecting..."; 
+        }
     }
 
     load('all');
