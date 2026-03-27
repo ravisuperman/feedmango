@@ -497,14 +497,29 @@
   function buildCard(a, e, size) {
     var c = document.createElement('a'); 
     c.className = 'card ' + (size || '') + (a.isOwn ? ' own-article' : '');
-    // Own articles → articles.html; RSS articles → source URL in new tab
     if(a.isOwn) {
       c.href = 'articles.html?data=' + encodeURIComponent(JSON.stringify(a));
       c.target = '_self';
     } else {
+      // Open RSS articles in small floating popup window
       c.href = a.link;
-      c.target = '_blank';
-      c.rel = 'noopener noreferrer';
+      c.onclick = function(e) {
+        e.preventDefault();
+        var isMobile = window.innerWidth <= 768;
+        if(isMobile) {
+          // Mobile — open in new tab (popups don't work well on mobile)
+          window.open(a.link, '_blank');
+        } else {
+          // Desktop — open in small floating popup window
+          var w = 900, h = 650;
+          var left = (screen.width - w) / 2;
+          var top = (screen.height - h) / 2;
+          window.open(a.link, '_blank', 
+            'width='+w+',height='+h+',left='+left+',top='+top+
+            ',toolbar=0,menubar=0,scrollbars=1,resizable=1,status=0'
+          );
+        }
+      };
     }
     var img = a.image ? '<img class="card-img" src="'+a.image+'" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+e+'</div>\'">' : '<div class="card-img-placeholder">'+e+'</div>';
     var d = cleanText(a.description || ""); if (!d || d.trim().length < 5) d = "Experience full depth and insight beyond the preview. Click to reach the complete article and stay ahead of the game.";
