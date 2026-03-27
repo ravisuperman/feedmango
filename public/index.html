@@ -271,12 +271,85 @@
 <button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
 
 <script>
-   var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev';
-  var PRIORITY_SPORTS = ['ipl','f1','cricket','basketball','baseball','football','tennis','kabaddi','boxing','golf','athletics','rugby','olympics','nfl','badminton'];
+  // ============================================================
+  // BLOCK START: Worker URL
+  // Added  : 27-Mar-2026
+  // Change to PROD URL when deploying to production.
+  // ============================================================
+  var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev'; // DEV
+  // var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev'; // PROD
+  // BLOCK END: Worker URL (27-Mar-2026)
+  // ============================================================
+
+  // ============================================================
+  // BLOCK START: EMOJI map — static, visual only
+  // Added  : 27-Mar-2026
+  // Purpose: Maps sport keys to emoji icons for tabs and cards.
+  //          Add new sports here if you add them in admin panel.
+  // ============================================================
   var EMOJI = {ipl:'🏏', f1:'🏎️', cricket:'🏏', basketball:'🏀', football:'⚽', baseball:'⚾', tennis:'🎾', kabaddi:'🤼', boxing:'🥊', golf:'⛳', athletics:'🏃', rugby:'🏉', olympics:'🏅', nfl:'🏈', badminton:'🏸', main:'🏆'};
-  var LABEL = {ipl:'IPL 2026', f1:'Formula 1', cricket:'Cricket', basketball:'NBA', football:'Soccer', baseball:'MLB', tennis:'Tennis', kabaddi:'Kabaddi', boxing:'Boxing', golf:'Golf', athletics:'Athletics', rugby:'Rugby', olympics:'Olympics', nfl:'NFL', badminton:'Badminton', main:'Top Stories'};
-  
+  // BLOCK END: EMOJI map (27-Mar-2026)
+  // ============================================================
+
+  // ============================================================
+  // BLOCK START: Hardcoded fallback lists
+  // Added  : 27-Mar-2026
+  // Purpose: Used ONLY if /api/feeds fails or returns empty.
+  //          Keeps the site working even if KV is unavailable.
+  //          Normally these are overridden by dynamic KV data.
+  // ============================================================
+  var PRIORITY_SPORTS_FALLBACK = ['ipl','f1','cricket','basketball','baseball','football','tennis','kabaddi','boxing','golf','athletics','rugby','olympics','nfl','badminton'];
+  var LABEL_FALLBACK = {ipl:'IPL 2026', f1:'Formula 1', cricket:'Cricket', basketball:'NBA', football:'Soccer', baseball:'MLB', tennis:'Tennis', kabaddi:'Kabaddi', boxing:'Boxing', golf:'Golf', athletics:'Athletics', rugby:'Rugby', olympics:'Olympics', nfl:'NFL', badminton:'Badminton', main:'Top Stories'};
+  // BLOCK END: Hardcoded fallback lists (27-Mar-2026)
+  // ============================================================
+
+  // These get populated dynamically from /api/feeds on load
+  var PRIORITY_SPORTS = PRIORITY_SPORTS_FALLBACK.slice();
+  var LABEL = Object.assign({}, LABEL_FALLBACK);
+
   var currentSport = 'ipl'; var allCache = []; var sportCache = {};
+
+  // ============================================================
+  // BLOCK START: loadDynamicSports — fetch tabs from KV
+  // Added  : 27-Mar-2026
+  // Purpose: Calls /api/feeds to get the current sport categories
+  //          and feed config from CONTROL_PANEL_KV.
+  //          Builds PRIORITY_SPORTS and LABEL dynamically so tabs
+  //          reflect whatever is saved in the admin panel.
+  //          Falls back to hardcoded lists if KV is empty or fails.
+  //          Deduplicates sports and preserves priority order.
+  // ============================================================
+  async function loadDynamicSports() {
+    try {
+      var res = await fetch(WORKER + '/api/feeds');
+      if (!res.ok) throw new Error('feeds API returned ' + res.status);
+      var data = await res.json();
+      var feeds = data.feeds || [];
+      if (feeds.length === 0) return; // fallback stays active
+
+      // Build unique sport list in priority order
+      var seen = new Set();
+      var sports = [];
+      var labels = { main: 'Top Stories' };
+
+      feeds.forEach(function(f) {
+        if (!seen.has(f.sport)) {
+          seen.add(f.sport);
+          sports.push(f.sport);
+          labels[f.sport] = f.label || f.sport;
+        }
+      });
+
+      // Apply dynamic values
+      PRIORITY_SPORTS = sports;
+      LABEL = labels;
+    } catch(e) {
+      console.warn('Dynamic sports load failed, using fallback:', e.message);
+      // PRIORITY_SPORTS and LABEL already set to fallback values above
+    }
+  }
+  // BLOCK END: loadDynamicSports (27-Mar-2026)
+  // ============================================================
 
   // ============================================================
   // BLOCK START: Dark Mode Logic
@@ -392,6 +465,16 @@
   }
 
   async function init() {
+    // ============================================================
+    // BLOCK START: Dynamic sports load before render
+    // Added  : 27-Mar-2026
+    // Purpose: Loads sport categories from KV FIRST so tabs and
+    //          fetches use the dynamic list, not hardcoded one.
+    // ============================================================
+    await loadDynamicSports();
+    // BLOCK END: Dynamic sports load (27-Mar-2026)
+    // ============================================================
+
     var res = await Promise.allSettled(PRIORITY_SPORTS.map(fetchSport));
     var sa = {}; res.forEach((r, i) => { if (r.status === 'fulfilled' && r.value.length) { sportCache[PRIORITY_SPORTS[i]] = r.value.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate)); sa[PRIORITY_SPORTS[i]] = sportCache[PRIORITY_SPORTS[i]].slice(); } });
     var active = []; for (var s of PRIORITY_SPORTS) { if (sportCache[s] && sportCache[s].length && active.length < 10) active.push(s); }
