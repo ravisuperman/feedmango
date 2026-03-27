@@ -39,10 +39,11 @@
     .header-spacer { flex:1; }
     .dark-toggle { width:36px; height:36px; border-radius:50%; border:2px solid rgba(255,255,255,0.3); background:rgba(255,255,255,0.1); color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:0.2s; }
 
-    /* ── Page layout — matches index.html 75:25 ratio ── */
-    .page { max-width:1400px; margin:0 auto; padding:25px 24px; display:flex; gap:12px; align-items:flex-start; }
-    .article-main { flex:1; min-width:0; }
-    .sidebar { width:340px; flex-shrink:0; display:flex; flex-direction:column; gap:12px; align-self:stretch; }
+    /* ── Page layout — 3 columns: Related | Article | Our Articles ── */
+    .page { max-width:1400px; margin:0 auto; padding:20px 24px; display:grid; grid-template-columns:240px 1fr 280px; gap:16px; align-items:start; }
+    .article-main { min-width:0; }
+    .sidebar { display:flex; flex-direction:column; gap:12px; }
+    .related-col { display:flex; flex-direction:column; gap:12px; position:sticky; top:68px; }
 
     /* ── Section label — matches IPL tab heading style ── */
     .article-section-label { display:flex; align-items:center; gap:8px; font-size:20px; font-weight:900; color:var(--text); margin-bottom:16px; padding-left:14px; border-left:5px solid var(--espn-blue); }
@@ -68,26 +69,18 @@
     .read-btn { display:inline-flex; align-items:center; gap:10px; background:var(--espn-blue); color:#fff; text-decoration:none; padding:14px 28px; border-radius:10px; font-size:15px; font-weight:800; transition:0.2s; margin-bottom:32px; }
     .read-btn:hover { background:#024a94; transform:translateY(-1px); box-shadow:0 4px 16px rgba(3,91,176,0.3); }
 
-    /* ── Related strip ── */
-    .related-section { margin-top:32px; }
-    .section-label { font-size:15px; font-weight:800; text-transform:uppercase; border-left:5px solid var(--espn-blue); padding-left:12px; margin-bottom:16px; color:var(--text); }
-    .strip-wrapper { position:relative; padding:0 22px; }
-    .strip-arrow { position:absolute; top:38%; transform:translateY(-50%); width:36px; height:36px; border-radius:50%; background:var(--surface); border:1px solid var(--border2); box-shadow:0 2px 8px var(--shadow2); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:16px; z-index:10; transition:0.2s; color:var(--text); }
-    .strip-arrow:hover { background:var(--espn-blue); color:#fff; border-color:var(--espn-blue); }
-    .strip-arrow.left { left:0; }
-    .strip-arrow.right { right:0; }
-    .related-strip { display:flex; gap:14px; overflow-x:auto; padding-bottom:12px; scroll-behavior:smooth; scrollbar-width:none; }
-    .related-strip::-webkit-scrollbar { display:none; }
+    /* ── Related column cards (left column) ── */
+    .related-col-title { font-size:13px; font-weight:800; text-transform:uppercase; border-left:4px solid var(--espn-blue); padding-left:10px; margin-bottom:12px; color:var(--text); }
 
-    /* ── Related cards — same as index.html cards ── */
-    .related-card { flex-shrink:0; width:240px; background:var(--surface); border-radius:12px; overflow:hidden; text-decoration:none; color:inherit; border:1px solid var(--border); transition:0.25s; box-shadow:0 1px 4px var(--shadow); }
-    .related-card:hover { transform:translateY(-3px); box-shadow:0 8px 20px var(--shadow2); }
+    /* ── Related cards — vertical stack in left column ── */
+    .related-card { display:block; background:var(--surface); border-radius:12px; overflow:hidden; text-decoration:none; color:inherit; border:1px solid var(--border); transition:0.25s; box-shadow:0 1px 4px var(--shadow); margin-bottom:12px; }
+    .related-card:hover { transform:translateY(-2px); box-shadow:0 6px 16px var(--shadow2); }
     .related-card.own { border:2px solid var(--gold); }
-    .related-img { width:100%; height:160px; object-fit:cover; display:block; background:var(--border2); border-radius:12px 12px 0 0; }
-    .related-img-ph { width:100%; height:160px; background:var(--border2); display:flex; align-items:center; justify-content:center; font-size:28px; opacity:0.3; border-radius:12px 12px 0 0; }
-    .related-body { padding:14px; }
-    .related-source { font-size:12px; color:var(--espn-blue); font-weight:800; text-transform:uppercase; margin-bottom:6px; }
-    .related-title { font-size:16px; font-weight:800; line-height:1.3; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+    .related-img { width:100%; height:120px; object-fit:cover; display:block; background:var(--border2); border-radius:12px 12px 0 0; }
+    .related-img-ph { width:100%; height:120px; background:var(--border2); display:flex; align-items:center; justify-content:center; font-size:24px; opacity:0.3; border-radius:12px 12px 0 0; }
+    .related-body { padding:10px 12px; }
+    .related-source { font-size:10px; color:var(--espn-blue); font-weight:800; text-transform:uppercase; margin-bottom:4px; }
+    .related-title { font-size:13px; font-weight:700; line-height:1.3; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
 
     /* ── Sidebar ── */
     .sidebar { position:sticky; top:68px; display:flex; flex-direction:column; gap:16px; }
@@ -114,13 +107,15 @@
     footer { padding:15px 24px; background:var(--footer-bg); border-top:1px solid var(--footer-border); text-align:center; margin-top:auto; }
     .disclaimer { font-size:11px; color:var(--footer-text); font-weight:700; max-width:900px; margin:0 auto; line-height:1.4; }
 
-    @media(max-width:900px){
+    @media(max-width:1100px){
       header { width:100%; border-radius:0; margin-top:0; margin-left:0; padding:0 15px; }
-      .page { grid-template-columns:1fr; padding:20px 15px; }
-      .sidebar { position:static; }
+      .page { grid-template-columns:1fr 260px; padding:20px 15px; }
+      .related-col { display:none; }
       .article-title { font-size:24px; }
     }
-    @media(max-width:600px){
+    @media(max-width:700px){
+      .page { grid-template-columns:1fr; }
+      .sidebar { display:none; }
       .article-title { font-size:20px; }
       .article-desc { font-size:15px; }
     }
@@ -136,10 +131,19 @@
 </header>
 
 <div class="page">
+
+  <!-- ── LEFT: Related Articles column ── -->
+  <nav class="related-col" id="relatedCol">
+    <div class="related-col-title">Related Articles</div>
+    <div id="relatedStrip"><div class="loading loading-pulse" style="font-size:12px;">Loading...</div></div>
+  </nav>
+
+  <!-- ── CENTER: Main Article ── -->
   <main class="article-main" id="articleMain">
     <div class="loading loading-pulse">Loading article...</div>
   </main>
 
+  <!-- ── RIGHT: Our Articles sidebar ── -->
   <aside class="sidebar">
     <!-- Promo image — same as index.html sidebar -->
     <div class="sidebar-box" style="overflow:hidden;">
@@ -230,14 +234,7 @@
       '<h1 class="article-title">'+sanitize(a.title)+'</h1>' +
       (a.description ? '<p class="article-desc">'+sanitize(a.description)+'</p>' : '') +
       '<a href="'+sanitize(a.link)+'" target="_blank" rel="noopener noreferrer" class="read-btn">Read Full Article <span>→</span></a>' +
-      '<div class="related-section" id="relatedSection">' +
-        '<div class="section-label">Related Articles</div>' +
-        '<div class="strip-wrapper">' +
-          '<button class="strip-arrow left" onclick="scrollStrip(-1)">&#8592;</button>' +
-          '<div class="related-strip" id="relatedStrip"><div class="loading loading-pulse">Loading...</div></div>' +
-          '<button class="strip-arrow right" onclick="scrollStrip(1)">&#8594;</button>' +
-        '</div>' +
-      '</div>';
+      '';
 
     document.title = 'SPORTSrip — ' + a.title.slice(0,60);
     loadRelated(sport, a.link);
@@ -252,9 +249,9 @@
       var articles = (data.articles||[]).filter(function(a){ return a.link!==currentLink; });
       var own = articles.filter(function(a){ return a.isOwn; });
       var rss = articles.filter(function(a){ return !a.isOwn; });
-      var sorted = own.concat(rss).slice(0,15);
+      var sorted = own.concat(rss).slice(0,8);
       var strip = document.getElementById('relatedStrip');
-      if(!sorted.length){ strip.innerHTML='<div style="color:var(--text3);font-size:13px;padding:10px">No related articles.</div>'; return; }
+      if(!sorted.length){ strip.innerHTML='<div style="color:var(--text3);font-size:12px;">No related articles.</div>'; return; }
       strip.innerHTML='';
       sorted.forEach(function(a){
         var card=document.createElement('a');
@@ -264,7 +261,7 @@
         card.innerHTML=img+'<div class="related-body"><div class="related-source">'+(a.isOwn?'SPORTSrip':sanitize(a.source||''))+'</div><div class="related-title">'+sanitize(a.title)+'</div></div>';
         strip.appendChild(card);
       });
-    } catch(e){ document.getElementById('relatedStrip').innerHTML='<div style="color:var(--text3);font-size:13px">Could not load.</div>'; }
+    } catch(e){ document.getElementById('relatedStrip').innerHTML='<div style="color:var(--text3);font-size:12px">Could not load.</div>'; }
   }
 
   async function loadSidebarOwn() {
