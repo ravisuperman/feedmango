@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <!-- Google Searches Console ownership verification tag — DO NOT REMOVE, required for Google indexing -->
+  <!-- Google Search Console ownership verification tag — DO NOT REMOVE, required for Google indexing -->
   <meta name="google-site-verification" content="Jht59lHwkn9XZKP7kyAcKtk9SMl9tPmllXm4ehBH-7c" />
 
   <title>SPORTSrip — Live Sports Feed</title>
@@ -399,23 +399,26 @@
   }
 
   // ============================================================
-  // BLOCK START: Card builder — supports "own article" badge
-  // Purpose: If article has isOwn:true flag (set by worker when
-  // serving from MY_NEWS_KV), it shows a gold SPORTSrip badge
-  // so readers know it's original content from you.
+  // BLOCK START: Card builder — links to articles.html
+  // Added  : 27-Mar-2026
+  // Purpose: Cards now open articles.html for all articles.
+  //          Article data is passed via URL ?data= param.
+  //          Own articles get gold SPORTSrip badge.
+  //          RSS articles get READ MORE badge.
   // ============================================================
   function buildCard(a, e, size) {
-    var c = document.createElement('a'); 
-    c.className = 'card ' + (size || '') + (a.isOwn ? ' own-article' : ''); 
-    c.href = a.link; c.target = '_blank';
+    var c = document.createElement('a');
+    c.className = 'card ' + (size || '') + (a.isOwn ? ' own-article' : '');
+    // All cards open articles.html with data passed in URL
+    c.href = 'articles.html?data=' + encodeURIComponent(JSON.stringify(a));
+    c.target = '_self'; // open in same tab
     var img = a.image ? '<img class="card-img" src="'+a.image+'" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+e+'</div>\'">' : '<div class="card-img-placeholder">'+e+'</div>';
     var d = cleanText(a.description || ""); if (!d || d.trim().length < 5) d = "Experience full depth and insight beyond the preview. Click to reach the complete article and stay ahead of the game.";
     var badge = a.isOwn ? '<span class="own-badge">SPORTSrip</span> ' : '<span class="read-more-badge">READ MORE &gt;&gt;</span>';
     c.innerHTML = img + '<div class="card-body"><div class="card-meta">'+badge+'<span class="card-source">📰 '+(a.source||'SPORTSrip')+'</span></div><div class="card-title">'+a.title+'</div><div class="card-desc">'+d+'</div></div>';
     return c;
   }
-  // ============================================================
-  // BLOCK END: Card builder
+  // BLOCK END: Card builder (27-Mar-2026)
   // ============================================================
 
   function buildSidebarItem(a, e) {
