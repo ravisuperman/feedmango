@@ -7,7 +7,7 @@
   <!-- Google Search Console ownership verification tag — DO NOT REMOVE, required for Google indexing -->
   <meta name="google-site-verification" content="Jht59lHwkn9XZKP7kyAcKtk9SMl9tPmllXm4ehBH-7c" />
 
-  <title>SPORTSrip — Dev Live Sports Feed</title>
+  <title>SPORTSrip — Live Sports Feed</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -435,6 +435,19 @@
     }
 
     if (!a.length) { o.innerHTML = '<div style="grid-column:1/-1; padding:60px; text-align:center;">No stories found.</div>'; return; }
+
+    // ============================================================
+    // BLOCK START: Pin own articles to top for 24 hours
+    // Added  : 27-Mar-2026
+    // Purpose: Articles with isOwn:true published within the last
+    //          24 hours always float to the top regardless of date.
+    //          After 24 hours they flow down naturally with RSS.
+    //          Multiple own articles within 24hrs all stay on top.
+    // ============================================================
+    a = pinnedSort(a);
+    // BLOCK END: Pin own articles to top (27-Mar-2026)
+    // ============================================================
+
     o.innerHTML = ''; var f = document.createDocumentFragment(); var count = 0;
     a.forEach(x => { 
       if (x.source === 'Sky Sports Cricket' && (!x.link || !x.link.toLowerCase().includes('cricket'))) return; 
@@ -443,6 +456,38 @@
     });
     o.appendChild(f);
   }
+
+  // ============================================================
+  // BLOCK START: pinnedSort — own articles on top for 24 hours
+  // Added  : 27-Mar-2026
+  // Purpose: Splits article array into two groups:
+  //          1. Your own articles published within last 24 hours
+  //             → always shown first, sorted newest first
+  //          2. Everything else (RSS articles + own articles
+  //             older than 24hrs) → sorted by pubDate as normal
+  //          Result: your fresh articles always lead the page.
+  //          After 24 hours they naturally fall into the stream.
+  // ============================================================
+  function pinnedSort(articles) {
+    var now = Date.now();
+    var hrs24 = 24 * 60 * 60 * 1000;
+    var pinned = [];
+    var rest = [];
+    articles.forEach(function(a) {
+      var age = now - new Date(a.pubDate).getTime();
+      if (a.isOwn && age < hrs24) {
+        pinned.push(a);
+      } else {
+        rest.push(a);
+      }
+    });
+    // Sort pinned newest first, rest newest first
+    pinned.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
+    rest.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
+    return pinned.concat(rest);
+  }
+  // BLOCK END: pinnedSort (27-Mar-2026)
+  // ============================================================
 
   function generateTabs(list) {
     var activeTabs = ['main', 'ipl'];
@@ -476,14 +521,38 @@
     // ============================================================
 
     var res = await Promise.allSettled(PRIORITY_SPORTS.map(fetchSport));
-    var sa = {}; res.forEach((r, i) => { if (r.status === 'fulfilled' && r.value.length) { sportCache[PRIORITY_SPORTS[i]] = r.value.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate)); sa[PRIORITY_SPORTS[i]] = sportCache[PRIORITY_SPORTS[i]].slice(); } });
+    var sa = {}; res.forEach((r, i) => {
+      if (r.status === 'fulfilled' && r.value.length) {
+        // Apply pinnedSort — own articles within 24hrs float to top
+        sportCache[PRIORITY_SPORTS[i]] = pinnedSort(r.value);
+        sa[PRIORITY_SPORTS[i]] = sportCache[PRIORITY_SPORTS[i]].slice();
+      }
+    });
     var active = []; for (var s of PRIORITY_SPORTS) { if (sportCache[s] && sportCache[s].length && active.length < 10) active.push(s); }
     var all = [], seen = new Set(), keep = true; while(keep) { keep = false; active.forEach(sk => { if (sa[sk] && sa[sk].length) { keep = true; var a = sa[sk].shift(); if (!seen.has(a.link)) { seen.add(a.link); all.push(a); } } }); }
-    allCache = all; generateTabs(active);
-    if (all.length) {
-      var tr = document.getElementById('trendingList'); tr.innerHTML = ''; all.filter(x=>x.image).slice(0,6).forEach(a=>tr.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')));
-      var rc = document.getElementById('recentList'); rc.innerHTML = ''; all.slice(6, 11).forEach(a=>rc.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')));
+
+    // ============================================================
+    // BLOCK START: Pin own articles in allCache + sidebar
+    // Added  : 27-Mar-2026
+    // Purpose: Apply pinnedSort to allCache (Top Stories) so own
+    //          articles appear first there too.
+    //          Sidebar Trending Now shows own articles first for
+    //          24 hours, then fills with RSS articles.
+    // ============================================================
+    allCache = pinnedSort(all);
+
+    generateTabs(active);
+    if (allCache.length) {
+      var tr = document.getElementById('trendingList'); tr.innerHTML = '';
+      // Trending Now: own articles first (if within 24hrs), then RSS
+      pinnedSort(allCache.filter(x=>x.image)).slice(0,6).forEach(a=>tr.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')));
+      var rc = document.getElementById('recentList'); rc.innerHTML = '';
+      // Recent Updates: same logic
+      pinnedSort(allCache).slice(6, 11).forEach(a=>rc.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')));
     }
+    // BLOCK END: Pin own articles in allCache + sidebar (27-Mar-2026)
+    // ============================================================
+
     setActive('ipl');
   }
   init();
