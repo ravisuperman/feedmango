@@ -1,309 +1,281 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PEP Sports — Admin Panel</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPORTSrip — Article Writer</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #0d0f14; --surface: #15181f; --surface2: #1c2030; --border: #2a2f3d;
-      --accent: #6c63ff; --accent-glow: rgba(108,99,255,0.25);
-      --green: #22c55e; --green-dim: rgba(34,197,94,0.15);
-      --red: #ef4444; --text: #e2e8f0; --text-muted: #64748b;
-      --radius: 12px; --transition: 0.2s ease;
+    :root { --blue: #035bb0; --bg: #0f0f13; --surface: #1a1a22; --border: #2a2a38; --text: #f0f0f0; --dim: #888; --success: #00ff88; --danger: #ff4d4d; --gold: #f0a500; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; padding: 30px 20px; }
+    .container { max-width: 760px; margin: 0 auto; }
+    h1 { font-size: 22px; font-weight: 800; margin-bottom: 4px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
+    .subtitle { font-size: 13px; color: var(--dim); margin-bottom: 28px; }
+
+    /* ── Password gate ── */
+    .gate { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 40px; text-align: center; max-width: 360px; margin: 80px auto; }
+    .gate h2 { margin-bottom: 16px; font-size: 18px; }
+    .gate input { width: 100%; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 15px; margin-bottom: 12px; outline: none; }
+    .gate button { width: 100%; padding: 13px; background: var(--blue); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; }
+
+    /* ── Form ── */
+    .form-grid { display: grid; gap: 16px; }
+    label { font-size: 12px; font-weight: 700; color: var(--dim); text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 6px; }
+    input[type=text], textarea, select {
+      width: 100%; padding: 12px 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-size: 14px;
+      font-family: inherit; outline: none; transition: border-color 0.2s;
     }
-    html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
-    .shell { display: grid; grid-template-rows: auto 1fr; min-height: 100vh; }
-    header {
-      background: linear-gradient(135deg, #1a1040 0%, #0d0f14 100%);
-      border-bottom: 1px solid var(--border);
-      padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem;
-    }
-    .logo { display: flex; align-items: center; gap: 0.6rem; }
-    .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent), #a78bfa); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
-    .logo-text { font-size: 1.2rem; font-weight: 800; }
-    .logo-text span { color: var(--accent); }
-    .badge { margin-left: auto; background: var(--accent-glow); color: #a78bfa; border: 1px solid rgba(108,99,255,0.4); border-radius: 6px; padding: 0.2rem 0.7rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
-    main { max-width: 900px; width: 100%; margin: 0 auto; padding: 2rem 1.5rem 4rem; display: flex; flex-direction: column; gap: 1.75rem; }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem; }
-    .card-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.5rem; }
-    .card-header .icon { width: 32px; height: 32px; border-radius: 8px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
-    .card-title { font-size: 1.05rem; font-weight: 700; }
-    .card-subtitle { font-size: 0.8rem; color: var(--text-muted); margin-left: auto; }
-    .form-row { display: grid; grid-template-columns: 160px 1fr; gap: 1rem; align-items: start; margin-bottom: 1rem; }
-    label { font-size: 0.82rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; padding-top: 0.6rem; }
-    select, textarea, input[type="text"] { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.9rem; padding: 0.6rem 0.85rem; outline: none; transition: border-color var(--transition), box-shadow var(--transition); resize: vertical; }
-    select:focus, textarea:focus, input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-    select { cursor: pointer; }
-    textarea { min-height: 110px; font-size: 0.85rem; line-height: 1.7; }
-    .btn { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.55rem 1.15rem; border-radius: 8px; border: none; font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition); }
-    .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; }
-    .btn:not(:disabled):hover { transform: translateY(-1px); }
-    .btn-primary { background: linear-gradient(135deg, var(--accent), #818cf8); color: #fff; box-shadow: 0 4px 14px rgba(108,99,255,0.35); }
-    .btn-primary:not(:disabled):hover { box-shadow: 0 6px 20px rgba(108,99,255,0.5); }
-    .btn-success { background: linear-gradient(135deg, #16a34a, #22c55e); color: #fff; box-shadow: 0 4px 14px rgba(34,197,94,0.3); }
-    .btn-success:not(:disabled):hover { box-shadow: 0 6px 20px rgba(34,197,94,0.45); }
-    .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-    .btn-ghost:not(:disabled):hover { background: #23293a; }
-    .btn-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem; }
-    #feed-list { margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
-    .feed-item { display: flex; align-items: center; gap: 0.75rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.65rem 1rem; animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-    .feed-check { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
-    .feed-details { flex: 1; min-width: 0; }
-    .feed-name { font-size: 0.875rem; font-weight: 600; }
-    .feed-url { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .mode-display { display: flex; align-items: center; gap: 1rem; margin: 1rem 0 1.5rem; }
-    .mode-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-    .mode-dot.auto   { background: var(--green); box-shadow: 0 0 8px var(--green); }
-    .mode-dot.custom { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
-    .mode-label { font-size: 1rem; font-weight: 700; }
-    #toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; display: flex; flex-direction: column; gap: 0.6rem; z-index: 9999; }
-    .toast { display: flex; align-items: center; gap: 0.6rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem 1.1rem; font-size: 0.875rem; font-weight: 500; box-shadow: 0 8px 32px rgba(0,0,0,0.5); animation: slideIn 0.3s ease; max-width: 340px; }
-    @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
-    .toast.success { border-left: 3px solid var(--green); }
-    .toast.error   { border-left: 3px solid var(--red); }
-    .toast.info    { border-left: 3px solid var(--accent); }
-    .progress-wrap { margin-top: 1rem; display: none; }
-    .progress-wrap.show { display: block; }
-    .progress-label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; }
-    .progress-bar-bg { background: var(--surface2); border-radius: 100px; height: 6px; overflow: hidden; }
-    .progress-bar-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--accent), #a78bfa); transition: width 0.4s ease; width: 0%; }
-    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.25); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .section-divider { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 0.75rem; }
-    .section-divider::before, .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    input[type=text]:focus, textarea:focus, select:focus { border-color: var(--blue); }
+    textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+    select option { background: var(--surface); }
+
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* Image preview */
+    #imgPreview { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); display: none; margin-top: 8px; background: var(--surface); }
+
+    /* Action buttons */
+    .btn-row { display: flex; gap: 12px; margin-top: 8px; }
+    .btn { padding: 13px 24px; border: none; border-radius: 8px; font-size: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: opacity 0.2s; }
+    .btn:disabled { opacity: 0.4; cursor: wait; }
+    .btn-publish { background: var(--gold); color: #000; flex: 1; }
+    .btn-clear { background: var(--surface); color: var(--dim); border: 1px solid var(--border); }
+
+    /* Console log */
+    #console { background: #000; color: #0f0; padding: 14px; border-radius: 8px; font-family: monospace; font-size: 12px; height: 120px; overflow-y: auto; margin-top: 20px; border: 1px solid var(--border); line-height: 1.6; }
+
+    /* Published articles list */
+    .articles-section { margin-top: 36px; }
+    .articles-title { font-size: 14px; font-weight: 800; text-transform: uppercase; color: var(--dim); margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    .article-row { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; }
+    .article-thumb { width: 72px; height: 54px; object-fit: cover; border-radius: 6px; background: var(--border); flex-shrink: 0; }
+    .article-meta { flex: 1; min-width: 0; }
+    .article-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .article-info { font-size: 11px; color: var(--dim); }
+    .btn-delete { background: rgba(255,77,77,0.12); color: var(--danger); border: 1px solid rgba(255,77,77,0.3); border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; flex-shrink: 0; }
+    .btn-delete:hover { background: rgba(255,77,77,0.25); }
   </style>
 </head>
 <body>
-<div class="shell">
-  <header>
-    <div class="logo">
-      <div class="logo-icon">⚡</div>
-      <div class="logo-text">PEP <span>Sports</span></div>
+
+<!-- ============================================================
+     BLOCK START: Password Gate
+     Purpose: Simple client-side password to prevent public access.
+     Change ADMIN_PASS below to your own password.
+     For extra security, move this to a worker route with a header check.
+============================================================ -->
+<div id="gate" class="gate">
+  <h2>🔐 SPORTSrip Admin</h2>
+  <input type="password" id="passInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPass()"/>
+  <button onclick="checkPass()">Enter</button>
+</div>
+<!-- BLOCK END: Password Gate -->
+
+<div id="app" class="container" style="display:none">
+  <h1>✍️ Article Writer</h1>
+  <p class="subtitle">Articles you publish here appear at the TOP of the selected sport tab — above all RSS feeds.</p>
+
+  <div class="form-grid">
+
+    <div>
+      <label>Article Title *</label>
+      <input type="text" id="f-title" placeholder="e.g. Rohit Sharma smashes century as MI defeats CSK"/>
     </div>
-    <span class="badge">Admin Panel</span>
-  </header>
 
-  <main>
-    <div class="section-divider">RSS Feed Discoverer</div>
+    <div>
+      <label>Summary / Description</label>
+      <textarea id="f-desc" placeholder="2-3 sentence summary of the article..."></textarea>
+    </div>
 
-    <div class="card">
-      <div class="card-header">
-        <div class="icon">🔍</div>
-        <div class="card-title">Discover RSS Feeds</div>
-        <div class="card-subtitle">Finds feeds from the URLs you paste</div>
-      </div>
-
-      <div class="form-row">
-        <label for="sport-select">Sport / Category</label>
-        <select id="sport-select">
+    <div class="row2">
+      <div>
+        <label>Sport Category *</label>
+        <select id="f-sport">
+          <option value="ipl">🏏 IPL 2026</option>
           <option value="cricket">🏏 Cricket</option>
           <option value="football">⚽ Football</option>
+          <option value="f1">🏎️ Formula 1</option>
           <option value="basketball">🏀 Basketball</option>
           <option value="tennis">🎾 Tennis</option>
+          <option value="boxing">🥊 Boxing</option>
+          <option value="golf">⛳ Golf</option>
+          <option value="badminton">🏸 Badminton</option>
+          <option value="kabaddi">🤼 Kabaddi</option>
+          <option value="rugby">🏉 Rugby</option>
+          <option value="athletics">🏃 Athletics</option>
+          <option value="olympics">🏅 Olympics</option>
+          <option value="nfl">🏈 NFL</option>
           <option value="baseball">⚾ Baseball</option>
-          <option value="general">📰 General</option>
         </select>
       </div>
-
-      <div class="form-row">
-        <label for="url-input">Website URLs</label>
-        <div>
-          <textarea id="url-input" placeholder="Paste one URL per line, e.g.&#10;https://www.bbc.co.uk/sport/cricket&#10;https://www.skysports.com/cricket"></textarea>
-          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.35rem;">One URL per line. The tool finds embedded RSS/Atom feeds automatically.</div>
-        </div>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn btn-primary" id="btn-discover">🔍 Discover RSS Feeds</button>
-      </div>
-
-      <div id="feed-list" style="display:none;"></div>
-
-      <div id="feed-actions" style="display:none;">
-        <div class="btn-row" style="margin-top:1.25rem; padding-top:1.25rem; border-top:1px solid var(--border);">
-          <button class="btn btn-success" id="btn-process">💾 Process &amp; Save to My News</button>
-          <button class="btn btn-ghost" id="btn-export-csv">📤 Export CSV</button>
-          <button class="btn btn-ghost" id="btn-export-xml">📤 Export XML</button>
-        </div>
-        <div class="progress-wrap" id="progress-wrap">
-          <div class="progress-label" id="progress-label">Processing articles &amp; fetching images…</div>
-          <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
-        </div>
+      <div>
+        <label>Article Link (URL) *</label>
+        <input type="text" id="f-link" placeholder="https://sportsrip.com/your-article"/>
       </div>
     </div>
 
-    <div class="section-divider">Content Mode</div>
-
-    <div class="card" id="mode-card">
-      <div class="card-header">
-        <div class="icon">🎬</div>
-        <div class="card-title">Site Content Mode</div>
-      </div>
-      <div class="mode-display">
-        <div class="mode-dot" id="mode-dot"></div>
-        <div>
-          <div class="mode-label" id="mode-label">Loading…</div>
-          <div style="font-size:0.8rem;color:var(--text-muted);" id="mode-desc"></div>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-success" id="btn-run-ours" disabled>▶ Run Our News</button>
-        <button class="btn btn-ghost" id="btn-auto" disabled>↩ Back to Auto</button>
-      </div>
+    <div>
+      <label>Thumbnail Image URL</label>
+      <input type="text" id="f-image" placeholder="https://images.pexels.com/..." oninput="previewImg(this.value)"/>
+      <img id="imgPreview" alt="Preview"/>
     </div>
-  </main>
+
+    <div class="btn-row">
+      <button class="btn btn-clear" onclick="clearForm()">Clear</button>
+      <button class="btn btn-publish" id="btnPublish" onclick="publishArticle()">Publish Article</button>
+    </div>
+  </div>
+
+  <div id="console">System ready. WORKER: <span id="workerLabel"></span></div>
+
+  <div class="articles-section">
+    <div class="articles-title">Published Articles <span id="articleCount" style="color:#f0a500"></span></div>
+    <div id="articlesList"></div>
+  </div>
 </div>
 
-<div id="toast-container"></div>
-
 <script>
-  const API = '';
-  let discoveredFeeds = [];
+  // ============================================================
+  // BLOCK START: Configuration
+  // Change ADMIN_PASS to your own password.
+  // Change WORKER_URL to your PROD worker URL.
+  // ============================================================
+  var ADMIN_PASS = 'sportsrip2026';
+  var WORKER_URL = 'https://mango-sports-worker.ravi-kompel.workers.dev';
+  // ============================================================
+  // BLOCK END: Configuration
+  // ============================================================
 
-  function toast(msg, type = 'info') {
-    const icons = { success: '✅', error: '❌', info: 'ℹ️' };
-    const el = document.createElement('div');
-    el.className = `toast ${type}`;
-    el.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
-    document.getElementById('toast-container').appendChild(el);
-    setTimeout(() => el.remove(), 4500);
-  }
-
-  function setLoading(btn, loading, label) {
-    if (loading) { btn._orig = btn.innerHTML; btn.disabled = true; btn.innerHTML = `<div class="spinner"></div>${label || 'Working…'}`; }
-    else { btn.disabled = false; btn.innerHTML = btn._orig; }
-  }
-
-  function parseUrls(raw) {
-    return raw.split('\n').map(u => u.trim()).filter(u => u.startsWith('http://') || u.startsWith('https://'));
-  }
-
-  function esc(str) {
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  // ── DISCOVER ──
-  document.getElementById('btn-discover').addEventListener('click', async () => {
-    const btn = document.getElementById('btn-discover');
-    const sport = document.getElementById('sport-select').value;
-    const urls = parseUrls(document.getElementById('url-input').value);
-    if (!urls.length) { toast('Please paste at least one valid URL.', 'error'); return; }
-    setLoading(btn, true, 'Discovering…');
-    try {
-      const res = await fetch(`${API}/api/discover-rss`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ urls, sport }) });
-      if (!res.ok) throw new Error(`Server error ${res.status}`);
-      const data = await res.json();
-      discoveredFeeds = (data.feeds || []).map(f => ({ ...f, selected: true }));
-      renderFeedList();
-      if (!discoveredFeeds.length) toast('No RSS feeds found. Try linking directly to a sport section.', 'error');
-      else toast(`Found ${discoveredFeeds.length} feed(s)!`, 'success');
-    } catch (e) { toast(`Discovery failed: ${e.message}`, 'error'); }
-    finally { setLoading(btn, false); }
-  });
-
-  function renderFeedList() {
-    const container = document.getElementById('feed-list');
-    const actions = document.getElementById('feed-actions');
-    if (!discoveredFeeds.length) { container.style.display = 'none'; actions.style.display = 'none'; return; }
-    container.style.display = 'flex'; actions.style.display = 'block'; container.innerHTML = '';
-    discoveredFeeds.forEach((feed, i) => {
-      const item = document.createElement('div');
-      item.className = 'feed-item';
-      item.innerHTML = `<input type="checkbox" class="feed-check" id="feed-${i}" ${feed.selected ? 'checked' : ''} /><div class="feed-details"><div class="feed-name">${esc(feed.title || feed.source || 'Unknown Feed')}</div><div class="feed-url">${esc(feed.url)}</div></div>`;
-      item.querySelector('input').addEventListener('change', e => { discoveredFeeds[i].selected = e.target.checked; });
-      container.appendChild(item);
-    });
-  }
-
-  // ── PROCESS & SAVE ──
-  document.getElementById('btn-process').addEventListener('click', async () => {
-    const selected = discoveredFeeds.filter(f => f.selected);
-    if (!selected.length) { toast('Select at least one feed.', 'error'); return; }
-    const btn = document.getElementById('btn-process');
-    const sport = document.getElementById('sport-select').value;
-    const wrap = document.getElementById('progress-wrap');
-    const bar = document.getElementById('progress-bar');
-    const lbl = document.getElementById('progress-label');
-    setLoading(btn, true, 'Processing…');
-    wrap.classList.add('show'); bar.style.width = '10%'; lbl.textContent = 'Fetching articles…';
-    let fakeProgress = 10;
-    const ticker = setInterval(() => { fakeProgress = Math.min(fakeProgress + 4, 85); bar.style.width = fakeProgress + '%'; }, 800);
-    try {
-      const res = await fetch(`${API}/api/process-and-save`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sport, feeds: selected.map(f => ({ url: f.url, name: f.title || f.source })) }) });
-      clearInterval(ticker);
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
-      const data = await res.json();
-      bar.style.width = '100%'; lbl.textContent = `✅ Saved ${data.count || '?'} articles to My News (${sport})`;
-      toast(`Saved ${data.count || '?'} articles!`, 'success');
-    } catch (e) { clearInterval(ticker); bar.style.width = '0%'; lbl.textContent = 'Error — see toast.'; toast(`Failed: ${e.message}`, 'error'); }
-    finally { setLoading(btn, false); setTimeout(() => { wrap.classList.remove('show'); bar.style.width = '0%'; }, 5000); }
-  });
-
-  // ── EXPORTS ──
-  function download(filename, mime, content) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([content], { type: mime })); a.download = filename; a.click(); URL.revokeObjectURL(a.href); }
-  function esc2(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-  document.getElementById('btn-export-csv').addEventListener('click', () => {
-    const sel = discoveredFeeds.filter(f => f.selected); if (!sel.length) { toast('Select a feed first.', 'error'); return; }
-    const sport = document.getElementById('sport-select').value;
-    let csv = 'Title,URL,Source,Sport\n';
-    sel.forEach(f => { csv += `"${esc2(f.title)}","${esc2(f.url)}","${esc2(f.source)}","${sport}"\n`; });
-    download(`pep-feeds-${sport}.csv`, 'text/csv', csv); toast('CSV exported.', 'success');
-  });
-
-  document.getElementById('btn-export-xml').addEventListener('click', () => {
-    const sel = discoveredFeeds.filter(f => f.selected); if (!sel.length) { toast('Select a feed first.', 'error'); return; }
-    const sport = document.getElementById('sport-select').value;
-    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<feeds sport="${sport}">\n`;
-    sel.forEach(f => { xml += `  <feed>\n    <title>${esc2(f.title)}</title>\n    <url>${esc2(f.url)}</url>\n    <source>${esc2(f.source)}</source>\n  </feed>\n`; });
-    xml += '</feeds>'; download(`pep-feeds-${sport}.xml`, 'application/xml', xml); toast('XML exported.', 'success');
-  });
-
-  // ── MODE TOGGLE ──
-  async function loadMode() {
-    try { const res = await fetch(`${API}/api/mode`); const data = await res.json(); applyMode(data.mode || 'auto'); }
-    catch { applyMode('auto'); }
-  }
-
-  function applyMode(mode) {
-    const dot = document.getElementById('mode-dot');
-    const label = document.getElementById('mode-label');
-    const desc = document.getElementById('mode-desc');
-    const btnRun = document.getElementById('btn-run-ours');
-    const btnAuto = document.getElementById('btn-auto');
-    if (mode === 'custom') {
-      dot.className = 'mode-dot custom'; label.textContent = '▶ RUNNING OUR NEWS';
-      desc.textContent = 'Site is showing your hand-picked curated content.';
-      btnRun.disabled = true; btnAuto.disabled = false;
+  function checkPass() {
+    if (document.getElementById('passInput').value === ADMIN_PASS) {
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      document.getElementById('workerLabel').textContent = WORKER_URL;
+      loadPublished();
     } else {
-      dot.className = 'mode-dot auto'; label.textContent = '● AUTO NEWS';
-      desc.textContent = 'Site is showing automatically fetched news.';
-      btnRun.disabled = false; btnAuto.disabled = true;
+      document.getElementById('passInput').style.border = '1px solid #ff4d4d';
+      document.getElementById('passInput').value = '';
+      document.getElementById('passInput').placeholder = 'Wrong password — try again';
     }
   }
 
-  async function setMode(mode) {
-    const btn = mode === 'custom' ? document.getElementById('btn-run-ours') : document.getElementById('btn-auto');
-    setLoading(btn, true, mode === 'custom' ? 'Activating…' : 'Switching…');
-    try {
-      const res = await fetch(`${API}/api/set-mode`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode }) });
-      if (!res.ok) throw new Error(`Server error ${res.status}`);
-      applyMode(mode);
-      toast(mode === 'custom' ? '🎬 Now running your curated news!' : '↩ Switched back to Auto.', 'success');
-    } catch (e) { toast(`Failed: ${e.message}`, 'error'); }
-    finally { setLoading(btn, false); }
+  function log(msg) {
+    var c = document.getElementById('console');
+    c.innerHTML += '<br>> ' + msg;
+    c.scrollTop = c.scrollHeight;
   }
 
-  document.getElementById('btn-run-ours').addEventListener('click', () => setMode('custom'));
-  document.getElementById('btn-auto').addEventListener('click', () => setMode('auto'));
+  function previewImg(url) {
+    var p = document.getElementById('imgPreview');
+    if (url && url.startsWith('http')) { p.src = url; p.style.display = 'block'; }
+    else { p.style.display = 'none'; }
+  }
 
-  loadMode();
+  function clearForm() {
+    ['f-title','f-desc','f-link','f-image'].forEach(function(id){ document.getElementById(id).value = ''; });
+    document.getElementById('imgPreview').style.display = 'none';
+  }
+
+  // ============================================================
+  // BLOCK START: Publish Article
+  // Purpose: Reads the form, builds an article object with isOwn:true,
+  // fetches existing articles from the worker, prepends the new one,
+  // then saves back via /api/publish-own (worker route we added).
+  // ============================================================
+  async function publishArticle() {
+    var title = document.getElementById('f-title').value.trim();
+    var desc  = document.getElementById('f-desc').value.trim();
+    var sport = document.getElementById('f-sport').value;
+    var link  = document.getElementById('f-link').value.trim();
+    var image = document.getElementById('f-image').value.trim();
+
+    if (!title) { log('<span style="color:#f00">❌ Title is required</span>'); return; }
+    if (!link)  { log('<span style="color:#f00">❌ Article link is required</span>'); return; }
+
+    var btn = document.getElementById('btnPublish');
+    btn.disabled = true; btn.textContent = 'Publishing...';
+
+    var article = {
+      title:       title,
+      description: desc,
+      link:        link,
+      image:       image || '',
+      sport:       sport,
+      source:      'SPORTSrip',
+      isOwn:       true,
+      pubDate:     new Date().toISOString()
+    };
+
+    log('Publishing "' + title.slice(0,40) + '..." to ' + sport + '...');
+
+    try {
+      var res = await fetch(WORKER_URL + '/api/publish-own', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-pass': ADMIN_PASS },
+        body: JSON.stringify({ sport: sport, article: article })
+      });
+
+      if (res.ok) {
+        var data = await res.json();
+        log('<span style="color:#0f0">✅ Published! ' + data.total + ' own articles now in ' + sport + '</span>');
+        clearForm();
+        loadPublished();
+      } else {
+        log('<span style="color:#f00">❌ Server error: ' + res.status + '</span>');
+      }
+    } catch(e) {
+      log('<span style="color:#f00">❌ Could not reach worker: ' + e.message + '</span>');
+    }
+
+    btn.disabled = false; btn.textContent = 'Publish Article';
+  }
+  // ============================================================
+  // BLOCK END: Publish Article
+  // ============================================================
+
+  // ============================================================
+  // BLOCK START: Load & Delete Published Articles
+  // Purpose: Shows all your published articles with a delete button.
+  // ============================================================
+  async function loadPublished() {
+    try {
+      var res = await fetch(WORKER_URL + '/api/own-articles', {
+        headers: { 'x-admin-pass': ADMIN_PASS }
+      });
+      if (!res.ok) return;
+      var data = await res.json();
+      var all = data.articles || [];
+      document.getElementById('articleCount').textContent = '(' + all.length + ')';
+      var list = document.getElementById('articlesList');
+      list.innerHTML = '';
+      if (!all.length) { list.innerHTML = '<div style="color:#888; font-size:13px; padding:20px 0;">No articles published yet.</div>'; return; }
+      all.forEach(function(a, i) {
+        var row = document.createElement('div');
+        row.className = 'article-row';
+        var thumb = a.image ? '<img class="article-thumb" src="'+a.image+'" onerror="this.style.display=\'none\'">' : '<div class="article-thumb"></div>';
+        row.innerHTML = thumb + '<div class="article-meta"><div class="article-title">'+a.title+'</div><div class="article-info">'+a.sport.toUpperCase()+' · '+ new Date(a.pubDate).toLocaleString()+'</div></div><button class="btn-delete" onclick="deleteArticle(\''+a.sport+'\', \''+encodeURIComponent(a.link)+'\')">Delete</button>';
+        list.appendChild(row);
+      });
+    } catch(e) { log('<span style="color:#f00">Could not load articles: '+e.message+'</span>'); }
+  }
+
+  async function deleteArticle(sport, encodedLink) {
+    if (!confirm('Delete this article?')) return;
+    try {
+      var res = await fetch(WORKER_URL + '/api/delete-own', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-pass': ADMIN_PASS },
+        body: JSON.stringify({ sport: sport, link: decodeURIComponent(encodedLink) })
+      });
+      if (res.ok) { log('✅ Article deleted.'); loadPublished(); }
+      else log('<span style="color:#f00">❌ Delete failed: ' + res.status + '</span>');
+    } catch(e) { log('<span style="color:#f00">❌ ' + e.message + '</span>'); }
+  }
+  // ============================================================
+  // BLOCK END: Load & Delete Published Articles
+  // ============================================================
 </script>
 </body>
 </html>
