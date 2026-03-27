@@ -89,10 +89,13 @@
     /* ── Related articles strip ── */
     .related-section { margin-top:32px; }
     .section-label { font-size:14px; font-weight:800; text-transform:uppercase; border-left:5px solid var(--espn-blue); padding-left:12px; margin-bottom:16px; color:var(--text); }
-    .related-strip { display:flex; gap:14px; overflow-x:auto; padding-bottom:12px; scrollbar-width:thin; scrollbar-color:var(--border2) transparent; }
-    .related-strip::-webkit-scrollbar { height:4px; }
-    .related-strip::-webkit-scrollbar-track { background:transparent; }
-    .related-strip::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+    .strip-wrapper { position:relative; padding:0 22px; }
+    .strip-arrow { position:absolute; top:40%; transform:translateY(-50%); width:36px; height:36px; border-radius:50%; background:var(--surface); border:1px solid var(--border2); box-shadow:0 2px 8px var(--shadow2); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:16px; z-index:10; transition:0.2s; color:var(--text); }
+    .strip-arrow:hover { background:var(--espn-blue); color:#fff; border-color:var(--espn-blue); }
+    .strip-arrow.left { left:0; }
+    .strip-arrow.right { right:0; }
+    .related-strip { display:flex; gap:14px; overflow-x:auto; padding-bottom:12px; scroll-behavior:smooth; scrollbar-width:none; }
+    .related-strip::-webkit-scrollbar { display:none; }
     .related-card { flex-shrink:0; width:220px; background:var(--surface); border-radius:12px; overflow:hidden; text-decoration:none; color:inherit; border:1px solid var(--border); transition:0.25s; box-shadow:0 1px 4px var(--shadow); }
     .related-card:hover { transform:translateY(-3px); box-shadow:0 8px 20px var(--shadow2); }
     .related-card.own { border:2px solid #f0a500; }
@@ -105,16 +108,16 @@
     /* ── Sidebar ── */
     .sidebar { position:sticky; top:68px; display:flex; flex-direction:column; gap:16px; }
     .sidebar-box { background:var(--surface); border:1px solid var(--border2); border-radius:14px; overflow:hidden; }
-    .sidebar-title { border-top:4px solid var(--espn-blue); padding:12px 16px; font-size:13px; font-weight:800; text-transform:uppercase; background:var(--surface2); border-bottom:1px solid var(--border); }
-    .sidebar-article { display:flex; gap:10px; padding:10px 14px; border-bottom:1px solid var(--border); text-decoration:none; color:inherit; align-items:flex-start; transition:0.15s; }
+    .sidebar-title { border-top:4px solid var(--espn-blue); padding:14px 18px; font-size:16px; font-weight:800; text-transform:uppercase; background:var(--surface2); border-bottom:1px solid var(--border); }
+    .sidebar-article { display:flex; gap:12px; padding:13px 16px; border-bottom:1px solid var(--border); text-decoration:none; color:inherit; align-items:flex-start; transition:0.15s; }
     .sidebar-article:last-child { border-bottom:none; }
     .sidebar-article:hover { background:var(--bg); }
     .sidebar-article.own { border-left:3px solid var(--gold); }
-    .sidebar-thumb { width:64px; height:50px; object-fit:cover; border-radius:8px; flex-shrink:0; background:var(--border2); }
-    .sidebar-thumb-ph { width:64px; height:50px; border-radius:8px; background:var(--border2); display:flex; align-items:center; justify-content:center; font-size:16px; opacity:0.3; flex-shrink:0; }
+    .sidebar-thumb { width:80px; height:62px; object-fit:cover; border-radius:8px; flex-shrink:0; background:var(--border2); }
+    .sidebar-thumb-ph { width:80px; height:62px; border-radius:8px; background:var(--border2); display:flex; align-items:center; justify-content:center; font-size:20px; opacity:0.3; flex-shrink:0; }
     .sidebar-info { flex:1; min-width:0; }
-    .sidebar-headline { font-size:12px; font-weight:700; line-height:1.35; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:4px; }
-    .sidebar-date { font-size:10px; color:var(--text3); }
+    .sidebar-headline { font-size:15px; font-weight:700; line-height:1.35; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:5px; }
+    .sidebar-date { font-size:12px; color:var(--text3); }
 
     /* ── Loading state ── */
     .loading { text-align:center; padding:60px 20px; color:var(--text3); font-size:15px; }
@@ -158,6 +161,19 @@
 
   <!-- ── Sidebar ── -->
   <aside class="sidebar">
+
+    <!-- ============================================================
+         BLOCK START: Sidebar promo image
+         Added  : 27-Mar-2026
+         Purpose: Same image as index.html sidebar top — keeps
+                  consistent look across all pages.
+                  Change the src URL to update the image.
+    ============================================================ -->
+    <div class="sidebar-box" style="overflow:hidden;">
+      <img src="https://images.pexels.com/photos/8941571/pexels-photo-8941571.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Kids Sports" style="width:100%; height:auto; display:block; border-radius:14px;">
+    </div>
+    <!-- BLOCK END: Sidebar promo image (27-Mar-2026) -->
+
     <div class="sidebar-box">
       <div class="sidebar-title">Our Articles</div>
       <div id="sidebarOwn"><div class="loading" style="padding:20px">Loading...</div></div>
@@ -196,6 +212,12 @@
 
   var EMOJI = {ipl:'🏏',f1:'🏎️',cricket:'🏏',basketball:'🏀',football:'⚽',baseball:'⚾',tennis:'🎾',kabaddi:'🤼',boxing:'🥊',golf:'⛳',athletics:'🏃',rugby:'🏉',olympics:'🏅',nfl:'🏈',badminton:'🏸'};
   var LABEL = {ipl:'IPL 2026',f1:'Formula 1',cricket:'Cricket',basketball:'NBA',football:'Soccer',baseball:'MLB',tennis:'Tennis',kabaddi:'Kabaddi',boxing:'Boxing',golf:'Golf',athletics:'Athletics',rugby:'Rugby',olympics:'Olympics',nfl:'NFL',badminton:'Badminton'};
+
+  // ── Scroll strip arrows ──
+  function scrollStrip(dir) {
+    var strip = document.getElementById('relatedStrip');
+    if(strip) strip.scrollBy({ left: dir * 700, behavior: 'smooth' });
+  }
 
   // ── Dark mode ──
   function applyTheme(dark) {
@@ -263,8 +285,12 @@
 
       <div class="related-section" id="relatedSection">
         <div class="section-label">Related Articles</div>
-        <div class="related-strip" id="relatedStrip">
-          <div class="loading loading-pulse">Loading related articles...</div>
+        <div class="strip-wrapper">
+          <button class="strip-arrow left" onclick="scrollStrip(-1)" title="Scroll left">&#8592;</button>
+          <div class="related-strip" id="relatedStrip">
+            <div class="loading loading-pulse">Loading related articles...</div>
+          </div>
+          <button class="strip-arrow right" onclick="scrollStrip(1)" title="Scroll right">&#8594;</button>
         </div>
       </div>
     `;
