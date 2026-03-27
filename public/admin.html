@@ -134,7 +134,7 @@
       </div>
       <div class="row2">
         <div>
-          <label>Sport Category *</label>
+          <label>Primary Sport Category *</label>
           <select id="f-sport">
             <option value="ipl">🏏 IPL 2026</option>
             <option value="cricket">🏏 Cricket</option>
@@ -158,6 +158,38 @@
           <input type="text" id="f-link" placeholder="https://sportsrip.com/your-article"/>
         </div>
       </div>
+
+      <!-- ============================================================
+           BLOCK START: Also appear on (multi-select)
+           Added  : 27-Mar-2026
+           Purpose: Lets you publish one article to multiple sport tabs.
+                    Hold Ctrl (Windows) or Cmd (Mac) to select multiple.
+                    Leave empty = default (primary sport + Top Stories).
+                    Example: Write IPL article → also select Cricket
+                    so it appears on both IPL and Cricket tabs.
+      ============================================================ -->
+      <div>
+        <label>Also appear on tabs <span style="color:var(--dim);font-weight:400;text-transform:none">(optional — hold Ctrl/Cmd to pick multiple)</span></label>
+        <select id="f-also" multiple style="height:120px;">
+          <option value="ipl">🏏 IPL 2026</option>
+          <option value="cricket">🏏 Cricket</option>
+          <option value="football">⚽ Football</option>
+          <option value="f1">🏎️ Formula 1</option>
+          <option value="basketball">🏀 Basketball</option>
+          <option value="tennis">🎾 Tennis</option>
+          <option value="boxing">🥊 Boxing</option>
+          <option value="golf">⛳ Golf</option>
+          <option value="badminton">🏸 Badminton</option>
+          <option value="kabaddi">🤼 Kabaddi</option>
+          <option value="rugby">🏉 Rugby</option>
+          <option value="athletics">🏃 Athletics</option>
+          <option value="olympics">🏅 Olympics</option>
+          <option value="nfl">🏈 NFL</option>
+          <option value="baseball">⚾ Baseball</option>
+        </select>
+        <div style="font-size:11px;color:var(--dim);margin-top:5px;">Leave empty → article only goes to primary sport tab + Top Stories (default)</div>
+      </div>
+      <!-- BLOCK END: Also appear on (27-Mar-2026) -->
       <div>
         <label>Thumbnail Image URL</label>
         <input type="text" id="f-image" placeholder="https://images.pexels.com/..." oninput="previewImg(this.value)"/>
@@ -390,6 +422,8 @@
 
   function clearArticleForm() {
     ['f-title','f-desc','f-link','f-image'].forEach(function(id){ document.getElementById(id).value=''; });
+    // Clear multi-select
+    Array.from(document.getElementById('f-also').options).forEach(function(o){ o.selected=false; });
     document.getElementById('imgPreview').style.display='none';
   }
 
@@ -400,20 +434,41 @@
     var sport=document.getElementById('f-sport').value;
     var link=document.getElementById('f-link').value.trim();
     var image=document.getElementById('f-image').value.trim();
+
+    // ============================================================
+    // BLOCK START: Collect multi-select sports
+    // Added  : 27-Mar-2026
+    // Purpose: Reads selected options from the "Also appear on"
+    //          multi-select. Combines with primary sport to build
+    //          full list of tabs this article will appear on.
+    //          Deduplicates so primary sport isn't saved twice.
+    // ============================================================
+    var alsoEls = document.getElementById('f-also').selectedOptions;
+    var alsoSports = Array.from(alsoEls).map(function(o){ return o.value; });
+    // Merge primary + also, deduplicate
+    var allSports = [sport];
+    alsoSports.forEach(function(s){ if(!allSports.includes(s)) allSports.push(s); });
+    // ============================================================
+    // BLOCK END: Collect multi-select sports (27-Mar-2026)
+    // ============================================================
+
     if(!title){log('consoleArticle','<span style="color:var(--danger)">❌ Title required</span>');return;}
     if(!link){log('consoleArticle','<span style="color:var(--danger)">❌ Link required</span>');return;}
     var btn=document.getElementById('btnPublish');
     btn.disabled=true; btn.textContent='Publishing...';
-    log('consoleArticle','Publishing "'+title.slice(0,40)+'..."');
+    log('consoleArticle','Publishing "'+title.slice(0,40)+'..." to: '+allSports.join(', ')+'...');
     try{
       var res=await fetch(WORKER_URL+'/api/publish-own',{
         method:'POST',
         headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS},
-        body:JSON.stringify({sport,article:{title,description:desc,link,image:image||'',sport,source:'SPORTSrip',isOwn:true,pubDate:new Date().toISOString()}})
+        body:JSON.stringify({
+          sports: allSports,  // array of all sports
+          article:{title,description:desc,link,image:image||'',sport,source:'SPORTSrip',isOwn:true,pubDate:new Date().toISOString()}
+        })
       });
       if(res.ok){
         var d=await res.json();
-        log('consoleArticle','<span style="color:var(--success)">✅ Published! '+d.total+' own articles in '+sport+'</span>');
+        log('consoleArticle','<span style="color:var(--success)">✅ Published to '+d.savedTo.join(', ')+'! ('+d.savedTo.length+' tabs)</span>');
         clearArticleForm(); loadPublished();
       } else { log('consoleArticle','<span style="color:var(--danger)">❌ Error: '+res.status+'</span>'); }
     }catch(e){ log('consoleArticle','<span style="color:var(--danger)">❌ '+e.message+'</span>'); }
