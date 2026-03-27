@@ -217,6 +217,24 @@
         <input type="text" id="f-image" placeholder="https://images.pexels.com/..." oninput="previewImg(this.value)"/>
         <img id="imgPreview" alt="Preview"/>
       </div>
+
+      <!-- ============================================================
+           BLOCK START: Author fields
+           Added  : 27-Mar-2026
+           Purpose: Optional author name and photo for the article page.
+                    Leave empty → shows "SPORTSrip Team" with initials.
+      ============================================================ -->
+      <div class="row2">
+        <div>
+          <label>Author Name <span style="color:var(--dim);font-weight:400;text-transform:none">(optional)</span></label>
+          <input type="text" id="f-author-name" placeholder="e.g. Ravi Kumar"/>
+        </div>
+        <div>
+          <label>Author Photo URL <span style="color:var(--dim);font-weight:400;text-transform:none">(optional)</span></label>
+          <input type="text" id="f-author-photo" placeholder="https://your-photo-url.jpg"/>
+        </div>
+      </div>
+      <!-- BLOCK END: Author fields (27-Mar-2026) -->
       <div class="btn-row">
         <button class="btn btn-clear" onclick="clearArticleForm()">Clear</button>
         <button class="btn btn-publish" id="btnPublish" onclick="publishArticle()">Publish Article</button>
@@ -449,8 +467,7 @@
   }
 
   function clearArticleForm() {
-    ['f-title','f-desc','f-link','f-image'].forEach(function(id){ document.getElementById(id).value=''; });
-    // Clear multi-select
+    ['f-title','f-desc','f-link','f-image','f-author-name','f-author-photo'].forEach(function(id){ document.getElementById(id).value=''; });
     Array.from(document.getElementById('f-also').options).forEach(function(o){ o.selected=false; });
     document.getElementById('imgPreview').style.display='none';
   }
@@ -462,6 +479,8 @@
     var sport=document.getElementById('f-sport').value;
     var link=document.getElementById('f-link').value.trim();
     var image=document.getElementById('f-image').value.trim();
+    var authorName=document.getElementById('f-author-name').value.trim();
+    var authorPhoto=document.getElementById('f-author-photo').value.trim();
 
     // ============================================================
     // BLOCK START: Collect multi-select sports
@@ -490,8 +509,8 @@
         method:'POST',
         headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS},
         body:JSON.stringify({
-          sports: allSports,  // array of all sports
-          article:{title,description:desc,link,image:image||'',sport,source:'SPORTSrip',isOwn:true,pubDate:new Date().toISOString()}
+          sports: allSports,
+          article:{title,description:desc,link,image:image||'',sport,source:'SPORTSrip',isOwn:true,pubDate:new Date().toISOString(),authorName:authorName||'',authorPhoto:authorPhoto||''}
         })
       });
       if(res.ok){
