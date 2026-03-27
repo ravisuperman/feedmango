@@ -47,7 +47,9 @@
     /* ── Section label — matches IPL tab heading style ── */
     .article-section-label { display:flex; align-items:center; gap:8px; font-size:20px; font-weight:900; color:var(--text); margin-bottom:16px; padding-left:14px; border-left:5px solid var(--espn-blue); }
 
-    .hero-img { width:100%; max-height:560px; object-fit:contain; border-radius:16px; display:block; background:var(--border2); }
+    /* ── Hero image — top-cropped so faces/heads always visible ── */
+    .hero-wrap { width:100%; border-radius:16px; overflow:hidden; line-height:0; }
+    .hero-img { width:100%; height:auto; max-height:580px; display:block; object-fit:cover; object-position:center 20%; }
     .hero-placeholder { width:100%; height:320px; background:var(--border2); border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:48px; opacity:0.3; }
 
     /* ── Author bar ── */
@@ -208,7 +210,7 @@
       : '<div class="author-avatar-ph">'+sanitize(initials)+'</div>';
 
     var heroHtml = a.image
-      ? '<img class="hero-img" src="'+sanitize(a.image)+'" alt="'+sanitize(a.title)+'" onerror="this.outerHTML=\'<div class=hero-placeholder>'+emoji+'</div>\'">'
+      ? '<div class="hero-wrap"><img class="hero-img" src="'+sanitize(a.image)+'" alt="'+sanitize(a.title)+'" onerror="this.outerHTML=\'<div class=hero-placeholder>'+emoji+'</div>\'"></div>'
       : '<div class="hero-placeholder">'+emoji+'</div>';
 
     var ownBadge = isOwn ? '<span class="own-badge">SPORTSrip</span>' : '';
@@ -287,7 +289,7 @@
         var el=document.createElement('a');
         el.className='sidebar-article own';
         el.href='articles.html?data='+encodeURIComponent(JSON.stringify(a));
-        var img=a.image?'<img class="sidebar-art-img" style="object-fit:contain;background:#f0f0f0;" src="'+sanitize(a.image)+'" onerror="this.outerHTML=\'<div class=sidebar-art-img-ph>🏆</div>\'">':'<div class="sidebar-art-img-ph">🏆</div>';
+        var img=a.image?'<img class="sidebar-art-img" style="object-fit:cover;object-position:center 20%;" src="'+sanitize(a.image)+'" onerror="this.outerHTML=\'<div class=sidebar-art-img-ph>🏆</div>\'">':'<div class="sidebar-art-img-ph">🏆</div>';
         el.innerHTML=img+'<div class="sidebar-art-body"><div class="sidebar-art-source">SPORTSrip</div><div class="sidebar-art-title">'+sanitize(a.title)+'</div><div class="sidebar-art-date">'+formatDate(a.pubDate)+'</div></div>';
         box.appendChild(el);
       });
