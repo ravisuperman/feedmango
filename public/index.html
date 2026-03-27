@@ -1,284 +1,409 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SPORTSrip — Article Writer</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- Google Search Console ownership verification tag — DO NOT REMOVE, required for Google indexing -->
+  <meta name="google-site-verification" content="Jht59lHwkn9XZKP7kyAcKtk9SMl9tPmllXm4ehBH-7c" />
+
+  <title>SPORTSrip — Live Sports Feed</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><circle cx=%2212%22 cy=%2212%22 r=%2210.5%22 fill=%22%23035bb0%22 stroke=%22%23fff%22 stroke-width=%223%22/><path d=%22M12 1.5v21M1.5 12h21%22 stroke=%22%23fff%22 stroke-width=%223%22/></svg>">  
+
   <style>
-    :root { --blue: #035bb0; --bg: #0f0f13; --surface: #1a1a22; --border: #2a2a38; --text: #f0f0f0; --dim: #888; --success: #00ff88; --danger: #ff4d4d; --gold: #f0a500; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; padding: 30px 20px; }
-    .container { max-width: 760px; margin: 0 auto; }
-    h1 { font-size: 22px; font-weight: 800; margin-bottom: 4px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
-    .subtitle { font-size: 13px; color: var(--dim); margin-bottom: 28px; }
-
-    /* ── Password gate ── */
-    .gate { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 40px; text-align: center; max-width: 360px; margin: 80px auto; }
-    .gate h2 { margin-bottom: 16px; font-size: 18px; }
-    .gate input { width: 100%; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 15px; margin-bottom: 12px; outline: none; }
-    .gate button { width: 100%; padding: 13px; background: var(--blue); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; }
-
-    /* ── Form ── */
-    .form-grid { display: grid; gap: 16px; }
-    label { font-size: 12px; font-weight: 700; color: var(--dim); text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 6px; }
-    input[type=text], textarea, select {
-      width: 100%; padding: 12px 14px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 8px; color: var(--text); font-size: 14px;
-      font-family: inherit; outline: none; transition: border-color 0.2s;
+    /* ============================================================
+       BLOCK START: CSS Variables — Light & Dark Mode
+       Purpose: All colours are defined here as variables.
+       Toggling [data-theme="dark"] on <html> switches the whole site.
+       DO NOT hardcode colours elsewhere — always use var(--X).
+    ============================================================ */
+    :root {
+      --espn-blue: #035bb0;
+      --whitish-blue: #94bdff;
+      --bg: #f4f4f4;
+      --surface: #fff;
+      --surface2: #fdfdfd;
+      --border: #eee;
+      --border2: #e0e0e0;
+      --text: #141414;
+      --text2: #555;
+      --text3: #666;
+      --shadow: rgba(0,0,0,0.08);
+      --shadow2: rgba(0,0,0,0.12);
+      --yell: #ffff00;
+      --footer-bg: #fff;
+      --footer-border: #ddd;
+      --footer-text: #444;
+      --sidebar-placeholder: #eee;
     }
-    input[type=text]:focus, textarea:focus, select:focus { border-color: var(--blue); }
-    textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
-    select option { background: var(--surface); }
+    [data-theme="dark"] {
+      --bg: #0f0f13;
+      --surface: #1a1a22;
+      --surface2: #1e1e28;
+      --border: #2a2a38;
+      --border2: #2a2a38;
+      --text: #f0f0f0;
+      --text2: #aaa;
+      --text3: #888;
+      --shadow: rgba(0,0,0,0.3);
+      --shadow2: rgba(0,0,0,0.4);
+      --footer-bg: #1a1a22;
+      --footer-border: #2a2a38;
+      --footer-text: #888;
+      --sidebar-placeholder: #2a2a38;
+    }
+    /* ============================================================
+       BLOCK END: CSS Variables — Light & Dark Mode
+    ============================================================ */
 
-    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Assistant', sans-serif; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
+    
+    header { 
+      background: var(--espn-blue); 
+      color: #fff; 
+      padding: 0 24px; 
+      display: flex; 
+      align-items: center; 
+      height: 48px; 
+      position: sticky; 
+      top: 0; 
+      z-index: 1000; 
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+      border-radius: 12px 0 0 0; 
+      margin-top: 10px; 
+      width: calc(100% - 1px); 
+      margin-left: 1px; 
+      gap: 12px;
+    }
+    
+    .brand { display: flex; align-items: center; text-decoration: none; margin-right: 30px; flex-shrink: 0; z-index: 1001; }
+    .logo-text { font-size: 26px; font-weight: 900; letter-spacing: -2px; text-transform: uppercase; line-height: 1; font-style: italic; }
+    .logo-text span { color: #fff; background: #cc0000; padding: 0 2px; }
+    .logo-text em { color: var(--whitish-blue); font-style: italic; font-weight: 500; text-transform: lowercase; margin-left: 1px; }
 
-    /* Image preview */
-    #imgPreview { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); display: none; margin-top: 8px; background: var(--surface); }
+    .nav-tabs { 
+      display: flex; 
+      height: 100%; 
+      align-items: center; 
+      overflow-x: auto; 
+      scrollbar-width: none; 
+      flex: 1; 
+      justify-content: center;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .tab { height: 100%; display: flex; align-items: center; padding: 0 14px; font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.7); cursor: pointer; text-transform: none; white-space: nowrap; transition: 0.2s; border-bottom: 3px solid transparent; }
+    .tab:hover { color: #fff; }
+    .tab.active { color: #fff; border-bottom-color: #fff; background: rgba(0,0,0,0.15); }
 
-    /* Action buttons */
-    .btn-row { display: flex; gap: 12px; margin-top: 8px; }
-    .btn { padding: 13px 24px; border: none; border-radius: 8px; font-size: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: opacity 0.2s; }
-    .btn:disabled { opacity: 0.4; cursor: wait; }
-    .btn-publish { background: var(--gold); color: #000; flex: 1; }
-    .btn-clear { background: var(--surface); color: var(--dim); border: 1px solid var(--border); }
+    #clockDisplay { font-size: 11px; color: rgba(255,255,255,0.9); font-weight: 600; white-space: nowrap; }
 
-    /* Console log */
-    #console { background: #000; color: #0f0; padding: 14px; border-radius: 8px; font-family: monospace; font-size: 12px; height: 120px; overflow-y: auto; margin-top: 20px; border: 1px solid var(--border); line-height: 1.6; }
+    /* ============================================================
+       BLOCK START: Dark Mode Toggle Button
+       Purpose: Sun/Moon toggle in header right corner.
+       Works on both desktop and mobile.
+       Saves preference to localStorage so it persists on refresh.
+    ============================================================ */
+    .dark-toggle {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s, border-color 0.2s;
+      z-index: 1001;
+    }
+    .dark-toggle:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.6); }
+    /* ============================================================
+       BLOCK END: Dark Mode Toggle Button
+    ============================================================ */
 
-    /* Published articles list */
-    .articles-section { margin-top: 36px; }
-    .articles-title { font-size: 14px; font-weight: 800; text-transform: uppercase; color: var(--dim); margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-    .article-row { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; }
-    .article-thumb { width: 72px; height: 54px; object-fit: cover; border-radius: 6px; background: var(--border); flex-shrink: 0; }
-    .article-meta { flex: 1; min-width: 0; }
-    .article-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .article-info { font-size: 11px; color: var(--dim); }
-    .btn-delete { background: rgba(255,77,77,0.12); color: var(--danger); border: 1px solid rgba(255,77,77,0.3); border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; flex-shrink: 0; }
-    .btn-delete:hover { background: rgba(255,77,77,0.25); }
+    .hamburger { display: none; flex-direction: column; gap: 4px; cursor: pointer; padding: 8px; z-index: 1001; }
+    .hamburger div { width: 22px; height: 3px; background: #fff; border-radius: 2px; transition: 0.3s; }
+    .hamburger.active .line1 { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.active .line2 { opacity: 0; }
+    .hamburger.active .line3 { transform: rotate(-45deg) translate(5px, -5px); }
+
+    .mobile-menu { 
+      position: fixed; top: 58px; right: 1px; width: 240px; 
+      height: auto; max-height: calc(100vh - 70px);
+      background: var(--espn-blue); z-index: 1000; 
+      display: none; flex-direction: column; 
+      border-radius: 0 0 0 16px; 
+      box-shadow: -5px 5px 20px rgba(0,0,0,0.3);
+      overflow-y: auto; padding: 10px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .mobile-menu.active { display: flex; animation: slideIn 0.3s ease-out; }
+    @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .mobile-tab { color: #fff; font-size: 16px; font-weight: 700; padding: 14px 24px; text-decoration: none; cursor: pointer; text-transform: none; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: left; width: 100%; }
+    .mobile-tab:hover { background: rgba(255,255,255,0.1); }
+    .mobile-tab.active { color: var(--yell); background: rgba(0,0,0,0.1); }
+
+    .layout-box { flex: 1; width: 100%; }
+    .layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 25px 24px; gap: 12px; align-items: flex-start; }
+    .main-pane { flex: 3; min-width: 0; }
+    .section-label { font-size: 19px; font-weight: 800; text-transform: uppercase; border-left: 6px solid var(--espn-blue); padding-left: 14px; margin-bottom: 15px; }
+    
+    #output { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 12px; }
+    
+    .card { background: var(--surface); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; text-decoration: none; color: inherit; box-shadow: 0 1px 4px var(--shadow); transition: 0.25s; border: 1px solid var(--border); }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px var(--shadow2); }
+    .card-img { width: 100%; height: 185px; object-fit: cover; background: var(--sidebar-placeholder); border-radius: 12px 12px 0 0; }
+    .card-body { padding: 18px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+    .read-more-badge { color: #fff; background: var(--espn-blue); padding: 3px 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; border-radius: 4px; }
+    .card-source { font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; opacity: 0.8; }
+    .card-title { font-size: 19px; font-weight: 800; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-desc { font-size: 14px; color: var(--text2); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+    /* ============================================================
+       BLOCK START: "Our Article" badge for your own articles
+       Purpose: Visually distinguishes articles you write from
+       aggregated RSS articles. Shows a gold "SPORTSrip" badge.
+    ============================================================ */
+    .card.own-article { border: 2px solid #f0a500; }
+    .own-badge { display: inline-block; background: #f0a500; color: #000; font-size: 10px; font-weight: 900; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    /* ============================================================
+       BLOCK END: "Our Article" badge
+    ============================================================ */
+
+    .card-hero { grid-column: span 2; flex-direction: row; height: 340px; }
+    .card-hero .card-img { width: 60%; height: 100%; border-radius: 12px 0 0 12px; }
+    .card-hero .card-body { width: 40%; justify-content: center; }
+
+    .sidebar { width: 340px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; align-self: stretch; }
+    .sidebar-section { background: var(--surface); border: 1px solid var(--border2); border-radius: 12px; overflow: hidden; }
+    .sticky-widget { position: sticky; top: 58px; z-index: 100; align-self: flex-start; }
+    .sidebar-title { border-top: 4px solid var(--espn-blue); padding: 14px 18px; font-size: 14px; font-weight: 800; text-transform: uppercase; background: var(--surface2); border-bottom: 1px solid var(--border); }
+    .trending-container { height: 420px; overflow: hidden; }
+    .trending-track { display: flex; flex-direction: column; animation: scrollVertical 35s linear infinite; }
+    .sidebar-article { display: flex; gap: 14px; padding: 12px 18px; border-bottom: 1px solid var(--border); text-decoration: none; color: inherit; align-items: center; }
+    .sidebar-thumb { width: 132px; height: 100px; object-fit: cover; flex-shrink: 0; background: var(--sidebar-placeholder); border-radius: 8px; }
+    .sidebar-headline { font-size: 13.5px; font-weight: 700; line-height: 1.3; margin-bottom: 5px; }
+    .sidebar-source { font-size: 10px; color: var(--espn-blue); font-weight: 800; text-transform: uppercase; }
+
+    footer { padding: 15px 24px; background: var(--footer-bg); border-top: 1px solid var(--footer-border); text-align: center; margin-top: auto; }
+    .disclaimer { font-size: 11px; color: var(--footer-text); font-weight: 700; max-width: 900px; margin: 0 auto; line-height: 1.4; letter-spacing: 0.1px; }
+
+    #backToTop { position: fixed; bottom: 30px; right: 25px; width: 32px; height: 32px; background: var(--espn-blue); color: white; border: none; border-radius: 4px; display: none; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; font-size: 18px; font-weight: 800; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: 0.3s opacity; }
+    
+    @media (max-width: 1000px) { 
+      header { width: 100%; border-radius: 0; margin-top: 0; margin-left:0; padding: 0 15px; }
+      .nav-tabs, #clockDisplay { display: none; }
+      .hamburger { display: flex; }
+      .layout{flex-direction:column; padding: 20px 15px;} 
+      .sidebar{width:100%} 
+      .sticky-widget{position:static;} 
+      .card-hero{flex-direction:column; height:auto; grid-column: auto;} 
+      .card-hero .card-img{width:100%; height:220px; border-radius: 12px 12px 0 0;} 
+      .card-hero .card-body { width: 100%; }
+      #output { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+    }
+    @media (max-width: 600px) {
+      .layout { padding: 15px 12px; }
+      #output { grid-template-columns: 1fr; gap: 15px; }
+      .brand { margin-right: 15px; }
+      .logo-text { font-size: 20px; letter-spacing: -1px; }
+      .section-label { font-size: 17px; }
+    }
   </style>
 </head>
 <body>
 
-<!-- ============================================================
-     BLOCK START: Password Gate
-     Added  : 27-Mar-2026
-     Purpose: Simple client-side password to prevent public access.
-     STATUS : DISABLED for DEV testing (27-Mar-2026)
-              Re-enable for PROD by uncommenting the gate div below.
-============================================================ -->
-<!--  PASSWORD GATE DISABLED FOR DEV — uncomment below for PROD
-<div id="gate" class="gate">
-  <h2>🔐 SPORTSrip Admin</h2>
-  <input type="password" id="passInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPass()"/>
-  <button onclick="checkPass()">Enter</button>
-</div>
--->
-<!-- BLOCK END: Password Gate (27-Mar-2026) -->
+<header id="main-header">
+  <a href="/" class="brand">
+    <div class="logo-text"><span>SPORTS</span><em>rip</em></div>
+  </a>
+  <nav class="nav-tabs" id="desktopTabs"></nav>
+  <div class="header-right" id="clockDisplay"></div>
 
-<div id="app" class="container" style="display:block">
-  <h1>✍️ Article Writer</h1>
-  <p class="subtitle">Articles you publish here appear at the TOP of the selected sport tab — above all RSS feeds.</p>
+  <!-- ============================================================
+       BLOCK START: Dark Mode Toggle — header right corner
+       Purpose: Clicking this button toggles light/dark mode.
+       Works on desktop and mobile. Saves to localStorage.
+  ============================================================ -->
+  <button class="dark-toggle" id="darkToggle" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
+  <!-- BLOCK END: Dark Mode Toggle -->
 
-  <div class="form-grid">
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <div class="line1"></div>
+    <div class="line2"></div>
+    <div class="line3"></div>
+  </div>
+</header>
 
-    <div>
-      <label>Article Title *</label>
-      <input type="text" id="f-title" placeholder="e.g. Rohit Sharma smashes century as MI defeats CSK"/>
-    </div>
+<div class="mobile-menu" id="mobileMenu"></div>
 
-    <div>
-      <label>Summary / Description</label>
-      <textarea id="f-desc" placeholder="2-3 sentence summary of the article..."></textarea>
-    </div>
-
-    <div class="row2">
-      <div>
-        <label>Sport Category *</label>
-        <select id="f-sport">
-          <option value="ipl">🏏 IPL 2026</option>
-          <option value="cricket">🏏 Cricket</option>
-          <option value="football">⚽ Football</option>
-          <option value="f1">🏎️ Formula 1</option>
-          <option value="basketball">🏀 Basketball</option>
-          <option value="tennis">🎾 Tennis</option>
-          <option value="boxing">🥊 Boxing</option>
-          <option value="golf">⛳ Golf</option>
-          <option value="badminton">🏸 Badminton</option>
-          <option value="kabaddi">🤼 Kabaddi</option>
-          <option value="rugby">🏉 Rugby</option>
-          <option value="athletics">🏃 Athletics</option>
-          <option value="olympics">🏅 Olympics</option>
-          <option value="nfl">🏈 NFL</option>
-          <option value="baseball">⚾ Baseball</option>
-        </select>
-      </div>
-      <div>
-        <label>Article Link (URL) *</label>
-        <input type="text" id="f-link" placeholder="https://sportsrip.com/your-article"/>
-      </div>
-    </div>
-
-    <div>
-      <label>Thumbnail Image URL</label>
-      <input type="text" id="f-image" placeholder="https://images.pexels.com/..." oninput="previewImg(this.value)"/>
-      <img id="imgPreview" alt="Preview"/>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn btn-clear" onclick="clearForm()">Clear</button>
-      <button class="btn btn-publish" id="btnPublish" onclick="publishArticle()">Publish Article</button>
-    </div>
+<div class="layout-box">
+<div class="layout">
+  <div class="main-pane">
+    <div class="section-label" id="sectionLabel">🏏 IPL 2026</div>
+    <div id="output"></div>
   </div>
 
-  <div id="console">System ready. WORKER: <span id="workerLabel"></span></div>
-
-  <div class="articles-section">
-    <div class="articles-title">Published Articles <span id="articleCount" style="color:#f0a500"></span></div>
-    <div id="articlesList"></div>
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <img src="https://images.pexels.com/photos/8941571/pexels-photo-8941571.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Kids Sports" style="width:100%; height:auto; display:block;">
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Trending Now</div>
+      <div class="trending-container"><div id="trendingList" class="trending-track"></div></div>
+    </div>
+    <div class="sidebar-section sticky-widget">
+      <div class="sidebar-title">Recent Updates</div>
+      <div id="recentList"></div>
+    </div>
   </div>
 </div>
+</div>
+
+<footer><div class="disclaimer">Disclaimer: Headlines are sourced from official RSS feeds of their respective publishers. All rights and copyrights remain with the original content owners.</div></footer>
+
+<button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
 
 <script>
-  // ============================================================
-  // BLOCK START: Configuration
-  // Change ADMIN_PASS to your own password.
-  // Change WORKER_URL to your PROD worker URL.
-  // ============================================================
-  var ADMIN_PASS = 'sportsrip2026';
-  var WORKER_URL = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev';
-  // ============================================================
-  // BLOCK END: Configuration
-  // ============================================================
+   var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev';
+  var PRIORITY_SPORTS = ['ipl','f1','cricket','basketball','baseball','football','tennis','kabaddi','boxing','golf','athletics','rugby','olympics','nfl','badminton'];
+  var EMOJI = {ipl:'🏏', f1:'🏎️', cricket:'🏏', basketball:'🏀', football:'⚽', baseball:'⚾', tennis:'🎾', kabaddi:'🤼', boxing:'🥊', golf:'⛳', athletics:'🏃', rugby:'🏉', olympics:'🏅', nfl:'🏈', badminton:'🏸', main:'🏆'};
+  var LABEL = {ipl:'IPL 2026', f1:'Formula 1', cricket:'Cricket', basketball:'NBA', football:'Soccer', baseball:'MLB', tennis:'Tennis', kabaddi:'Kabaddi', boxing:'Boxing', golf:'Golf', athletics:'Athletics', rugby:'Rugby', olympics:'Olympics', nfl:'NFL', badminton:'Badminton', main:'Top Stories'};
+  
+  var currentSport = 'ipl'; var allCache = []; var sportCache = {};
 
-  function checkPass() {
-    if (document.getElementById('passInput').value === ADMIN_PASS) {
-      document.getElementById('gate').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      document.getElementById('workerLabel').textContent = WORKER_URL;
-      loadPublished();
-    } else {
-      document.getElementById('passInput').style.border = '1px solid #ff4d4d';
-      document.getElementById('passInput').value = '';
-      document.getElementById('passInput').placeholder = 'Wrong password — try again';
-    }
+  // ============================================================
+  // BLOCK START: Dark Mode Logic
+  // Purpose: Reads saved preference on load, applies theme,
+  // and toggles between light/dark on button click.
+  // ============================================================
+  function applyTheme(dark) {
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    document.getElementById('darkToggle').textContent = dark ? '☀️' : '🌙';
+    localStorage.setItem('sportsrip-theme', dark ? 'dark' : 'light');
   }
 
-  function log(msg) {
-    var c = document.getElementById('console');
-    c.innerHTML += '<br>> ' + msg;
-    c.scrollTop = c.scrollHeight;
+  function toggleDark() {
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    applyTheme(!isDark);
   }
 
-  function previewImg(url) {
-    var p = document.getElementById('imgPreview');
-    if (url && url.startsWith('http')) { p.src = url; p.style.display = 'block'; }
-    else { p.style.display = 'none'; }
-  }
-
-  function clearForm() {
-    ['f-title','f-desc','f-link','f-image'].forEach(function(id){ document.getElementById(id).value = ''; });
-    document.getElementById('imgPreview').style.display = 'none';
-  }
-
+  // Apply saved theme immediately on page load — prevents flash
+  (function() {
+    var saved = localStorage.getItem('sportsrip-theme');
+    if (saved === 'dark') applyTheme(true);
+  })();
   // ============================================================
-  // BLOCK START: Publish Article
-  // Purpose: Reads the form, builds an article object with isOwn:true,
-  // fetches existing articles from the worker, prepends the new one,
-  // then saves back via /api/publish-own (worker route we added).
+  // BLOCK END: Dark Mode Logic
   // ============================================================
-  async function publishArticle() {
-    var title = document.getElementById('f-title').value.trim();
-    var desc  = document.getElementById('f-desc').value.trim();
-    var sport = document.getElementById('f-sport').value;
-    var link  = document.getElementById('f-link').value.trim();
-    var image = document.getElementById('f-image').value.trim();
 
-    if (!title) { log('<span style="color:#f00">❌ Title is required</span>'); return; }
-    if (!link)  { log('<span style="color:#f00">❌ Article link is required</span>'); return; }
+  function cleanText(h) { if(!h) return ""; var d = document.createElement('div'); d.innerHTML = h; return d.textContent || d.innerText || ""; }
+  function updateClock() { var n = new Date(); if(document.getElementById('clockDisplay')) document.getElementById('clockDisplay').innerHTML = n.toLocaleDateString('en-GB',{day:'numeric',month:'short'}) + ' · ' + n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }
+  updateClock(); setInterval(updateClock, 60000);
 
-    var btn = document.getElementById('btnPublish');
-    btn.disabled = true; btn.textContent = 'Publishing...';
+  function toggleMenu() {
+    var ham = document.getElementById('hamburger');
+    var menu = document.getElementById('mobileMenu');
+    ham.classList.toggle('active');
+    menu.classList.toggle('active');
+  }
 
-    var article = {
-      title:       title,
-      description: desc,
-      link:        link,
-      image:       image || '',
-      sport:       sport,
-      source:      'SPORTSrip',
-      isOwn:       true,
-      pubDate:     new Date().toISOString()
-    };
-
-    log('Publishing "' + title.slice(0,40) + '..." to ' + sport + '...');
-
+  async function fetchSport(s) {
     try {
-      var res = await fetch(WORKER_URL + '/api/publish-own', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-pass': ADMIN_PASS },
-        body: JSON.stringify({ sport: sport, article: article })
-      });
-
-      if (res.ok) {
-        var data = await res.json();
-        log('<span style="color:#0f0">✅ Published! ' + data.total + ' own articles now in ' + sport + '</span>');
-        clearForm();
-        loadPublished();
-      } else {
-        log('<span style="color:#f00">❌ Server error: ' + res.status + '</span>');
+      var r = await fetch(WORKER + '/api/news?sport=' + s); var d = await r.json(); var a = d.articles || [];
+      if (s === 'ipl') { 
+        var re = /\b(ipl|csk|rcb|mi|kkr|srh|pbks|dc|rr|lsg|gt|dhoni|kohli|rohit|chennai|mumbai|tata|league|cricket|duckett)\b/i; 
+        a = a.filter(x => re.test((x.title + " " + (x.description || "")).toLowerCase()));
       }
-    } catch(e) {
-      log('<span style="color:#f00">❌ Could not reach worker: ' + e.message + '</span>');
+      a.forEach(x => { if(!x.sport) x.sport=s; }); return a;
+    } catch(e) { return []; }
+  }
+
+  // ============================================================
+  // BLOCK START: Card builder — supports "own article" badge
+  // Purpose: If article has isOwn:true flag (set by worker when
+  // serving from MY_NEWS_KV), it shows a gold SPORTSrip badge
+  // so readers know it's original content from you.
+  // ============================================================
+  function buildCard(a, e, size) {
+    var c = document.createElement('a'); 
+    c.className = 'card ' + (size || '') + (a.isOwn ? ' own-article' : ''); 
+    c.href = a.link; c.target = '_blank';
+    var img = a.image ? '<img class="card-img" src="'+a.image+'" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+e+'</div>\'">' : '<div class="card-img-placeholder">'+e+'</div>';
+    var d = cleanText(a.description || ""); if (!d || d.trim().length < 5) d = "Experience full depth and insight beyond the preview. Click to reach the complete article and stay ahead of the game.";
+    var badge = a.isOwn ? '<span class="own-badge">SPORTSrip</span> ' : '<span class="read-more-badge">READ MORE &gt;&gt;</span>';
+    c.innerHTML = img + '<div class="card-body"><div class="card-meta">'+badge+'<span class="card-source">📰 '+(a.source||'SPORTSrip')+'</span></div><div class="card-title">'+a.title+'</div><div class="card-desc">'+d+'</div></div>';
+    return c;
+  }
+  // ============================================================
+  // BLOCK END: Card builder
+  // ============================================================
+
+  function buildSidebarItem(a, e) {
+    var el = document.createElement('a'); el.className = 'sidebar-article'; el.href = a.link; el.target = '_blank';
+    var thumb = a.image ? '<img class="sidebar-thumb" src="'+a.image+'" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+e+'</div>\'">' : '<div class="sidebar-thumb-placeholder">'+e+'</div>';
+    el.innerHTML = thumb + '<div class="sidebar-text"><div class="sidebar-headline">'+a.title+'</div><div class="sidebar-source">'+(a.source||'SPORTSrip')+'</div></div>';
+    return el;
+  }
+
+  async function renderNews() {
+    var o = document.getElementById('output'); o.innerHTML = 'Connecting to feeds...';
+    var a = currentSport === 'main' ? allCache : (sportCache[currentSport] || []);
+    
+    if (currentSport === 'ipl' && !a.length && sportCache['cricket']) {
+      var re = /\b(ipl|csk|rcb|mi|kkr|srh|pbks|dc|rr|lsg|gt|dhoni|kohli|rohit|chennai|mumbai|tata|league|duckett)\b/i;
+      a = sportCache['cricket'].filter(x => re.test((x.title + " " + (x.description || "")).toLowerCase()));
     }
 
-    btn.disabled = false; btn.textContent = 'Publish Article';
-  }
-  // ============================================================
-  // BLOCK END: Publish Article
-  // ============================================================
-
-  // ============================================================
-  // BLOCK START: Load & Delete Published Articles
-  // Purpose: Shows all your published articles with a delete button.
-  // ============================================================
-  async function loadPublished() {
-    try {
-      var res = await fetch(WORKER_URL + '/api/own-articles', {
-        headers: { 'x-admin-pass': ADMIN_PASS }
-      });
-      if (!res.ok) return;
-      var data = await res.json();
-      var all = data.articles || [];
-      document.getElementById('articleCount').textContent = '(' + all.length + ')';
-      var list = document.getElementById('articlesList');
-      list.innerHTML = '';
-      if (!all.length) { list.innerHTML = '<div style="color:#888; font-size:13px; padding:20px 0;">No articles published yet.</div>'; return; }
-      all.forEach(function(a, i) {
-        var row = document.createElement('div');
-        row.className = 'article-row';
-        var thumb = a.image ? '<img class="article-thumb" src="'+a.image+'" onerror="this.style.display=\'none\'">' : '<div class="article-thumb"></div>';
-        row.innerHTML = thumb + '<div class="article-meta"><div class="article-title">'+a.title+'</div><div class="article-info">'+a.sport.toUpperCase()+' · '+ new Date(a.pubDate).toLocaleString()+'</div></div><button class="btn-delete" onclick="deleteArticle(\''+a.sport+'\', \''+encodeURIComponent(a.link)+'\')">Delete</button>';
-        list.appendChild(row);
-      });
-    } catch(e) { log('<span style="color:#f00">Could not load articles: '+e.message+'</span>'); }
+    if (!a.length) { o.innerHTML = '<div style="grid-column:1/-1; padding:60px; text-align:center;">No stories found.</div>'; return; }
+    o.innerHTML = ''; var f = document.createDocumentFragment(); var count = 0;
+    a.forEach(x => { 
+      if (x.source === 'Sky Sports Cricket' && (!x.link || !x.link.toLowerCase().includes('cricket'))) return; 
+      var s = (count === 0 && x.image && window.innerWidth > 1000) ? 'card-hero' : ''; 
+      f.appendChild(buildCard(x, EMOJI[x.sport] || '✨', s)); count++; 
+    });
+    o.appendChild(f);
   }
 
-  async function deleteArticle(sport, encodedLink) {
-    if (!confirm('Delete this article?')) return;
-    try {
-      var res = await fetch(WORKER_URL + '/api/delete-own', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-pass': ADMIN_PASS },
-        body: JSON.stringify({ sport: sport, link: decodeURIComponent(encodedLink) })
-      });
-      if (res.ok) { log('✅ Article deleted.'); loadPublished(); }
-      else log('<span style="color:#f00">❌ Delete failed: ' + res.status + '</span>');
-    } catch(e) { log('<span style="color:#f00">❌ ' + e.message + '</span>'); }
+  function generateTabs(list) {
+    var activeTabs = ['main', 'ipl'];
+    list.forEach(s => { if(s !== 'ipl') activeTabs.push(s); });
+    var desktopH = ''; var mobileH = '';
+    activeTabs.forEach(s => {
+      var activeClass = s === currentSport ? ' active' : '';
+      desktopH += '<div class="tab'+activeClass+'" data-sport="'+s+'" onclick="setActive(\''+s+'\')">'+LABEL[s]+'</div>';
+      mobileH += '<div class="mobile-tab'+activeClass+'" data-sport="'+s+'" onclick="setActive(\''+s+'\'); toggleMenu();">'+LABEL[s]+'</div>';
+    });
+    document.getElementById('desktopTabs').innerHTML = desktopH;
+    document.getElementById('mobileMenu').innerHTML = mobileH;
   }
-  // ============================================================
-  // BLOCK END: Load & Delete Published Articles
-  // ============================================================
+
+  function setActive(k) {
+    currentSport = k; 
+    document.querySelectorAll('.tab, .mobile-tab').forEach(t=>t.classList.toggle('active', t.dataset.sport===k));
+    document.getElementById('sectionLabel').innerHTML = (EMOJI[k]||'🏆') + ' ' + (LABEL[k]||'News');
+    window.scrollTo({top: 0, behavior: 'smooth'}); renderNews();
+  }
+
+  async function init() {
+    var res = await Promise.allSettled(PRIORITY_SPORTS.map(fetchSport));
+    var sa = {}; res.forEach((r, i) => { if (r.status === 'fulfilled' && r.value.length) { sportCache[PRIORITY_SPORTS[i]] = r.value.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate)); sa[PRIORITY_SPORTS[i]] = sportCache[PRIORITY_SPORTS[i]].slice(); } });
+    var active = []; for (var s of PRIORITY_SPORTS) { if (sportCache[s] && sportCache[s].length && active.length < 10) active.push(s); }
+    var all = [], seen = new Set(), keep = true; while(keep) { keep = false; active.forEach(sk => { if (sa[sk] && sa[sk].length) { keep = true; var a = sa[sk].shift(); if (!seen.has(a.link)) { seen.add(a.link); all.push(a); } } }); }
+    allCache = all; generateTabs(active);
+    if (all.length) {
+      var tr = document.getElementById('trendingList'); tr.innerHTML = ''; all.filter(x=>x.image).slice(0,6).forEach(a=>tr.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')));
+      var rc = document.getElementById('recentList'); rc.innerHTML = ''; all.slice(6, 11).forEach(a=>rc.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')));
+    }
+    setActive('ipl');
+  }
+  init();
 </script>
 </body>
 </html>
