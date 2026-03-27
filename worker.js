@@ -2,7 +2,7 @@
  * Mango Sports Worker — Production Server
  * Cron 1: Fetch raw RSS → NEWS_KV
  * Cron 2: Add OG images → CURATED_KV
- * Admin: Discover sssRSS → Process & Save → MY_NEWS_KV
+ * Admin: Discover RSS → Process & Save → MY_NEWS_KV
  *
  * Change log:
  * 27-Mar-2026 — Added Google sitemap + robots.txt routes
@@ -41,7 +41,8 @@ var SPORTS_FALLBACK = {
   rugby:      { label:'Rugby',      feeds:[{name:'BBC Rugby',url:'https://feeds.bbci.co.uk/sport/rugby-union/rss.xml'}]},
   olympics:   { label:'Olympics',   feeds:[{name:'ESPN Olympics',url:'https://www.espn.com/espn/rss/oly/news'}]},
   nfl:        { label:'NFL',        feeds:[{name:'ESPN NFL',url:'https://www.espn.com/espn/rss/nfl/news'}]},
-  badminton:  { label:'Badminton',  feeds:[{name:'ESPN Badminton',url:'https://www.espn.in/espn/rss/badminton/news'},{name:'SportsAdda',url:'https://www.sportsadda.com/rss/badminton/news'}]}
+  badminton:  { label:'Badminton',  feeds:[{name:'ESPN Badminton',url:'https://www.espn.in/espn/rss/badminton/news'},{name:'SportsAdda',url:'https://www.sportsadda.com/rss/badminton/news'}]},
+  videos:     { label:'Videos',     feeds:[{name:'ESPNcricinfo',url:'https://www.youtube.com/feeds/videos.xml?channel_id=UCujuVKmt_utAQZJghxlRMIQ'}]}
 };
 // BLOCK END: Hardcoded SPORTS — Fallback Only (27-Mar-2026)
 // ============================================================
@@ -82,7 +83,8 @@ var PRELOADED_FEEDS = [
   {sport:'olympics',  label:'Olympics',   priority:1, name:'ESPN Olympics',    url:'https://www.espn.com/espn/rss/oly/news'},
   {sport:'nfl',       label:'NFL',        priority:1, name:'ESPN NFL',         url:'https://www.espn.com/espn/rss/nfl/news'},
   {sport:'badminton', label:'Badminton',  priority:1, name:'ESPN Badminton',   url:'https://www.espn.in/espn/rss/badminton/news'},
-  {sport:'badminton', label:'Badminton',  priority:2, name:'SportsAdda',       url:'https://www.sportsadda.com/rss/badminton/news'}
+  {sport:'badminton', label:'Badminton',  priority:2, name:'SportsAdda',       url:'https://www.sportsadda.com/rss/badminton/news'},
+  {sport:'videos',    label:'Videos',     priority:1, name:'ESPNcricinfo',     url:'https://www.youtube.com/feeds/videos.xml?channel_id=UCujuVKmt_utAQZJghxlRMIQ'}
 ];
 // BLOCK END: Preloaded Feeds Data (27-Mar-2026)
 // ============================================================
@@ -151,11 +153,52 @@ function parseRSS(xml, sourceName) {
   return articles;
 }
 
+
+// ============================================================
+// BLOCK START: parseYouTubeRSS — YouTube Atom feed parser
+// Added  : 27-Mar-2026
+// Purpose: YouTube feeds use Atom format with <entry> tags
+//          instead of <item>. Extracts video ID for embedding.
+//          Thumbnail from YouTube's image CDN.
+// ============================================================
+function parseYouTubeRSS(xml, sourceName) {
+  var articles = [], re = /<entry>([\s\S]*?)<\/entry>/g, m;
+  while((m = re.exec(xml)) !== null) {
+    var it = m[1];
+    var title = extractTag(it, 'title');
+    var videoId = null;
+    var vidMatch = it.match(/video_id>([^<]+)/i) || it.match(/yt:videoId>([^<]+)/i) || it.match(/watch\?v=([a-zA-Z0-9_-]+)/);
+    if(vidMatch) videoId = vidMatch[1].trim();
+    var link = videoId ? 'https://www.youtube.com/watch?v=' + videoId : null;
+    var pub = extractTag(it, 'published') || extractTag(it, 'updated');
+    var img = videoId ? 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg' : null;
+    if(!title || !link || !videoId) continue;
+    var published = pub ? new Date(pub) : new Date();
+    if((Date.now() - published.getTime()) / 3600000 > 168) continue; // 7 days for videos
+    articles.push({
+      title: cleanText(title),
+      link: link,
+      pubDate: published.toISOString(),
+      description: '',
+      image: img,
+      source: sourceName,
+      isVideo: true,
+      videoId: videoId
+    });
+  }
+  return articles;
+}
+// BLOCK END: parseYouTubeRSS (27-Mar-2026)
+// ============================================================
+
 async function fetchFeed(feed){
   try{
     var r=await fetch(feed.url,{headers:{'User-Agent':'MangoSports/1.0'},signal:AbortSignal.timeout(6000)});
     if(!r.ok)throw new Error('HTTP '+r.status);
-    return parseRSS(await r.text(),feed.name);
+    var text=await r.text();
+    // Use YouTube parser for YouTube feeds
+    if(feed.url.includes('youtube.com/feeds')) return parseYouTubeRSS(text,feed.name);
+    return parseRSS(text,feed.name);
   }catch(e){console.error('Feed failed:'+feed.name+':'+e.message);return[];}
 }
 
