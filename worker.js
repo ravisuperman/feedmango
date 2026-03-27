@@ -14,6 +14,7 @@
  * 27-Mar-2026 — Added /api/feeds GET, POST, DELETE routes
  * 27-Mar-2026 — Added /api/preload-feeds to seed KV from hardcoded list
  * 27-Mar-2026 — Added /api/test-feed to validate RSS URLs
+ * 27-Mar-2026 — Added secret key protection for /admin page
  */
 
 // ============================================================
@@ -229,6 +230,31 @@ export default {
       return new Response(`User-agent: *\nAllow: /\nSitemap: https://www.sportsrip.com/sitemap.xml`,{headers:{'Content-Type':'text/plain'}});
     }
     // BLOCK END: Google SEO (27-Mar-2026)
+    // ============================================================
+
+    // ============================================================
+    // BLOCK START: /admin — Secret Key Protection
+    // Added  : 27-Mar-2026
+    // Purpose: Admin panel is only accessible with the correct
+    //          secret key in the URL: /admin?key=YOUR_SECRET_KEY
+    //          Without the key → plain 404, page appears to not exist.
+    //          To reset the key: change ADMIN_URL_KEY below in
+    //          GitHub and Cloudflare auto-deploys in 30 seconds.
+    //          Bookmark: https://www.sportsrip.com/admin?key=spr-x9k2-2026
+    // ============================================================
+    if(url.pathname==='/admin'||url.pathname==='/admin.html'){
+      var ADMIN_URL_KEY = 'spr-x9k2-2026'; // Change this to reset access
+      var providedKey = url.searchParams.get('key');
+      if(providedKey !== ADMIN_URL_KEY){
+        // Wrong or missing key — return plain 404, looks like page doesn't exist
+        return new Response('Not Found', {status:404, headers:{'Content-Type':'text/plain'}});
+      }
+      // Correct key — fetch and serve the actual admin.html
+      var adminUrl = new URL(request.url);
+      adminUrl.pathname = '/admin.html';
+      return fetch(adminUrl.toString());
+    }
+    // BLOCK END: /admin — Secret Key Protection (27-Mar-2026)
     // ============================================================
 
     // ============================================================
