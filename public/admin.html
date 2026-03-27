@@ -90,6 +90,7 @@
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('articles')">📝 Write Article</button>
     <button class="tab-btn" onclick="switchTab('sources')">📡 Manage Sources</button>
+    <button class="tab-btn" onclick="switchTab('refresh')">🔄 Refresh Feeds</button>
   </div>
 
   <!-- ═══════════════════════════════════════════════
@@ -205,21 +206,109 @@
     <div class="section-title">Saved Feeds <span id="feedCount" style="color:var(--gold)"></span></div>
     <div class="feed-list-scroll" id="feedsList"></div>
   </div>
+
+  <!-- ═══════════════════════════════════════════════
+       TAB 3: Refresh Feeds
+  ═══════════════════════════════════════════════ -->
+  <div id="tab-refresh" class="tab-pane">
+
+    <!-- ============================================================
+         BLOCK START: Environment Selector
+         Added  : 27-Mar-2026
+         Purpose: Choose DEV or PROD before triggering fetch.
+                  Prevents accidentally running on wrong environment.
+    ============================================================ -->
+    <div style="margin-bottom:20px;">
+      <label>Target Environment</label>
+      <select id="envSelect" onchange="updateRefreshEnv()">
+        <option value="dev">🟠 DEV — mango-sports-worker-dev.ravi-kompel.workers.dev</option>
+        <option value="prod">🔴 PROD — mango-sports-worker.ravi-kompel.workers.dev</option>
+      </select>
+    </div>
+    <!-- BLOCK END: Environment Selector (27-Mar-2026) -->
+
+    <!-- Active URL display -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin-bottom:20px; font-size:12px; font-family:monospace; color:var(--dim);">
+      <span style="color:var(--gold); font-weight:700;">Targeting:</span>
+      <span id="refreshTargetUrl"></span>
+    </div>
+
+    <!-- Sport selector -->
+    <div style="margin-bottom:16px;">
+      <label>Sport (select one or all)</label>
+      <select id="refreshSport">
+        <option value="all">🌐 All Sports (15)</option>
+        <option value="ipl">🏏 IPL</option>
+        <option value="cricket">🏏 Cricket</option>
+        <option value="football">⚽ Football</option>
+        <option value="f1">🏎️ Formula 1</option>
+        <option value="basketball">🏀 Basketball</option>
+        <option value="tennis">🎾 Tennis</option>
+        <option value="boxing">🥊 Boxing</option>
+        <option value="golf">⛳ Golf</option>
+        <option value="badminton">🏸 Badminton</option>
+        <option value="kabaddi">🤼 Kabaddi</option>
+        <option value="rugby">🏉 Rugby</option>
+        <option value="athletics">🏃 Athletics</option>
+        <option value="olympics">🏅 Olympics</option>
+        <option value="nfl">🏈 NFL</option>
+        <option value="baseball">⚾ Baseball</option>
+      </select>
+    </div>
+
+    <!-- Status dot -->
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px; font-size:12px; color:var(--dim);">
+      <div id="refreshDot" style="width:8px;height:8px;border-radius:50%;background:#28a745;flex-shrink:0;"></div>
+      <span id="refreshStatus">Ready</span>
+    </div>
+
+    <!-- Step buttons -->
+    <button class="btn" id="btnStep1" onclick="triggerRefresh('raw')"
+      style="display:block;width:100%;padding:15px;margin-bottom:12px;background:#007bff;color:#fff;font-size:14px;font-weight:800;">
+      Step 1 — Fetch Raw RSS Data
+    </button>
+    <button class="btn" id="btnStep2" onclick="triggerRefresh('curate')"
+      style="display:block;width:100%;padding:15px;margin-bottom:12px;background:#28a745;color:#fff;font-size:14px;font-weight:800;">
+      Step 2 — Curate &amp; Publish News
+    </button>
+
+    <div class="console" id="consoleRefresh">System ready.<br></div>
+  </div>
+
 </div>
 
 <script>
   // ============================================================
   // BLOCK START: Configuration
   // Added  : 27-Mar-2026
-  // Change WORKER_URL to PROD when ready.
+  // Purpose: Worker URLs for DEV and PROD.
+  //          Switched dynamically by the Environment selector.
   // ============================================================
-  var WORKER_URL = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev'; // DEV
-  // var WORKER_URL = 'https://mango-sports-worker.ravi-kompel.workers.dev';  // PROD
+  var WORKER_URLS = {
+    dev:  'https://mango-sports-worker-dev.ravi-kompel.workers.dev',
+    prod: 'https://mango-sports-worker.ravi-kompel.workers.dev'
+  };
+  var WORKER_URL = WORKER_URLS.dev; // Default to DEV
   var ADMIN_PASS = 'sportsrip2026';
   // BLOCK END: Configuration (27-Mar-2026)
   // ============================================================
 
   document.getElementById('workerLabel').textContent = 'Worker: ' + WORKER_URL;
+
+  // ============================================================
+  // BLOCK START: Environment switcher for Refresh tab
+  // Added  : 27-Mar-2026
+  // Purpose: Updates WORKER_URL and display when user picks DEV/PROD.
+  // ============================================================
+  function updateRefreshEnv() {
+    var env = document.getElementById('envSelect').value;
+    WORKER_URL = WORKER_URLS[env];
+    document.getElementById('refreshTargetUrl').textContent = WORKER_URL;
+    document.getElementById('workerLabel').textContent = 'Worker: ' + WORKER_URL;
+    log('consoleRefresh', 'Switched to <span style="color:' + (env==='prod'?'#ff4d4d':'#ff9800') + '">' + env.toUpperCase() + '</span> — ' + WORKER_URL);
+  }
+  // BLOCK END: Environment switcher (27-Mar-2026)
+  // ============================================================
 
   function switchTab(tab) {
     document.querySelectorAll('.tab-pane').forEach(function(p){ p.classList.remove('active'); });
@@ -227,6 +316,7 @@
     document.getElementById('tab-'+tab).classList.add('active');
     event.target.classList.add('active');
     if(tab === 'sources') loadFeeds();
+    if(tab === 'refresh') updateRefreshEnv();
     if(tab === 'articles') loadPublished();
   }
 
@@ -439,6 +529,68 @@
       if(res.ok){log('consoleSources','✅ Feed deleted.');loadFeeds();}
     }catch(e){ log('consoleSources','<span style="color:var(--danger)">❌ '+e.message+'</span>'); }
   }
+
+  // ============================================================
+  // BLOCK START: triggerRefresh — Refresh Feeds tab
+  // Added  : 27-Mar-2026
+  // Purpose: Calls /api/trigger-fetch on selected environment.
+  //          Step 1 (raw) fetches RSS feeds into NEWS_KV.
+  //          Step 2 (curate) filters images into CURATED_KV.
+  //          Always run Step 1 before Step 2.
+  // ============================================================
+  async function triggerRefresh(actionType) {
+    var sport = document.getElementById('refreshSport').value;
+    var label = sport === 'all' ? 'all sports' : sport.toUpperCase();
+    var env = document.getElementById('envSelect').value;
+    var targetUrl = WORKER_URLS[env];
+
+    // Safety confirmation for PROD
+    if(env === 'prod' && !confirm('⚠️ You are about to run on PROD (' + targetUrl + '). Are you sure?')) return;
+
+    var dot = document.getElementById('refreshDot');
+    var statusEl = document.getElementById('refreshStatus');
+    var btn1 = document.getElementById('btnStep1');
+    var btn2 = document.getElementById('btnStep2');
+
+    dot.style.background = '#ff9800';
+    dot.style.animation = 'none';
+    setTimeout(function(){ dot.style.animation = 'pulse 1s infinite'; }, 10);
+    statusEl.textContent = actionType === 'raw' ? 'Fetching RSS...' : 'Curating...';
+    btn1.disabled = true; btn2.disabled = true;
+
+    log('consoleRefresh', 'Targeting <span style="color:' + (env==='prod'?'#ff4d4d':'#ff9800') + '">' + env.toUpperCase() + '</span> — ' + actionType + ' for ' + label + '...');
+
+    try {
+      var res = await fetch(targetUrl + '/api/trigger-fetch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: actionType, sport: sport, limit: 50 })
+      });
+      if(res.ok) {
+        var d = await res.json();
+        log('consoleRefresh', '<span style="color:var(--success)">✅ SUCCESS — updated ' + d.updated + ' sport(s)</span>');
+        dot.style.background = '#28a745';
+        dot.style.animation = 'none';
+        statusEl.textContent = 'Done ✅';
+      } else {
+        log('consoleRefresh', '<span style="color:var(--danger)">❌ HTTP ' + res.status + '</span>');
+        dot.style.background = '#ff4d4d';
+        statusEl.textContent = 'Error ❌';
+      }
+    } catch(e) {
+      log('consoleRefresh', '<span style="color:var(--danger)">❌ Could not reach worker: ' + e.message + '</span>');
+      dot.style.background = '#ff4d4d';
+      statusEl.textContent = 'Failed ❌';
+    }
+    btn1.disabled = false; btn2.disabled = false;
+  }
+  // BLOCK END: triggerRefresh (27-Mar-2026)
+  // ============================================================
+
+  // Add pulse animation for status dot
+  var style = document.createElement('style');
+  style.textContent = '@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }';
+  document.head.appendChild(style);
 
   // Load articles on start
   loadPublished();
