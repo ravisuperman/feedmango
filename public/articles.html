@@ -4,17 +4,14 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SPORTSrip — Article</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><circle cx=%2212%22 cy=%2212%22 r=%2210.5%22 fill=%22%23035bb0%22 stroke=%22%23fff%22 stroke-width=%223%22/><path d=%22M12 1.5v21M1.5 12h21%22 stroke=%22%23fff%22 stroke-width=%223%22/></svg>">
   <style>
     :root {
       --espn-blue:#035bb0; --whitish-blue:#94bdff;
       --bg:#f4f4f4; --surface:#fff; --surface2:#fdfdfd;
       --border:#eee; --border2:#e0e0e0;
       --text:#141414; --text2:#555; --text3:#666;
-      --shadow:rgba(0,0,0,0.08); --shadow2:rgba(0,0,0,0.12);
+      --shadow:rgba(0,0,0,0.08); --shadow2:rgba(0,0,0,0.15);
       --gold:#f0a500;
       --footer-bg:#fff; --footer-border:#ddd; --footer-text:#444;
     }
@@ -26,106 +23,112 @@
       --footer-bg:#1a1a22; --footer-border:#2a2a38; --footer-text:#888;
     }
     * { box-sizing:border-box; margin:0; padding:0; }
-    body { background:var(--bg); color:var(--text); font-family:'Assistant',sans-serif; min-height:100vh; display:flex; flex-direction:column; overflow-x:hidden; transition:background 0.3s,color 0.3s; }
+    body { background:var(--bg); color:var(--text); font-family:'Assistant',sans-serif; min-height:100vh; display:flex; flex-direction:column; }
 
     /* ── Header ── */
-    header { background:var(--espn-blue); color:#fff; padding:0 24px; display:flex; align-items:center; height:48px; position:sticky; top:0; z-index:1000; box-shadow:0 2px 10px rgba(0,0,0,0.1); border-radius:12px 0 0 0; margin-top:10px; width:calc(100% - 1px); margin-left:1px; gap:12px; }
-    .brand { display:flex; align-items:center; text-decoration:none; margin-right:20px; flex-shrink:0; }
-    .logo-text { font-size:26px; font-weight:900; letter-spacing:-2px; text-transform:uppercase; line-height:1; font-style:italic; }
+    header { background:var(--espn-blue); color:#fff; padding:0 24px; display:flex; align-items:center; height:48px; position:sticky; top:0; z-index:1000; box-shadow:0 2px 10px rgba(0,0,0,0.15); gap:12px; }
+    .brand { display:flex; align-items:center; text-decoration:none; margin-right:16px; flex-shrink:0; }
+    .logo-text { font-size:24px; font-weight:900; letter-spacing:-2px; text-transform:uppercase; line-height:1; font-style:italic; }
     .logo-text span { color:#fff; background:#cc0000; padding:0 2px; }
     .logo-text em { color:var(--whitish-blue); font-style:italic; font-weight:500; text-transform:lowercase; margin-left:1px; }
-    .back-btn { display:flex; align-items:center; gap:6px; color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; font-weight:700; padding:6px 12px; border-radius:8px; background:rgba(255,255,255,0.1); transition:0.2s; white-space:nowrap; }
-    .back-btn:hover { background:rgba(255,255,255,0.2); color:#fff; }
-    .header-spacer { flex:1; }
-    .dark-toggle { width:36px; height:36px; border-radius:50%; border:2px solid rgba(255,255,255,0.3); background:rgba(255,255,255,0.1); color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:0.2s; }
+    .back-btn { display:inline-flex; align-items:center; gap:5px; color:rgba(255,255,255,0.85); text-decoration:none; font-size:13px; font-weight:700; padding:5px 12px; border-radius:6px; background:rgba(255,255,255,0.12); transition:0.2s; }
+    .back-btn:hover { background:rgba(255,255,255,0.22); color:#fff; }
+    .hspacer { flex:1; }
+    .dark-btn { width:34px; height:34px; border-radius:50%; border:2px solid rgba(255,255,255,0.3); background:rgba(255,255,255,0.1); color:#fff; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:0.2s; }
 
-    /* ── Page layout — 3 columns: blank | article | sidebar ── */
-    .page { max-width:1400px; margin:0 auto; padding:20px 24px; display:grid; grid-template-columns:200px 1fr 300px; gap:16px; align-items:start; }
-    .article-main { min-width:0; }
-    .sidebar { display:flex; flex-direction:column; gap:12px; }
-    .blank-col { display:block; } /* intentionally empty */
+    /* ── 3-col grid layout ── */
+    .page {
+      max-width:1380px; margin:0 auto; width:100%;
+      padding:24px 20px;
+      display:grid;
+      grid-template-columns:200px minmax(0,1fr) 300px;
+      gap:20px;
+      align-items:start;
+      flex:1;
+    }
 
-    /* ── Section label — matches IPL tab heading style ── */
-    .article-section-label { display:flex; align-items:center; gap:8px; font-size:20px; font-weight:900; color:var(--text); margin-bottom:16px; padding-left:14px; border-left:5px solid var(--espn-blue); }
+    /* ── Blank left col ── */
+    .blank-col { /* intentionally empty */ }
 
-    /* ── Hero image — natural size, no fixed height, no cropping, no grey bars ── */
-    .hero-wrap { width:100%; border-radius:16px; overflow:hidden; line-height:0; }
-    .hero-img { width:100%; height:auto; display:block; }
-    .hero-placeholder { width:100%; height:320px; background:var(--border2); border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:48px; opacity:0.3; }
+    /* ── Article main ── */
+    .article-wrap { min-width:0; }
+
+    /* ── Section label ── */
+    .sport-label { display:flex; align-items:center; gap:8px; font-size:18px; font-weight:900; color:var(--text); margin-bottom:14px; padding-left:12px; border-left:5px solid var(--espn-blue); }
+
+    /* ── Hero image — natural size, no cropping ── */
+    .hero-wrap { width:100%; border-radius:14px; overflow:hidden; background:var(--border2); line-height:0; }
+    .hero-img { width:100%; height:auto; display:block; max-height:520px; object-fit:cover; object-position:center 15%; }
+    .hero-ph { width:100%; height:280px; display:flex; align-items:center; justify-content:center; font-size:48px; opacity:0.3; }
 
     /* ── Author bar ── */
-    .author-bar { display:flex; align-items:center; gap:14px; margin:20px 0 16px; }
-    .author-avatar { width:52px; height:52px; border-radius:50%; object-fit:cover; border:3px solid var(--espn-blue); flex-shrink:0; background:var(--border2); }
-    .author-avatar-ph { width:52px; height:52px; border-radius:50%; background:var(--espn-blue); display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; font-weight:800; flex-shrink:0; border:3px solid var(--espn-blue); }
-    .author-info { flex:1; min-width:0; }
-    .author-name { font-size:15px; font-weight:800; color:var(--text); }
-    .author-meta { font-size:12px; color:var(--text3); margin-top:2px; }
-    .sport-badge { display:inline-block; background:var(--espn-blue); color:#fff; font-size:11px; font-weight:800; padding:3px 10px; border-radius:4px; text-transform:uppercase; letter-spacing:0.5px; flex-shrink:0; }
-    .own-badge { display:inline-block; background:var(--gold); color:#000; font-size:11px; font-weight:900; padding:3px 10px; border-radius:4px; text-transform:uppercase; letter-spacing:0.5px; margin-left:6px; }
+    .author-bar { display:flex; align-items:center; gap:12px; margin:16px 0 14px; }
+    .av-img { width:48px; height:48px; border-radius:50%; object-fit:cover; border:3px solid var(--espn-blue); flex-shrink:0; }
+    .av-ph { width:48px; height:48px; border-radius:50%; background:var(--espn-blue); color:#fff; font-size:16px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:3px solid var(--espn-blue); }
+    .au-info { flex:1; min-width:0; }
+    .au-name { font-size:14px; font-weight:800; }
+    .au-date { font-size:12px; color:var(--text3); margin-top:1px; }
+    .sp-badge { background:var(--espn-blue); color:#fff; font-size:10px; font-weight:800; padding:3px 9px; border-radius:4px; text-transform:uppercase; flex-shrink:0; }
+    .own-badge { background:var(--gold); color:#000; font-size:10px; font-weight:900; padding:3px 9px; border-radius:4px; text-transform:uppercase; margin-left:5px; flex-shrink:0; }
 
     /* ── Article content ── */
-    .article-title { font-size:32px; font-weight:900; line-height:1.2; margin-bottom:16px; color:var(--text); }
-    .article-desc { font-size:17px; color:var(--text2); line-height:1.8; margin-bottom:20px; }
-    .read-btn { display:inline-flex; align-items:center; gap:6px; background:var(--espn-blue); color:#fff; text-decoration:none; padding:7px 16px; border-radius:6px; font-size:12px; font-weight:700; transition:0.2s; margin-bottom:24px; letter-spacing:0.3px; }
-    .read-btn:hover { background:#024a94; box-shadow:0 2px 8px rgba(3,91,176,0.25); }
+    .art-title { font-size:28px; font-weight:900; line-height:1.22; margin-bottom:14px; }
+    .art-desc { font-size:16px; color:var(--text2); line-height:1.75; margin-bottom:20px; }
+
+    /* ── Read Full Article — small elegant ── */
+    .read-btn { display:inline-flex; align-items:center; gap:5px; background:var(--espn-blue); color:#fff; text-decoration:none; padding:6px 14px; border-radius:6px; font-size:12px; font-weight:700; letter-spacing:0.2px; transition:0.2s; margin-bottom:28px; }
+    .read-btn:hover { background:#024a94; box-shadow:0 2px 8px rgba(3,91,176,0.3); }
 
     /* ── Related strip at bottom ── */
-    .related-section { margin-top:32px; }
-    .section-label { font-size:14px; font-weight:800; text-transform:uppercase; border-left:5px solid var(--espn-blue); padding-left:12px; margin-bottom:16px; color:var(--text); }
-    .strip-wrapper { position:relative; padding:0 22px; }
-    .strip-arrow { position:absolute; top:38%; transform:translateY(-50%); width:36px; height:36px; border-radius:50%; background:var(--surface); border:1px solid var(--border2); box-shadow:0 2px 8px var(--shadow2); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:16px; z-index:10; transition:0.2s; color:var(--text); }
-    .strip-arrow:hover { background:var(--espn-blue); color:#fff; border-color:var(--espn-blue); }
-    .strip-arrow.left { left:0; }
-    .strip-arrow.right { right:0; }
-    .related-strip { display:flex; gap:14px; overflow-x:auto; padding-bottom:12px; scroll-behavior:smooth; scrollbar-width:none; }
-    .related-strip::-webkit-scrollbar { display:none; }
+    .related-sec { margin-top:8px; }
+    .sec-label { font-size:13px; font-weight:800; text-transform:uppercase; border-left:4px solid var(--espn-blue); padding-left:10px; margin-bottom:14px; color:var(--text); }
+    .strip-wrap { position:relative; padding:0 20px; }
+    .arr-btn { position:absolute; top:35%; transform:translateY(-50%); width:34px; height:34px; border-radius:50%; background:var(--surface); border:1px solid var(--border2); box-shadow:0 2px 6px var(--shadow2); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; z-index:5; color:var(--text); transition:0.2s; }
+    .arr-btn:hover { background:var(--espn-blue); color:#fff; }
+    .arr-btn.l { left:0; }
+    .arr-btn.r { right:0; }
+    .rel-strip { display:flex; gap:12px; overflow-x:auto; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
+    .rel-strip::-webkit-scrollbar { display:none; }
+    .rel-card { flex-shrink:0; width:210px; background:var(--surface); border-radius:12px; overflow:hidden; text-decoration:none; color:inherit; border:1px solid var(--border); box-shadow:0 1px 4px var(--shadow); transition:0.22s; }
+    .rel-card:hover { transform:translateY(-2px); box-shadow:0 6px 16px var(--shadow2); }
+    .rel-card.own { border:2px solid var(--gold); }
+    .rel-img { width:100%; height:120px; object-fit:cover; display:block; border-radius:12px 12px 0 0; }
+    .rel-img-ph { width:100%; height:120px; background:var(--border2); display:flex; align-items:center; justify-content:center; font-size:22px; opacity:0.3; border-radius:12px 12px 0 0; }
+    .rel-body { padding:10px 11px; }
+    .rel-src { font-size:10px; color:var(--espn-blue); font-weight:800; text-transform:uppercase; margin-bottom:4px; }
+    .rel-title { font-size:13px; font-weight:700; line-height:1.3; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
 
-    /* ── Related cards — horizontal scroll strip ── */
-    .related-card { flex-shrink:0; width:220px; background:var(--surface); border-radius:12px; overflow:hidden; text-decoration:none; color:inherit; border:1px solid var(--border); transition:0.25s; box-shadow:0 1px 4px var(--shadow); }
-    .related-card:hover { transform:translateY(-3px); box-shadow:0 8px 20px var(--shadow2); }
-    .related-card.own { border:2px solid var(--gold); }
-    .related-img { width:100%; height:130px; object-fit:cover; display:block; background:var(--border2); border-radius:12px 12px 0 0; }
-    .related-img-ph { width:100%; height:130px; background:var(--border2); display:flex; align-items:center; justify-content:center; font-size:24px; opacity:0.3; border-radius:12px 12px 0 0; }
-    .related-body { padding:12px; }
-    .related-source { font-size:11px; color:var(--espn-blue); font-weight:800; text-transform:uppercase; margin-bottom:5px; }
-    .related-title { font-size:14px; font-weight:700; line-height:1.3; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+    /* ── Right sidebar ── */
+    .sidebar { display:flex; flex-direction:column; gap:14px; position:sticky; top:62px; }
+    .promo-img { width:100%; height:auto; display:block; border-radius:12px; }
+    .sb-box { background:var(--surface); border:1px solid var(--border2); border-radius:12px; overflow:hidden; }
+    .sb-title { border-top:4px solid var(--espn-blue); padding:12px 16px; font-size:14px; font-weight:800; text-transform:uppercase; background:var(--surface2); border-bottom:1px solid var(--border); }
+    .sb-list { display:flex; flex-direction:column; gap:10px; padding:12px; }
+    .sb-card { display:block; text-decoration:none; color:inherit; background:var(--surface); border-radius:10px; overflow:hidden; border:1px solid var(--border); box-shadow:0 1px 3px var(--shadow); transition:0.2s; }
+    .sb-card:hover { transform:translateY(-2px); box-shadow:0 5px 14px var(--shadow2); }
+    .sb-card.own { border-left:3px solid var(--gold); }
+    .sb-img { width:100%; height:150px; object-fit:cover; display:block; border-radius:10px 10px 0 0; }
+    .sb-img-ph { width:100%; height:150px; background:var(--border2); display:flex; align-items:center; justify-content:center; font-size:28px; opacity:0.3; border-radius:10px 10px 0 0; }
+    .sb-body { padding:10px 12px; }
+    .sb-src { font-size:10px; color:var(--espn-blue); font-weight:800; text-transform:uppercase; margin-bottom:4px; }
+    .sb-ttl { font-size:14px; font-weight:800; line-height:1.3; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:4px; }
+    .sb-date { font-size:11px; color:var(--text3); }
 
-    /* ── Sidebar ── */
-    .sidebar { position:sticky; top:68px; display:flex; flex-direction:column; gap:16px; }
-    .sidebar-box { background:var(--surface); border:1px solid var(--border2); border-radius:14px; overflow:hidden; }
-    .sidebar-title { border-top:4px solid var(--espn-blue); padding:14px 18px; font-size:16px; font-weight:800; text-transform:uppercase; background:var(--surface2); border-bottom:1px solid var(--border); }
+    .spin { text-align:center; padding:30px; color:var(--text3); font-size:13px; }
+    @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+    .spin { animation:pulse 1.4s infinite; }
 
-    /* ── Sidebar articles — floating card style with padding ── */
-    .sidebar-articles-list { display:flex; flex-direction:column; gap:12px; padding:12px; background:var(--surface); }
-    .sidebar-article { display:block; text-decoration:none; color:inherit; background:var(--surface); border-radius:12px; overflow:hidden; border:1px solid var(--border); box-shadow:0 1px 4px var(--shadow); transition:0.25s; }
-    .sidebar-article:hover { transform:translateY(-2px); box-shadow:0 6px 16px var(--shadow2); }
-    .sidebar-article.own { border-left:3px solid var(--gold); }
-    .sidebar-art-img { width:100%; height:auto; display:block; background:var(--border2); border-radius:12px 12px 0 0; }
-    .sidebar-art-img-ph { width:100%; height:160px; background:var(--border2); display:flex; align-items:center; justify-content:center; font-size:32px; opacity:0.3; border-radius:12px 12px 0 0; }
-    .sidebar-art-body { padding:12px 14px; }
-    .sidebar-art-source { font-size:11px; color:var(--espn-blue); font-weight:800; text-transform:uppercase; margin-bottom:5px; }
-    .sidebar-art-title { font-size:15px; font-weight:800; line-height:1.3; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:6px; }
-    .sidebar-art-date { font-size:12px; color:var(--text3); }
+    footer { padding:14px 24px; background:var(--footer-bg); border-top:1px solid var(--footer-border); text-align:center; margin-top:auto; }
+    .disc { font-size:11px; color:var(--footer-text); font-weight:700; max-width:900px; margin:0 auto; line-height:1.4; }
 
-    /* ── Loading ── */
-    .loading { text-align:center; padding:40px 20px; color:var(--text3); font-size:15px; }
-    .loading-pulse { animation:pulse 1.4s ease-in-out infinite; }
-    @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
-
-    footer { padding:15px 24px; background:var(--footer-bg); border-top:1px solid var(--footer-border); text-align:center; margin-top:auto; }
-    .disclaimer { font-size:11px; color:var(--footer-text); font-weight:700; max-width:900px; margin:0 auto; line-height:1.4; }
-
-    @media(max-width:1100px){
-      header { width:100%; border-radius:0; margin-top:0; margin-left:0; padding:0 15px; }
-      .page { grid-template-columns:1fr 280px; padding:20px 15px; }
+    @media(max-width:1050px){
+      .page { grid-template-columns:minmax(0,1fr) 270px; }
       .blank-col { display:none; }
-      .article-title { font-size:24px; }
     }
-    @media(max-width:700px){
-      .page { grid-template-columns:1fr; }
+    @media(max-width:680px){
+      .page { grid-template-columns:1fr; padding:16px 14px; }
       .sidebar { display:none; }
-      .article-title { font-size:20px; }
-      .article-desc { font-size:15px; }
+      .art-title { font-size:22px; }
     }
   </style>
 </head>
@@ -134,159 +137,119 @@
 <header>
   <a href="/" class="brand"><div class="logo-text"><span>SPORTS</span><em>rip</em></div></a>
   <a href="/" class="back-btn">← Back</a>
-  <div class="header-spacer"></div>
-  <button class="dark-toggle" id="darkToggle" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
+  <div class="hspacer"></div>
+  <button class="dark-btn" id="darkBtn" onclick="toggleDark()">🌙</button>
 </header>
 
 <div class="page">
 
-  <div class="page">
-
-  <!-- ── LEFT: intentionally blank ── -->
+  <!-- LEFT: intentionally blank -->
   <div class="blank-col"></div>
 
-  <!-- ── CENTER: Main Article ── -->
-  <main class="article-main" id="articleMain">
-    <div class="loading loading-pulse">Loading article...</div>
+  <!-- CENTER: article -->
+  <main class="article-wrap" id="articleMain">
+    <div class="spin">Loading article...</div>
   </main>
 
-  <!-- ── RIGHT: Our Articles sidebar ── -->
+  <!-- RIGHT: sidebar -->
   <aside class="sidebar">
-    <!-- Promo image — same margin as hero image -->
-    <div style="border-radius:14px; overflow:hidden; margin-top:0;">
-      <img src="https://images.pexels.com/photos/8941571/pexels-photo-8941571.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Kids Sports" style="width:100%;height:auto;display:block;">
-    </div>
-    <div class="sidebar-box">
-      <div class="sidebar-title">Our Articles</div>
-      <div id="sidebarOwn" class="sidebar-articles-list"><div class="loading" style="padding:20px">Loading...</div></div>
+    <img class="promo-img" src="https://images.pexels.com/photos/8941571/pexels-photo-8941571.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Kids Sports">
+    <div class="sb-box">
+      <div class="sb-title">Our Articles</div>
+      <div class="sb-list" id="sbList"><div class="spin">Loading...</div></div>
     </div>
   </aside>
+
 </div>
 
-<footer>
-  <div class="disclaimer">Disclaimer: Headlines are sourced from official RSS feeds of their respective publishers. All rights and copyrights remain with the original content owners.</div>
-</footer>
+<footer><div class="disc">Disclaimer: Headlines are sourced from official RSS feeds of their respective publishers. All rights and copyrights remain with the original content owners.</div></footer>
 
 <script>
-  // ============================================================
-  // BLOCK START: Configuration
-  // Added  : 27-Mar-2026
-  // ============================================================
   var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev'; // DEV
   // var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev'; // PROD
 
-  // Default author — used when article has no author info
-  var DEFAULT_AUTHOR_NAME    = 'SPORTSrip Team';
-  var DEFAULT_AUTHOR_PHOTO   = ''; // Add URL here for default photo
-  var DEFAULT_AUTHOR_INITIALS = 'SR';
-  // BLOCK END: Configuration (27-Mar-2026)
-  // ============================================================
+  var DEFAULT_AUTHOR = 'SPORTSrip Team';
+  var DEFAULT_PHOTO  = '';
 
   var EMOJI = {ipl:'🏏',f1:'🏎️',cricket:'🏏',basketball:'🏀',football:'⚽',baseball:'⚾',tennis:'🎾',kabaddi:'🤼',boxing:'🥊',golf:'⛳',athletics:'🏃',rugby:'🏉',olympics:'🏅',nfl:'🏈',badminton:'🏸'};
   var LABEL = {ipl:'IPL 2026',f1:'Formula 1',cricket:'Cricket',basketball:'NBA',football:'Soccer',baseball:'MLB',tennis:'Tennis',kabaddi:'Kabaddi',boxing:'Boxing',golf:'Golf',athletics:'Athletics',rugby:'Rugby',olympics:'Olympics',nfl:'NFL',badminton:'Badminton'};
 
-  function applyTheme(dark) {
-    document.documentElement.setAttribute('data-theme', dark?'dark':'light');
-    document.getElementById('darkToggle').textContent = dark?'☀️':'🌙';
-    localStorage.setItem('sportsrip-theme', dark?'dark':'light');
-  }
+  // Dark mode
+  function applyTheme(d){ document.documentElement.setAttribute('data-theme',d?'dark':'light'); document.getElementById('darkBtn').textContent=d?'☀️':'🌙'; localStorage.setItem('sr-theme',d?'dark':'light'); }
   function toggleDark(){ applyTheme(document.documentElement.getAttribute('data-theme')!=='dark'); }
-  (function(){ if(localStorage.getItem('sportsrip-theme')==='dark') applyTheme(true); })();
+  (function(){ if(localStorage.getItem('sr-theme')==='dark') applyTheme(true); })();
 
-  function sanitize(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
-  function formatDate(iso){ try{ return new Date(iso).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}); }catch(_){return '';} }
-  function scrollStrip(dir){ var s=document.getElementById('relatedStrip'); if(s) s.scrollBy({left:dir*720,behavior:'smooth'}); }
+  function san(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+  function fdate(iso){ try{ return new Date(iso).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}); }catch(_){return '';} }
+  function scrollRel(d){ var s=document.getElementById('relStrip'); if(s) s.scrollBy({left:d*680,behavior:'smooth'}); }
 
-  // ============================================================
-  // BLOCK START: renderArticle
-  // Added  : 27-Mar-2026
-  // Purpose: Renders full article. Author name and photo are read
-  //          from article.authorName and article.authorPhoto.
-  //          Falls back to DEFAULT_AUTHOR_NAME / DEFAULT_AUTHOR_PHOTO
-  //          if not set. If no photo at all — shows initials avatar.
-  // ============================================================
   function renderArticle(a) {
-    var sport  = a.sport || 'ipl';
-    var emoji  = EMOJI[sport] || '🏆';
-    var label  = LABEL[sport] || sport.toUpperCase();
-    var isOwn  = a.isOwn || a.source === 'SPORTSrip';
+    var sport = a.sport||'ipl';
+    var emoji = EMOJI[sport]||'🏆';
+    var label = LABEL[sport]||sport.toUpperCase();
+    var isOwn = a.isOwn || a.source==='SPORTSrip';
+    var author = (a.authorName&&a.authorName.trim()) ? a.authorName : (isOwn?DEFAULT_AUTHOR:(a.source||'SPORTSrip'));
+    var photo  = (a.authorPhoto&&a.authorPhoto.trim()) ? a.authorPhoto : DEFAULT_PHOTO;
+    var init   = author.split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2)||'SR';
 
-    // ── Author resolution — article data first, then defaults ──
-    var authorName  = (a.authorName  && a.authorName.trim())  ? a.authorName  : (isOwn ? DEFAULT_AUTHOR_NAME : (a.source || 'SPORTSrip'));
-    var authorPhoto = (a.authorPhoto && a.authorPhoto.trim()) ? a.authorPhoto : DEFAULT_AUTHOR_PHOTO;
-    var initials    = authorName.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2) || 'SR';
+    var av = photo
+      ? '<img class="av-img" src="'+san(photo)+'" onerror="this.outerHTML=\'<div class=av-ph>'+san(init)+'</div>\'">'
+      : '<div class="av-ph">'+san(init)+'</div>';
 
-    var avatarHtml = authorPhoto
-      ? '<img class="author-avatar" src="'+sanitize(authorPhoto)+'" alt="'+sanitize(authorName)+'" onerror="this.outerHTML=\'<div class=author-avatar-ph>'+sanitize(initials)+'</div>\'">'
-      : '<div class="author-avatar-ph">'+sanitize(initials)+'</div>';
-
-    var heroHtml = a.image
-      ? '<div class="hero-wrap"><img class="hero-img" src="'+sanitize(a.image)+'" alt="'+sanitize(a.title)+'" onerror="this.outerHTML=\'<div class=hero-placeholder>'+emoji+'</div>\'"></div>'
-      : '<div class="hero-placeholder">'+emoji+'</div>';
-
-    var ownBadge = isOwn ? '<span class="own-badge">SPORTSrip</span>' : '';
+    var hero = a.image
+      ? '<div class="hero-wrap"><img class="hero-img" src="'+san(a.image)+'" alt="'+san(a.title)+'" onerror="this.outerHTML=\'<div class=hero-ph>'+emoji+'</div>\'"></div>'
+      : '<div class="hero-wrap hero-ph">'+emoji+'</div>';
 
     document.getElementById('articleMain').innerHTML =
-      '<div class="article-section-label" id="articleSectionLabel"><span class="section-emoji">'+emoji+'</span> '+sanitize(label)+'</div>' +
-      heroHtml +
-      '<div class="author-bar">' +
-        avatarHtml +
-        '<div class="author-info">' +
-          '<div class="author-name">'+sanitize(authorName)+'</div>' +
-          '<div class="author-meta">'+formatDate(a.pubDate)+'</div>' +
-        '</div>' +
-        '<span class="sport-badge">'+emoji+' '+sanitize(label)+'</span>' +
-        ownBadge +
-      '</div>' +
-      '<h1 class="article-title">'+sanitize(a.title)+'</h1>' +
-      (a.description ? '<p class="article-desc">'+sanitize(a.description)+'</p>' : '') +
-      '<a href="'+sanitize(a.link)+'" target="_blank" rel="noopener noreferrer" class="read-btn">Read Full Article <span>→</span></a>' +
-      '<div class="related-section" id="relatedSection">' +
-        '<div class="section-label">Related Articles</div>' +
-        '<div class="strip-wrapper">' +
-          '<button class="strip-arrow left" onclick="scrollStrip(-1)">&#8592;</button>' +
-          '<div class="related-strip" id="relatedStrip"><div class="loading loading-pulse">Loading...</div></div>' +
-          '<button class="strip-arrow right" onclick="scrollStrip(1)">&#8594;</button>' +
-        '</div>' +
+      '<div class="sport-label">'+emoji+' '+san(label)+'</div>'+
+      hero+
+      '<div class="author-bar">'+
+        av+
+        '<div class="au-info"><div class="au-name">'+san(author)+'</div><div class="au-date">'+fdate(a.pubDate)+'</div></div>'+
+        '<span class="sp-badge">'+san(label)+'</span>'+
+        (isOwn?'<span class="own-badge">SPORTSrip</span>':'')+
+      '</div>'+
+      '<div class="art-title">'+san(a.title)+'</div>'+
+      (a.description?'<div class="art-desc">'+san(a.description)+'</div>':'')+
+      '<a href="'+san(a.link)+'" target="_blank" rel="noopener noreferrer" class="read-btn">Read Full Article →</a>'+
+      '<div class="related-sec">'+
+        '<div class="sec-label">Related Articles</div>'+
+        '<div class="strip-wrap">'+
+          '<button class="arr-btn l" onclick="scrollRel(-1)">&#8592;</button>'+
+          '<div class="rel-strip" id="relStrip"><div class="spin">Loading...</div></div>'+
+          '<button class="arr-btn r" onclick="scrollRel(1)">&#8594;</button>'+
+        '</div>'+
       '</div>';
 
-    document.title = 'SPORTSrip — ' + a.title.slice(0,60);
+    document.title = 'SPORTSrip — '+a.title.slice(0,60);
     loadRelated(sport, a.link);
   }
-  // BLOCK END: renderArticle (27-Mar-2026)
-  // ============================================================
 
   async function loadRelated(sport, currentLink) {
     try {
       var res = await fetch(WORKER+'/api/news?sport='+sport);
       var data = await res.json();
-      var articles = (data.articles||[]).filter(function(a){ return a.link!==currentLink; });
-      var own = articles.filter(function(a){ return a.isOwn; });
-      var rss = articles.filter(function(a){ return !a.isOwn; });
-      var sorted = own.concat(rss).slice(0,8);
-      var strip = document.getElementById('relatedStrip');
-      if(!sorted.length){ strip.innerHTML='<div style="color:var(--text3);font-size:12px;">No related articles.</div>'; return; }
+      var arts = (data.articles||[]).filter(function(a){ return a.link!==currentLink; });
+      var own = arts.filter(function(a){ return a.isOwn; });
+      var rss = arts.filter(function(a){ return !a.isOwn; });
+      var list = own.concat(rss).slice(0,15);
+      var strip = document.getElementById('relStrip');
+      if(!list.length){ strip.innerHTML='<div style="color:var(--text3);font-size:12px;padding:8px">No related articles.</div>'; return; }
       strip.innerHTML='';
-      sorted.forEach(function(a){
-        var card=document.createElement('a');
-        card.className='related-card'+(a.isOwn?' own':'');
-        // Own articles → open in articles.html; RSS articles → open source URL in new tab
-        if(a.isOwn){
-          card.href='articles.html?data='+encodeURIComponent(JSON.stringify(a));
-          card.target='_self';
-        } else {
-          card.href=a.link;
-          card.target='_blank';
-          card.rel='noopener noreferrer';
-        }
-        var img=a.image?'<img class="related-img" src="'+sanitize(a.image)+'" loading="lazy" onerror="this.outerHTML=\'<div class=related-img-ph>'+(EMOJI[a.sport]||'📰')+'</div>\'">':'<div class="related-img-ph">'+(EMOJI[a.sport]||'📰')+'</div>';
-        card.innerHTML=img+'<div class="related-body"><div class="related-source">'+(a.isOwn?'SPORTSrip':sanitize(a.source||''))+'</div><div class="related-title">'+sanitize(a.title)+'</div></div>';
-        strip.appendChild(card);
+      list.forEach(function(a){
+        var c=document.createElement('a');
+        c.className='rel-card'+(a.isOwn?' own':'');
+        // Own → articles.html (same tab); RSS → source URL in new tab
+        if(a.isOwn){ c.href='articles.html?data='+encodeURIComponent(JSON.stringify(a)); c.target='_self'; }
+        else { c.href=a.link; c.target='_blank'; c.rel='noopener noreferrer'; }
+        var img=a.image?'<img class="rel-img" src="'+san(a.image)+'" loading="lazy" onerror="this.outerHTML=\'<div class=rel-img-ph>'+(EMOJI[a.sport]||'📰')+'</div>\'">':'<div class="rel-img-ph">'+(EMOJI[a.sport]||'📰')+'</div>';
+        c.innerHTML=img+'<div class="rel-body"><div class="rel-src">'+(a.isOwn?'SPORTSrip':san(a.source||''))+'</div><div class="rel-title">'+san(a.title)+'</div></div>';
+        strip.appendChild(c);
       });
-    } catch(e){ document.getElementById('relatedStrip').innerHTML='<div style="color:var(--text3);font-size:12px">Could not load.</div>'; }
+    } catch(e){ var s=document.getElementById('relStrip'); if(s) s.innerHTML='<div style="color:var(--text3);font-size:12px">Could not load.</div>'; }
   }
 
-  async function loadSidebarOwn() {
+  async function loadSidebar() {
     try {
       var sports=['ipl','cricket','football','f1','basketball','tennis','boxing','golf','badminton','kabaddi','rugby','athletics','olympics','nfl','baseball'];
       var all=[]; var seen=new Set();
@@ -294,37 +257,32 @@
         try{
           var r=await fetch(WORKER+'/api/news?sport='+sp);
           var d=await r.json();
-          (d.articles||[]).filter(function(a){ return a.isOwn; }).forEach(function(a){
-            if(!seen.has(a.link)){ seen.add(a.link); all.push(a); }
+          (d.articles||[]).filter(function(a){return a.isOwn;}).forEach(function(a){
+            if(!seen.has(a.link)){seen.add(a.link);all.push(a);}
           });
         }catch(_){}
       }
-      var box=document.getElementById('sidebarOwn');
-      if(!all.length){ box.innerHTML='<div style="color:var(--text3);font-size:13px;padding:14px">No articles yet.</div>'; return; }
-      all.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
-      all=all.slice(0,5);
+      var box=document.getElementById('sbList');
+      if(!all.length){box.innerHTML='<div style="color:var(--text3);font-size:12px;padding:10px">No articles yet.</div>';return;}
+      all.sort(function(a,b){return new Date(b.pubDate)-new Date(a.pubDate);});
       box.innerHTML='';
-      all.forEach(function(a){
+      all.slice(0,5).forEach(function(a){
         var el=document.createElement('a');
-        el.className='sidebar-article own';
+        el.className='sb-card own';
         el.href='articles.html?data='+encodeURIComponent(JSON.stringify(a));
-        var img=a.image?'<img class="sidebar-art-img" src="'+sanitize(a.image)+'" onerror="this.outerHTML=\'<div class=sidebar-art-img-ph>🏆</div>\'">':'<div class="sidebar-art-img-ph">🏆</div>';
-        el.innerHTML=img+'<div class="sidebar-art-body"><div class="sidebar-art-source">SPORTSrip</div><div class="sidebar-art-title">'+sanitize(a.title)+'</div><div class="sidebar-art-date">'+formatDate(a.pubDate)+'</div></div>';
+        var img=a.image?'<img class="sb-img" src="'+san(a.image)+'" onerror="this.outerHTML=\'<div class=sb-img-ph>🏆</div>\'">':'<div class="sb-img-ph">🏆</div>';
+        el.innerHTML=img+'<div class="sb-body"><div class="sb-src">SPORTSrip</div><div class="sb-ttl">'+san(a.title)+'</div><div class="sb-date">'+fdate(a.pubDate)+'</div></div>';
         box.appendChild(el);
       });
-    }catch(e){ document.getElementById('sidebarOwn').innerHTML='<div style="color:var(--text3);font-size:13px;padding:14px">Could not load.</div>'; }
+    } catch(e){ document.getElementById('sbList').innerHTML='<div style="color:var(--text3);font-size:12px;padding:10px">Could not load.</div>'; }
   }
 
-  (function init(){
-    var params=new URLSearchParams(window.location.search);
-    var raw=params.get('data');
-    if(raw){
-      try{ renderArticle(JSON.parse(decodeURIComponent(raw))); }
-      catch(e){ document.getElementById('articleMain').innerHTML='<div class="loading">Could not load article. <a href="/" style="color:var(--espn-blue)">Go home</a></div>'; }
-    } else {
-      document.getElementById('articleMain').innerHTML='<div class="loading">No article found. <a href="/" style="color:var(--espn-blue)">Go home</a></div>';
-    }
-    loadSidebarOwn();
+  // Init
+  (function(){
+    var raw = new URLSearchParams(window.location.search).get('data');
+    if(raw){ try{ renderArticle(JSON.parse(decodeURIComponent(raw))); }catch(e){ document.getElementById('articleMain').innerHTML='<div class="spin">Could not load. <a href="/" style="color:var(--espn-blue)">Go home</a></div>'; } }
+    else { document.getElementById('articleMain').innerHTML='<div class="spin">No article found. <a href="/" style="color:var(--espn-blue)">Go home</a></div>'; }
+    loadSidebar();
   })();
 </script>
 </body>
