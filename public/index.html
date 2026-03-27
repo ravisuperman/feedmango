@@ -121,13 +121,14 @@
       flex-shrink: 0;
       transition: background 0.2s, border-color 0.2s;
       z-index: 1001;
+      margin-left: auto; /* pushes dark toggle + hamburger to right */
     }
     .dark-toggle:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.6); }
     /* ============================================================
        BLOCK END: Dark Mode Toggle Button
     ============================================================ */
 
-    .hamburger { display: none; flex-direction: column; gap: 4px; cursor: pointer; padding: 8px; z-index: 1001; margin-left: auto; }
+    .hamburger { display: none; flex-direction: column; gap: 4px; cursor: pointer; padding: 8px; z-index: 1001; }
     .hamburger div { width: 22px; height: 3px; background: #fff; border-radius: 2px; transition: 0.3s; }
     .hamburger.active .line1 { transform: rotate(45deg) translate(5px, 5px); }
     .hamburger.active .line2 { opacity: 0; }
@@ -194,7 +195,52 @@
     footer { padding: 15px 24px; background: var(--footer-bg); border-top: 1px solid var(--footer-border); text-align: center; margin-top: auto; }
     .disclaimer { font-size: 11px; color: var(--footer-text); font-weight: 700; max-width: 900px; margin: 0 auto; line-height: 1.4; letter-spacing: 0.1px; }
 
-    #backToTop { position: fixed; bottom: 30px; right: 25px; width: 32px; height: 32px; background: var(--espn-blue); color: white; border: none; border-radius: 4px; display: none; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; font-size: 18px; font-weight: 800; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: 0.3s opacity; }
+    #backToTop { 
+      position: fixed; bottom: 30px; right: 16px; 
+      width: 36px; height: 36px; 
+      background: var(--espn-blue); 
+      color: white; border: none; border-radius: 50%; 
+      display: none; align-items: center; justify-content: center; 
+      cursor: pointer; z-index: 1000; 
+      font-size: 16px; font-weight: 800; 
+      box-shadow: 0 3px 12px rgba(3,91,176,0.4); 
+      transition: all 0.3s ease;
+      opacity: 0;
+    }
+    #backToTop.visible { display: flex; opacity: 1; }
+    #backToTop:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(3,91,176,0.5); }
+
+    /* ── Mobile scroll magic ── */
+    @media(max-width:600px){
+      header {
+        transition: transform 0.35s ease;
+      }
+      header.hidden {
+        transform: translateY(-100%);
+      }
+      /* Floating hamburger — bottom left on mobile when scrolled */
+      .float-menu {
+        display: none;
+        position: fixed;
+        bottom: 24px;
+        left: 16px;
+        width: 44px; height: 44px;
+        background: var(--espn-blue);
+        border-radius: 50%;
+        z-index: 1001;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 4px;
+        cursor: pointer;
+        box-shadow: 0 3px 12px rgba(3,91,176,0.4);
+        transition: all 0.3s ease;
+        opacity: 0;
+      }
+      .float-menu.visible { display: flex; opacity: 1; }
+      .float-menu div { width: 18px; height: 2px; background: #fff; border-radius: 2px; }
+      .float-menu:hover { transform: scale(1.08); }
+    }
     
     @media (max-width: 1000px) { 
       header { width: 100%; border-radius: 0; margin-top: 0; margin-left:0; padding: 0 15px; }
@@ -225,15 +271,7 @@
   </a>
   <nav class="nav-tabs" id="desktopTabs"></nav>
   <div class="header-right" id="clockDisplay"></div>
-
-  <!-- ============================================================
-       BLOCK START: Dark Mode Toggle — header right corner
-       Purpose: Clicking this button toggles light/dark mode.
-       Works on desktop and mobile. Saves to localStorage.
-  ============================================================ -->
   <button class="dark-toggle" id="darkToggle" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
-  <!-- BLOCK END: Dark Mode Toggle -->
-
   <div class="hamburger" id="hamburger" onclick="toggleMenu()">
     <div class="line1"></div>
     <div class="line2"></div>
@@ -269,6 +307,13 @@
 <footer><div class="disclaimer">Disclaimer: Headlines are sourced from official RSS feeds of their respective publishers. All rights and copyrights remain with the original content owners.</div></footer>
 
 <button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+
+<!-- Floating hamburger for mobile scroll mode -->
+<div class="float-menu" id="floatMenu" onclick="toggleMenu()">
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
 
 <script>
   // ============================================================
@@ -377,6 +422,53 @@
   // ============================================================
 
   function cleanText(h) { if(!h) return ""; var d = document.createElement('div'); d.innerHTML = h; return d.textContent || d.innerText || ""; }
+  // ============================================================
+  // BLOCK START: Mobile scroll magic
+  // Added  : 27-Mar-2026
+  // Purpose: On mobile — header hides when scrolling down (curtain up).
+  //          Floating hamburger appears bottom left.
+  //          Go to top button appears bottom right.
+  //          Both disappear when user scrolls back to top.
+  //          Desktop unaffected.
+  // ============================================================
+  (function() {
+    var lastScroll = 0;
+    var header = document.getElementById('main-header');
+    var backToTop = document.getElementById('backToTop');
+    var floatMenu = document.getElementById('floatMenu');
+    var isMobile = function() { return window.innerWidth <= 600; };
+
+    window.addEventListener('scroll', function() {
+      var currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+      if (isMobile()) {
+        if (currentScroll > 80) {
+          // Scrolled down — hide header, show float controls
+          header.classList.add('hidden');
+          floatMenu.classList.add('visible');
+          backToTop.classList.add('visible');
+        } else {
+          // Back at top — show header, hide float controls
+          header.classList.remove('hidden');
+          floatMenu.classList.remove('visible');
+          backToTop.classList.remove('visible');
+        }
+      } else {
+        // Desktop — just show/hide back to top button
+        header.classList.remove('hidden');
+        floatMenu.classList.remove('visible');
+        if (currentScroll > 300) {
+          backToTop.classList.add('visible');
+        } else {
+          backToTop.classList.remove('visible');
+        }
+      }
+      lastScroll = currentScroll;
+    }, { passive: true });
+  })();
+  // BLOCK END: Mobile scroll magic (27-Mar-2026)
+  // ============================================================
+
   function updateClock() { var n = new Date(); if(document.getElementById('clockDisplay')) document.getElementById('clockDisplay').innerHTML = n.toLocaleDateString('en-GB',{day:'numeric',month:'short'}) + ' · ' + n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }
   updateClock(); setInterval(updateClock, 60000);
 
