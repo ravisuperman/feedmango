@@ -3,282 +3,445 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SPORTSrip — Article Writer</title>
+  <title>SPORTSrip — Admin Panel</title>
   <style>
-    :root { --blue: #035bb0; --bg: #0f0f13; --surface: #1a1a22; --border: #2a2a38; --text: #f0f0f0; --dim: #888; --success: #00ff88; --danger: #ff4d4d; --gold: #f0a500; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; padding: 30px 20px; }
-    .container { max-width: 760px; margin: 0 auto; }
-    h1 { font-size: 22px; font-weight: 800; margin-bottom: 4px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
-    .subtitle { font-size: 13px; color: var(--dim); margin-bottom: 28px; }
+    :root { --blue:#035bb0; --bg:#0f0f13; --surface:#1a1a22; --border:#2a2a38; --text:#f0f0f0; --dim:#888; --success:#00ff88; --danger:#ff4d4d; --gold:#f0a500; --amber:#ff9800; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--bg); color:var(--text); font-family:'Segoe UI',sans-serif; padding:24px 20px; }
+    .container { max-width:860px; margin:0 auto; }
+    h1 { font-size:20px; font-weight:800; color:var(--gold); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+    .subtitle { font-size:12px; color:var(--dim); margin-bottom:20px; }
 
-    /* ── Password gate ── */
-    .gate { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 40px; text-align: center; max-width: 360px; margin: 80px auto; }
-    .gate h2 { margin-bottom: 16px; font-size: 18px; }
-    .gate input { width: 100%; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 15px; margin-bottom: 12px; outline: none; }
-    .gate button { width: 100%; padding: 13px; background: var(--blue); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; }
+    /* ── Tabs ── */
+    .tabs { display:flex; gap:4px; margin-bottom:20px; border-bottom:1px solid var(--border); }
+    .tab-btn { padding:10px 20px; background:none; border:none; color:var(--dim); font-size:13px; font-weight:700; cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-1px; transition:0.2s; }
+    .tab-btn.active { color:var(--gold); border-bottom-color:var(--gold); }
+    .tab-btn:hover { color:var(--text); }
+    .tab-pane { display:none; }
+    .tab-pane.active { display:block; }
 
-    /* ── Form ── */
-    .form-grid { display: grid; gap: 16px; }
-    label { font-size: 12px; font-weight: 700; color: var(--dim); text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 6px; }
-    input[type=text], textarea, select {
-      width: 100%; padding: 12px 14px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 8px; color: var(--text); font-size: 14px;
-      font-family: inherit; outline: none; transition: border-color 0.2s;
+    /* ── Form elements ── */
+    label { font-size:11px; font-weight:700; color:var(--dim); text-transform:uppercase; letter-spacing:0.06em; display:block; margin-bottom:5px; }
+    input[type=text], input[type=number], textarea, select {
+      width:100%; padding:11px 13px; background:var(--surface);
+      border:1px solid var(--border); border-radius:8px; color:var(--text);
+      font-size:13px; font-family:inherit; outline:none; transition:border-color 0.2s;
     }
-    input[type=text]:focus, textarea:focus, select:focus { border-color: var(--blue); }
-    textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
-    select option { background: var(--surface); }
+    input:focus, textarea:focus, select:focus { border-color:var(--blue); }
+    textarea { resize:vertical; min-height:90px; line-height:1.6; }
+    select option { background:var(--surface); }
+    .form-grid { display:grid; gap:14px; }
+    .row2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .row3 { display:grid; grid-template-columns:1fr 80px auto; gap:10px; align-items:flex-end; }
 
-    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    /* ── Buttons ── */
+    .btn { padding:11px 20px; border:none; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer; text-transform:uppercase; transition:opacity 0.2s; white-space:nowrap; }
+    .btn:disabled { opacity:0.4; cursor:wait; }
+    .btn-publish { background:var(--gold); color:#000; flex:1; }
+    .btn-clear { background:var(--surface); color:var(--dim); border:1px solid var(--border); }
+    .btn-test { background:rgba(0,150,255,0.15); color:#60b0ff; border:1px solid rgba(0,150,255,0.3); }
+    .btn-test:hover { background:rgba(0,150,255,0.25); }
+    .btn-save { background:var(--blue); color:#fff; }
+    .btn-preload { background:rgba(0,255,136,0.12); color:var(--success); border:1px solid rgba(0,255,136,0.25); width:100%; padding:13px; font-size:13px; margin-bottom:14px; }
+    .btn-preload:hover { background:rgba(0,255,136,0.2); }
+    .btn-delete-feed { background:rgba(255,77,77,0.1); color:var(--danger); border:1px solid rgba(255,77,77,0.25); border-radius:6px; padding:5px 12px; font-size:11px; font-weight:700; cursor:pointer; }
+    .btn-delete-feed:hover { background:rgba(255,77,77,0.2); }
+    .btn-row { display:flex; gap:10px; margin-top:6px; }
 
-    /* Image preview */
-    #imgPreview { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); display: none; margin-top: 8px; background: var(--surface); }
+    /* ── Console ── */
+    .console { background:#000; color:#0f0; padding:12px 14px; border-radius:8px; font-family:monospace; font-size:11px; height:100px; overflow-y:auto; margin-top:16px; border:1px solid var(--border); line-height:1.6; }
 
-    /* Action buttons */
-    .btn-row { display: flex; gap: 12px; margin-top: 8px; }
-    .btn { padding: 13px 24px; border: none; border-radius: 8px; font-size: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: opacity 0.2s; }
-    .btn:disabled { opacity: 0.4; cursor: wait; }
-    .btn-publish { background: var(--gold); color: #000; flex: 1; }
-    .btn-clear { background: var(--surface); color: var(--dim); border: 1px solid var(--border); }
+    /* ── Article list ── */
+    .section-title { font-size:12px; font-weight:700; text-transform:uppercase; color:var(--dim); margin:28px 0 12px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+    .article-row { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin-bottom:8px; display:flex; align-items:center; gap:12px; }
+    .article-thumb { width:64px; height:48px; object-fit:cover; border-radius:6px; background:var(--border); flex-shrink:0; }
+    .article-meta { flex:1; min-width:0; }
+    .article-title { font-size:13px; font-weight:700; margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .article-info { font-size:11px; color:var(--dim); }
+    .btn-del-article { background:rgba(255,77,77,0.1); color:var(--danger); border:1px solid rgba(255,77,77,0.25); border-radius:6px; padding:6px 12px; font-size:11px; font-weight:700; cursor:pointer; flex-shrink:0; }
 
-    /* Console log */
-    #console { background: #000; color: #0f0; padding: 14px; border-radius: 8px; font-family: monospace; font-size: 12px; height: 120px; overflow-y: auto; margin-top: 20px; border: 1px solid var(--border); line-height: 1.6; }
+    /* ── Feed list (Manage Sources) ── */
+    .feed-group { margin-bottom:16px; }
+    .feed-group-title { font-size:12px; font-weight:800; color:var(--gold); text-transform:uppercase; margin-bottom:8px; padding:6px 10px; background:rgba(240,165,0,0.08); border-radius:6px; border-left:3px solid var(--gold); }
+    .feed-row { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin-bottom:6px; display:flex; align-items:center; gap:12px; }
+    .feed-priority { width:28px; height:28px; border-radius:50%; background:rgba(3,91,176,0.2); color:#60b0ff; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .feed-info { flex:1; min-width:0; }
+    .feed-name { font-size:13px; font-weight:700; margin-bottom:2px; }
+    .feed-url-text { font-size:10px; color:var(--dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:monospace; }
+    .feed-list-scroll { max-height:460px; overflow-y:auto; padding-right:4px; }
+    .feed-list-scroll::-webkit-scrollbar { width:4px; }
+    .feed-list-scroll::-webkit-scrollbar-track { background:var(--bg); }
+    .feed-list-scroll::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
 
-    /* Published articles list */
-    .articles-section { margin-top: 36px; }
-    .articles-title { font-size: 14px; font-weight: 800; text-transform: uppercase; color: var(--dim); margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-    .article-row { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; }
-    .article-thumb { width: 72px; height: 54px; object-fit: cover; border-radius: 6px; background: var(--border); flex-shrink: 0; }
-    .article-meta { flex: 1; min-width: 0; }
-    .article-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .article-info { font-size: 11px; color: var(--dim); }
-    .btn-delete { background: rgba(255,77,77,0.12); color: var(--danger); border: 1px solid rgba(255,77,77,0.3); border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; flex-shrink: 0; }
-    .btn-delete:hover { background: rgba(255,77,77,0.25); }
+    /* ── Test result ── */
+    .test-result { padding:10px 14px; border-radius:8px; font-size:12px; margin-top:10px; display:none; }
+    .test-ok { background:rgba(0,255,136,0.08); color:var(--success); border:1px solid rgba(0,255,136,0.2); }
+    .test-fail { background:rgba(255,77,77,0.08); color:var(--danger); border:1px solid rgba(255,77,77,0.2); }
+
+    /* image preview */
+    #imgPreview { width:100%; height:160px; object-fit:cover; border-radius:8px; border:1px solid var(--border); display:none; margin-top:8px; }
   </style>
 </head>
 <body>
+<div class="container">
+  <h1>✍️ SPORTSrip Admin</h1>
+  <p class="subtitle" id="workerLabel"></p>
 
-<!-- ============================================================
-     BLOCK START: Password Gate
-     Added  : 27-Mar-2026
-     Purpose: Simple client-side password to prevent public access.
-     STATUS : DISABLED for DEV testing (27-Mar-2026)
-              Re-enable for PROD by uncommenting the gate div below.
-============================================================ -->
-<!--  PASSWORD GATE DISABLED FOR DEV — uncomment below for PROD
-<div id="gate" class="gate">
-  <h2>🔐 SPORTSrip Admin</h2>
-  <input type="password" id="passInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPass()"/>
-  <button onclick="checkPass()">Enter</button>
-</div>
--->
-<!-- BLOCK END: Password Gate (27-Mar-2026) -->
-
-<div id="app" class="container" style="display:block">
-  <h1>✍️ Article Writer</h1>
-  <p class="subtitle">Articles you publish here appear at the TOP of the selected sport tab — above all RSS feeds.</p>
-
-  <div class="form-grid">
-
-    <div>
-      <label>Article Title *</label>
-      <input type="text" id="f-title" placeholder="e.g. Rohit Sharma smashes century as MI defeats CSK"/>
-    </div>
-
-    <div>
-      <label>Summary / Description</label>
-      <textarea id="f-desc" placeholder="2-3 sentence summary of the article..."></textarea>
-    </div>
-
-    <div class="row2">
-      <div>
-        <label>Sport Category *</label>
-        <select id="f-sport">
-          <option value="ipl">🏏 IPL 2026</option>
-          <option value="cricket">🏏 Cricket</option>
-          <option value="football">⚽ Football</option>
-          <option value="f1">🏎️ Formula 1</option>
-          <option value="basketball">🏀 Basketball</option>
-          <option value="tennis">🎾 Tennis</option>
-          <option value="boxing">🥊 Boxing</option>
-          <option value="golf">⛳ Golf</option>
-          <option value="badminton">🏸 Badminton</option>
-          <option value="kabaddi">🤼 Kabaddi</option>
-          <option value="rugby">🏉 Rugby</option>
-          <option value="athletics">🏃 Athletics</option>
-          <option value="olympics">🏅 Olympics</option>
-          <option value="nfl">🏈 NFL</option>
-          <option value="baseball">⚾ Baseball</option>
-        </select>
-      </div>
-      <div>
-        <label>Article Link (URL) *</label>
-        <input type="text" id="f-link" placeholder="https://sportsrip.com/your-article"/>
-      </div>
-    </div>
-
-    <div>
-      <label>Thumbnail Image URL</label>
-      <input type="text" id="f-image" placeholder="https://images.pexels.com/..." oninput="previewImg(this.value)"/>
-      <img id="imgPreview" alt="Preview"/>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn btn-clear" onclick="clearForm()">Clear</button>
-      <button class="btn btn-publish" id="btnPublish" onclick="publishArticle()">Publish Article</button>
-    </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('articles')">📝 Write Article</button>
+    <button class="tab-btn" onclick="switchTab('sources')">📡 Manage Sources</button>
   </div>
 
-  <div id="console">System ready. WORKER: <span id="workerLabel"></span></div>
+  <!-- ═══════════════════════════════════════════════
+       TAB 1: Write Article
+  ═══════════════════════════════════════════════ -->
+  <div id="tab-articles" class="tab-pane active">
+    <div class="form-grid">
+      <div>
+        <label>Article Title *</label>
+        <input type="text" id="f-title" placeholder="e.g. Rohit smashes century as MI defeats CSK"/>
+      </div>
+      <div>
+        <label>Summary / Description</label>
+        <textarea id="f-desc" placeholder="2-3 sentence summary..."></textarea>
+      </div>
+      <div class="row2">
+        <div>
+          <label>Sport Category *</label>
+          <select id="f-sport">
+            <option value="ipl">🏏 IPL 2026</option>
+            <option value="cricket">🏏 Cricket</option>
+            <option value="football">⚽ Football</option>
+            <option value="f1">🏎️ Formula 1</option>
+            <option value="basketball">🏀 Basketball</option>
+            <option value="tennis">🎾 Tennis</option>
+            <option value="boxing">🥊 Boxing</option>
+            <option value="golf">⛳ Golf</option>
+            <option value="badminton">🏸 Badminton</option>
+            <option value="kabaddi">🤼 Kabaddi</option>
+            <option value="rugby">🏉 Rugby</option>
+            <option value="athletics">🏃 Athletics</option>
+            <option value="olympics">🏅 Olympics</option>
+            <option value="nfl">🏈 NFL</option>
+            <option value="baseball">⚾ Baseball</option>
+          </select>
+        </div>
+        <div>
+          <label>Article Link (URL) *</label>
+          <input type="text" id="f-link" placeholder="https://sportsrip.com/your-article"/>
+        </div>
+      </div>
+      <div>
+        <label>Thumbnail Image URL</label>
+        <input type="text" id="f-image" placeholder="https://images.pexels.com/..." oninput="previewImg(this.value)"/>
+        <img id="imgPreview" alt="Preview"/>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-clear" onclick="clearArticleForm()">Clear</button>
+        <button class="btn btn-publish" id="btnPublish" onclick="publishArticle()">Publish Article</button>
+      </div>
+    </div>
 
-  <div class="articles-section">
-    <div class="articles-title">Published Articles <span id="articleCount" style="color:#f0a500"></span></div>
+    <div class="console" id="consoleArticle">System ready.<br></div>
+
+    <div class="section-title">Published Articles <span id="articleCount" style="color:var(--gold)"></span></div>
     <div id="articlesList"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       TAB 2: Manage Sources
+  ═══════════════════════════════════════════════ -->
+  <div id="tab-sources" class="tab-pane">
+
+    <!-- Preload button -->
+    <button class="btn btn-preload" id="btnPreload" onclick="preloadFeeds()">
+      ⚡ Preload All 28 Default Feeds (run once on first setup)
+    </button>
+
+    <!-- Add new feed form -->
+    <div class="form-grid" style="margin-bottom:16px;">
+      <div class="row2">
+        <div>
+          <label>Sport Category *</label>
+          <select id="s-sport">
+            <option value="ipl" data-label="IPL">🏏 IPL 2026</option>
+            <option value="cricket" data-label="Cricket">🏏 Cricket</option>
+            <option value="football" data-label="Football">⚽ Football</option>
+            <option value="f1" data-label="Formula 1">🏎️ Formula 1</option>
+            <option value="basketball" data-label="Basketball">🏀 Basketball</option>
+            <option value="tennis" data-label="Tennis">🎾 Tennis</option>
+            <option value="boxing" data-label="Boxing">🥊 Boxing</option>
+            <option value="golf" data-label="Golf">⛳ Golf</option>
+            <option value="badminton" data-label="Badminton">🏸 Badminton</option>
+            <option value="kabaddi" data-label="Kabaddi">🤼 Kabaddi</option>
+            <option value="rugby" data-label="Rugby">🏉 Rugby</option>
+            <option value="athletics" data-label="Athletics">🏃 Athletics</option>
+            <option value="olympics" data-label="Olympics">🏅 Olympics</option>
+            <option value="nfl" data-label="NFL">🏈 NFL</option>
+            <option value="baseball" data-label="Baseball">⚾ Baseball</option>
+          </select>
+        </div>
+        <div>
+          <label>Priority (1 = highest)</label>
+          <input type="number" id="s-priority" min="1" max="100" value="10" placeholder="1-100"/>
+        </div>
+      </div>
+      <div>
+        <label>RSS Feed URL *</label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="s-url" placeholder="https://feeds.bbci.co.uk/sport/cricket/rss.xml"/>
+          <button class="btn btn-test" id="btnTest" onclick="testFeed()">Test Feed</button>
+        </div>
+        <div class="test-result" id="testResult"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-save" id="btnSaveFeed" onclick="saveFeed()">Save Feed</button>
+      </div>
+    </div>
+
+    <div class="console" id="consoleSources">System ready.<br></div>
+
+    <!-- Scrollable feed list -->
+    <div class="section-title">Saved Feeds <span id="feedCount" style="color:var(--gold)"></span></div>
+    <div class="feed-list-scroll" id="feedsList"></div>
   </div>
 </div>
 
 <script>
   // ============================================================
   // BLOCK START: Configuration
-  // Change ADMIN_PASS to your own password.
-  // Change WORKER_URL to your PROD worker URL.
+  // Added  : 27-Mar-2026
+  // Change WORKER_URL to PROD when ready.
   // ============================================================
+  var WORKER_URL = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev'; // DEV
+  // var WORKER_URL = 'https://mango-sports-worker.ravi-kompel.workers.dev';  // PROD
   var ADMIN_PASS = 'sportsrip2026';
-  var WORKER_URL = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev';
-  // ============================================================
-  // BLOCK END: Configuration
+  // BLOCK END: Configuration (27-Mar-2026)
   // ============================================================
 
-  function checkPass() {
-    if (document.getElementById('passInput').value === ADMIN_PASS) {
-      document.getElementById('gate').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      document.getElementById('workerLabel').textContent = WORKER_URL;
-      loadPublished();
-    } else {
-      document.getElementById('passInput').style.border = '1px solid #ff4d4d';
-      document.getElementById('passInput').value = '';
-      document.getElementById('passInput').placeholder = 'Wrong password — try again';
-    }
+  document.getElementById('workerLabel').textContent = 'Worker: ' + WORKER_URL;
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-pane').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.getElementById('tab-'+tab).classList.add('active');
+    event.target.classList.add('active');
+    if(tab === 'sources') loadFeeds();
+    if(tab === 'articles') loadPublished();
   }
 
-  function log(msg) {
-    var c = document.getElementById('console');
-    c.innerHTML += '<br>> ' + msg;
+  function log(consoleId, msg) {
+    var c = document.getElementById(consoleId);
+    c.innerHTML += '> ' + msg + '<br>';
     c.scrollTop = c.scrollHeight;
   }
 
   function previewImg(url) {
     var p = document.getElementById('imgPreview');
-    if (url && url.startsWith('http')) { p.src = url; p.style.display = 'block'; }
-    else { p.style.display = 'none'; }
+    if(url && url.startsWith('http')){ p.src=url; p.style.display='block'; }
+    else { p.style.display='none'; }
   }
 
-  function clearForm() {
-    ['f-title','f-desc','f-link','f-image'].forEach(function(id){ document.getElementById(id).value = ''; });
-    document.getElementById('imgPreview').style.display = 'none';
+  function clearArticleForm() {
+    ['f-title','f-desc','f-link','f-image'].forEach(function(id){ document.getElementById(id).value=''; });
+    document.getElementById('imgPreview').style.display='none';
   }
 
-  // ============================================================
-  // BLOCK START: Publish Article
-  // Purpose: Reads the form, builds an article object with isOwn:true,
-  // fetches existing articles from the worker, prepends the new one,
-  // then saves back via /api/publish-own (worker route we added).
-  // ============================================================
+  // ── Publish Article ──────────────────────────────
   async function publishArticle() {
-    var title = document.getElementById('f-title').value.trim();
-    var desc  = document.getElementById('f-desc').value.trim();
-    var sport = document.getElementById('f-sport').value;
-    var link  = document.getElementById('f-link').value.trim();
-    var image = document.getElementById('f-image').value.trim();
-
-    if (!title) { log('<span style="color:#f00">❌ Title is required</span>'); return; }
-    if (!link)  { log('<span style="color:#f00">❌ Article link is required</span>'); return; }
-
-    var btn = document.getElementById('btnPublish');
-    btn.disabled = true; btn.textContent = 'Publishing...';
-
-    var article = {
-      title:       title,
-      description: desc,
-      link:        link,
-      image:       image || '',
-      sport:       sport,
-      source:      'SPORTSrip',
-      isOwn:       true,
-      pubDate:     new Date().toISOString()
-    };
-
-    log('Publishing "' + title.slice(0,40) + '..." to ' + sport + '...');
-
-    try {
-      var res = await fetch(WORKER_URL + '/api/publish-own', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-pass': ADMIN_PASS },
-        body: JSON.stringify({ sport: sport, article: article })
+    var title=document.getElementById('f-title').value.trim();
+    var desc=document.getElementById('f-desc').value.trim();
+    var sport=document.getElementById('f-sport').value;
+    var link=document.getElementById('f-link').value.trim();
+    var image=document.getElementById('f-image').value.trim();
+    if(!title){log('consoleArticle','<span style="color:var(--danger)">❌ Title required</span>');return;}
+    if(!link){log('consoleArticle','<span style="color:var(--danger)">❌ Link required</span>');return;}
+    var btn=document.getElementById('btnPublish');
+    btn.disabled=true; btn.textContent='Publishing...';
+    log('consoleArticle','Publishing "'+title.slice(0,40)+'..."');
+    try{
+      var res=await fetch(WORKER_URL+'/api/publish-own',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS},
+        body:JSON.stringify({sport,article:{title,description:desc,link,image:image||'',sport,source:'SPORTSrip',isOwn:true,pubDate:new Date().toISOString()}})
       });
-
-      if (res.ok) {
-        var data = await res.json();
-        log('<span style="color:#0f0">✅ Published! ' + data.total + ' own articles now in ' + sport + '</span>');
-        clearForm();
-        loadPublished();
-      } else {
-        log('<span style="color:#f00">❌ Server error: ' + res.status + '</span>');
-      }
-    } catch(e) {
-      log('<span style="color:#f00">❌ Could not reach worker: ' + e.message + '</span>');
-    }
-
-    btn.disabled = false; btn.textContent = 'Publish Article';
+      if(res.ok){
+        var d=await res.json();
+        log('consoleArticle','<span style="color:var(--success)">✅ Published! '+d.total+' own articles in '+sport+'</span>');
+        clearArticleForm(); loadPublished();
+      } else { log('consoleArticle','<span style="color:var(--danger)">❌ Error: '+res.status+'</span>'); }
+    }catch(e){ log('consoleArticle','<span style="color:var(--danger)">❌ '+e.message+'</span>'); }
+    btn.disabled=false; btn.textContent='Publish Article';
   }
-  // ============================================================
-  // BLOCK END: Publish Article
-  // ============================================================
 
-  // ============================================================
-  // BLOCK START: Load & Delete Published Articles
-  // Purpose: Shows all your published articles with a delete button.
-  // ============================================================
   async function loadPublished() {
-    try {
-      var res = await fetch(WORKER_URL + '/api/own-articles', {
-        headers: { 'x-admin-pass': ADMIN_PASS }
-      });
-      if (!res.ok) return;
-      var data = await res.json();
-      var all = data.articles || [];
-      document.getElementById('articleCount').textContent = '(' + all.length + ')';
-      var list = document.getElementById('articlesList');
-      list.innerHTML = '';
-      if (!all.length) { list.innerHTML = '<div style="color:#888; font-size:13px; padding:20px 0;">No articles published yet.</div>'; return; }
-      all.forEach(function(a, i) {
-        var row = document.createElement('div');
-        row.className = 'article-row';
-        var thumb = a.image ? '<img class="article-thumb" src="'+a.image+'" onerror="this.style.display=\'none\'">' : '<div class="article-thumb"></div>';
-        row.innerHTML = thumb + '<div class="article-meta"><div class="article-title">'+a.title+'</div><div class="article-info">'+a.sport.toUpperCase()+' · '+ new Date(a.pubDate).toLocaleString()+'</div></div><button class="btn-delete" onclick="deleteArticle(\''+a.sport+'\', \''+encodeURIComponent(a.link)+'\')">Delete</button>';
+    try{
+      var res=await fetch(WORKER_URL+'/api/own-articles',{headers:{'x-admin-pass':ADMIN_PASS}});
+      if(!res.ok)return;
+      var d=await res.json(); var all=d.articles||[];
+      document.getElementById('articleCount').textContent='('+all.length+')';
+      var list=document.getElementById('articlesList'); list.innerHTML='';
+      if(!all.length){list.innerHTML='<div style="color:var(--dim);font-size:13px;padding:16px 0">No articles published yet.</div>';return;}
+      all.forEach(function(a){
+        var row=document.createElement('div'); row.className='article-row';
+        var thumb=a.image?'<img class="article-thumb" src="'+a.image+'" onerror="this.style.display=\'none\'">':'<div class="article-thumb"></div>';
+        row.innerHTML=thumb+'<div class="article-meta"><div class="article-title">'+a.title+'</div><div class="article-info">'+a.sport.toUpperCase()+' · '+new Date(a.pubDate).toLocaleString()+'</div></div><button class="btn-del-article" onclick="deleteArticle(\''+a.sport+'\',\''+encodeURIComponent(a.link)+'\')">Delete</button>';
         list.appendChild(row);
       });
-    } catch(e) { log('<span style="color:#f00">Could not load articles: '+e.message+'</span>'); }
+    }catch(e){ log('consoleArticle','<span style="color:var(--danger)">Could not load: '+e.message+'</span>'); }
   }
 
   async function deleteArticle(sport, encodedLink) {
-    if (!confirm('Delete this article?')) return;
-    try {
-      var res = await fetch(WORKER_URL + '/api/delete-own', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-pass': ADMIN_PASS },
-        body: JSON.stringify({ sport: sport, link: decodeURIComponent(encodedLink) })
-      });
-      if (res.ok) { log('✅ Article deleted.'); loadPublished(); }
-      else log('<span style="color:#f00">❌ Delete failed: ' + res.status + '</span>');
-    } catch(e) { log('<span style="color:#f00">❌ ' + e.message + '</span>'); }
+    if(!confirm('Delete this article?'))return;
+    try{
+      var res=await fetch(WORKER_URL+'/api/delete-own',{method:'POST',headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS},body:JSON.stringify({sport,link:decodeURIComponent(encodedLink)})});
+      if(res.ok){log('consoleArticle','✅ Deleted.');loadPublished();}
+    }catch(e){ log('consoleArticle','<span style="color:var(--danger)">❌ '+e.message+'</span>'); }
   }
+
+  // ── Manage Sources ───────────────────────────────
+
   // ============================================================
-  // BLOCK END: Load & Delete Published Articles
+  // BLOCK START: Preload 28 default feeds
+  // Added  : 27-Mar-2026
+  // Purpose: One-time setup button. Calls /api/preload-feeds
+  //          which seeds CONTROL_PANEL_KV with all hardcoded feeds.
+  //          Safe to run multiple times — skips existing URLs.
   // ============================================================
+  async function preloadFeeds() {
+    var btn=document.getElementById('btnPreload');
+    btn.disabled=true; btn.textContent='Preloading...';
+    log('consoleSources','Preloading all 28 default feeds...');
+    try{
+      var res=await fetch(WORKER_URL+'/api/preload-feeds',{method:'POST',headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS}});
+      if(res.ok){
+        var d=await res.json();
+        log('consoleSources','<span style="color:var(--success)">✅ Done! Added '+d.added+' feeds. Total: '+d.total+'</span>');
+        loadFeeds();
+      } else { log('consoleSources','<span style="color:var(--danger)">❌ Error: '+res.status+'</span>'); }
+    }catch(e){ log('consoleSources','<span style="color:var(--danger)">❌ '+e.message+'</span>'); }
+    btn.disabled=false; btn.textContent='⚡ Preload All 28 Default Feeds (run once on first setup)';
+  }
+  // BLOCK END: Preload feeds (27-Mar-2026)
+  // ============================================================
+
+  // ============================================================
+  // BLOCK START: Test Feed
+  // Added  : 27-Mar-2026
+  // Purpose: Calls /api/test-feed to validate RSS URL before saving.
+  //          Auto-fills feed name from RSS channel title.
+  // ============================================================
+  async function testFeed() {
+    var feedUrl=document.getElementById('s-url').value.trim();
+    if(!feedUrl){alert('Enter a feed URL first');return;}
+    var btn=document.getElementById('btnTest');
+    var resultEl=document.getElementById('testResult');
+    btn.disabled=true; btn.textContent='Testing...';
+    resultEl.style.display='none';
+    try{
+      var res=await fetch(WORKER_URL+'/api/test-feed',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:feedUrl})});
+      var d=await res.json();
+      resultEl.style.display='block';
+      if(d.valid){
+        resultEl.className='test-result test-ok';
+        resultEl.innerHTML='✅ Valid feed — <strong>'+d.name+'</strong> — '+d.itemCount+' items found';
+        log('consoleSources','<span style="color:var(--success)">✅ Valid: "'+d.name+'" — '+d.itemCount+' items</span>');
+      } else {
+        resultEl.className='test-result test-fail';
+        resultEl.innerHTML='❌ '+d.message;
+        log('consoleSources','<span style="color:var(--danger)">❌ Invalid: '+d.message+'</span>');
+      }
+    }catch(e){
+      resultEl.style.display='block';
+      resultEl.className='test-result test-fail';
+      resultEl.innerHTML='❌ Could not reach worker';
+    }
+    btn.disabled=false; btn.textContent='Test Feed';
+  }
+  // BLOCK END: Test Feed (27-Mar-2026)
+  // ============================================================
+
+  async function saveFeed() {
+    var sport=document.getElementById('s-sport').value;
+    var label=document.getElementById('s-sport').selectedOptions[0].getAttribute('data-label');
+    var priority=parseInt(document.getElementById('s-priority').value)||10;
+    var feedUrl=document.getElementById('s-url').value.trim();
+    var testResult=document.getElementById('testResult');
+    if(!feedUrl){log('consoleSources','<span style="color:var(--danger)">❌ Enter a feed URL</span>');return;}
+
+    // Get the auto-extracted name from test result if available
+    var name='Unknown Feed';
+    if(testResult.style.display!=='none'&&testResult.classList.contains('test-ok')){
+      var strong=testResult.querySelector('strong');
+      if(strong)name=strong.textContent;
+    }
+
+    var btn=document.getElementById('btnSaveFeed');
+    btn.disabled=true; btn.textContent='Saving...';
+    log('consoleSources','Saving feed for '+sport+' (priority '+priority+')...');
+    try{
+      var res=await fetch(WORKER_URL+'/api/feeds',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS},
+        body:JSON.stringify({sport,label,priority,name,url:feedUrl})
+      });
+      if(res.ok){
+        var d=await res.json();
+        log('consoleSources','<span style="color:var(--success)">✅ Saved! Total feeds: '+d.total+'</span>');
+        document.getElementById('s-url').value='';
+        document.getElementById('testResult').style.display='none';
+        loadFeeds();
+      } else if(res.status===409){
+        log('consoleSources','<span style="color:var(--amber)">⚠️ Feed URL already exists</span>');
+      } else {
+        log('consoleSources','<span style="color:var(--danger)">❌ Error: '+res.status+'</span>');
+      }
+    }catch(e){ log('consoleSources','<span style="color:var(--danger)">❌ '+e.message+'</span>'); }
+    btn.disabled=false; btn.textContent='Save Feed';
+  }
+
+  async function loadFeeds() {
+    try{
+      var res=await fetch(WORKER_URL+'/api/feeds');
+      if(!res.ok)return;
+      var d=await res.json(); var feeds=d.feeds||[];
+      document.getElementById('feedCount').textContent='('+feeds.length+')';
+      var list=document.getElementById('feedsList'); list.innerHTML='';
+      if(!feeds.length){list.innerHTML='<div style="color:var(--dim);font-size:13px;padding:16px 0">No feeds saved yet. Click Preload to get started!</div>';return;}
+
+      // Group by sport
+      var groups={};
+      feeds.forEach(function(f){
+        if(!groups[f.sport])groups[f.sport]={label:f.label,feeds:[]};
+        groups[f.sport].feeds.push(f);
+      });
+
+      Object.keys(groups).forEach(function(sport){
+        var g=groups[sport];
+        var groupEl=document.createElement('div'); groupEl.className='feed-group';
+        var titleEl=document.createElement('div'); titleEl.className='feed-group-title';
+        titleEl.textContent=g.label+' ('+g.feeds.length+' feeds)';
+        groupEl.appendChild(titleEl);
+        g.feeds.forEach(function(f){
+          var row=document.createElement('div'); row.className='feed-row';
+          row.innerHTML='<div class="feed-priority">'+f.priority+'</div><div class="feed-info"><div class="feed-name">'+f.name+'</div><div class="feed-url-text">'+f.url+'</div></div><button class="btn-delete-feed" onclick="deleteFeed(\''+encodeURIComponent(f.url)+'\')">Delete</button>';
+          groupEl.appendChild(row);
+        });
+        list.appendChild(groupEl);
+      });
+    }catch(e){ log('consoleSources','<span style="color:var(--danger)">Could not load feeds: '+e.message+'</span>'); }
+  }
+
+  async function deleteFeed(encodedUrl) {
+    if(!confirm('Delete this feed?'))return;
+    try{
+      var res=await fetch(WORKER_URL+'/api/feeds',{method:'DELETE',headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS},body:JSON.stringify({url:decodeURIComponent(encodedUrl)})});
+      if(res.ok){log('consoleSources','✅ Feed deleted.');loadFeeds();}
+    }catch(e){ log('consoleSources','<span style="color:var(--danger)">❌ '+e.message+'</span>'); }
+  }
+
+  // Load articles on start
+  loadPublished();
 </script>
 </body>
 </html>
