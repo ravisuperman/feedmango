@@ -529,7 +529,23 @@
   }
 
   function buildSidebarItem(a, e) {
-    var el = document.createElement('a'); el.className = 'sidebar-article'; el.href = a.link; el.target = '_blank';
+    var el = document.createElement('a'); 
+    el.className = 'sidebar-article';
+    if(a.isOwn) {
+      el.href = 'articles.html?data=' + encodeURIComponent(JSON.stringify(a));
+      el.target = '_self';
+    } else {
+      el.href = a.link;
+      el.onclick = function(ev) {
+        ev.preventDefault();
+        if(window.innerWidth <= 768) {
+          window.open(a.link, '_blank');
+        } else {
+          var w=900, h=650, left=(screen.width-w)/2, top=(screen.height-h)/2;
+          window.open(a.link, '_blank', 'width='+w+',height='+h+',left='+left+',top='+top+',toolbar=0,menubar=0,scrollbars=1,resizable=1,status=0');
+        }
+      };
+    }
     var thumb = a.image ? '<img class="sidebar-thumb" src="'+a.image+'" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+e+'</div>\'">' : '<div class="sidebar-thumb-placeholder">'+e+'</div>';
     el.innerHTML = thumb + '<div class="sidebar-text"><div class="sidebar-headline">'+a.title+'</div><div class="sidebar-source">'+(a.source||'SPORTSrip')+'</div></div>';
     return el;
