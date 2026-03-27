@@ -62,18 +62,21 @@
 
 <!-- ============================================================
      BLOCK START: Password Gate
+     Added  : 27-Mar-2026
      Purpose: Simple client-side password to prevent public access.
-     Change ADMIN_PASS below to your own password.
-     For extra security, move this to a worker route with a header check.
+     STATUS : DISABLED for DEV testing (27-Mar-2026)
+              Re-enable for PROD by uncommenting the gate div below.
 ============================================================ -->
+<!--  PASSWORD GATE DISABLED FOR DEV — uncomment below for PROD
 <div id="gate" class="gate">
   <h2>🔐 SPORTSrip Admin</h2>
   <input type="password" id="passInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPass()"/>
   <button onclick="checkPass()">Enter</button>
 </div>
-<!-- BLOCK END: Password Gate -->
+-->
+<!-- BLOCK END: Password Gate (27-Mar-2026) -->
 
-<div id="app" class="container" style="display:none">
+<div id="app" class="container" style="display:block">
   <h1>✍️ Article Writer</h1>
   <p class="subtitle">Articles you publish here appear at the TOP of the selected sport tab — above all RSS feeds.</p>
 
