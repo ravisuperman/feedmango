@@ -4,6 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SPORTSrip — Admin Panel</title>
+
+  <!-- ============================================================
+       BLOCK START: Secret Key Gate — runs before anything else
+       Added  : 27-Mar-2026
+       Purpose: Checks for ?key=spr-x9k2-2026 in the URL.
+                If missing or wrong → blanks the page and redirects.
+                This is the FIRST thing that runs on page load.
+                To reset: change SECRET_KEY below and in worker.js.
+                Bookmark: sportsrip.com/admin?key=spr-x9k2-2026
+  ============================================================ -->
+  <script>
+    (function() {
+      var SECRET_KEY = 'spr-x9k2-2026';
+      var provided = new URLSearchParams(window.location.search).get('key');
+      if (provided !== SECRET_KEY) {
+        // Wipe the page and redirect — looks like 404
+        document.documentElement.innerHTML = '';
+        window.location.replace('/');
+      }
+    })();
+  </script>
+  <!-- BLOCK END: Secret Key Gate (27-Mar-2026) -->
   <style>
     :root { --blue:#035bb0; --bg:#0f0f13; --surface:#1a1a22; --border:#2a2a38; --text:#f0f0f0; --dim:#888; --success:#00ff88; --danger:#ff4d4d; --gold:#f0a500; --amber:#ff9800; }
     * { box-sizing:border-box; margin:0; padding:0; }
