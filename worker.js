@@ -278,7 +278,7 @@ export default {
     // BLOCK END: /api/news (27-Mar-2026)
     // ============================================================
 
-    if(url.pathname==='/api/mode')return new Response(JSON.stringify({mode:'auto'}),{headers:cors});
+    if(url.pathname==='/api/mode')return new Response(JSON.stringify({mode:'auto',version:'v2.0-sports-array',deployed:'27-Mar-2026'}),{headers:cors});
 
     if(url.pathname==='/api/flush'&&request.method==='POST'){
       var body=await request.json();var target=body.sport;
