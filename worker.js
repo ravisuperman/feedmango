@@ -2,7 +2,7 @@
  * Mango Sports Worker — Production Server
  * Cron 1: Fetch raw RSS → NEWS_KV
  * Cron 2: Add OG images → CURATED_KV
- * Admin: Discover RSS → Process & Save → MY_NEWS_KV
+ * Admin: Discover sssRSS → Process & Save → MY_NEWS_KV
  *
  * Change log:
  * 27-Mar-2026 — Added Google sitemap + robots.txt routes
