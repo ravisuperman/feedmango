@@ -4,139 +4,149 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SPORTSrip — Article</title>
-  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --ink:#1a1a1a; --ink2:#333; --ink3:#555;
-      --paper:#f5f0e8; --paper2:#ede8dc; --rule:#1a1a1a;
-      --espn-blue:#035bb0; --gold:#c8860a;
+      --paper:#faf8f3; --paper2:#f3f0e8;
+      --ink:#2c2418; --ink2:#4a4030; --ink3:#7a7060;
+      --accent:#8b6914; --rule:#d4c9a8;
+      --espn-blue:#035bb0;
     }
     * { box-sizing:border-box; margin:0; padding:0; }
-    body { background:var(--paper); color:var(--ink); font-family:'Source Serif 4',Georgia,serif; min-height:100vh; display:flex; flex-direction:column; }
+    body { background:var(--paper); color:var(--ink); font-family:'Lora',Georgia,serif; min-height:100vh; display:flex; flex-direction:column; }
 
-    /* ── Newspaper masthead ── */
-    header {
-      background:var(--paper); color:var(--ink);
-      padding:10px 24px 0;
-      border-bottom:4px double var(--ink);
-    }
-    .masthead-top { display:flex; align-items:center; justify-content:space-between; padding-bottom:6px; border-bottom:1px solid var(--ink); margin-bottom:6px; font-size:11px; color:var(--ink3); font-family:'Source Serif 4',serif; }
-    .masthead-logo { text-align:center; padding:4px 0 8px; }
-    .masthead-logo h1 { font-family:'UnifrakturMaguntia',cursive; font-size:52px; color:var(--ink); letter-spacing:2px; line-height:1; }
-    .masthead-logo .tagline { font-size:11px; color:var(--ink3); letter-spacing:3px; text-transform:uppercase; margin-top:2px; border-top:1px solid var(--ink); border-bottom:1px solid var(--ink); padding:3px 0; }
-    .back-btn { display:inline-flex; align-items:center; gap:5px; color:var(--ink); text-decoration:none; font-size:12px; font-weight:700; padding:4px 10px; border:1px solid var(--ink); }
-    .back-btn:hover { background:var(--ink); color:var(--paper); }
+    /* ── Minimal top bar ── */
+    .topbar { background:var(--paper2); border-bottom:1px solid var(--rule); padding:8px 32px; display:flex; align-items:center; justify-content:space-between; }
+    .topbar-logo { font-family:'Lora',serif; font-size:22px; font-weight:700; color:var(--ink); letter-spacing:1px; font-style:italic; text-decoration:none; }
+    .topbar-logo span { color:var(--accent); }
+    .topbar-right { display:flex; align-items:center; gap:16px; }
+    .back-btn { font-family:'Inter',sans-serif; font-size:12px; font-weight:600; color:var(--ink3); text-decoration:none; letter-spacing:0.5px; display:flex; align-items:center; gap:4px; }
+    .back-btn:hover { color:var(--ink); }
+    .date-str { font-family:'Inter',sans-serif; font-size:11px; color:var(--ink3); letter-spacing:0.5px; }
 
-    /* ── 3-col page ── */
-    .page {
-      max-width:1300px; margin:0 auto; width:100%;
-      padding:20px 20px;
-      display:grid;
-      grid-template-columns:180px minmax(0,1fr) 260px;
-      gap:0;
-      align-items:start;
-      flex:1;
-    }
-    .blank-col { border-right:1px solid var(--ink); margin-right:20px; }
+    /* ── Page layout ── */
+    .page { max-width:1280px; margin:0 auto; width:100%; padding:32px 24px; display:grid; grid-template-columns:200px minmax(0,1fr) 280px; gap:32px; align-items:start; flex:1; }
+    .blank-col { }
+    .article-wrap { min-width:0; max-width:720px; }
 
-    /* ── Article main ── */
-    .article-wrap { min-width:0; padding:0 20px; border-right:1px solid var(--ink); }
+    /* ── Sport category ── */
+    .cat-label { font-family:'Inter',sans-serif; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--accent); margin-bottom:14px; }
 
-    /* ── Sport label ── */
-    .sport-label { font-family:'Playfair Display',serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:3px; color:var(--ink3); margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid var(--ink); }
+    /* ── Hero image ── */
+    .hero-wrap { width:100%; border-radius:4px; overflow:hidden; margin-bottom:8px; line-height:0; }
+    .hero-img { width:100%; height:auto; display:block; max-height:500px; object-fit:cover; object-position:center 15%; }
+    .hero-ph { width:100%; height:280px; background:var(--paper2); display:flex; align-items:center; justify-content:center; font-size:48px; opacity:0.3; }
+    .hero-caption { font-family:'Inter',sans-serif; font-size:11px; color:var(--ink3); font-style:italic; margin-bottom:24px; padding-top:6px; }
 
-    /* ── Hero image — full width, grayscale ── */
-    .hero-wrap { width:100%; line-height:0; margin-bottom:12px; }
-    .hero-img { width:100%; height:auto; display:block; max-height:480px; object-fit:cover; object-position:center 15%; filter:grayscale(100%) contrast(1.05); }
-    .hero-caption { font-size:11px; color:var(--ink3); font-style:italic; padding:4px 0 10px; border-bottom:1px solid var(--ink3); margin-bottom:12px; }
+    /* ── Article title ── */
+    .art-title { font-family:'Lora',serif; font-size:34px; font-weight:700; line-height:1.2; color:var(--ink); margin-bottom:16px; }
 
     /* ── Author bar ── */
-    .author-bar { display:flex; align-items:center; gap:10px; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--ink3); }
-    .av-img { width:36px; height:36px; border-radius:50%; object-fit:cover; filter:grayscale(100%); border:2px solid var(--ink); flex-shrink:0; }
-    .av-ph { width:36px; height:36px; border-radius:50%; background:var(--ink); color:var(--paper); font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-    .au-name { font-size:12px; font-weight:700; font-family:'Playfair Display',serif; text-transform:uppercase; letter-spacing:1px; }
-    .au-date { font-size:11px; color:var(--ink3); font-style:italic; }
-    .sp-badge { background:var(--ink); color:var(--paper); font-size:10px; font-weight:700; padding:2px 8px; text-transform:uppercase; letter-spacing:1px; margin-left:auto; }
-    .own-badge { background:var(--gold); color:var(--paper); font-size:10px; font-weight:700; padding:2px 8px; text-transform:uppercase; letter-spacing:1px; margin-left:4px; }
+    .author-bar { display:flex; align-items:center; gap:10px; padding:12px 0; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); margin-bottom:24px; }
+    .av-img { width:36px; height:36px; border-radius:50%; object-fit:cover; border:2px solid var(--rule); flex-shrink:0; }
+    .av-ph { width:36px; height:36px; border-radius:50%; background:var(--accent); color:#fff; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:'Inter',sans-serif; }
+    .au-name { font-family:'Inter',sans-serif; font-size:13px; font-weight:600; color:var(--ink); }
+    .au-date { font-family:'Inter',sans-serif; font-size:11px; color:var(--ink3); margin-top:1px; }
+    .au-right { margin-left:auto; display:flex; align-items:center; gap:6px; }
+    .sp-badge { font-family:'Inter',sans-serif; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--accent); border:1px solid var(--accent); padding:2px 8px; border-radius:3px; }
+    .own-badge { font-family:'Inter',sans-serif; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; background:var(--accent); color:#fff; padding:2px 8px; border-radius:3px; }
 
-    /* ── Article content ── */
-    .art-title { font-family:'Playfair Display',serif; font-size:36px; font-weight:900; line-height:1.15; margin-bottom:12px; color:var(--ink); }
-    .art-desc { font-size:16px; color:var(--ink2); line-height:1.85; margin-bottom:16px; font-family:'Source Serif 4',serif; column-count:2; column-gap:24px; }
-    .read-btn { display:inline-flex; align-items:center; gap:5px; background:var(--ink); color:var(--paper); text-decoration:none; padding:6px 14px; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; transition:0.2s; margin-bottom:24px; }
-    .read-btn:hover { background:var(--ink3); }
+    /* ── Body text — Kindle style ── */
+    .art-desc {
+      font-family:'Lora',serif;
+      font-size:18px;
+      line-height:1.9;
+      color:var(--ink2);
+      margin-bottom:28px;
+      font-weight:400;
+    }
+    .art-desc::first-letter {
+      font-size:52px;
+      font-weight:700;
+      float:left;
+      line-height:0.8;
+      margin:8px 8px 0 0;
+      color:var(--ink);
+      font-family:'Lora',serif;
+    }
 
-    /* ── Related strip ── */
-    .related-sec { margin-top:16px; border-top:3px double var(--ink); padding-top:12px; }
-    .sec-label { font-family:'Playfair Display',serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:3px; margin-bottom:12px; color:var(--ink); }
-    .strip-wrap { position:relative; padding:0 20px; }
-    .arr-btn { position:absolute; top:35%; transform:translateY(-50%); width:28px; height:28px; border:1px solid var(--ink); background:var(--paper); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:13px; color:var(--ink); transition:0.2s; }
-    .arr-btn:hover { background:var(--ink); color:var(--paper); }
+    /* ── Read full article — small elegant ── */
+    .read-btn { display:inline-flex; align-items:center; gap:6px; background:transparent; color:var(--accent); text-decoration:none; padding:7px 16px; border:1.5px solid var(--accent); border-radius:4px; font-family:'Inter',sans-serif; font-size:12px; font-weight:600; letter-spacing:0.5px; transition:0.2s; margin-bottom:32px; }
+    .read-btn:hover { background:var(--accent); color:#fff; }
+
+    /* ── Related strip at bottom ── */
+    .related-sec { border-top:2px solid var(--rule); padding-top:20px; }
+    .sec-label { font-family:'Inter',sans-serif; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--ink3); margin-bottom:16px; }
+    .strip-wrap { position:relative; padding:0 22px; }
+    .arr-btn { position:absolute; top:35%; transform:translateY(-50%); width:32px; height:32px; border-radius:50%; background:var(--paper2); border:1px solid var(--rule); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--ink); transition:0.2s; }
+    .arr-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
     .arr-btn.l { left:0; }
     .arr-btn.r { right:0; }
-    .rel-strip { display:flex; gap:10px; overflow-x:auto; padding-bottom:8px; scroll-behavior:smooth; scrollbar-width:none; }
+    .rel-strip { display:flex; gap:16px; overflow-x:auto; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
     .rel-strip::-webkit-scrollbar { display:none; }
-    .rel-card { flex-shrink:0; width:180px; background:var(--paper2); text-decoration:none; color:inherit; border:1px solid var(--ink3); transition:0.2s; }
-    .rel-card:hover { border-color:var(--ink); box-shadow:2px 2px 0 var(--ink); }
-    .rel-img { width:100%; height:110px; object-fit:cover; display:block; filter:grayscale(100%) contrast(1.05); }
-    .rel-img-ph { width:100%; height:110px; background:var(--paper2); display:flex; align-items:center; justify-content:center; font-size:20px; opacity:0.4; }
-    .rel-body { padding:8px 10px; }
-    .rel-src { font-size:9px; color:var(--ink3); font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:3px; }
-    .rel-title { font-size:12px; font-family:'Playfair Display',serif; font-weight:700; line-height:1.3; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+    .rel-card { flex-shrink:0; width:200px; background:var(--paper2); border-radius:4px; overflow:hidden; text-decoration:none; color:inherit; border:1px solid var(--rule); transition:0.2s; }
+    .rel-card:hover { border-color:var(--accent); box-shadow:0 3px 12px rgba(0,0,0,0.08); }
+    .rel-card.own { border-color:var(--accent); }
+    .rel-img { width:100%; height:110px; object-fit:cover; display:block; }
+    .rel-img-ph { width:100%; height:110px; background:var(--paper2); display:flex; align-items:center; justify-content:center; font-size:20px; opacity:0.3; }
+    .rel-body { padding:10px; }
+    .rel-src { font-family:'Inter',sans-serif; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--accent); margin-bottom:4px; }
+    .rel-title { font-family:'Lora',serif; font-size:13px; line-height:1.4; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
 
     /* ── Right sidebar ── */
-    .sidebar { display:flex; flex-direction:column; gap:0; padding-left:18px; padding-top:46px; }
-    .promo-wrap { margin-bottom:14px; border-bottom:2px solid var(--ink); padding-bottom:10px; }
-    .promo-img { width:100%; height:auto; display:block; filter:grayscale(100%) contrast(1.05); }
-    .sb-box { }
-    .sb-title { font-family:'Playfair Display',serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:3px; padding:8px 0 8px; border-top:3px double var(--ink); border-bottom:1px solid var(--ink); margin-bottom:10px; }
-    .sb-card { display:block; text-decoration:none; color:inherit; margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid var(--ink3); transition:0.15s; }
-    .sb-card:last-child { border-bottom:none; }
-    .sb-card:hover .sb-ttl { text-decoration:underline; }
-    .sb-img { width:100%; height:auto; display:block; filter:grayscale(100%) contrast(1.05); margin-bottom:6px; }
-    .sb-src { font-size:9px; color:var(--ink3); font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:3px; }
-    .sb-ttl { font-family:'Playfair Display',serif; font-size:14px; font-weight:700; line-height:1.3; margin-bottom:3px; }
-    .sb-date { font-size:10px; color:var(--ink3); font-style:italic; }
+    .sidebar { position:sticky; top:20px; display:flex; flex-direction:column; gap:20px; padding-top:46px; }
+    .promo-img { width:100%; height:auto; display:block; border-radius:4px; border:1px solid var(--rule); }
+    .sb-divider { border:none; border-top:2px solid var(--rule); }
+    .sb-title { font-family:'Inter',sans-serif; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--ink3); padding:10px 0 14px; }
+    .sb-card { display:block; text-decoration:none; color:inherit; padding-bottom:16px; margin-bottom:16px; border-bottom:1px solid var(--rule); transition:0.15s; }
+    .sb-card:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+    .sb-card:hover .sb-ttl { color:var(--accent); }
+    .sb-img { width:100%; height:auto; display:block; border-radius:3px; margin-bottom:8px; border:1px solid var(--rule); }
+    .sb-src { font-family:'Inter',sans-serif; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--accent); margin-bottom:4px; }
+    .sb-ttl { font-family:'Lora',serif; font-size:14px; font-weight:600; line-height:1.4; margin-bottom:4px; transition:0.2s; }
+    .sb-date { font-family:'Inter',sans-serif; font-size:10px; color:var(--ink3); }
 
-    .spin { text-align:center; padding:30px; color:var(--ink3); font-size:12px; font-style:italic; }
+    .spin { text-align:center; padding:28px; color:var(--ink3); font-family:'Inter',sans-serif; font-size:12px; font-style:italic; }
+    @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+    .spin { animation:pulse 1.4s infinite; }
 
-    footer { padding:12px 24px; background:var(--paper2); border-top:3px double var(--ink); text-align:center; margin-top:auto; }
-    .disc { font-size:10px; color:var(--ink3); max-width:900px; margin:0 auto; font-style:italic; }
+    footer { padding:16px 32px; background:var(--paper2); border-top:1px solid var(--rule); text-align:center; margin-top:auto; }
+    .disc { font-family:'Inter',sans-serif; font-size:10px; color:var(--ink3); max-width:800px; margin:0 auto; line-height:1.6; }
 
     @media(max-width:1000px){
-      .page { grid-template-columns:minmax(0,1fr) 240px; }
+      .page { grid-template-columns:minmax(0,1fr) 260px; gap:24px; }
       .blank-col { display:none; }
-      .article-wrap { padding-left:0; }
     }
     @media(max-width:660px){
-      .page { grid-template-columns:1fr; padding:14px; }
+      .page { grid-template-columns:1fr; padding:20px 16px; }
       .sidebar { display:none; }
       .art-title { font-size:26px; }
-      .art-desc { column-count:1; }
+      .art-desc { font-size:17px; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="masthead-top">
+<!-- Minimal top bar -->
+<div class="topbar">
+  <a href="/" class="topbar-logo"><span>SPORTS</span>rip</a>
+  <div class="topbar-right">
+    <span class="date-str" id="dateStr"></span>
     <a href="/" class="back-btn">← Back</a>
-    <span id="todayDate"></span>
-    <span>Est. 2026 · All Sports · All News</span>
   </div>
-  <div class="masthead-logo">
-    <h1>SPORTSrip</h1>
-    <div class="tagline">Your Daily Sports Chronicle</div>
-  </div>
-</header>
+</div>
 
 <div class="page">
   <div class="blank-col"></div>
-  <main class="article-wrap" id="articleMain"><div class="spin">Loading article...</div></main>
+
+  <main class="article-wrap" id="articleMain">
+    <div class="spin">Loading article...</div>
+  </main>
+
   <aside class="sidebar">
-    <div class="promo-wrap">
-      <img class="promo-img" src="https://images.pexels.com/photos/8941571/pexels-photo-8941571.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Kids Sports">
-    </div>
-    <div class="sb-box">
+    <img class="promo-img" src="https://images.pexels.com/photos/8941571/pexels-photo-8941571.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Kids Sports">
+    <hr class="sb-divider">
+    <div>
       <div class="sb-title">Our Articles</div>
       <div id="sbList"><div class="spin">Loading...</div></div>
     </div>
@@ -146,17 +156,20 @@
 <footer><div class="disc">Disclaimer: Headlines are sourced from official RSS feeds of their respective publishers. All rights and copyrights remain with the original content owners.</div></footer>
 
 <script>
-  var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev';
+  var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev'; // DEV
+  // var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev'; // PROD
+
   var DEFAULT_AUTHOR = 'SPORTSrip Team';
   var DEFAULT_PHOTO  = '';
+
   var EMOJI = {ipl:'🏏',f1:'🏎️',cricket:'🏏',basketball:'🏀',football:'⚽',baseball:'⚾',tennis:'🎾',kabaddi:'🤼',boxing:'🥊',golf:'⛳',athletics:'🏃',rugby:'🏉',olympics:'🏅',nfl:'🏈',badminton:'🏸'};
   var LABEL = {ipl:'IPL 2026',f1:'Formula 1',cricket:'Cricket',basketball:'NBA',football:'Soccer',baseball:'MLB',tennis:'Tennis',kabaddi:'Kabaddi',boxing:'Boxing',golf:'Golf',athletics:'Athletics',rugby:'Rugby',olympics:'Olympics',nfl:'NFL',badminton:'Badminton'};
 
-  document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('dateStr').textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
   function san(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
   function fdate(iso){ try{ return new Date(iso).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}); }catch(_){return '';} }
-  function scrollRel(d){ var s=document.getElementById('relStrip'); if(s) s.scrollBy({left:d*600,behavior:'smooth'}); }
+  function scrollRel(d){ var s=document.getElementById('relStrip'); if(s) s.scrollBy({left:d*640,behavior:'smooth'}); }
 
   function renderArticle(a) {
     var sport=a.sport||'ipl', emoji=EMOJI[sport]||'', label=LABEL[sport]||sport.toUpperCase();
@@ -164,22 +177,41 @@
     var author=(a.authorName&&a.authorName.trim())?a.authorName:(isOwn?DEFAULT_AUTHOR:(a.source||'SPORTSrip'));
     var photo=(a.authorPhoto&&a.authorPhoto.trim())?a.authorPhoto:DEFAULT_PHOTO;
     var init=author.split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2)||'SR';
-    var av=photo?'<img class="av-img" src="'+san(photo)+'" onerror="this.outerHTML=\'<div class=av-ph>'+san(init)+'</div>\'">':'<div class="av-ph">'+san(init)+'</div>';
-    var hero=a.image?'<div class="hero-wrap"><img class="hero-img" src="'+san(a.image)+'" alt="'+san(a.title)+'"><div class="hero-caption">'+san(label)+' · '+fdate(a.pubDate)+'</div></div>':'';
-    document.getElementById('articleMain').innerHTML=
-      '<div class="sport-label">'+san(label)+'</div>'+
+
+    var av=photo
+      ?'<img class="av-img" src="'+san(photo)+'" onerror="this.outerHTML=\'<div class=av-ph>'+san(init)+'</div>\'">'
+      :'<div class="av-ph">'+san(init)+'</div>';
+
+    var hero=a.image
+      ?'<div class="hero-wrap"><img class="hero-img" src="'+san(a.image)+'" alt="'+san(a.title)+'"></div><div class="hero-caption">'+san(label)+' · '+fdate(a.pubDate)+'</div>'
+      :'';
+
+    document.getElementById('articleMain').innerHTML =
+      '<div class="cat-label">'+emoji+' '+san(label)+'</div>'+
       hero+
       '<div class="art-title">'+san(a.title)+'</div>'+
-      '<div class="author-bar">'+av+'<div><div class="au-name">'+san(author)+'</div><div class="au-date">'+fdate(a.pubDate)+'</div></div><span class="sp-badge">'+san(label)+'</span>'+(isOwn?'<span class="own-badge">SPORTSrip</span>':'')+' </div>'+
+      '<div class="author-bar">'+
+        av+
+        '<div><div class="au-name">'+san(author)+'</div><div class="au-date">'+fdate(a.pubDate)+'</div></div>'+
+        '<div class="au-right"><span class="sp-badge">'+san(label)+'</span>'+(isOwn?'<span class="own-badge">SPORTSrip</span>':'')+'</div>'+
+      '</div>'+
       (a.description?'<div class="art-desc">'+san(a.description)+'</div>':'')+
       '<a href="'+san(a.link)+'" target="_blank" rel="noopener noreferrer" class="read-btn">Read Full Article →</a>'+
-      '<div class="related-sec"><div class="sec-label">Related Articles</div><div class="strip-wrap"><button class="arr-btn l" onclick="scrollRel(-1)">←</button><div class="rel-strip" id="relStrip"><div class="spin">Loading...</div></div><button class="arr-btn r" onclick="scrollRel(1)">→</button></div></div>';
-    document.title='SPORTSrip — '+a.title.slice(0,60);
-    loadRelated(sport,a.link);
+      '<div class="related-sec">'+
+        '<div class="sec-label">Related Articles</div>'+
+        '<div class="strip-wrap">'+
+          '<button class="arr-btn l" onclick="scrollRel(-1)">&#8592;</button>'+
+          '<div class="rel-strip" id="relStrip"><div class="spin">Loading...</div></div>'+
+          '<button class="arr-btn r" onclick="scrollRel(1)">&#8594;</button>'+
+        '</div>'+
+      '</div>';
+
+    document.title = 'SPORTSrip — '+a.title.slice(0,60);
+    loadRelated(sport, a.link);
   }
 
-  async function loadRelated(sport,currentLink){
-    try{
+  async function loadRelated(sport, currentLink) {
+    try {
       var res=await fetch(WORKER+'/api/news?sport='+sport);
       var data=await res.json();
       var arts=(data.articles||[]).filter(function(a){return a.link!==currentLink;});
@@ -188,18 +220,18 @@
       if(!list.length){strip.innerHTML='<div style="color:var(--ink3);font-size:11px;font-style:italic;padding:8px">No related articles found.</div>';return;}
       strip.innerHTML='';
       list.forEach(function(a){
-        var c=document.createElement('a'); c.className='rel-card';
+        var c=document.createElement('a'); c.className='rel-card'+(a.isOwn?' own':'');
         if(a.isOwn){c.href='articles.html?data='+encodeURIComponent(JSON.stringify(a));c.target='_self';}
         else{c.href=a.link;c.target='_blank';c.rel='noopener noreferrer';}
         var img=a.image?'<img class="rel-img" src="'+san(a.image)+'" loading="lazy" onerror="this.style.display=\'none\'">':'<div class="rel-img-ph">'+(EMOJI[a.sport]||'')+'</div>';
         c.innerHTML=img+'<div class="rel-body"><div class="rel-src">'+(a.isOwn?'SPORTSrip':san(a.source||''))+'</div><div class="rel-title">'+san(a.title)+'</div></div>';
         strip.appendChild(c);
       });
-    }catch(e){var s=document.getElementById('relStrip');if(s)s.innerHTML='<div style="color:var(--ink3);font-size:11px;font-style:italic">Could not load.</div>';}
+    } catch(e){ var s=document.getElementById('relStrip'); if(s) s.innerHTML='<div style="color:var(--ink3);font-size:11px;font-style:italic">Could not load.</div>'; }
   }
 
-  async function loadSidebar(){
-    try{
+  async function loadSidebar() {
+    try {
       var sports=['ipl','cricket','football','f1','basketball','tennis','boxing','golf','badminton','kabaddi','rugby','athletics','olympics','nfl','baseball'];
       var all=[],seen=new Set();
       for(var sp of sports){
@@ -210,13 +242,13 @@
       all.sort(function(a,b){return new Date(b.pubDate)-new Date(a.pubDate);});
       box.innerHTML='';
       all.slice(0,5).forEach(function(a){
-        var el=document.createElement('a');el.className='sb-card';
+        var el=document.createElement('a'); el.className='sb-card';
         el.href='articles.html?data='+encodeURIComponent(JSON.stringify(a));
         var img=a.image?'<img class="sb-img" src="'+san(a.image)+'" onerror="this.style.display=\'none\'">':'';
         el.innerHTML=img+'<div class="sb-src">SPORTSrip</div><div class="sb-ttl">'+san(a.title)+'</div><div class="sb-date">'+fdate(a.pubDate)+'</div>';
         box.appendChild(el);
       });
-    }catch(e){document.getElementById('sbList').innerHTML='<div style="color:var(--ink3);font-size:11px;font-style:italic;padding:8px">Could not load.</div>';}
+    } catch(e){ document.getElementById('sbList').innerHTML='<div style="color:var(--ink3);font-size:11px;font-style:italic;padding:8px">Could not load.</div>'; }
   }
 
   (function(){
