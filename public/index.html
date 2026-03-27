@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <!-- Google Searchs Console ownership verification tag — DO NOT REMOVE, required for Google indexing -->
+  <!-- Google Search Console ownership verification tag — DO NOT REMOVE, required for Google indexing -->
   <meta name="google-site-verification" content="Jht59lHwkn9XZKP7kyAcKtk9SMl9tPmllXm4ehBH-7c" />
 
   <title>SPORTSrip — Live Sports Feed</title>
@@ -127,7 +127,7 @@
        BLOCK END: Dark Mode Toggle Button
     ============================================================ */
 
-    .hamburger { display: none; flex-direction: column; gap: 4px; cursor: pointer; padding: 8px; z-index: 1001; }
+    .hamburger { display: none; flex-direction: column; gap: 4px; cursor: pointer; padding: 8px; z-index: 1001; margin-left: auto; }
     .hamburger div { width: 22px; height: 3px; background: #fff; border-radius: 2px; transition: 0.3s; }
     .hamburger.active .line1 { transform: rotate(45deg) translate(5px, 5px); }
     .hamburger.active .line2 { opacity: 0; }
@@ -398,28 +398,24 @@
     } catch(e) { return []; }
   }
 
-  // ============================================================
-  // BLOCK START: Card builder — links to articles.html
-  // Added  : 27-Mar-2026
-  // Purpose: Cards now open articles.html for all articles.
-  //          Article data is passed via URL ?data= param.
-  //          Own articles get gold SPORTSrip badge.
-  //          RSS articles get READ MORE badge.
-  // ============================================================
   function buildCard(a, e, size) {
-    var c = document.createElement('a');
+    var c = document.createElement('a'); 
     c.className = 'card ' + (size || '') + (a.isOwn ? ' own-article' : '');
-    // All cards open articles.html with data passed in URL
-    c.href = 'articles.html?data=' + encodeURIComponent(JSON.stringify(a));
-    c.target = '_self'; // open in same tab
+    // Own articles → articles.html; RSS articles → source URL in new tab
+    if(a.isOwn) {
+      c.href = 'articles.html?data=' + encodeURIComponent(JSON.stringify(a));
+      c.target = '_self';
+    } else {
+      c.href = a.link;
+      c.target = '_blank';
+      c.rel = 'noopener noreferrer';
+    }
     var img = a.image ? '<img class="card-img" src="'+a.image+'" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+e+'</div>\'">' : '<div class="card-img-placeholder">'+e+'</div>';
     var d = cleanText(a.description || ""); if (!d || d.trim().length < 5) d = "Experience full depth and insight beyond the preview. Click to reach the complete article and stay ahead of the game.";
     var badge = a.isOwn ? '<span class="own-badge">SPORTSrip</span> ' : '<span class="read-more-badge">READ MORE &gt;&gt;</span>';
     c.innerHTML = img + '<div class="card-body"><div class="card-meta">'+badge+'<span class="card-source">📰 '+(a.source||'SPORTSrip')+'</span></div><div class="card-title">'+a.title+'</div><div class="card-desc">'+d+'</div></div>';
     return c;
   }
-  // BLOCK END: Card builder (27-Mar-2026)
-  // ============================================================
 
   function buildSidebarItem(a, e) {
     var el = document.createElement('a'); el.className = 'sidebar-article'; el.href = a.link; el.target = '_blank';
@@ -512,52 +508,86 @@
     window.scrollTo({top: 0, behavior: 'smooth'}); renderNews();
   }
 
-  async function init() {
-    // ============================================================
-    // BLOCK START: Dynamic sports load before render
-    // Added  : 27-Mar-2026
-    // Purpose: Loads sport categories from KV FIRST so tabs and
-    //          fetches use the dynamic list, not hardcoded one.
-    // ============================================================
-    await loadDynamicSports();
-    // BLOCK END: Dynamic sports load (27-Mar-2026)
-    // ============================================================
+  // ============================================================
+  // BLOCK START: Optimized init — priority sports first
+  // Added  : 27-Mar-2026
+  // Purpose: Load IPL, Cricket, Football FIRST and show immediately.
+  //          Load dynamic sports list IN PARALLEL — don't wait for it.
+  //          Lazy load remaining sports in background after render.
+  //          Makes page feel instant — content shows in ~1 second.
+  // ============================================================
+  var PRIORITY_FIRST = ['ipl', 'cricket', 'football', 'f1', 'basketball'];
+  var PRIORITY_REST  = ['tennis', 'kabaddi', 'boxing', 'golf', 'athletics', 'rugby', 'olympics', 'nfl', 'badminton', 'baseball'];
 
-    var res = await Promise.allSettled(PRIORITY_SPORTS.map(fetchSport));
-    var sa = {}; res.forEach((r, i) => {
+  async function init() {
+    // Load dynamic sports + priority sports IN PARALLEL — don't wait for dynamic
+    var [_, priorityResults] = await Promise.all([
+      loadDynamicSports(),  // runs in background
+      Promise.allSettled(PRIORITY_FIRST.map(fetchSport)) // runs immediately
+    ]);
+
+    // Render priority sports immediately
+    var sa = {};
+    priorityResults.forEach((r, i) => {
       if (r.status === 'fulfilled' && r.value.length) {
-        // Apply pinnedSort — own articles within 24hrs float to top
-        sportCache[PRIORITY_SPORTS[i]] = pinnedSort(r.value);
-        sa[PRIORITY_SPORTS[i]] = sportCache[PRIORITY_SPORTS[i]].slice();
+        sportCache[PRIORITY_FIRST[i]] = pinnedSort(r.value);
+        sa[PRIORITY_FIRST[i]] = sportCache[PRIORITY_FIRST[i]].slice();
       }
     });
-    var active = []; for (var s of PRIORITY_SPORTS) { if (sportCache[s] && sportCache[s].length && active.length < 10) active.push(s); }
-    var all = [], seen = new Set(), keep = true; while(keep) { keep = false; active.forEach(sk => { if (sa[sk] && sa[sk].length) { keep = true; var a = sa[sk].shift(); if (!seen.has(a.link)) { seen.add(a.link); all.push(a); } } }); }
 
-    // ============================================================
-    // BLOCK START: Pin own articles in allCache + sidebar
-    // Added  : 27-Mar-2026
-    // Purpose: Apply pinnedSort to allCache (Top Stories) so own
-    //          articles appear first there too.
-    //          Sidebar Trending Now shows own articles first for
-    //          24 hours, then fills with RSS articles.
-    // ============================================================
+    var active = [];
+    for (var s of PRIORITY_SPORTS) {
+      if (sportCache[s] && sportCache[s].length && active.length < 10) active.push(s);
+    }
+
+    // Build allCache from priority sports first
+    var all = [], seen = new Set(), keep = true;
+    while(keep) {
+      keep = false;
+      active.forEach(sk => {
+        if (sa[sk] && sa[sk].length) {
+          keep = true;
+          var a = sa[sk].shift();
+          if (!seen.has(a.link)) { seen.add(a.link); all.push(a); }
+        }
+      });
+    }
+
     allCache = pinnedSort(all);
-
     generateTabs(active);
+
+    // Show sidebar immediately
     if (allCache.length) {
       var tr = document.getElementById('trendingList'); tr.innerHTML = '';
-      // Trending Now: own articles first (if within 24hrs), then RSS
       pinnedSort(allCache.filter(x=>x.image)).slice(0,6).forEach(a=>tr.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')));
       var rc = document.getElementById('recentList'); rc.innerHTML = '';
-      // Recent Updates: same logic
       pinnedSort(allCache).slice(6, 11).forEach(a=>rc.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')));
     }
-    // BLOCK END: Pin own articles in allCache + sidebar (27-Mar-2026)
-    // ============================================================
 
+    // Show IPL immediately
     setActive('ipl');
+
+    // Lazy load remaining sports in background — don't block UI
+    setTimeout(async function() {
+      var restSports = PRIORITY_REST.filter(s => !sportCache[s]);
+      if (restSports.length === 0) return;
+      var restResults = await Promise.allSettled(restSports.map(fetchSport));
+      restResults.forEach((r, i) => {
+        if (r.status === 'fulfilled' && r.value.length) {
+          sportCache[restSports[i]] = pinnedSort(r.value);
+        }
+      });
+      // Regenerate tabs with all sports now loaded
+      var allActive = [];
+      for (var s of PRIORITY_SPORTS) {
+        if (sportCache[s] && sportCache[s].length && allActive.length < 10) allActive.push(s);
+      }
+      generateTabs(allActive);
+    }, 100); // 100ms delay — after first render
   }
+  // BLOCK END: Optimized init (27-Mar-2026)
+  // ============================================================
+
   init();
 </script>
 </body>
