@@ -85,6 +85,32 @@
 <body>
 <div class="container">
   <h1>✍️ SPORTSrip Admin</h1>
+
+  <!-- ============================================================
+       BLOCK START: Global Environment Selector
+       Added  : 27-Mar-2026
+       Purpose: Single selector at top of page that controls which
+                worker ALL three tabs point to — Write Article,
+                Manage Sources and Refresh Feeds all use this.
+                Switching here updates WORKER_URL globally.
+                PROD shows a red warning banner so you never
+                accidentally publish to production.
+  ============================================================ -->
+  <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 16px;">
+    <span style="font-size:11px; font-weight:700; color:var(--dim); text-transform:uppercase; white-space:nowrap;">Environment</span>
+    <select id="globalEnvSelect" onchange="switchEnv()" style="flex:1; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px; font-weight:700; outline:none;">
+      <option value="dev">🟠 DEV — mango-sports-worker-dev.ravi-kompel.workers.dev</option>
+      <option value="prod">🔴 PROD — mango-sports-worker.ravi-kompel.workers.dev</option>
+    </select>
+    <div id="envIndicator" style="font-size:11px; font-weight:800; padding:4px 12px; border-radius:20px; background:rgba(255,107,0,0.15); color:#ff9800; white-space:nowrap;">DEV</div>
+  </div>
+
+  <!-- PROD warning banner — hidden by default, shown when PROD selected -->
+  <div id="prodWarning" style="display:none; background:rgba(255,77,77,0.1); border:1px solid rgba(255,77,77,0.3); border-radius:8px; padding:10px 16px; margin-bottom:14px; font-size:12px; color:var(--danger); font-weight:700;">
+    ⚠️ PROD MODE ACTIVE — All changes will affect the live sportsrip.com website!
+  </div>
+  <!-- BLOCK END: Global Environment Selector (27-Mar-2026) -->
+
   <p class="subtitle" id="workerLabel"></p>
 
   <div class="tabs">
@@ -279,10 +305,12 @@
 
 <script>
   // ============================================================
-  // BLOCK START: Configuration
+  // BLOCK START: Configuration + Global Environment Switcher
   // Added  : 27-Mar-2026
-  // Purpose: Worker URLs for DEV and PROD.
-  //          Switched dynamically by the Environment selector.
+  // Purpose: WORKER_URL is controlled globally by the environment
+  //          selector at the top of the page.
+  //          All 3 tabs — Write Article, Manage Sources, Refresh —
+  //          automatically use whichever environment is selected.
   // ============================================================
   var WORKER_URLS = {
     dev:  'https://mango-sports-worker-dev.ravi-kompel.workers.dev',
@@ -290,7 +318,35 @@
   };
   var WORKER_URL = WORKER_URLS.dev; // Default to DEV
   var ADMIN_PASS = 'sportsrip2026';
-  // BLOCK END: Configuration (27-Mar-2026)
+
+  function switchEnv() {
+    var env = document.getElementById('globalEnvSelect').value;
+    var isProd = env === 'prod';
+
+    // Update global WORKER_URL used by all tabs
+    WORKER_URL = WORKER_URLS[env];
+
+    // Update indicator badge
+    var badge = document.getElementById('envIndicator');
+    badge.textContent = env.toUpperCase();
+    badge.style.background = isProd ? 'rgba(255,77,77,0.15)' : 'rgba(255,107,0,0.15)';
+    badge.style.color = isProd ? '#ff4d4d' : '#ff9800';
+
+    // Show/hide PROD warning banner
+    document.getElementById('prodWarning').style.display = isProd ? 'block' : 'none';
+
+    // Update subtitle
+    document.getElementById('workerLabel').textContent = 'Worker: ' + WORKER_URL;
+
+    // Update Refresh tab target display if visible
+    var refreshTarget = document.getElementById('refreshTargetUrl');
+    if(refreshTarget) refreshTarget.textContent = WORKER_URL;
+
+    // Sync the Refresh tab env selector too
+    var refreshSel = document.getElementById('envSelect');
+    if(refreshSel) refreshSel.value = env;
+  }
+  // BLOCK END: Configuration + Global Environment Switcher (27-Mar-2026)
   // ============================================================
 
   document.getElementById('workerLabel').textContent = 'Worker: ' + WORKER_URL;
@@ -301,11 +357,11 @@
   // Purpose: Updates WORKER_URL and display when user picks DEV/PROD.
   // ============================================================
   function updateRefreshEnv() {
-    var env = document.getElementById('envSelect').value;
-    WORKER_URL = WORKER_URLS[env];
+    // Sync Refresh tab display with global selector
+    var env = document.getElementById('globalEnvSelect').value;
+    document.getElementById('envSelect').value = env;
     document.getElementById('refreshTargetUrl').textContent = WORKER_URL;
-    document.getElementById('workerLabel').textContent = 'Worker: ' + WORKER_URL;
-    log('consoleRefresh', 'Switched to <span style="color:' + (env==='prod'?'#ff4d4d':'#ff9800') + '">' + env.toUpperCase() + '</span> — ' + WORKER_URL);
+    log('consoleRefresh', 'Target: <span style="color:' + (env==='prod'?'#ff4d4d':'#ff9800') + '">' + env.toUpperCase() + '</span> — ' + WORKER_URL);
   }
   // BLOCK END: Environment switcher (27-Mar-2026)
   // ============================================================
@@ -541,8 +597,8 @@
   async function triggerRefresh(actionType) {
     var sport = document.getElementById('refreshSport').value;
     var label = sport === 'all' ? 'all sports' : sport.toUpperCase();
-    var env = document.getElementById('envSelect').value;
-    var targetUrl = WORKER_URLS[env];
+    var env = document.getElementById('globalEnvSelect').value;
+    var targetUrl = WORKER_URL; // Always uses global WORKER_URL
 
     // Safety confirmation for PROD
     if(env === 'prod' && !confirm('⚠️ You are about to run on PROD (' + targetUrl + '). Are you sure?')) return;
