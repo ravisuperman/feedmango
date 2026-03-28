@@ -339,8 +339,8 @@
   // Added  : 27-Mar-2026
   // Change to PROD URL when deploying to production.
   // ============================================================
-  // var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev'; // DEV
-  var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev'; // PROD
+    // var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev'; // DEV
+       var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev'; // PROD
   // BLOCK END: Worker URL (27-Mar-2026)
   // ============================================================
 
@@ -625,12 +625,19 @@
         e.preventDefault();
         var isMobile = window.innerWidth <= 768;
         if(isMobile) {
-          window.open(a.link, '_blank');
+          var w = Math.round(screen.width * 0.95);
+          var h = Math.round(screen.height * 0.70);
+          var left = Math.round((screen.width - w) / 2);
+          var top = Math.round((screen.height - h) / 2);
+          window.open(a.link, '_blank',
+            'width='+w+',height='+h+',left='+left+',top='+top+
+            ',toolbar=0,menubar=0,scrollbars=1,resizable=0,status=0'
+          );
         } else {
           var w = 900, h = 650;
-          var left = (screen.width - w) / 2;
-          var top = (screen.height - h) / 2;
-          window.open(a.link, '_blank', 
+          var left = Math.round((screen.width - w) / 2);
+          var top = Math.round((screen.height - h) / 2);
+          window.open(a.link, '_blank',
             'width='+w+',height='+h+',left='+left+',top='+top+
             ',toolbar=0,menubar=0,scrollbars=1,resizable=1,status=0'
           );
@@ -674,16 +681,18 @@
     var el = document.createElement('a'); 
     el.className = 'sidebar-article';
     if(a.isOwn) {
-      el.href = 'articles.html?data=' + encodeURIComponent(JSON.stringify(a));
+      el.href = 'blog.html?data=' + encodeURIComponent(JSON.stringify(a));
       el.target = '_self';
     } else {
       el.href = a.link;
       el.onclick = function(ev) {
         ev.preventDefault();
         if(window.innerWidth <= 768) {
-          window.open(a.link, '_blank');
+          var w=Math.round(screen.width*0.95), h=Math.round(screen.height*0.70);
+          var left=Math.round((screen.width-w)/2), top=Math.round((screen.height-h)/2);
+          window.open(a.link, '_blank', 'width='+w+',height='+h+',left='+left+',top='+top+',toolbar=0,menubar=0,scrollbars=1,resizable=0,status=0');
         } else {
-          var w=900, h=650, left=(screen.width-w)/2, top=(screen.height-h)/2;
+          var w=900, h=650, left=Math.round((screen.width-w)/2), top=Math.round((screen.height-h)/2);
           window.open(a.link, '_blank', 'width='+w+',height='+h+',left='+left+',top='+top+',toolbar=0,menubar=0,scrollbars=1,resizable=1,status=0');
         }
       };
