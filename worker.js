@@ -92,36 +92,10 @@ var PRELOADED_FEEDS = [
 // ============================================================
 
 // ============================================================
-// BLOCK START: buildSportsFromKV — Dynamic SPORTS builder
-// Added  : 27-Mar-2026
-// Purpose: Reads feeds from CONTROL_PANEL_KV and builds a SPORTS
-//          object identical in structure to SPORTS_FALLBACK.
-//          Feeds sorted by priority (1=highest) within each sport.
-//          Falls back to SPORTS_FALLBACK if KV is empty.
 // ============================================================
-async function buildSportsFromKV(env) {
-  try {
-    var raw = await env.CONTROL_PANEL_KV.get('feeds_config');
-    if (!raw) return SPORTS_FALLBACK;
-    var feeds = JSON.parse(raw);
-    if (!feeds || feeds.length === 0) return SPORTS_FALLBACK;
-
-    var sports = {};
-    // Sort all feeds by priority first
-    feeds.sort(function(a, b) { return a.priority - b.priority; });
-    feeds.forEach(function(f) {
-      if (!sports[f.sport]) {
-        sports[f.sport] = { label: f.label, feeds: [] };
-      }
-      sports[f.sport].feeds.push({ name: f.name, url: f.url });
-    });
-    return sports;
-  } catch(e) {
-    console.error('buildSportsFromKV failed, using fallback:', e.message);
-    return SPORTS_FALLBACK;
-  }
-}
-// BLOCK END: buildSportsFromKV (27-Mar-2026)
+// Feed source — always use hardcoded verified feeds, no KV
+// ============================================================
+function buildSportsFromKV(env) { return SPORTS_FALLBACK; }
 // ============================================================
 
 function extractTag(xml, tag) {
@@ -647,7 +621,7 @@ export default {
     // ============================================================
     if(url.pathname==='/api/news'){
       var sport=url.searchParams.get('sport');
-      var SPORTS=await buildSportsFromKV(env);
+      var SPORTS=buildSportsFromKV(env);
       if(!sport||!SPORTS[sport])return new Response(JSON.stringify({error:'Invalid sport'}),{status:400,headers:cors});
       var myRaw=await env.MY_NEWS_KV.get('my:'+sport);
       var myArticles=myRaw?JSON.parse(myRaw):[];
@@ -676,7 +650,7 @@ export default {
       var body=await request.json(),type=body.type||'raw';
       var targetedSport=body.sport||'all';
       var customLimit=parseInt(body.limit)||50;
-      var SPORTS=await buildSportsFromKV(env);
+      var SPORTS=buildSportsFromKV(env);
       var keys=(targetedSport==='all')?Object.keys(SPORTS):[targetedSport];
       for(var i=0;i<keys.length;i++){
         if(SPORTS[keys[i]]){
@@ -824,7 +798,7 @@ export default {
     // ============================================================
     if(url.pathname==='/api/own-articles'){
       if(!isAdmin(request))return new Response(JSON.stringify({error:'Unauthorized'}),{status:401,headers:cors});
-      var SPORTS=await buildSportsFromKV(env);
+      var SPORTS=buildSportsFromKV(env);
       var allOwn=[];
       for(var sk of Object.keys(SPORTS)){
         var raw=await env.MY_NEWS_KV.get('my:'+sk);
@@ -857,7 +831,7 @@ export default {
   },
 
   async scheduled(event,env,ctx){
-    var SPORTS=await buildSportsFromKV(env);
+    var SPORTS=buildSportsFromKV(env);
     if(event.cron==='5/10 * * * *'){
       ctx.waitUntil(Promise.allSettled(Object.keys(SPORTS).map(function(k){return curateSport(k,env);})));
     } else {
