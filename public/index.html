@@ -162,7 +162,7 @@
     .card-img { width: 100%; height: 185px; object-fit: cover; background: var(--sidebar-placeholder); border-radius: 12px 12px 0 0; }
     .card-body { padding: 18px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
     .read-more-badge { color: #fff; background: var(--espn-blue); padding: 3px 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; border-radius: 4px; }
-    .card-source { font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; opacity: 0.8; }
+    .card-source { font-size: 11px; color: var(--text3); font-weight: 600; opacity: 0.8; }
     .card-title { font-size: 19px; font-weight: 800; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .card-desc { font-size: 14px; color: var(--text2); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
@@ -171,8 +171,8 @@
        Purpose: Visually distinguishes articles you write from
        aggregated RSS articles. Shows a gold "SPORTSrip" badge.
     ============================================================ */
-    .card.own-article { border: 2px solid #f0a500; }
-    .own-badge { display: inline-block; background: #f0a500; color: #000; font-size: 10px; font-weight: 900; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .own-badge { display: inline-block; background: #f0a500; color: #000; font-size: 10px; font-weight: 900; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.5px; }
     /* ============================================================
        BLOCK END: "Our Article" badge
     ============================================================ */
@@ -306,6 +306,16 @@
 
 <footer><div class="disclaimer">Disclaimer: Headlines are sourced from official RSS feeds of their respective publishers. All rights and copyrights remain with the original content owners.</div></footer>
 
+<!-- YouTube Video Modal -->
+<div id="ytModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;" onclick="closeYT(event)">
+  <div style="position:relative;width:90%;max-width:900px;background:#000;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <button onclick="closeYTBtn()" style="position:absolute;top:10px;right:12px;background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:20px;width:36px;height:36px;border-radius:50%;cursor:pointer;z-index:10;">✕</button>
+    <div style="position:relative;padding-bottom:56.25%;height:0;">
+      <iframe id="ytFrame" src="" frameborder="0" allow="autoplay;encrypted-media" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+    </div>
+  </div>
+</div>
+
 <button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
 
 <!-- Floating hamburger for mobile scroll mode -->
@@ -321,8 +331,8 @@
   // Added  : 27-Mar-2026
   // Change to PROD URL when deploying to production.
   // ============================================================
-  var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev'; // DEV
-  // var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev'; // PROD
+ //  var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev'; // DEV
+  var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev'; // PROD
   // BLOCK END: Worker URL (27-Mar-2026)
   // ============================================================
 
@@ -332,7 +342,7 @@
   // Purpose: Maps sport keys to emoji icons for tabs and cards.
   //          Add new sports here if you add them in admin panel.
   // ============================================================
-  var EMOJI = {ipl:'🏏', f1:'🏎️', cricket:'🏏', basketball:'🏀', football:'⚽', baseball:'⚾', tennis:'🎾', kabaddi:'🤼', boxing:'🥊', golf:'⛳', athletics:'🏃', rugby:'🏉', olympics:'🏅', nfl:'🏈', badminton:'🏸', main:'🏆'};
+  var EMOJI = {ipl:'🏏', f1:'🏎️', cricket:'🏏', basketball:'🏀', football:'⚽', baseball:'⚾', tennis:'🎾', kabaddi:'🤼', boxing:'🥊', golf:'⛳', athletics:'🏃', rugby:'🏉', olympics:'🏅', nfl:'🏈', badminton:'🏸', videos:'🎬', main:'🏆'};
   // BLOCK END: EMOJI map (27-Mar-2026)
   // ============================================================
 
@@ -343,7 +353,7 @@
   //          Keeps the site working even if KV is unavailable.
   //          Normally these are overridden by dynamic KV data.
   // ============================================================
-  var PRIORITY_SPORTS_FALLBACK = ['ipl','f1','cricket','basketball','baseball','football','tennis','kabaddi','boxing','golf','athletics','rugby','olympics','nfl','badminton'];
+  var PRIORITY_SPORTS_FALLBACK = ['ipl','f1','cricket','basketball','baseball','football','tennis','kabaddi','boxing','golf','athletics','rugby','olympics','nfl','badminton','videos'];
   var LABEL_FALLBACK = {ipl:'IPL 2026', f1:'Formula 1', cricket:'Cricket', basketball:'NBA', football:'Soccer', baseball:'MLB', tennis:'Tennis', kabaddi:'Kabaddi', boxing:'Boxing', golf:'Golf', athletics:'Athletics', rugby:'Rugby', olympics:'Olympics', nfl:'NFL', badminton:'Badminton', main:'Top Stories'};
   // BLOCK END: Hardcoded fallback lists (27-Mar-2026)
   // ============================================================
@@ -469,6 +479,98 @@
   // BLOCK END: Mobile scroll magic (27-Mar-2026)
   // ============================================================
 
+  // YouTube modal functions
+  function openYT(videoId) {
+    var modal = document.getElementById('ytModal');
+    var frame = document.getElementById('ytFrame');
+    frame.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeYTBtn() {
+    document.getElementById('ytModal').style.display = 'none';
+    document.getElementById('ytFrame').src = '';
+    document.body.style.overflow = '';
+  }
+  function closeYT(e) {
+    if(e.target === document.getElementById('ytModal')) closeYTBtn();
+  }
+
+
+  // Article Modal
+  function openArtModal(a) {
+    var sport = a.sport||'ipl';
+    var labels = {ipl:'IPL 2026',f1:'Formula 1',cricket:'Cricket',basketball:'NBA',football:'Soccer',baseball:'MLB',tennis:'Tennis',kabaddi:'Kabaddi',boxing:'Boxing',golf:'Golf',athletics:'Athletics',rugby:'Rugby',olympics:'Olympics',nfl:'NFL',badminton:'Badminton'};
+    var emojis = {ipl:'🏏',f1:'🏎️',cricket:'🏏',basketball:'🏀',football:'⚽',baseball:'⚾',tennis:'🎾',kabaddi:'🤼',boxing:'🥊',golf:'⛳',athletics:'🏃',rugby:'🏉',olympics:'🏅',nfl:'🏈',badminton:'🏸'};
+    var label = labels[sport]||sport.toUpperCase();
+    var emoji = emojis[sport]||'🏆';
+    var author = (a.authorName && a.authorName.trim()) ? a.authorName : 'SPORTSrip Team';
+    var photo = a.authorPhoto||'';
+    var init = author.split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2)||'SR';
+    var dateStr = a.pubDate ? new Date(a.pubDate).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}) : '';
+    var desc = (a.description||'').replace(/\n/g,'<br>');
+    var box = document.getElementById('artModalContent');
+    box.innerHTML = '';
+    // Sport label
+    var sl = document.createElement('div');
+    sl.style.cssText = 'font-family:Inter,sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#8b6914;margin-bottom:12px';
+    sl.textContent = emoji + ' ' + label;
+    box.appendChild(sl);
+    // Title
+    var h1 = document.createElement('h1');
+    h1.style.cssText = 'font-family:Georgia,serif;font-size:22px;font-weight:700;line-height:1.3;color:#2c2418;margin-bottom:16px';
+    h1.textContent = a.title;
+    box.appendChild(h1);
+    // Author bar
+    var ab = document.createElement('div');
+    ab.style.cssText = 'display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid #d4c9a8;border-bottom:1px solid #d4c9a8;margin-bottom:20px';
+    var av;
+    if(photo) {
+      av = document.createElement('img');
+      av.src = photo;
+      av.style.cssText = 'width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid #d4c9a8;flex-shrink:0';
+    } else {
+      av = document.createElement('div');
+      av.style.cssText = 'width:38px;height:38px;border-radius:50%;background:#8b6914;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0';
+      av.textContent = init;
+    }
+    var auInfo = document.createElement('div');
+    var auName = document.createElement('div');
+    auName.style.cssText = 'font-family:Inter,sans-serif;font-size:13px;font-weight:600;color:#2c2418';
+    auName.textContent = author;
+    var auDate = document.createElement('div');
+    auDate.style.cssText = 'font-family:Inter,sans-serif;font-size:11px;color:#7a7060';
+    auDate.textContent = dateStr;
+    auInfo.appendChild(auName);
+    auInfo.appendChild(auDate);
+    ab.appendChild(av);
+    ab.appendChild(auInfo);
+    box.appendChild(ab);
+    // Hero image
+    if(a.image) {
+      var img = document.createElement('img');
+      img.src = a.image;
+      img.style.cssText = 'width:100%;max-height:340px;object-fit:cover;border-radius:8px;border:3px solid #7B61C4;margin-bottom:20px;display:block';
+      box.appendChild(img);
+    }
+    // Article body
+    var body = document.createElement('div');
+    body.style.cssText = 'font-size:16px;line-height:1.9;color:#4a4030;font-family:Georgia,serif';
+    body.innerHTML = desc;
+    box.appendChild(body);
+    // Show modal
+    document.getElementById('artModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeArtModalBtn() {
+    document.getElementById('artModal').style.display = 'none';
+    document.getElementById('artModalContent').innerHTML = '';
+    document.body.style.overflow = '';
+  }
+  function closeArtModal(e) {
+    if(e.target === document.getElementById('artModal')) closeArtModalBtn();
+  }
+
   function updateClock() { var n = new Date(); if(document.getElementById('clockDisplay')) document.getElementById('clockDisplay').innerHTML = n.toLocaleDateString('en-GB',{day:'numeric',month:'short'}) + ' · ' + n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }
   updateClock(); setInterval(updateClock, 60000);
 
@@ -498,19 +600,25 @@
     var c = document.createElement('a'); 
     c.className = 'card ' + (size || '') + (a.isOwn ? ' own-article' : '');
     if(a.isOwn) {
-      c.href = 'articles.html?data=' + encodeURIComponent(JSON.stringify(a));
-      c.target = '_self';
+      // Own articles — open in modal overlay
+      c.href = '#';
+      (function(article){ c.onclick = function(ev) { ev.preventDefault(); openArtModal(article); }; })(a);
+    } else if(a.isVideo && a.videoId) {
+      // Video card — open YouTube modal
+      c.href = '#';
+      c.onclick = function(ev) {
+        ev.preventDefault();
+        openYT(a.videoId);
+      };
     } else {
-      // Open RSS articles in small floating popup window
+      // RSS article — popup window on desktop, new tab on mobile
       c.href = a.link;
       c.onclick = function(e) {
         e.preventDefault();
         var isMobile = window.innerWidth <= 768;
         if(isMobile) {
-          // Mobile — open in new tab (popups don't work well on mobile)
           window.open(a.link, '_blank');
         } else {
-          // Desktop — open in small floating popup window
           var w = 900, h = 650;
           var left = (screen.width - w) / 2;
           var top = (screen.height - h) / 2;
@@ -523,8 +631,13 @@
     }
     var img = a.image ? '<img class="card-img" src="'+a.image+'" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+e+'</div>\'">' : '<div class="card-img-placeholder">'+e+'</div>';
     var d = cleanText(a.description || ""); if (!d || d.trim().length < 5) d = "Experience full depth and insight beyond the preview. Click to reach the complete article and stay ahead of the game.";
-    var badge = a.isOwn ? '<span class="own-badge">SPORTSrip</span> ' : '<span class="read-more-badge">READ MORE &gt;&gt;</span>';
-    c.innerHTML = img + '<div class="card-body"><div class="card-meta">'+badge+'<span class="card-source">📰 '+(a.source||'SPORTSrip')+'</span></div><div class="card-title">'+a.title+'</div><div class="card-desc">'+d+'</div></div>';
+    // ALL cards show blue READ MORE badge — own articles show SPORTSrip as source text
+    var badge = a.isVideo ? '<span class="read-more-badge">▶ WATCH</span>' : '<span class="read-more-badge">READ MORE</span>';
+    var sourceText = a.isOwn ? 'SPORTSrip' : (a.source||'');
+    var sourceTag = sourceText ? '<span class="card-source"> '+sourceText+'</span>' : '';
+    var playOverlay = a.isVideo ? '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;background:rgba(255,0,0,0.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;pointer-events:none;">▶</div>' : '';
+    var imgWrap = a.isVideo ? '<div style="position:relative;line-height:0;">'+img+playOverlay+'</div>' : img;
+    c.innerHTML = imgWrap+'<div class="card-body"><div class="card-meta">'+badge+sourceTag+'</div><div class="card-title">'+a.title+'</div><div class="card-desc">'+d+'</div></div>';
     return c;
   }
 
@@ -731,5 +844,17 @@
 
   init();
 </script>
+
+<!-- ═══ Article Modal ═══ -->
+<div id="artModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;" onclick="closeArtModal(event)">
+  <div id="artModalBox" style="position:relative;width:50%;height:75%;background:#faf8f3;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+    <!-- Close button -->
+    <button onclick="closeArtModalBtn()" style="position:absolute;top:12px;right:14px;background:rgba(0,0,0,0.12);border:none;font-size:18px;width:34px;height:34px;border-radius:50%;cursor:pointer;z-index:10;color:#2c2418;font-weight:700;">✕</button>
+    <!-- Scrollable content -->
+    <div id="artModalContent" style="overflow-y:auto;flex:1;padding:32px 36px 40px;font-family:Georgia,serif;color:#2c2418;">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</div>
 </body>
 </html>
