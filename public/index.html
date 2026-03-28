@@ -1,889 +1,1027 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SPORTSrip Admin</title>
+<style>
+  :root {
+    --bg:#f0f4f8;--sidebar:#035bb0;--card:#fff;--border:#e2e8f0;
+    --text:#1a202c;--text2:#4a5568;--text3:#718096;
+    --blue:#035bb0;--green:#38a169;--red:#e53e3e;--amber:#d97706;
+    --input-bg:#f7fafc;--shadow:0 1px 3px rgba(0,0,0,.1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);display:flex;min-height:100vh;}
 
-  <!-- Google Search Console ownership verification tag — DO NOT REMOVE, required for Google indexing -->
-  <meta name="google-site-verification" content="Jht59lHwkn9XZKP7kyAcKtk9SMl9tPmllXm4ehBH-7c" />
+  /* SIDEBAR */
+  .sidebar{width:220px;background:var(--sidebar);min-height:100vh;display:flex;flex-direction:column;flex-shrink:0;}
+  .sidebar-logo{padding:16px;border-bottom:1px solid rgba(255,255,255,.15);}
+  .brand{font-size:19px;font-weight:800;color:#fff;letter-spacing:1px;}
+  .brand em{color:#fbbf24;font-style:normal;}
+  .ver{font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;}
+  .sidebar-nav{padding:10px 0;flex:1;}
+  .nav-section{padding:8px 16px 3px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.3);margin-top:4px;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;color:rgba(255,255,255,.7);font-size:13px;font-weight:500;transition:.15s;border-left:3px solid transparent;}
+  .nav-item:hover{background:rgba(255,255,255,.1);color:#fff;}
+  .nav-item.active{background:rgba(255,255,255,.15);color:#fff;border-left-color:#fbbf24;}
+  .nav-item .ico{font-size:15px;width:18px;text-align:center;}
+  .sidebar-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,.15);}
+  .env-label{font-size:10px;color:rgba(255,255,255,.4);margin-bottom:5px;}
+  .env-sel{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:6px 10px;border-radius:6px;font-size:12px;cursor:pointer;}
+  .env-sel option{background:#035bb0;}
+  .env-badge{margin-top:6px;text-align:center;font-size:10px;font-weight:700;padding:3px 8px;border-radius:12px;}
+  .env-badge.dev{background:rgba(251,191,36,.2);color:#fbbf24;}
+  .env-badge.prod{background:rgba(239,68,68,.2);color:#fc8181;}
 
-  <title>SPORTSrip — Live Sports Feed</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
-  
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><circle cx=%2212%22 cy=%2212%22 r=%2210.5%22 fill=%22%23035bb0%22 stroke=%22%23fff%22 stroke-width=%223%22/><path d=%22M12 1.5v21M1.5 12h21%22 stroke=%22%23fff%22 stroke-width=%223%22/></svg>">  
+  /* MAIN */
+  .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+  .topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 20px;height:52px;display:flex;align-items:center;gap:12px;}
+  .topbar-title{font-size:15px;font-weight:700;color:var(--text);flex:1;}
+  .worker-badge{font-size:11px;color:var(--text3);background:var(--bg);padding:3px 10px;border-radius:20px;border:1px solid var(--border);}
+  .prod-banner{background:#fef2f2;border-bottom:2px solid #fc8181;padding:7px 20px;font-size:12px;font-weight:700;color:#c53030;display:none;text-align:center;}
+  .topbar-avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--border);cursor:pointer;flex-shrink:0;}
+  .topbar-avatar-ph{width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
 
-  <style>
-    /* ============================================================
-       BLOCK START: CSS Variables — Light & Dark Mode
-       Purpose: All colours are defined here as variables.
-       Toggling [data-theme="dark"] on <html> switches the whole site.
-       DO NOT hardcode colours elsewhere — always use var(--X).
-    ============================================================ */
-    :root {
-      --espn-blue: #035bb0;
-      --whitish-blue: #94bdff;
-      --bg: #f4f4f4;
-      --surface: #fff;
-      --surface2: #fdfdfd;
-      --border: #eee;
-      --border2: #e0e0e0;
-      --text: #141414;
-      --text2: #555;
-      --text3: #666;
-      --shadow: rgba(0,0,0,0.08);
-      --shadow2: rgba(0,0,0,0.12);
-      --yell: #ffff00;
-      --footer-bg: #fff;
-      --footer-border: #ddd;
-      --footer-text: #444;
-      --sidebar-placeholder: #eee;
-    }
-    [data-theme="dark"] {
-      --bg: #0f0f13;
-      --surface: #1a1a22;
-      --surface2: #1e1e28;
-      --border: #2a2a38;
-      --border2: #2a2a38;
-      --text: #f0f0f0;
-      --text2: #aaa;
-      --text3: #888;
-      --shadow: rgba(0,0,0,0.3);
-      --shadow2: rgba(0,0,0,0.4);
-      --footer-bg: #1a1a22;
-      --footer-border: #2a2a38;
-      --footer-text: #888;
-      --sidebar-placeholder: #2a2a38;
-    }
-    /* ============================================================
-       BLOCK END: CSS Variables — Light & Dark Mode
-    ============================================================ */
+  /* PAGE */
+  .page{flex:1;overflow-y:auto;padding:20px;}
+  .panel{display:none;}
+  .panel.active{display:block;}
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: 'Assistant', sans-serif; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
-    
-    header { 
-      background: var(--espn-blue); 
-      color: #fff; 
-      padding: 0 24px; 
-      display: flex; 
-      align-items: center; 
-      height: 48px; 
-      position: sticky; 
-      top: 0; 
-      z-index: 1000; 
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-      border-radius: 12px 0 0 0; 
-      margin-top: 10px; 
-      width: calc(100% - 1px); 
-      margin-left: 1px; 
-      gap: 12px;
-    }
-    
-    .brand { display: flex; align-items: center; text-decoration: none; margin-right: 30px; flex-shrink: 0; z-index: 1001; }
-    .logo-text { font-size: 26px; font-weight: 900; letter-spacing: -2px; text-transform: uppercase; line-height: 1; font-style: italic; }
-    .logo-text span { color: #fff; background: #cc0000; padding: 0 2px; }
-    .logo-text em { color: var(--whitish-blue); font-style: italic; font-weight: 500; text-transform: lowercase; margin-left: 1px; }
+  /* IMPORT BAR */
+  .import-bar{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);}
+  .import-bar label{font-size:12px;font-weight:600;color:var(--text2);}
+  .import-hint{font-size:11px;color:var(--text3);flex:1;}
 
-    .nav-tabs { 
-      display: flex; 
-      height: 100%; 
-      align-items: center; 
-      overflow-x: auto; 
-      scrollbar-width: none; 
-      flex: 1; 
-      justify-content: center;
-    }
-    .nav-tabs::-webkit-scrollbar { display: none; }
-    .tab { height: 100%; display: flex; align-items: center; padding: 0 14px; font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.7); cursor: pointer; text-transform: none; white-space: nowrap; transition: 0.2s; border-bottom: 3px solid transparent; }
-    .tab:hover { color: #fff; }
-    .tab.active { color: #fff; border-bottom-color: #fff; background: rgba(0,0,0,0.15); }
+  /* CARD */
+  .card{background:var(--card);border-radius:12px;padding:18px;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:16px;}
+  .card-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
 
-    #clockDisplay { font-size: 11px; color: rgba(255,255,255,0.9); font-weight: 600; white-space: nowrap; }
+  /* FORM */
+  .form-row{display:grid;gap:12px;margin-bottom:12px;}
+  .form-row.c2{grid-template-columns:1fr 1fr;}
+  .form-row.c3{grid-template-columns:1fr 1fr 1fr;}
+  label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px;}
+  label .req{color:var(--red);}
+  label .opt{color:var(--text3);font-weight:400;}
+  input,select,textarea{width:100%;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:8px 11px;font-size:13px;color:var(--text);font-family:inherit;transition:.15s;}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(3,91,176,.1);}
+  textarea{resize:vertical;}
+  .ta-small{min-height:50px;max-height:100px;}
+  .ta-large{min-height:180px;max-height:400px;}
+  .img-preview{width:100%;height:110px;border-radius:8px;border:2px solid var(--border);object-fit:cover;display:none;margin-top:6px;}
+  .av-preview{width:36px;height:36px;border-radius:50%;border:2px solid var(--border);object-fit:cover;display:none;margin-top:6px;vertical-align:middle;}
 
-    /* ============================================================
-       BLOCK START: Dark Mode Toggle Button
-       Purpose: Sun/Moon toggle in header right corner.
-       Works on both desktop and mobile.
-       Saves preference to localStorage so it persists on refresh.
-    ============================================================ */
-    .dark-toggle {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.3);
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-      font-size: 16px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      transition: background 0.2s, border-color 0.2s;
-      z-index: 1001;
-      margin-left: auto; /* pushes dark toggle + hamburger to right */
-    }
-    .dark-toggle:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.6); }
-    /* ============================================================
-       BLOCK END: Dark Mode Toggle Button
-    ============================================================ */
+  /* AUTOCOMPLETE */
+  .ac-wrap{position:relative;}
+  .ac-list{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:200;max-height:160px;overflow-y:auto;display:none;}
+  .ac-item{display:flex;align-items:center;gap:8px;padding:7px 11px;cursor:pointer;font-size:12px;}
+  .ac-item:hover{background:var(--bg);}
+  .ac-av{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid var(--border);flex-shrink:0;}
+  .ac-av-ph{width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;}
 
-    .hamburger { display: none; flex-direction: column; gap: 4px; cursor: pointer; padding: 8px; z-index: 1001; }
-    .hamburger div { width: 22px; height: 3px; background: #fff; border-radius: 2px; transition: 0.3s; }
-    .hamburger.active .line1 { transform: rotate(45deg) translate(5px, 5px); }
-    .hamburger.active .line2 { opacity: 0; }
-    .hamburger.active .line3 { transform: rotate(-45deg) translate(5px, -5px); }
+  /* MULTI-SELECT CHIPS */
+  .ms-wrap{position:relative;}
+  .ms-display{display:flex;flex-wrap:wrap;gap:6px;padding:7px 10px;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;min-height:40px;cursor:pointer;align-items:center;}
+  .ms-display:focus-within{border-color:var(--blue);}
+  .chip{background:var(--blue);color:#fff;padding:2px 9px;border-radius:14px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:4px;}
+  .chip .x{cursor:pointer;opacity:.7;font-size:13px;line-height:1;}
+  .chip .x:hover{opacity:1;}
+  .ms-hint{font-size:12px;color:var(--text3);}
+  .ms-opts{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:200;display:none;max-height:190px;overflow-y:auto;}
+  .ms-opt{padding:7px 12px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:7px;}
+  .ms-opt:hover{background:var(--bg);}
+  .ms-opt.sel{color:var(--blue);font-weight:600;}
+  .ms-opt input{width:14px;height:14px;margin:0;accent-color:var(--blue);}
 
-    .mobile-menu { 
-      position: fixed; top: 58px; right: 1px; width: 240px; 
-      height: auto; max-height: calc(100vh - 70px);
-      background: var(--espn-blue); z-index: 1000; 
-      display: none; flex-direction: column; 
-      border-radius: 0 0 0 16px; 
-      box-shadow: -5px 5px 20px rgba(0,0,0,0.3);
-      overflow-y: auto; padding: 10px 0;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .mobile-menu.active { display: flex; animation: slideIn 0.3s ease-out; }
-    @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    .mobile-tab { color: #fff; font-size: 16px; font-weight: 700; padding: 14px 24px; text-decoration: none; cursor: pointer; text-transform: none; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: left; width: 100%; }
-    .mobile-tab:hover { background: rgba(255,255,255,0.1); }
-    .mobile-tab.active { color: var(--yell); background: rgba(0,0,0,0.1); }
+  /* BUTTONS */
+  .btn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:.15s;display:inline-flex;align-items:center;gap:5px;}
+  .btn-primary{background:var(--blue);color:#fff;}
+  .btn-primary:hover{background:#0269cc;}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+  .btn-success{background:var(--green);color:#fff;}
+  .btn-success:hover{background:#2f855a;}
+  .btn-danger{background:var(--red);color:#fff;}
+  .btn-danger:hover{background:#c53030;}
+  .btn-amber{background:var(--amber);color:#fff;}
+  .btn-amber:hover{background:#b45309;}
+  .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2);}
+  .btn-outline:hover{border-color:var(--blue);color:var(--blue);}
+  .btn-sm{padding:5px 10px;font-size:11px;}
+  .btn-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;align-items:center;}
 
-    .layout-box { flex: 1; width: 100%; }
-    .layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 25px 24px; gap: 12px; align-items: flex-start; }
-    .main-pane { flex: 3; min-width: 0; }
-    .section-label { font-size: 19px; font-weight: 800; text-transform: uppercase; border-left: 6px solid var(--espn-blue); padding-left: 14px; margin-bottom: 15px; }
-    
-    #output { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 12px; }
-    
-    .card { background: var(--surface); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; text-decoration: none; color: inherit; box-shadow: 0 1px 4px var(--shadow); transition: 0.25s; border: 1px solid var(--border); }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px var(--shadow2); }
-    .card-img { width: 100%; height: 185px; object-fit: cover; background: var(--sidebar-placeholder); border-radius: 12px 12px 0 0; }
-    .card-body { padding: 18px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
-    .read-more-badge { color: #fff; background: var(--espn-blue); padding: 3px 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; border-radius: 4px; }
-    .card-source { font-size: 11px; color: var(--text3); font-weight: 600; opacity: 0.8; }
-    .card-title { font-size: 19px; font-weight: 800; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    .card-desc { font-size: 14px; color: var(--text2); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  /* CONSOLE */
+  .console{background:#0f172a;border-radius:8px;padding:10px 12px;font-family:'Courier New',monospace;font-size:11px;color:#94a3b8;min-height:60px;max-height:130px;overflow-y:auto;margin-top:10px;}
+  .ok{color:#4ade80;}.err{color:#f87171;}.inf{color:#60a5fa;}
 
-    /* ============================================================
-       BLOCK START: "Our Article" badge for your own articles
-       Purpose: Visually distinguishes articles you write from
-       aggregated RSS articles. Shows a gold "SPORTSrip" badge.
-    ============================================================ */
+  /* STATS */
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+  .stat{background:#fff;border-radius:10px;padding:14px;border:1px solid var(--border);text-align:center;}
+  .stat-n{font-size:26px;font-weight:800;color:var(--blue);}
+  .stat-l{font-size:11px;color:var(--text3);margin-top:3px;}
 
-    .own-badge { display: inline-block; background: #f0a500; color: #000; font-size: 10px; font-weight: 900; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.5px; }
-    .card-author-row { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--border); }
-    .card-author-left { display: flex; align-items: center; gap: 7px; }
-    .card-av { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--border); flex-shrink: 0; }
-    .card-av-ph { width: 26px; height: 26px; border-radius: 50%; background: #f0a500; color: #000; font-size: 9px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .card-author-name { font-size: 11px; font-weight: 600; color: var(--text2); }
-    .card-share-btns { display: flex; gap: 6px; }
-    .card-share-btn { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; text-decoration: none; border: 1px solid var(--border); background: transparent; cursor: pointer; transition: 0.2s; color: var(--text2); }
-    .card-share-btn:hover { background: var(--espn-blue); color: #fff; border-color: var(--espn-blue); }
-    /* ============================================================
-       BLOCK END: "Our Article" badge
-    ============================================================ */
+  /* FEED LIST */
+  .feed-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--bg);border-radius:8px;margin-bottom:7px;border:1px solid var(--border);font-size:12px;}
+  .feed-l{display:flex;flex-direction:column;gap:2px;}
+  .feed-name{font-weight:600;}
+  .feed-url{color:var(--text3);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:400px;}
+  .pill{background:var(--blue);color:#fff;padding:1px 7px;border-radius:8px;font-size:10px;font-weight:700;text-transform:uppercase;}
 
-    .card-hero { grid-column: span 2; flex-direction: row; height: 340px; }
-    .card-hero .card-img { width: 60%; height: 100%; border-radius: 12px 0 0 12px; }
-    .card-hero .card-body { width: 40%; justify-content: center; }
+  /* ARTICLE LIST */
+  .art-item{display:flex;gap:10px;padding:10px;background:var(--bg);border-radius:8px;margin-bottom:7px;border:1px solid var(--border);align-items:center;}
+  .art-thumb{width:54px;height:38px;object-fit:cover;border-radius:6px;flex-shrink:0;border:1px solid var(--border);}
+  .art-ph{width:54px;height:38px;border-radius:6px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+  .art-info{flex:1;min-width:0;}
+  .art-title{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .art-meta{font-size:11px;color:var(--text3);margin-top:2px;}
+  .badge{display:inline-block;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:700;text-transform:uppercase;background:#dbeafe;color:#1e40af;}
 
-    .sidebar { width: 340px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; align-self: stretch; }
-    .sidebar-section { background: var(--surface); border: 1px solid var(--border2); border-radius: 12px; overflow: hidden; }
-    .sticky-widget { position: sticky; top: 58px; z-index: 100; align-self: flex-start; }
-    .sidebar-title { border-top: 4px solid var(--espn-blue); padding: 14px 18px; font-size: 14px; font-weight: 800; text-transform: uppercase; background: var(--surface2); border-bottom: 1px solid var(--border); }
-    .trending-container { height: 420px; overflow: hidden; }
-    .trending-track { display: flex; flex-direction: column; animation: scrollVertical 35s linear infinite; }
-    .sidebar-article { display: flex; gap: 14px; padding: 12px 18px; border-bottom: 1px solid var(--border); text-decoration: none; color: inherit; align-items: center; }
-    .sidebar-thumb { width: 132px; height: 100px; object-fit: cover; flex-shrink: 0; background: var(--sidebar-placeholder); border-radius: 8px; }
-    .sidebar-headline { font-size: 13.5px; font-weight: 700; line-height: 1.3; margin-bottom: 5px; }
-    .sidebar-source { font-size: 10px; color: var(--espn-blue); font-weight: 800; text-transform: uppercase; }
+  /* STEP CARDS */
+  .step-card{background:linear-gradient(135deg,#035bb0,#0269cc);border-radius:12px;padding:18px;color:#fff;margin-bottom:12px;}
+  .step-card.green{background:linear-gradient(135deg,#0f766e,#0d9488);}
+  .step-card h3{font-size:13px;font-weight:700;margin-bottom:5px;}
+  .step-card p{font-size:11px;opacity:.85;margin-bottom:12px;}
+  .btn-white{background:#fff;color:var(--blue);border:none;padding:8px 18px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;}
+  .btn-white:hover{background:#f0f4f8;}
+  .btn-white:disabled{opacity:.5;cursor:not-allowed;}
 
-    footer { padding: 15px 24px; background: var(--footer-bg); border-top: 1px solid var(--footer-border); text-align: center; margin-top: auto; }
-    .disclaimer { font-size: 11px; color: var(--footer-text); font-weight: 700; max-width: 900px; margin: 0 auto; line-height: 1.4; letter-spacing: 0.1px; }
+  /* CSV IMPORT QUEUE */
+  .import-queue{margin-top:14px;}
+  .queue-item{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:8px;font-size:12px;}
+  .queue-item .q-title{font-weight:600;margin-bottom:4px;}
+  .queue-item .q-meta{color:var(--text3);font-size:11px;}
+  .queue-item .q-actions{display:flex;gap:6px;margin-top:8px;}
 
-    #backToTop { 
-      position: fixed; bottom: 30px; right: 16px; 
-      width: 36px; height: 36px; 
-      background: var(--espn-blue); 
-      color: white; border: none; border-radius: 50%; 
-      display: none; align-items: center; justify-content: center; 
-      cursor: pointer; z-index: 1000; 
-      font-size: 16px; font-weight: 800; 
-      box-shadow: 0 3px 12px rgba(3,91,176,0.4); 
-      transition: all 0.3s ease;
-      opacity: 0;
-    }
-    #backToTop.visible { display: flex; opacity: 1; }
-    #backToTop:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(3,91,176,0.5); }
+  @media(max-width:768px){.sidebar{width:56px;}.brand,.nav-item span,.nav-section,.sidebar-footer .env-label{display:none;}.form-row.c2,.form-row.c3{grid-template-columns:1fr;}.stats-row{grid-template-columns:1fr;}}
 
-    /* ── Mobile scroll magic ── */
-    @media(max-width:600px){
-      header {
-        transition: transform 0.35s ease;
-      }
-      header.hidden {
-        transform: translateY(-100%);
-      }
-      /* Floating hamburger — bottom left on mobile when scrolled */
-      .float-menu {
-        display: none;
-        position: fixed;
-        bottom: 24px;
-        left: 16px;
-        width: 44px; height: 44px;
-        background: var(--espn-blue);
-        border-radius: 50%;
-        z-index: 1001;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        gap: 4px;
-        cursor: pointer;
-        box-shadow: 0 3px 12px rgba(3,91,176,0.4);
-        transition: all 0.3s ease;
-        opacity: 0;
-      }
-      .float-menu.visible { display: flex; opacity: 1; }
-      .float-menu div { width: 18px; height: 2px; background: #fff; border-radius: 2px; }
-      .float-menu:hover { transform: scale(1.08); }
-    }
-    
-    @media (max-width: 1000px) { 
-      header { width: 100%; border-radius: 0; margin-top: 0; margin-left:0; padding: 0 15px; }
-      .nav-tabs, #clockDisplay { display: none; }
-      .hamburger { display: flex; }
-      .layout{flex-direction:column; padding: 20px 15px;} 
-      .sidebar{width:100%} 
-      .sticky-widget{position:static;} 
-      .card-hero{flex-direction:column; height:auto; grid-column: auto;} 
-      .card-hero .card-img{width:100%; height:220px; border-radius: 12px 12px 0 0;} 
-      .card-hero .card-body { width: 100%; }
-      #output { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
-    }
-    @media (max-width: 600px) {
-      .layout { padding: 15px 12px; }
-      #output { grid-template-columns: 1fr; gap: 15px; }
-      .brand { margin-right: 15px; }
-      .logo-text { font-size: 20px; letter-spacing: -1px; }
-      .section-label { font-size: 17px; }
-    }
-  </style>
+  /* ── MIGRATE MODAL ── */
+  .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:#fff;border-radius:14px;width:600px;max-width:95vw;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+  .modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+  .modal-header h3{font-size:15px;font-weight:700;flex:1;}
+  .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text3);padding:0 4px;line-height:1;}
+  .modal-close:hover{color:var(--text);}
+  .modal-body{flex:1;overflow-y:auto;padding:16px 20px;}
+  .modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+  .modal-meta{font-size:11px;color:var(--text3);flex:1;}
+  .chk-list{display:flex;flex-direction:column;gap:6px;}
+  .chk-item{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:8px;border:1px solid var(--border);cursor:pointer;transition:.1s;}
+  .chk-item:hover{background:var(--bg);}
+  .chk-item.checked{background:#eff6ff;border-color:#bfdbfe;}
+  .chk-item input[type=checkbox]{margin-top:2px;width:15px;height:15px;accent-color:var(--blue);flex-shrink:0;cursor:pointer;}
+  .chk-num{font-size:11px;color:var(--text3);min-width:22px;margin-top:1px;font-weight:600;}
+  .chk-info{flex:1;min-width:0;}
+  .chk-title{font-size:12px;font-weight:600;color:var(--text);line-height:1.4;}
+  .chk-meta{font-size:11px;color:var(--text3);margin-top:2px;}
+  .sel-bar{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+  .sel-bar span{font-size:12px;color:var(--text2);}
+
+</style>
 </head>
 <body>
 
-<header id="main-header">
-  <a href="/" class="brand">
-    <div class="logo-text"><span>SPORTS</span><em>rip</em></div>
-  </a>
-  <nav class="nav-tabs" id="desktopTabs"></nav>
-  <div class="header-right" id="clockDisplay"></div>
-  <button class="dark-toggle" id="darkToggle" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
-  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
-    <div class="line1"></div>
-    <div class="line2"></div>
-    <div class="line3"></div>
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand"><span>SPORTS</span><em>rip</em></div>
+    <div class="ver">Admin v3.0</div>
   </div>
-</header>
-
-<div class="mobile-menu" id="mobileMenu"></div>
-
-<div class="layout-box">
-<div class="layout">
-  <div class="main-pane">
-    <div class="section-label" id="sectionLabel">🏏 IPL 2026</div>
-    <div id="output"></div>
+  <div class="sidebar-nav">
+    <div class="nav-section">Content</div>
+    <div class="nav-item active" onclick="showPanel('write')" id="nav-write"><span class="ico">✍️</span><span>Write Article</span></div>
+    <div class="nav-item" onclick="showPanel('published')" id="nav-published"><span class="ico">📰</span><span>Published</span></div>
+    <div class="nav-section">Sources</div>
+    <div class="nav-item" onclick="showPanel('sources')" id="nav-sources"><span class="ico">📡</span><span>Manage Sources</span></div>
+    <div class="nav-section">System</div>
+    <div class="nav-item" onclick="showPanel('refresh')" id="nav-refresh"><span class="ico">🔄</span><span>Refresh Feeds</span></div>
   </div>
-
-  <div class="sidebar">
-    <div class="sidebar-section">
-      <img src="https://images.pexels.com/photos/8941571/pexels-photo-8941571.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Kids Sports" style="width:100%; height:auto; display:block;">
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-title">Trending Now</div>
-      <div class="trending-container"><div id="trendingList" class="trending-track"></div></div>
-    </div>
-    <div class="sidebar-section sticky-widget">
-      <div class="sidebar-title">Recent Updates</div>
-      <div id="recentList"></div>
-    </div>
+  <div class="sidebar-footer">
+    <div class="env-label">Environment</div>
+    <select class="env-sel" id="envSel" onchange="switchEnv(this.value)">
+      <option value="dev">🟠 DEV Instance</option>
+      <option value="prod">🔴 PROD (Live Site)</option>
+    </select>
+    <div class="env-badge dev" id="envBadge">● DEV</div>
   </div>
-</div>
-</div>
+</nav>
 
-<footer><div class="disclaimer">Disclaimer: Headlines are sourced from official RSS feeds of their respective publishers. All rights and copyrights remain with the original content owners.</div></footer>
-
-<!-- YouTube Video Modal -->
-<div id="ytModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;" onclick="closeYT(event)">
-  <div style="position:relative;width:90%;max-width:900px;background:#000;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
-    <button onclick="closeYTBtn()" style="position:absolute;top:10px;right:12px;background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:20px;width:36px;height:36px;border-radius:50%;cursor:pointer;z-index:10;">✕</button>
-    <div style="position:relative;padding-bottom:56.25%;height:0;">
-      <iframe id="ytFrame" src="" frameborder="0" allow="autoplay;encrypted-media" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
-    </div>
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <button class="btn btn-outline btn-sm" onclick="document.getElementById('csvFile').click()">📥 Import CSV</button>
+    <input type="file" id="csvFile" accept=".csv" style="display:none" onchange="importCSV(this)"/>
+    <select id="topEnvSel" onchange="switchEnv(this.value)" title="Switch environment" style="padding:4px 10px;font-size:12px;font-weight:600;border-radius:8px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;height:30px;min-width:90px;">
+      <option value="dev">🟠 DEV</option>
+      <option value="prod">🔴 PROD</option>
+    </select>
+    <div class="topbar-title" id="pageTitle">✍️ Write Article</div>
+    <span class="worker-badge" id="workerLabel">DEV Worker</span>
+    <div id="topAvatar"></div>
   </div>
-</div>
+  <div class="prod-banner" id="prodBanner">⚠️ PROD MODE ACTIVE — Changes affect live sportsrip.com!</div>
 
-<button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+  <div class="page">
 
-<!-- Floating hamburger for mobile scroll mode -->
-<div class="float-menu" id="floatMenu" onclick="toggleMenu()">
-  <div></div>
-  <div></div>
-  <div></div>
+    <!-- ══ WRITE ARTICLE ══ -->
+    <div class="panel active" id="panel-write">
+      <div class="stats-row">
+        <div class="stat"><div class="stat-n" id="statArticles">—</div><div class="stat-l">Own Articles</div></div>
+        <div class="stat"><div class="stat-n" id="statSources">—</div><div class="stat-l">Feed Sources</div></div>
+        <div class="stat"><div class="stat-n" id="statEnv">DEV</div><div class="stat-l">Active Instance</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📝 Article Details</div>
+
+        <div class="form-row">
+          <div>
+            <label>Headline <span class="req">*</span></label>
+            <textarea id="artTitle" class="ta-small" placeholder="Write your article headline..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>Article Content <span class="req">*</span> <span class="opt">— scroll to read full text</span></label>
+            <textarea id="artDesc" class="ta-large" placeholder="Write your full article content here...&#10;&#10;You can paste long articles and scroll through them."></textarea>
+          </div>
+        </div>
+
+        <div class="form-row c2">
+          <div>
+            <label>Primary Sport <span class="req">*</span></label>
+            <select id="artSport" onchange="updateEnvStat()">
+              <option value="ipl">🏏 IPL 2026</option>
+              <option value="cricket">🏏 Cricket</option>
+              <option value="football">⚽ Football</option>
+              <option value="f1">🏎️ Formula 1</option>
+              <option value="basketball">🏀 Basketball</option>
+              <option value="tennis">🎾 Tennis</option>
+              <option value="kabaddi">🤼 Kabaddi</option>
+              <option value="boxing">🥊 Boxing</option>
+              <option value="golf">⛳ Golf</option>
+              <option value="badminton">🏸 Badminton</option>
+              <option value="nfl">🏈 NFL</option>
+              <option value="baseball">⚾ Baseball</option>
+            </select>
+          </div>
+          <div>
+            <label>Article Link <span class="req">*</span></label>
+            <input type="url" id="artLink" value="https://www.sportsrip.com"/>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>Also appear on tabs <span class="opt">(IPL + Cricket pre-selected for IPL season)</span></label>
+            <div class="ms-wrap">
+              <div class="ms-display" id="msDisplay" onclick="toggleMs()">
+                <div class="chip" data-v="ipl">🏏 IPL 2026 <span class="x" onclick="rmChip(event,'ipl')">×</span></div>
+                <div class="chip" data-v="cricket">🏏 Cricket <span class="x" onclick="rmChip(event,'cricket')">×</span></div>
+                <span class="ms-hint">+ add more</span>
+              </div>
+              <div class="ms-opts" id="msOpts">
+                <div class="ms-opt sel" data-v="ipl" onclick="togChip('ipl','🏏 IPL 2026',event)"><input type="checkbox" checked> 🏏 IPL 2026</div>
+                <div class="ms-opt sel" data-v="cricket" onclick="togChip('cricket','🏏 Cricket',event)"><input type="checkbox" checked> 🏏 Cricket</div>
+                <div class="ms-opt" data-v="football" onclick="togChip('football','⚽ Football',event)"><input type="checkbox"> ⚽ Football</div>
+                <div class="ms-opt" data-v="f1" onclick="togChip('f1','🏎️ F1',event)"><input type="checkbox"> 🏎️ Formula 1</div>
+                <div class="ms-opt" data-v="basketball" onclick="togChip('basketball','🏀 Basketball',event)"><input type="checkbox"> 🏀 Basketball</div>
+                <div class="ms-opt" data-v="tennis" onclick="togChip('tennis','🎾 Tennis',event)"><input type="checkbox"> 🎾 Tennis</div>
+                <div class="ms-opt" data-v="kabaddi" onclick="togChip('kabaddi','🤼 Kabaddi',event)"><input type="checkbox"> 🤼 Kabaddi</div>
+                <div class="ms-opt" data-v="boxing" onclick="togChip('boxing','🥊 Boxing',event)"><input type="checkbox"> 🥊 Boxing</div>
+                <div class="ms-opt" data-v="golf" onclick="togChip('golf','⛳ Golf',event)"><input type="checkbox"> ⛳ Golf</div>
+                <div class="ms-opt" data-v="nfl" onclick="togChip('nfl','🏈 NFL',event)"><input type="checkbox"> 🏈 NFL</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row c2">
+          <div>
+            <label>Thumbnail Image URL <span class="opt">(optional)</span></label>
+            <input type="url" id="artImage" placeholder="https://images.pexels.com/..." oninput="prevImg()"/>
+            <img class="img-preview" id="imgPrev"/>
+          </div>
+          <div>
+            <label>Author Name <span class="opt">(type to search existing)</span></label>
+            <div class="ac-wrap">
+              <input type="text" id="artAuthor" placeholder="e.g. Ravi Kompella" oninput="acSearch()" onfocus="acSearch()" autocomplete="off"/>
+              <div class="ac-list" id="acList"></div>
+            </div>
+            <label style="margin-top:8px;">Author Photo URL <span class="opt">(auto-fills on select)</span></label>
+            <input type="url" id="artAuthorPhoto" placeholder="https://..." oninput="prevAv()"/>
+            <img class="av-preview" id="avPrev"/>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="importTxt()">📄 Import .txt</button>
+          <input type="file" id="txtFile" accept=".txt" style="display:none" onchange="loadTxt(this)"/>
+          <button class="btn btn-outline" onclick="clearForm()">🗑 Clear</button>
+          <button class="btn btn-primary" id="btnPublish" onclick="publishArticle()">🚀 Publish</button>
+          <button class="btn btn-amber" id="btnMigrate" onclick="migrateArticles()" style="display:none" title="Copy all DEV articles to PROD">⬆️ Migrate to PROD</button>
+        </div>
+        <div class="console" id="consoleA">System ready.</div>
+      </div>
+    </div>
+
+    <!-- ══ PUBLISHED ══ -->
+    <div class="panel" id="panel-published">
+      <div class="card">
+        <div class="card-title">📰 Published Articles
+          <button class="btn btn-outline btn-sm" onclick="loadPublished()" style="margin-left:auto;">↻ Refresh</button>
+        </div>
+        <div id="pubList"><div style="color:var(--text3);font-size:12px;">Click Refresh to load.</div></div>
+      </div>
+    </div>
+
+    <!-- ══ SOURCES ══ -->
+    <div class="panel" id="panel-sources">
+      <div class="card">
+        <div class="card-title">➕ Add Feed Source</div>
+        <div class="form-row c3">
+          <div><label>Sport</label>
+            <select id="fSport">
+              <option value="ipl">IPL</option><option value="cricket">Cricket</option>
+              <option value="football">Football</option><option value="f1">Formula 1</option>
+              <option value="basketball">Basketball</option><option value="tennis">Tennis</option>
+              <option value="kabaddi">Kabaddi</option><option value="boxing">Boxing</option>
+              <option value="golf">Golf</option><option value="badminton">Badminton</option>
+            </select>
+          </div>
+          <div><label>Source Name</label><input type="text" id="fName" placeholder="e.g. BBC Cricket"/></div>
+          <div><label>Priority (1=highest)</label><input type="number" id="fPrio" value="3" min="1" max="10"/></div>
+        </div>
+        <div class="form-row">
+          <div><label>RSS Feed URL</label><input type="url" id="fUrl" placeholder="https://feeds.example.com/rss.xml"/></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="testFeed()">🔍 Test</button>
+          <button class="btn btn-primary" onclick="saveFeed()">➕ Add</button>
+          <button class="btn btn-success" onclick="preloadFeeds()" style="margin-left:auto;">⚡ Preload 29 Defaults</button>
+        </div>
+        <div class="console" id="consoleSrc">System ready.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 Current Sources
+          <button class="btn btn-outline btn-sm" onclick="loadSources()" style="margin-left:auto;">↻ Refresh</button>
+        </div>
+        <div id="srcList"><div style="color:var(--text3);font-size:12px;">Click Refresh.</div></div>
+      </div>
+    </div>
+
+    <!-- ══ REFRESH ══ -->
+    <div class="panel" id="panel-refresh">
+      <div class="step-card">
+        <h3>Step 1 — Fetch Raw Articles</h3>
+        <p>Pulls fresh articles from all RSS sources into NEWS_KV.</p>
+        <button class="btn-white" id="btnS1" onclick="doRefresh('raw')">🔄 Fetch Raw Articles</button>
+      </div>
+      <div class="step-card green">
+        <h3>Step 2 — Curate Articles</h3>
+        <p>Merges, deduplicates and updates CURATED_KV.</p>
+        <button class="btn-white" id="btnS2" onclick="doRefresh('curate')">⚙️ Curate Articles</button>
+      </div>
+      <div class="card">
+        <div class="card-title">🎯 Refresh Target</div>
+        <div class="form-row c2">
+          <div><label>Environment</label>
+            <select id="refEnv" onchange="chkRefEnv()">
+              <option value="dev">DEV</option>
+              <option value="prod">PROD — LIVE SITE</option>
+            </select>
+          </div>
+          <div><label>Sport</label>
+            <select id="refSport">
+              <option value="all">All Sports</option>
+              <option value="ipl">IPL</option><option value="cricket">Cricket</option>
+              <option value="football">Football</option><option value="f1">F1</option>
+            </select>
+          </div>
+        </div>
+        <div class="console" id="consoleRef">System ready.</div>
+      </div>
+    </div>
+
+    <!-- ══ CSV IMPORT QUEUE ══ -->
+    <div id="importQueue" style="display:none;">
+      <div class="card">
+        <div class="card-title">📥 CSV Import Queue
+          <button class="btn btn-outline btn-sm" onclick="closeQueue()" style="margin-left:auto;">✕ Close</button>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">Review each article and click Publish or Skip. You can edit fields before publishing.</div>
+        <div id="queueList"></div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <script>
-  // ============================================================
-  // BLOCK START: Worker URL
-  // Added  : 27-Mar-2026
-  // Change to PROD URL when deploying to production.
-  // ============================================================
-  var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev'; // DEV
-  // var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev'; // PROD
-  // BLOCK END: Worker URL (27-Mar-2026)
-  // ============================================================
+// ══ CONFIG ══
+var WORKERS = {
+  dev:  'https://mango-sports-worker-dev.ravi-kompel.workers.dev',
+  prod: 'https://mango-sports-worker.ravi-kompel.workers.dev'
+};
+var PASS = 'sportsrip2026';
+var ENV  = 'dev';
+var WURL = WORKERS.dev;
 
-  // ============================================================
-  // BLOCK START: EMOJI map — static, visual only
-  // Added  : 27-Mar-2026
-  // Purpose: Maps sport keys to emoji icons for tabs and cards.
-  //          Add new sports here if you add them in admin panel.
-  // ============================================================
-  var EMOJI = {ipl:'🏏', f1:'🏎️', cricket:'🏏', basketball:'🏀', football:'⚽', baseball:'⚾', tennis:'🎾', kabaddi:'🤼', boxing:'🥊', golf:'⛳', athletics:'🏃', rugby:'🏉', olympics:'🏅', nfl:'🏈', badminton:'🏸', videos:'🎬', main:'🏆'};
-  // BLOCK END: EMOJI map (27-Mar-2026)
-  // ============================================================
+// Known authors — seeded + loaded from articles
+var AUTHORS = [
+  {name:'Ravi Kompella', photo:'https://i.ibb.co/PvtxHfgF/download.png'}
+];
 
-  // ============================================================
-  // BLOCK START: Hardcoded fallback lists
-  // Added  : 27-Mar-2026
-  // Purpose: Used ONLY if /api/feeds fails or returns empty.
-  //          Keeps the site working even if KV is unavailable.
-  //          Normally these are overridden by dynamic KV data.
-  // ============================================================
-  var PRIORITY_SPORTS_FALLBACK = ['ipl','f1','cricket','basketball','baseball','football','tennis','kabaddi','boxing','golf','athletics','rugby','olympics','nfl','badminton','videos'];
-  var LABEL_FALLBACK = {ipl:'IPL 2026', f1:'Formula 1', cricket:'Cricket', basketball:'NBA', football:'Soccer', baseball:'MLB', tennis:'Tennis', kabaddi:'Kabaddi', boxing:'Boxing', golf:'Golf', athletics:'Athletics', rugby:'Rugby', olympics:'Olympics', nfl:'NFL', badminton:'Badminton', main:'Top Stories'};
-  // BLOCK END: Hardcoded fallback lists (27-Mar-2026)
-  // ============================================================
-
-  // These get populated dynamically from /api/feeds on load
-  var PRIORITY_SPORTS = PRIORITY_SPORTS_FALLBACK.slice();
-  var LABEL = Object.assign({}, LABEL_FALLBACK);
-
-  var currentSport = 'ipl'; var allCache = []; var sportCache = {};
-
-  // ============================================================
-  // BLOCK START: loadDynamicSports — fetch tabs from KV
-  // Added  : 27-Mar-2026
-  // Purpose: Calls /api/feeds to get the current sport categories
-  //          and feed config from CONTROL_PANEL_KV.
-  //          Builds PRIORITY_SPORTS and LABEL dynamically so tabs
-  //          reflect whatever is saved in the admin panel.
-  //          Falls back to hardcoded lists if KV is empty or fails.
-  //          Deduplicates sports and preserves priority order.
-  // ============================================================
-  async function loadDynamicSports() {
-    try {
-      var res = await fetch(WORKER + '/api/feeds');
-      if (!res.ok) throw new Error('feeds API returned ' + res.status);
-      var data = await res.json();
-      var feeds = data.feeds || [];
-      if (feeds.length === 0) return; // fallback stays active
-
-      // Build unique sport list in priority order
-      var seen = new Set();
-      var sports = [];
-      var labels = { main: 'Top Stories' };
-
-      feeds.forEach(function(f) {
-        if (!seen.has(f.sport)) {
-          seen.add(f.sport);
-          sports.push(f.sport);
-          labels[f.sport] = f.label || f.sport;
-        }
-      });
-
-      // Apply dynamic values
-      PRIORITY_SPORTS = sports;
-      LABEL = labels;
-    } catch(e) {
-      console.warn('Dynamic sports load failed, using fallback:', e.message);
-      // PRIORITY_SPORTS and LABEL already set to fallback values above
-    }
+// ══ AVATAR ══
+function setTopAvatar(photo, name) {
+  var el = document.getElementById('topAvatar');
+  var init = (name||'RK').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2);
+  if (photo) {
+    el.innerHTML = '<img class="topbar-avatar" src="'+photo+'" onerror="this.outerHTML=\'<div class=topbar-avatar-ph>'+init+'</div>\'" title="'+name+'">';
+  } else {
+    el.innerHTML = '<div class="topbar-avatar-ph" title="'+(name||'Admin')+'">'+init+'</div>';
   }
-  // BLOCK END: loadDynamicSports (27-Mar-2026)
-  // ============================================================
+}
+setTopAvatar(AUTHORS[0].photo, AUTHORS[0].name);
 
-  // ============================================================
-  // BLOCK START: Dark Mode Logic
-  // Purpose: Reads saved preference on load, applies theme,
-  // and toggles between light/dark on button click.
-  // ============================================================
-  function applyTheme(dark) {
-    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-    document.getElementById('darkToggle').textContent = dark ? '☀️' : '🌙';
-    localStorage.setItem('sportsrip-theme', dark ? 'dark' : 'light');
-  }
+// ══ ENV SWITCH ══
+function switchEnv(env) {
+  ENV  = env;
+  WURL = WORKERS[env];
+  document.getElementById('envBadge').textContent = '● ' + env.toUpperCase();
+  document.getElementById('envBadge').className = 'env-badge ' + env;
+  document.getElementById('workerLabel').textContent = env.toUpperCase() + ' Worker';
+  document.getElementById('prodBanner').style.display = env === 'prod' ? 'block' : 'none';
+  // Show migrate button only in DEV
+  document.getElementById('btnMigrate').style.display = env === 'dev' ? 'flex' : 'none';
+  document.getElementById('statEnv').textContent = env.toUpperCase();
+  loadStats();
+}
 
-  function toggleDark() {
-    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    applyTheme(!isDark);
-  }
+// ══ PANELS ══
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  var titles={write:'✍️ Write Article',published:'📰 Published',sources:'📡 Manage Sources',refresh:'🔄 Refresh Feeds'};
+  document.getElementById('pageTitle').textContent = titles[name]||name;
+  if(name==='published') loadPublished();
+  if(name==='sources') loadSources();
+  if(name==='write') loadStats();
+}
 
-  // Apply saved theme immediately on page load — prevents flash
-  (function() {
-    var saved = localStorage.getItem('sportsrip-theme');
-    if (saved === 'dark') applyTheme(true);
-  })();
-  // ============================================================
-  // BLOCK END: Dark Mode Logic
-  // ============================================================
-
-  function cleanText(h) { if(!h) return ""; var d = document.createElement('div'); d.innerHTML = h; return d.textContent || d.innerText || ""; }
-  // ============================================================
-  // BLOCK START: Mobile scroll magic
-  // Added  : 27-Mar-2026
-  // Purpose: On mobile — header hides when scrolling down (curtain up).
-  //          Floating hamburger appears bottom left.
-  //          Go to top button appears bottom right.
-  //          Both disappear when user scrolls back to top.
-  //          Desktop unaffected.
-  // ============================================================
-  (function() {
-    var lastScroll = 0;
-    var header = document.getElementById('main-header');
-    var backToTop = document.getElementById('backToTop');
-    var floatMenu = document.getElementById('floatMenu');
-    var isMobile = function() { return window.innerWidth <= 600; };
-
-    window.addEventListener('scroll', function() {
-      var currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-
-      if (isMobile()) {
-        if (currentScroll > 80) {
-          // Scrolled down — hide header, show float controls
-          header.classList.add('hidden');
-          floatMenu.classList.add('visible');
-          backToTop.classList.add('visible');
-        } else {
-          // Back at top — show header, hide float controls
-          header.classList.remove('hidden');
-          floatMenu.classList.remove('visible');
-          backToTop.classList.remove('visible');
-        }
-      } else {
-        // Desktop — just show/hide back to top button
-        header.classList.remove('hidden');
-        floatMenu.classList.remove('visible');
-        if (currentScroll > 300) {
-          backToTop.classList.add('visible');
-        } else {
-          backToTop.classList.remove('visible');
-        }
+// ══ STATS ══
+async function loadStats() {
+  try {
+    var r = await fetch(WURL+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
+    var d = await r.json();
+    var arts = d.articles||[];
+    // Deduplicate by title (not link — all links are sportsrip.com)
+    var seen=new Set(), unique=[];
+    arts.forEach(a=>{if(!seen.has(a.title)){seen.add(a.title);unique.push(a);}});
+    document.getElementById('statArticles').textContent = unique.size || unique.length;
+    // Build author list from articles
+    arts.forEach(a=>{
+      if(a.authorName&&a.authorName.trim()){
+        var ex=AUTHORS.find(au=>au.name===a.authorName.trim());
+        if(!ex) AUTHORS.push({name:a.authorName.trim(),photo:a.authorPhoto||''});
+        else if(!ex.photo&&a.authorPhoto) ex.photo=a.authorPhoto;
       }
-      lastScroll = currentScroll;
-    }, { passive: true });
-  })();
-  // BLOCK END: Mobile scroll magic (27-Mar-2026)
-  // ============================================================
+    });
+    // Update top avatar with first author found
+    if(arts.length&&arts[0].authorName) setTopAvatar(arts[0].authorPhoto||'',arts[0].authorName);
+  } catch(e){}
+  try {
+    var r2=await fetch(WURL+'/api/feeds');
+    var d2=await r2.json();
+    document.getElementById('statSources').textContent=d2.count||0;
+  } catch(e){}
+}
 
-  // YouTube modal functions
-  function openYT(videoId) {
-    var modal = document.getElementById('ytModal');
-    var frame = document.getElementById('ytFrame');
-    frame.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-  }
-  function closeYTBtn() {
-    document.getElementById('ytModal').style.display = 'none';
-    document.getElementById('ytFrame').src = '';
-    document.body.style.overflow = '';
-  }
-  function closeYT(e) {
-    if(e.target === document.getElementById('ytModal')) closeYTBtn();
-  }
+function updateEnvStat() {}
 
+// ══ MULTI-SELECT ══
+var msOpen=false, selTabs=['ipl','cricket'];
 
-  // Article Modal
-  function openArtModal(a) {
-    var sport = a.sport||'ipl';
-    var labels = {ipl:'IPL 2026',f1:'Formula 1',cricket:'Cricket',basketball:'NBA',football:'Soccer',baseball:'MLB',tennis:'Tennis',kabaddi:'Kabaddi',boxing:'Boxing',golf:'Golf',athletics:'Athletics',rugby:'Rugby',olympics:'Olympics',nfl:'NFL',badminton:'Badminton'};
-    var emojis = {ipl:'🏏',f1:'🏎️',cricket:'🏏',basketball:'🏀',football:'⚽',baseball:'⚾',tennis:'🎾',kabaddi:'🤼',boxing:'🥊',golf:'⛳',athletics:'🏃',rugby:'🏉',olympics:'🏅',nfl:'🏈',badminton:'🏸'};
-    var label = labels[sport]||sport.toUpperCase();
-    var emoji = emojis[sport]||'🏆';
-    var author = (a.authorName && a.authorName.trim()) ? a.authorName : 'SPORTSrip Team';
-    var photo = a.authorPhoto||'';
-    var init = author.split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2)||'SR';
-    var dateStr = a.pubDate ? new Date(a.pubDate).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}) : '';
-    var desc = (a.description||'').replace(/\n/g,'<br>');
-    var box = document.getElementById('artModalContent');
-    box.innerHTML = '';
-    // Sport label
-    var sl = document.createElement('div');
-    sl.style.cssText = 'font-family:Inter,sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#8b6914;margin-bottom:12px';
-    sl.textContent = emoji + ' ' + label;
-    box.appendChild(sl);
-    // Title
-    var h1 = document.createElement('h1');
-    h1.style.cssText = 'font-family:Georgia,serif;font-size:22px;font-weight:700;line-height:1.3;color:#2c2418;margin-bottom:16px';
-    h1.textContent = a.title;
-    box.appendChild(h1);
-    // Author bar
-    var ab = document.createElement('div');
-    ab.style.cssText = 'display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid #d4c9a8;border-bottom:1px solid #d4c9a8;margin-bottom:20px';
-    var av;
-    if(photo) {
-      av = document.createElement('img');
-      av.src = photo;
-      av.style.cssText = 'width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid #d4c9a8;flex-shrink:0';
+function toggleMs(){msOpen=!msOpen;document.getElementById('msOpts').style.display=msOpen?'block':'none';}
+document.addEventListener('click',e=>{if(!e.target.closest('.ms-wrap')){msOpen=false;var o=document.getElementById('msOpts');if(o)o.style.display='none';}});
+
+function togChip(val,label,e){if(e)e.stopPropagation();var idx=selTabs.indexOf(val);if(idx>-1){selTabs.splice(idx,1);rmChipDOM(val);var o=document.querySelector('.ms-opt[data-v="'+val+'"]');if(o){o.classList.remove('sel');o.querySelector('input').checked=false;}}else{selTabs.push(val);addChipDOM(val,label);var o=document.querySelector('.ms-opt[data-v="'+val+'"]');if(o){o.classList.add('sel');o.querySelector('input').checked=true;}}}
+
+function addChipDOM(val,label){var d=document.getElementById('msDisplay'),hint=d.querySelector('.ms-hint'),c=document.createElement('div');c.className='chip';c.dataset.v=val;c.innerHTML=label+' <span class="x" onclick="rmChip(event,\''+val+'\')">×</span>';if(hint)d.insertBefore(c,hint);else d.appendChild(c);}
+
+function rmChipDOM(val){var c=document.querySelector('.chip[data-v="'+val+'"]');if(c)c.remove();}
+
+function rmChip(e,val){e.stopPropagation();var idx=selTabs.indexOf(val);if(idx>-1)selTabs.splice(idx,1);rmChipDOM(val);var o=document.querySelector('.ms-opt[data-v="'+val+'"]');if(o){o.classList.remove('sel');o.querySelector('input').checked=false;}}
+
+// ══ AUTHOR AUTOCOMPLETE ══
+function acSearch(){
+  var val=document.getElementById('artAuthor').value.toLowerCase().trim();
+  var list=document.getElementById('acList');
+  var matches=AUTHORS.filter(a=>a.name.toLowerCase().includes(val));
+  if(!val||!matches.length){list.style.display='none';return;}
+  list.innerHTML='';
+  matches.forEach(au=>{
+    var item=document.createElement('div');item.className='ac-item';
+    var init=au.name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2);
+    var av=au.photo?'<img class="ac-av" src="'+au.photo+'" onerror="this.style.display=\'none\'">'
+      :'<div class="ac-av-ph">'+init+'</div>';
+    item.innerHTML=av+'<span>'+au.name+'</span>';
+    item.onclick=()=>{
+      document.getElementById('artAuthor').value=au.name;
+      document.getElementById('artAuthorPhoto').value=au.photo||'';
+      prevAv();
+      setTopAvatar(au.photo||'',au.name);
+      list.style.display='none';
+    };
+    list.appendChild(item);
+  });
+  list.style.display='block';
+}
+document.addEventListener('click',e=>{if(!e.target.closest('.ac-wrap')){var l=document.getElementById('acList');if(l)l.style.display='none';}});
+
+// ══ PREVIEWS ══
+function prevImg(){var u=document.getElementById('artImage').value.trim(),i=document.getElementById('imgPrev');if(u){i.src=u;i.style.display='block';i.onerror=()=>i.style.display='none';}else i.style.display='none';}
+function prevAv(){var u=document.getElementById('artAuthorPhoto').value.trim(),i=document.getElementById('avPrev');if(u){i.src=u;i.style.display='inline-block';i.onerror=()=>i.style.display='none';}else i.style.display='none';}
+
+// ══ IMPORT TXT ══
+function importTxt(){document.getElementById('txtFile').click();}
+function loadTxt(input){var f=input.files[0];if(!f)return;var r=new FileReader();r.onload=e=>{document.getElementById('artDesc').value=e.target.result;};r.readAsText(f);input.value='';}
+
+// ══ LOG ══
+function log(id,msg){var el=document.getElementById(id);if(el){el.innerHTML+=(el.innerHTML?'\n':'')+'> '+msg;el.scrollTop=el.scrollHeight;}}
+
+// ══ PUBLISH ══
+async function publishArticle(overrideData) {
+  var title  = (overrideData?.title  || document.getElementById('artTitle').value).trim();
+  var desc   = (overrideData?.desc   || document.getElementById('artDesc').value).trim();
+  var link   = (overrideData?.link   || document.getElementById('artLink').value).trim() || 'https://www.sportsrip.com';
+  var image  = (overrideData?.image  || document.getElementById('artImage').value).trim();
+  var sport  = overrideData?.sport   || document.getElementById('artSport').value;
+  var author = (overrideData?.author || document.getElementById('artAuthor').value).trim();
+  var photo  = (overrideData?.photo  || document.getElementById('artAuthorPhoto').value).trim();
+
+  if(!title){log('consoleA','<span class="err">❌ Headline required</span>');return false;}
+  if(!desc) {log('consoleA','<span class="err">❌ Content required</span>');return false;}
+
+  var allSports=[sport];
+  if(!overrideData) selTabs.forEach(s=>{if(!allSports.includes(s))allSports.push(s);});
+
+  var btn=document.getElementById('btnPublish');
+  if(!overrideData){btn.disabled=true;btn.textContent='⏳';}
+  log('consoleA','<span class="inf">Publishing "'+title.slice(0,40)+'..." → '+WURL.includes('dev')?'DEV':'PROD'+'</span>');
+
+  try {
+    var res=await fetch(WURL+'/api/publish-own',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+      body:JSON.stringify({
+        sports:allSports,
+        article:{title,description:desc,link,image:image||'',sport,source:'SPORTSrip',
+          isOwn:true,pubDate:new Date().toISOString(),authorName:author,authorPhoto:photo}
+      })
+    });
+    var d=await res.json();
+    if(res.ok&&d.success){
+      log('consoleA','<span class="ok">✅ Published to '+d.savedTo.join(', ')+'!</span>');
+      if(author&&!AUTHORS.find(a=>a.name===author)) AUTHORS.push({name:author,photo:photo||''});
+      if(!overrideData){clearForm();loadStats();}
+      return true;
     } else {
-      av = document.createElement('div');
-      av.style.cssText = 'width:38px;height:38px;border-radius:50%;background:#8b6914;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0';
-      av.textContent = init;
+      log('consoleA','<span class="err">❌ '+res.status+': '+(d.error||'Error')+'</span>');
+      return false;
     }
-    var auInfo = document.createElement('div');
-    var auName = document.createElement('div');
-    auName.style.cssText = 'font-family:Inter,sans-serif;font-size:13px;font-weight:600;color:#2c2418';
-    auName.textContent = author;
-    var auDate = document.createElement('div');
-    auDate.style.cssText = 'font-family:Inter,sans-serif;font-size:11px;color:#7a7060';
-    auDate.textContent = dateStr;
-    auInfo.appendChild(auName);
-    auInfo.appendChild(auDate);
-    ab.appendChild(av);
-    ab.appendChild(auInfo);
-    box.appendChild(ab);
-    // Hero image
-    if(a.image) {
-      var img = document.createElement('img');
-      img.src = a.image;
-      img.style.cssText = 'width:100%;max-height:340px;object-fit:cover;border-radius:8px;border:3px solid #7B61C4;margin-bottom:20px;display:block';
-      box.appendChild(img);
+  } catch(e){log('consoleA','<span class="err">❌ '+e.message+'</span>');return false;}
+  finally{if(!overrideData){btn.disabled=false;btn.textContent='🚀 Publish';}}
+}
+
+function clearForm(){
+  ['artTitle','artDesc','artImage','artAuthor','artAuthorPhoto'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('artLink').value='https://www.sportsrip.com';
+  document.getElementById('imgPrev').style.display='none';
+  document.getElementById('avPrev').style.display='none';
+  document.getElementById('consoleA').innerHTML='Form cleared.';
+}
+
+// ══ MIGRATE MODAL ══
+var _migrateArts = [];
+
+async function migrateArticles(){
+  // Open modal and load DEV articles
+  document.getElementById('migrateModal').classList.add('open');
+  document.getElementById('modalLoading').style.display='block';
+  document.getElementById('modalContent').style.display='none';
+  document.getElementById('btnDoMigrate').disabled=true;
+  document.getElementById('migrateList').innerHTML='';
+
+  try{
+    var r=await fetch(WORKERS.dev+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
+    var d=await r.json();
+    var arts=d.articles||[];
+    // Deduplicate by title, sort newest first
+    var seen=new Set(), unique=[];
+    arts.forEach(a=>{if(!seen.has(a.title.trim())){seen.add(a.title.trim());unique.push(a);}});
+    unique.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+    _migrateArts=unique;
+
+    if(!unique.length){
+      document.getElementById('modalLoading').textContent='No articles found in DEV.';
+      return;
     }
-    // Article body
-    var body = document.createElement('div');
-    body.style.cssText = 'font-size:16px;line-height:1.9;color:#4a4030;font-family:Georgia,serif';
-    body.innerHTML = desc;
-    box.appendChild(body);
-    // Show modal
-    document.getElementById('artModal').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-  }
-  function closeArtModalBtn() {
-    document.getElementById('artModal').style.display = 'none';
-    document.getElementById('artModalContent').innerHTML = '';
-    document.body.style.overflow = '';
-  }
-  function closeArtModal(e) {
-    if(e.target === document.getElementById('artModal')) closeArtModalBtn();
-  }
 
-  function updateClock() { var n = new Date(); if(document.getElementById('clockDisplay')) document.getElementById('clockDisplay').innerHTML = n.toLocaleDateString('en-GB',{day:'numeric',month:'short'}) + ' · ' + n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }
-  updateClock(); setInterval(updateClock, 60000);
+    // Render checklist
+    var list=document.getElementById('migrateList');
+    list.innerHTML='';
+    unique.forEach(function(a,i){
+      var dt=new Date(a.pubDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+      var div=document.createElement('div');
+      div.className='chk-item checked';
+      div.dataset.idx=i;
+      div.onclick=function(e){if(e.target.tagName!=='INPUT')div.querySelector('input').click();};
+      div.innerHTML=
+        '<input type="checkbox" checked onchange="updSelCount();this.closest(\'.chk-item\').classList.toggle(\'checked\',this.checked)">'+
+        '<span class="chk-num">'+(i+1)+'</span>'+
+        '<div class="chk-info">'+
+          '<div class="chk-title">'+a.title+'</div>'+
+          '<div class="chk-meta"><span class="badge">'+(a.sport||'ipl').toUpperCase()+'</span> · '+(a.authorName||'—')+' · '+dt+'</div>'+
+        '</div>';
+      list.appendChild(div);
+    });
 
-  function toggleMenu() {
-    var ham = document.getElementById('hamburger');
-    var menu = document.getElementById('mobileMenu');
-    ham.classList.toggle('active');
-    menu.classList.toggle('active');
+    document.getElementById('totalCount').textContent=unique.length+' articles in DEV';
+    document.getElementById('modalLoading').style.display='none';
+    document.getElementById('modalContent').style.display='block';
+    updSelCount();
+  }catch(e){
+    document.getElementById('modalLoading').textContent='Error loading: '+e.message;
   }
+}
 
-  async function fetchSport(s) {
-    try {
-      var isMobile = window.innerWidth < 768;
-      var r = await fetch(WORKER + '/api/news?sport=' + s);
-      var d = await r.json(); var a = d.articles || [];
-      // On mobile — show only 20 articles per sport to save memory and render time
-      if(isMobile) a = a.slice(0, 25);
-      if (s === 'ipl') { 
-        var re = /\b(ipl|csk|rcb|mi|kkr|srh|pbks|dc|rr|lsg|gt|dhoni|kohli|rohit|chennai|mumbai|tata|league|cricket|duckett)\b/i; 
-        a = a.filter(x => re.test((x.title + " " + (x.description || "")).toLowerCase()));
-      }
-      a.forEach(x => { if(!x.sport) x.sport=s; }); return a;
-    } catch(e) { return []; }
-  }
+function closeMigrateModal(){
+  document.getElementById('migrateModal').classList.remove('open');
+}
 
-  function buildCard(a, e, size) {
-    var c = document.createElement('a'); 
-    c.className = 'card ' + (size || '') + (a.isOwn ? ' own-article' : '');
-    if(a.isOwn) {
-      // Own articles — open in modal overlay
-      c.href = '#';
-      (function(article){ c.onclick = function(ev) { ev.preventDefault(); openArtModal(article); }; })(a);
-    } else if(a.isVideo && a.videoId) {
-      // Video card — open YouTube modal
-      c.href = '#';
-      c.onclick = function(ev) {
-        ev.preventDefault();
-        openYT(a.videoId);
-      };
+function updSelCount(){
+  var checks=document.querySelectorAll('#migrateList input[type=checkbox]');
+  var sel=Array.from(checks).filter(c=>c.checked).length;
+  document.getElementById('selCount').textContent=sel+' selected';
+  document.getElementById('btnDoMigrate').disabled=sel===0;
+  document.getElementById('modalMeta').textContent=sel>0?sel+' article(s) will be checked against PROD and migrated':'Select articles to migrate';
+}
+
+function selectAll(state){
+  document.querySelectorAll('#migrateList input[type=checkbox]').forEach(c=>{
+    c.checked=state;
+    c.closest('.chk-item').classList.toggle('checked',state);
+  });
+  updSelCount();
+}
+
+async function doMigrate(){
+  var checks=Array.from(document.querySelectorAll('#migrateList input[type=checkbox]'));
+  var selectedIdx=checks.map((c,i)=>c.checked?i:-1).filter(i=>i>=1||i===0);
+  var selected=selectedIdx.map(i=>_migrateArts[i]);
+
+  var btn=document.getElementById('btnDoMigrate');
+  btn.disabled=true; btn.textContent='⏳ Working...';
+  document.getElementById('modalMeta').textContent='Checking PROD for duplicates...';
+
+  // Close modal and show progress in console
+  closeMigrateModal();
+  log('consoleA','<span class="inf">━━━ Migration started ━━━</span>');
+  log('consoleA','<span class="inf">Selected: '+selected.length+' articles</span>');
+
+  try{
+    // Fetch existing PROD titles
+    log('consoleA','<span class="inf">Fetching PROD articles for duplicate check...</span>');
+    var r2=await fetch(WORKERS.prod+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
+    var d2=await r2.json();
+    var prodTitles=new Set((d2.articles||[]).map(a=>a.title.trim().toLowerCase()));
+    log('consoleA','<span class="inf">PROD has '+prodTitles.size+' existing articles</span>');
+    log('consoleA','<span class="inf">─── Duplicate Check ───</span>');
+
+    // Split into new vs duplicate
+    var toMigrate=[], duplicates=[];
+    selected.forEach(a=>{
+      if(prodTitles.has(a.title.trim().toLowerCase())) duplicates.push(a);
+      else toMigrate.push(a);
+    });
+
+    // Report duplicates
+    if(duplicates.length){
+      log('consoleA','<span style="color:#fbbf24">⚠️ '+duplicates.length+' duplicate(s) skipped (already in PROD):</span>');
+      duplicates.forEach((a,i)=>log('consoleA','<span style="color:#fbbf24">  [SKIP '+(i+1)+'] '+a.title.slice(0,65)+'</span>'));
     } else {
-      // RSS article — popup window on desktop, new tab on mobile
-      c.href = a.link;
-      c.onclick = function(e) {
-        e.preventDefault();
-        var isMobile = window.innerWidth <= 768;
-        if(isMobile) {
-          window.open(a.link, '_blank');
+      log('consoleA','<span class="ok">✓ No duplicates found</span>');
+    }
+
+    if(!toMigrate.length){
+      log('consoleA','<span class="ok">✅ Nothing new to migrate — PROD already has all selected articles.</span>');
+      btn.disabled=false; btn.textContent='⬆️ Migrate Selected';
+      return;
+    }
+
+    log('consoleA','<span class="inf">─── Migrating '+toMigrate.length+' new article(s) ───</span>');
+    var ok=0, fail=0;
+    for(var a of toMigrate){
+      try{
+        var res=await fetch(WORKERS.prod+'/api/publish-own',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+          body:JSON.stringify({sports:[a.sport],sport:a.sport,article:{...a,isOwn:true}})
+        });
+        if(res.ok){
+          ok++;
+          log('consoleA','<span class="ok">  ✅ '+a.title.slice(0,60)+'</span>');
         } else {
-          var w = 900, h = 650;
-          var left = (screen.width - w) / 2;
-          var top = (screen.height - h) / 2;
-          window.open(a.link, '_blank', 
-            'width='+w+',height='+h+',left='+left+',top='+top+
-            ',toolbar=0,menubar=0,scrollbars=1,resizable=1,status=0'
-          );
+          fail++;
+          log('consoleA','<span class="err">  ❌ FAILED: '+a.title.slice(0,50)+'</span>');
         }
-      };
+      }catch(e){
+        fail++;
+        log('consoleA','<span class="err">  ❌ ERROR: '+a.title.slice(0,50)+' — '+e.message+'</span>');
+      }
     }
-    var img = a.image ? '<img class="card-img" src="'+a.image+'" loading="lazy" onerror="this.outerHTML=\'<div class=card-img-placeholder>'+e+'</div>\'">' : '<div class="card-img-placeholder">'+e+'</div>';
-    var d = cleanText(a.description || ""); if (!d || d.trim().length < 5) d = "Experience full depth and insight beyond the preview. Click to reach the complete article and stay ahead of the game.";
-    // ALL cards show blue READ MORE badge — own articles show SPORTSrip as source text
-    var badge = a.isVideo ? '<span class="read-more-badge">▶ WATCH</span>' : '<span class="read-more-badge">READ MORE</span>';
-    var sourceText = a.isOwn ? 'SPORTSrip' : (a.source||'');
-    var sourceTag = sourceText ? '<span class="card-source"> '+sourceText+'</span>' : '';
-    var playOverlay = a.isVideo ? '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;background:rgba(255,0,0,0.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;pointer-events:none;">▶</div>' : '';
-    var imgWrap = a.isVideo ? '<div style="position:relative;line-height:0;">'+img+playOverlay+'</div>' : img;
-    // Author row + share icons for own articles only
-    var authorRow = '';
-    if(a.isOwn) {
-      var auName = (a.authorName && a.authorName.trim()) ? a.authorName : 'SPORTSrip Team';
-      var auPhoto = a.authorPhoto || '';
-      var auInit = auName.split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2)||'SR';
-      var avHtml = auPhoto
-        ? '<img class="card-av" src="'+auPhoto+'">'
-        : '<div class="card-av-ph">'+auInit+'</div>';
-      var artLink = window.location.origin + '/articles?data=' + encodeURIComponent(JSON.stringify(a));
-      var shareText = encodeURIComponent(a.title + ' - SPORTSrip');
-      var shareUrl  = encodeURIComponent('https://www.sportsrip.com');
-      authorRow = '<div class="card-author-row">'+
-        '<div class="card-author-left">'+avHtml+'<span class="card-author-name">'+auName+'</span></div>'+
-        '<div class="card-share-btns">'+
-          '<a class="card-share-btn" title="WhatsApp" href="https://wa.me/?text='+shareText+'%20'+shareUrl+'" target="_blank" onclick="event.stopPropagation()">💬</a>'+
-          '<a class="card-share-btn" title="Share on X" href="https://x.com/intent/tweet?text='+shareText+'&url='+shareUrl+'" target="_blank" onclick="event.stopPropagation()">𝕏</a>'+
-          '<span class="card-share-btn" title="Copy link" onclick="event.stopPropagation();navigator.clipboard.writeText(window.location.origin);this.textContent=String.fromCharCode(10003);var t=this;setTimeout(function(){t.textContent=String.fromCharCode(128279);},1500);">'+String.fromCharCode(128279)+'</span>'+
-        '</div>'+
+
+    log('consoleA','<span class="inf">─── Summary ───</span>');
+    log('consoleA','<span class="ok">✅ Migrated: '+ok+' · Skipped (dup): '+duplicates.length+(fail?' · Failed: '+fail:'')+'</span>');
+    loadStats();
+  }catch(e){
+    log('consoleA','<span class="err">❌ '+e.message+'</span>');
+  }
+  btn.disabled=false; btn.textContent='⬆️ Migrate Selected';
+}
+
+// ══ PUBLISHED LIST ══
+async function loadPublished(){
+  var c=document.getElementById('pubList');
+  c.innerHTML='<div style="color:var(--text3);font-size:12px;">Loading...</div>';
+  try{
+    var r=await fetch(WURL+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
+    var d=await r.json();
+    var arts=d.articles||[];
+    // Deduplicate by title (link is same for all)
+    var seen=new Set(),unique=[];
+    arts.forEach(a=>{if(!seen.has(a.title)){seen.add(a.title);unique.push(a);}});
+    if(!unique.length){c.innerHTML='<div style="color:var(--text3);font-size:12px;">No articles yet.</div>';return;}
+    c.innerHTML='<div style="font-size:11px;color:var(--text3);margin-bottom:8px;">'+unique.length+' articles in '+ENV.toUpperCase()+'</div>';
+    unique.forEach(function(a){
+      var div=document.createElement('div');div.className='art-item';
+      var th=a.image?'<img class="art-thumb" src="'+a.image+'" onerror="this.style.display=\'none\'">'
+        :'<div class="art-ph">🏏</div>';
+      var dt=new Date(a.pubDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+      div.innerHTML=th+
+        '<div class="art-info"><div class="art-title">'+a.title+'</div>'+
+        '<div class="art-meta"><span class="badge">'+(a.sport||'ipl').toUpperCase()+'</span> · '+(a.authorName||'—')+' · '+dt+'</div></div>'+
+        '<button class="btn btn-danger btn-sm" onclick="delArt(\''+a.sport+'\',\''+encodeURIComponent(a.title)+'\',\''+encodeURIComponent(a.link)+'\',this)">🗑</button>';
+      c.appendChild(div);
+    });
+  }catch(e){c.innerHTML='<div style="color:var(--red);font-size:12px;">'+e.message+'</div>';}
+}
+
+async function delArt(sport,encTitle,encLink,btn){
+  if(!confirm('Delete this article?'))return;
+  btn.textContent='...';btn.disabled=true;
+  try{
+    var r=await fetch(WURL+'/api/delete-own',{method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+      body:JSON.stringify({sport,link:decodeURIComponent(encLink)})});
+    var d=await r.json();
+    if(d.success)btn.closest('.art-item').remove();
+    else{btn.textContent='🗑';btn.disabled=false;}
+  }catch(e){btn.textContent='🗑';btn.disabled=false;}
+}
+
+// ══ SOURCES ══
+async function loadSources(){
+  var c=document.getElementById('srcList');
+  c.innerHTML='<div style="color:var(--text3);font-size:12px;">Loading...</div>';
+  try{
+    var r=await fetch(WURL+'/api/feeds');
+    var d=await r.json();
+    var feeds=d.feeds||[];
+    if(!feeds.length){c.innerHTML='<div style="color:var(--text3);font-size:12px;">No sources. Click Preload Defaults.</div>';return;}
+    c.innerHTML='';
+    feeds.forEach(f=>{
+      var div=document.createElement('div');div.className='feed-item';
+      div.innerHTML='<div class="feed-l"><div class="feed-name"><span class="pill">'+f.sport+'</span> '+f.name+'</div>'+
+        '<div class="feed-url">'+f.url+'</div></div>'+
+        '<button class="btn btn-danger btn-sm" onclick="delFeed(\''+encodeURIComponent(f.url)+'\',this)">Remove</button>';
+      c.appendChild(div);
+    });
+  }catch(e){c.innerHTML='<div style="color:var(--red);font-size:12px;">'+e.message+'</div>';}
+}
+
+async function testFeed(){
+  var url=document.getElementById('fUrl').value.trim();
+  if(!url){log('consoleSrc','<span class="err">❌ Enter URL first</span>');return;}
+  log('consoleSrc','<span class="inf">Testing...</span>');
+  try{
+    var r=await fetch(WURL+'/api/test-feed',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})});
+    var d=await r.json();
+    if(d.valid)log('consoleSrc','<span class="ok">✅ Valid: '+d.name+' ('+d.itemCount+' items)</span>');
+    else log('consoleSrc','<span class="err">❌ '+d.message+'</span>');
+  }catch(e){log('consoleSrc','<span class="err">❌ '+e.message+'</span>');}
+}
+
+async function saveFeed(){
+  var sport=document.getElementById('fSport').value,name=document.getElementById('fName').value.trim();
+  var url=document.getElementById('fUrl').value.trim(),prio=parseInt(document.getElementById('fPrio').value)||3;
+  if(!name||!url){log('consoleSrc','<span class="err">❌ Name and URL required</span>');return;}
+  try{
+    var r=await fetch(WURL+'/api/feeds',{method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+      body:JSON.stringify({sport,name,url,priority:prio,label:sport.toUpperCase()})});
+    var d=await r.json();
+    if(r.ok)log('consoleSrc','<span class="ok">✅ Added! Total: '+d.total+'</span>');
+    else log('consoleSrc','<span class="err">❌ '+d.error+'</span>');
+    loadSources();
+  }catch(e){log('consoleSrc','<span class="err">❌ '+e.message+'</span>');}
+}
+
+async function delFeed(enc,btn){
+  if(!confirm('Remove this source?'))return;
+  btn.textContent='...';btn.disabled=true;
+  try{
+    var r=await fetch(WURL+'/api/feeds',{method:'DELETE',
+      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+      body:JSON.stringify({url:decodeURIComponent(enc)})});
+    var d=await r.json();
+    if(d.success)btn.closest('.feed-item').remove();
+    else{btn.textContent='Remove';btn.disabled=false;}
+  }catch(e){btn.textContent='Remove';btn.disabled=false;}
+}
+
+async function preloadFeeds(){
+  log('consoleSrc','<span class="inf">Preloading 29 feeds...</span>');
+  try{
+    var r=await fetch(WURL+'/api/preload-feeds',{method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':PASS}});
+    var d=await r.json();
+    if(r.ok)log('consoleSrc','<span class="ok">✅ Added '+d.added+', Total '+d.total+'</span>');
+    else log('consoleSrc','<span class="err">❌ '+d.error+'</span>');
+    loadSources();
+  }catch(e){log('consoleSrc','<span class="err">❌ '+e.message+'</span>');}
+}
+
+// ══ REFRESH ══
+var refWorker=WORKERS.dev;
+function chkRefEnv(){
+  var env=document.getElementById('refEnv').value;
+  if(env==='prod'&&!confirm('⚠️ PROD refresh updates live sportsrip.com. Continue?')){
+    document.getElementById('refEnv').value='dev';return;
+  }
+  refWorker=WORKERS[env];
+}
+
+async function doRefresh(type){
+  var sport=document.getElementById('refSport').value;
+  var btn=document.getElementById(type==='raw'?'btnS1':'btnS2');
+  btn.disabled=true;btn.textContent='⏳ Running...';
+  log('consoleRef','<span class="inf">Triggering '+type+' for '+sport+'...</span>');
+  try{
+    var r=await fetch(refWorker+'/api/trigger-fetch',{method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+      body:JSON.stringify({type,sport,limit:50})});
+    var d=await r.json();
+    if(r.ok&&d.done)log('consoleRef','<span class="ok">✅ Done! Updated '+d.updated+' sport(s)</span>');
+    else log('consoleRef','<span class="err">❌ Error</span>');
+  }catch(e){log('consoleRef','<span class="err">❌ '+e.message+'</span>');}
+  btn.disabled=false;
+  btn.textContent=type==='raw'?'🔄 Fetch Raw Articles':'⚙️ Curate Articles';
+}
+
+// ══ CSV IMPORT ══
+function importCSV(input){
+  var f=input.files[0]; if(!f)return;
+  var r=new FileReader();
+  r.onload=function(e){
+    var lines=e.target.result.split('\n').filter(l=>l.trim());
+    if(lines.length<2){alert('CSV must have a header row and at least one data row.');return;}
+    var headers=lines[0].split(',').map(h=>h.trim().toLowerCase().replace(/"/g,''));
+    var articles=[];
+    for(var i=1;i<lines.length;i++){
+      var vals=parseCSVLine(lines[i]);
+      var obj={};
+      headers.forEach((h,idx)=>obj[h]=vals[idx]||'');
+      if(obj.title||obj.headline) articles.push(obj);
+    }
+    if(!articles.length){alert('No valid articles found in CSV.');return;}
+    showImportQueue(articles);
+  };
+  r.readAsText(f);
+  input.value='';
+}
+
+function parseCSVLine(line){
+  var result=[],cur='',inQ=false;
+  for(var i=0;i<line.length;i++){
+    var c=line[i];
+    if(c==='"'&&!inQ){inQ=true;}
+    else if(c==='"'&&inQ){inQ=false;}
+    else if(c===','&&!inQ){result.push(cur.trim());cur='';}
+    else cur+=c;
+  }
+  result.push(cur.trim());
+  return result;
+}
+
+function showImportQueue(articles){
+  var qList=document.getElementById('queueList');
+  var qDiv=document.getElementById('importQueue');
+  qList.innerHTML='';
+  qDiv.style.display='block';
+  showPanel('write');
+
+  articles.forEach(function(a,idx){
+    var div=document.createElement('div');
+    div.className='queue-item';
+    div.id='qi-'+idx;
+    var title=a.title||a.headline||'';
+    var desc=a.description||a.content||a.body||'';
+    var sport=a.sport||'ipl';
+    var author=a.author||a.authorname||'';
+    var photo=a.authorphoto||a.photo||'';
+    var image=a.image||a.thumbnail||a.thumb||'';
+    var link=a.link||a.url||'https://www.sportsrip.com';
+    div.innerHTML=
+      '<div class="q-title">'+title.slice(0,80)+(title.length>80?'...':'')+'</div>'+
+      '<div class="q-meta">Sport: '+sport+' · Author: '+(author||'—')+' · '+(desc.length)+' chars</div>'+
+      '<div class="q-actions">'+
+        '<button class="btn btn-primary btn-sm" onclick="publishQueued('+idx+',\''+encodeURIComponent(title)+'\',\''+encodeURIComponent(desc)+'\',\''+sport+'\',\''+encodeURIComponent(author)+'\',\''+encodeURIComponent(photo)+'\',\''+encodeURIComponent(image)+'\',\''+encodeURIComponent(link)+'\',this)">🚀 Publish</button>'+
+        '<button class="btn btn-outline btn-sm" onclick="editQueued('+idx+',\''+encodeURIComponent(title)+'\',\''+encodeURIComponent(desc)+'\',\''+sport+'\',\''+encodeURIComponent(author)+'\',\''+encodeURIComponent(photo)+'\',\''+encodeURIComponent(image)+'\',\''+encodeURIComponent(link)+'\')">✏️ Edit</button>'+
+        '<button class="btn btn-outline btn-sm" onclick="document.getElementById(\'qi-'+idx+'\').remove()">Skip</button>'+
       '</div>';
-    }
-    c.innerHTML = imgWrap+'<div class="card-body"><div class="card-meta">'+badge+sourceTag+'</div><div class="card-title">'+a.title+'</div><div class="card-desc">'+d+'</div>'+authorRow+'</div>';
-    return c;
-  }
+    qList.appendChild(div);
+  });
+  document.getElementById('importQueue').scrollIntoView({behavior:'smooth'});
+}
 
-  function buildSidebarItem(a, e) {
-    var el = document.createElement('a'); 
-    el.className = 'sidebar-article';
-    if(a.isOwn) {
-      el.href = 'blog.html?data=' + encodeURIComponent(JSON.stringify(a));
-      el.target = '_self';
-    } else {
-      el.href = a.link;
-      el.onclick = function(ev) {
-        ev.preventDefault();
-        if(window.innerWidth <= 768) {
-          window.open(a.link, '_blank');
-        } else {
-          var w=900, h=650, left=(screen.width-w)/2, top=(screen.height-h)/2;
-          window.open(a.link, '_blank', 'width='+w+',height='+h+',left='+left+',top='+top+',toolbar=0,menubar=0,scrollbars=1,resizable=1,status=0');
-        }
-      };
-    }
-    var thumb = a.image ? '<img class="sidebar-thumb" src="'+a.image+'" onerror="this.outerHTML=\'<div class=sidebar-thumb-placeholder>'+e+'</div>\'">' : '<div class="sidebar-thumb-placeholder">'+e+'</div>';
-    el.innerHTML = thumb + '<div class="sidebar-text"><div class="sidebar-headline">'+a.title+'</div><div class="sidebar-source">'+(a.source||'SPORTSrip')+'</div></div>';
-    return el;
-  }
+async function publishQueued(idx,tE,dE,sport,aE,pE,iE,lE,btn){
+  btn.disabled=true;btn.textContent='⏳';
+  var ok=await publishArticle({
+    title:decodeURIComponent(tE), desc:decodeURIComponent(dE),
+    sport, author:decodeURIComponent(aE), photo:decodeURIComponent(pE),
+    image:decodeURIComponent(iE), link:decodeURIComponent(lE)
+  });
+  if(ok){
+    var item=document.getElementById('qi-'+idx);
+    if(item){item.style.background='#f0fff4';item.style.borderColor='#68d391';
+    item.querySelector('.q-actions').innerHTML='<span style="color:var(--green);font-size:11px;font-weight:600;">✅ Published</span>';}
+  } else {btn.disabled=false;btn.textContent='🚀 Publish';}
+}
 
-  async function renderNews() {
-    var o = document.getElementById('output'); o.innerHTML = 'Connecting to feeds...';
-    var a = currentSport === 'main' ? allCache : (sportCache[currentSport] || []);
-    
-    if (currentSport === 'ipl' && !a.length && sportCache['cricket']) {
-      var re = /\b(ipl|csk|rcb|mi|kkr|srh|pbks|dc|rr|lsg|gt|dhoni|kohli|rohit|chennai|mumbai|tata|league|duckett)\b/i;
-      a = sportCache['cricket'].filter(x => re.test((x.title + " " + (x.description || "")).toLowerCase()));
-    }
+function editQueued(idx,tE,dE,sport,aE,pE,iE,lE){
+  document.getElementById('artTitle').value=decodeURIComponent(tE);
+  document.getElementById('artDesc').value=decodeURIComponent(dE);
+  document.getElementById('artSport').value=sport;
+  document.getElementById('artAuthor').value=decodeURIComponent(aE);
+  document.getElementById('artAuthorPhoto').value=decodeURIComponent(pE);
+  document.getElementById('artImage').value=decodeURIComponent(iE);
+  document.getElementById('artLink').value=decodeURIComponent(lE)||'https://www.sportsrip.com';
+  prevImg();prevAv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 
-    if (!a.length) { o.innerHTML = '<div style="grid-column:1/-1; padding:60px; text-align:center;">No stories found.</div>'; return; }
+function closeQueue(){
+  document.getElementById('importQueue').style.display='none';
+}
 
-    // ============================================================
-    // BLOCK START: Pin own articles to top for 24 hours
-    // Added  : 27-Mar-2026
-    // Purpose: Articles with isOwn:true published within the last
-    //          24 hours always float to the top regardless of date.
-    //          After 24 hours they flow down naturally with RSS.
-    //          Multiple own articles within 24hrs all stay on top.
-    // ============================================================
-    a = pinnedSort(a);
-    // BLOCK END: Pin own articles to top (27-Mar-2026)
-    // ============================================================
-
-    o.innerHTML = ''; var f = document.createDocumentFragment(); var count = 0;
-    a.forEach(x => { 
-      if (x.source === 'Sky Sports Cricket' && (!x.link || !x.link.toLowerCase().includes('cricket'))) return; 
-      var s = (count === 0 && x.image && window.innerWidth > 1000) ? 'card-hero' : ''; 
-      f.appendChild(buildCard(x, EMOJI[x.sport] || '✨', s)); count++; 
-    });
-    o.appendChild(f);
-  }
-
-  // ============================================================
-  // BLOCK START: pinnedSort — own articles on top for 24 hours
-  // Added  : 27-Mar-2026
-  // Purpose: Splits article array into two groups:
-  //          1. Your own articles published within last 24 hours
-  //             → always shown first, sorted newest first
-  //          2. Everything else (RSS articles + own articles
-  //             older than 24hrs) → sorted by pubDate as normal
-  //          Result: your fresh articles always lead the page.
-  //          After 24 hours they naturally fall into the stream.
-  // ============================================================
-  function pinnedSort(articles) {
-    var now = Date.now();
-    var hrs24 = 24 * 60 * 60 * 1000;
-    var pinned = [];
-    var rest = [];
-    articles.forEach(function(a) {
-      var age = now - new Date(a.pubDate).getTime();
-      if (a.isOwn && age < hrs24) {
-        pinned.push(a);
-      } else {
-        rest.push(a);
-      }
-    });
-    // Sort pinned newest first, rest newest first
-    pinned.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
-    rest.sort(function(a,b){ return new Date(b.pubDate)-new Date(a.pubDate); });
-    return pinned.concat(rest);
-  }
-  // BLOCK END: pinnedSort (27-Mar-2026)
-  // ============================================================
-
-  function generateTabs(list) {
-    var activeTabs = ['main', 'ipl'];
-    list.forEach(s => { if(s !== 'ipl') activeTabs.push(s); });
-    var desktopH = ''; var mobileH = '';
-    activeTabs.forEach(s => {
-      var activeClass = s === currentSport ? ' active' : '';
-      desktopH += '<div class="tab'+activeClass+'" data-sport="'+s+'" onclick="setActive(\''+s+'\')">'+LABEL[s]+'</div>';
-      mobileH += '<div class="mobile-tab'+activeClass+'" data-sport="'+s+'" onclick="setActive(\''+s+'\'); toggleMenu();">'+LABEL[s]+'</div>';
-    });
-    document.getElementById('desktopTabs').innerHTML = desktopH;
-    document.getElementById('mobileMenu').innerHTML = mobileH;
-  }
-
-  function setActive(k) {
-    currentSport = k; 
-    document.querySelectorAll('.tab, .mobile-tab').forEach(t=>t.classList.toggle('active', t.dataset.sport===k));
-    document.getElementById('sectionLabel').innerHTML = (EMOJI[k]||'🏆') + ' ' + (LABEL[k]||'News');
-    window.scrollTo({top: 0, behavior: 'smooth'});
-    // If sport not loaded yet — fetch on demand then render
-    if(k !== 'main' && !sportCache[k]) {
-      document.getElementById('output').innerHTML = '<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--text2)">Loading ' + (LABEL[k]||k) + '...</div>';
-      fetchSport(k).then(function(articles) {
-        if(articles.length) {
-          sportCache[k] = pinnedSort(articles);
-        }
-        renderNews();
-      });
-    } else {
-      renderNews();
-    }
-  }
-
-  // ============================================================
-  // BLOCK START: Optimized init — priority sports first
-  // Added  : 27-Mar-2026
-  // Purpose: Load IPL, Cricket, Football FIRST and show immediately.
-  //          Load dynamic sports list IN PARALLEL — don't wait for it.
-  //          Lazy load remaining sports in background after render.
-  //          Makes page feel instant — content shows in ~1 second.
-  // ============================================================
-  var PRIORITY_FIRST = window.innerWidth < 768 
-    ? ['ipl']  // mobile — load only IPL first, rest on tab click
-    : ['ipl', 'cricket', 'football', 'f1', 'basketball']; // desktop
-  var PRIORITY_REST  = ['cricket', 'football', 'f1', 'basketball', 'tennis', 'kabaddi', 'boxing', 'golf', 'athletics', 'rugby', 'olympics', 'nfl', 'badminton', 'baseball'];
-
-  async function init() {
-    // Load dynamic sports + priority sports IN PARALLEL — don't wait for dynamic
-    var [_, priorityResults] = await Promise.all([
-      loadDynamicSports(),  // runs in background
-      Promise.allSettled(PRIORITY_FIRST.map(fetchSport)) // runs immediately
-    ]);
-
-    // Render priority sports immediately
-    var sa = {};
-    priorityResults.forEach((r, i) => {
-      if (r.status === 'fulfilled' && r.value.length) {
-        sportCache[PRIORITY_FIRST[i]] = pinnedSort(r.value);
-        sa[PRIORITY_FIRST[i]] = sportCache[PRIORITY_FIRST[i]].slice();
-      }
-    });
-
-    var active = [];
-    for (var s of PRIORITY_SPORTS) {
-      if (sportCache[s] && sportCache[s].length && active.length < 10) active.push(s);
-    }
-
-    // Build allCache from priority sports first
-    var all = [], seen = new Set(), keep = true;
-    while(keep) {
-      keep = false;
-      active.forEach(sk => {
-        if (sa[sk] && sa[sk].length) {
-          keep = true;
-          var a = sa[sk].shift();
-          if (!seen.has(a.link)) { seen.add(a.link); all.push(a); }
-        }
-      });
-    }
-
-    allCache = pinnedSort(all);
-    generateTabs(active);
-
-    // Show sidebar immediately
-    if (allCache.length) {
-      var tr = document.getElementById('trendingList'); tr.innerHTML = '';
-      pinnedSort(allCache.filter(x=>x.image)).slice(0,6).forEach(a=>tr.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')));
-      var rc = document.getElementById('recentList'); rc.innerHTML = '';
-      pinnedSort(allCache).slice(6, 11).forEach(a=>rc.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')));
-    }
-
-    // Show IPL immediately
-    setActive('ipl');
-
-    // Lazy load remaining sports in background — don't block UI
-    setTimeout(async function() {
-      var restSports = PRIORITY_REST.filter(s => !sportCache[s]);
-      if (restSports.length === 0) return;
-      var restResults = await Promise.allSettled(restSports.map(fetchSport));
-      restResults.forEach((r, i) => {
-        if (r.status === 'fulfilled' && r.value.length) {
-          sportCache[restSports[i]] = pinnedSort(r.value);
-        }
-      });
-      // Regenerate tabs with all sports now loaded
-      var allActive = [];
-      for (var s of PRIORITY_SPORTS) {
-        if (sportCache[s] && sportCache[s].length && allActive.length < 10) allActive.push(s);
-      }
-      generateTabs(allActive);
-    }, 100); // 100ms delay — after first render
-  }
-  // BLOCK END: Optimized init (27-Mar-2026)
-  // ============================================================
-
-  init();
+// ══ INIT ══
+loadStats();
 </script>
 
-<!-- ═══ Article Modal ═══ -->
-<div id="artModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;" onclick="closeArtModal(event)">
-  <div id="artModalBox" style="position:relative;width:50%;height:75%;background:#faf8f3;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
-    <!-- Close button -->
-    <button onclick="closeArtModalBtn()" style="position:absolute;top:12px;right:14px;background:rgba(0,0,0,0.12);border:none;font-size:18px;width:34px;height:34px;border-radius:50%;cursor:pointer;z-index:10;color:#2c2418;font-weight:700;">✕</button>
-    <!-- Scrollable content -->
-    <div id="artModalContent" style="overflow-y:auto;flex:1;padding:32px 36px 40px;font-family:Georgia,serif;color:#2c2418;">
-      <!-- filled by JS -->
+<!-- ── MIGRATE MODAL ── -->
+<div class="modal-overlay" id="migrateModal" onclick="if(event.target===this)closeMigrateModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span style="font-size:18px;">⬆️</span>
+      <h3>Migrate DEV → PROD</h3>
+      <div style="font-size:11px;color:var(--text3);background:var(--bg);padding:3px 10px;border-radius:20px;border:1px solid var(--border);" id="modalEnvLabel">DEV → PROD</div>
+      <button class="modal-close" onclick="closeMigrateModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="modalLoading" style="text-align:center;padding:32px;color:var(--text3);font-size:13px;">⏳ Loading DEV articles...</div>
+      <div id="modalContent" style="display:none;">
+        <div class="sel-bar">
+          <span id="selCount">0 selected</span>
+          <button class="btn btn-outline btn-sm" onclick="selectAll(true)">Select All</button>
+          <button class="btn btn-outline btn-sm" onclick="selectAll(false)">Clear All</button>
+          <span style="flex:1;"></span>
+          <span style="font-size:11px;color:var(--text3);" id="totalCount"></span>
+        </div>
+        <div class="chk-list" id="migrateList"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-meta" id="modalMeta">Select articles to migrate</div>
+      <button class="btn btn-outline" onclick="closeMigrateModal()">Cancel</button>
+      <button class="btn btn-amber" id="btnDoMigrate" onclick="doMigrate()" disabled>⬆️ Migrate Selected</button>
     </div>
   </div>
 </div>
+
 </body>
 </html>
