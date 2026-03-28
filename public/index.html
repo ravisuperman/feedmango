@@ -525,8 +525,18 @@
     var c = document.createElement('a'); 
     c.className = 'card ' + (size || '') + (a.isOwn ? ' own-article' : '');
     if(a.isOwn) {
+      // Own articles — open articles.html in same popup style as RSS
       c.href = 'articles.html?data=' + encodeURIComponent(JSON.stringify(a));
-      c.target = '_self';
+      c.onclick = function(ev) {
+        ev.preventDefault();
+        var isMobile = window.innerWidth <= 768;
+        if(isMobile) {
+          window.open(c.href, '_blank');
+        } else {
+          var w=900, h=650, left=(screen.width-w)/2, top=(screen.height-h)/2;
+          window.open(c.href, '_blank', 'width='+w+',height='+h+',left='+left+',top='+top+',toolbar=0,menubar=0,scrollbars=1,resizable=1,status=0');
+        }
+      };
     } else if(a.isVideo && a.videoId) {
       // Video card — open YouTube modal
       c.href = '#';
