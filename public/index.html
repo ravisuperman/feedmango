@@ -165,7 +165,7 @@
     .card-source { font-size: 11px; color: var(--text3); font-weight: 600; opacity: 0.8; }
     .card-title { font-size: 19px; font-weight: 800; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .card-desc { font-size: 14px; color: var(--text2); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    .own-article .card-desc { -webkit-line-clamp: unset; display: block; overflow: hidden; flex: 1; }
+    .own-article .card-desc { -webkit-line-clamp: 6; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
 
     /* ============================================================
        BLOCK START: "Our Article" badge for your own articles
@@ -886,7 +886,7 @@
 
 <!-- ═══ Article Modal ═══ -->
 <div id="artModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;" onclick="closeArtModal(event)">
-  <div id="artModalBox" style="position:relative;width:min(50%,900px);height:80%;background:#faf8f3;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+  <div id="artModalBox" style="position:relative;width:20%;height:60%;background:#faf8f3;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
     <button onclick="closeArtModalBtn()" style="position:absolute;top:12px;right:14px;background:rgba(0,0,0,0.12);border:none;font-size:18px;width:34px;height:34px;border-radius:50%;cursor:pointer;z-index:10;color:#2c2418;font-weight:700;">✕</button>
     <div id="artModalContent" style="overflow-y:auto;flex:1;padding:32px 36px 40px;font-family:Georgia,serif;color:#2c2418;"></div>
   </div>
