@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,8 +13,6 @@
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);display:flex;min-height:100vh;}
-
-  /* SIDEBAR */
   .sidebar{width:220px;background:var(--sidebar);min-height:100vh;display:flex;flex-direction:column;flex-shrink:0;}
   .sidebar-logo{padding:16px;border-bottom:1px solid rgba(255,255,255,.15);}
   .brand{font-size:19px;font-weight:800;color:#fff;letter-spacing:1px;}
@@ -34,8 +31,6 @@
   .env-badge{margin-top:6px;text-align:center;font-size:10px;font-weight:700;padding:3px 8px;border-radius:12px;}
   .env-badge.dev{background:rgba(251,191,36,.2);color:#fbbf24;}
   .env-badge.prod{background:rgba(239,68,68,.2);color:#fc8181;}
-
-  /* MAIN */
   .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
   .topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 20px;height:52px;display:flex;align-items:center;gap:12px;}
   .topbar-title{font-size:15px;font-weight:700;color:var(--text);flex:1;}
@@ -43,22 +38,11 @@
   .prod-banner{background:#fef2f2;border-bottom:2px solid #fc8181;padding:7px 20px;font-size:12px;font-weight:700;color:#c53030;display:none;text-align:center;}
   .topbar-avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--border);cursor:pointer;flex-shrink:0;}
   .topbar-avatar-ph{width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
-
-  /* PAGE */
   .page{flex:1;overflow-y:auto;padding:20px;}
   .panel{display:none;}
   .panel.active{display:block;}
-
-  /* IMPORT BAR */
-  .import-bar{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);}
-  .import-bar label{font-size:12px;font-weight:600;color:var(--text2);}
-  .import-hint{font-size:11px;color:var(--text3);flex:1;}
-
-  /* CARD */
   .card{background:var(--card);border-radius:12px;padding:18px;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:16px;}
   .card-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-
-  /* FORM */
   .form-row{display:grid;gap:12px;margin-bottom:12px;}
   .form-row.c2{grid-template-columns:1fr 1fr;}
   .form-row.c3{grid-template-columns:1fr 1fr 1fr;}
@@ -72,19 +56,14 @@
   .ta-large{min-height:180px;max-height:400px;}
   .img-preview{width:100%;height:110px;border-radius:8px;border:2px solid var(--border);object-fit:cover;display:none;margin-top:6px;}
   .av-preview{width:36px;height:36px;border-radius:50%;border:2px solid var(--border);object-fit:cover;display:none;margin-top:6px;vertical-align:middle;}
-
-  /* AUTOCOMPLETE */
   .ac-wrap{position:relative;}
   .ac-list{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:200;max-height:160px;overflow-y:auto;display:none;}
   .ac-item{display:flex;align-items:center;gap:8px;padding:7px 11px;cursor:pointer;font-size:12px;}
   .ac-item:hover{background:var(--bg);}
   .ac-av{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid var(--border);flex-shrink:0;}
   .ac-av-ph{width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;}
-
-  /* MULTI-SELECT CHIPS */
   .ms-wrap{position:relative;}
   .ms-display{display:flex;flex-wrap:wrap;gap:6px;padding:7px 10px;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;min-height:40px;cursor:pointer;align-items:center;}
-  .ms-display:focus-within{border-color:var(--blue);}
   .chip{background:var(--blue);color:#fff;padding:2px 9px;border-radius:14px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:4px;}
   .chip .x{cursor:pointer;opacity:.7;font-size:13px;line-height:1;}
   .chip .x:hover{opacity:1;}
@@ -94,8 +73,6 @@
   .ms-opt:hover{background:var(--bg);}
   .ms-opt.sel{color:var(--blue);font-weight:600;}
   .ms-opt input{width:14px;height:14px;margin:0;accent-color:var(--blue);}
-
-  /* BUTTONS */
   .btn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:.15s;display:inline-flex;align-items:center;gap:5px;}
   .btn-primary{background:var(--blue);color:#fff;}
   .btn-primary:hover{background:#0269cc;}
@@ -104,31 +81,21 @@
   .btn-success:hover{background:#2f855a;}
   .btn-danger{background:var(--red);color:#fff;}
   .btn-danger:hover{background:#c53030;}
-  .btn-amber{background:var(--amber);color:#fff;}
-  .btn-amber:hover{background:#b45309;}
   .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2);}
   .btn-outline:hover{border-color:var(--blue);color:var(--blue);}
   .btn-sm{padding:5px 10px;font-size:11px;}
   .btn-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;align-items:center;}
-
-  /* CONSOLE */
   .console{background:#0f172a;border-radius:8px;padding:10px 12px;font-family:'Courier New',monospace;font-size:11px;color:#94a3b8;min-height:60px;max-height:130px;overflow-y:auto;margin-top:10px;}
   .ok{color:#4ade80;}.err{color:#f87171;}.inf{color:#60a5fa;}
-
-  /* STATS */
   .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
   .stat{background:#fff;border-radius:10px;padding:14px;border:1px solid var(--border);text-align:center;}
   .stat-n{font-size:26px;font-weight:800;color:var(--blue);}
   .stat-l{font-size:11px;color:var(--text3);margin-top:3px;}
-
-  /* FEED LIST */
   .feed-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--bg);border-radius:8px;margin-bottom:7px;border:1px solid var(--border);font-size:12px;}
   .feed-l{display:flex;flex-direction:column;gap:2px;}
   .feed-name{font-weight:600;}
   .feed-url{color:var(--text3);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:400px;}
   .pill{background:var(--blue);color:#fff;padding:1px 7px;border-radius:8px;font-size:10px;font-weight:700;text-transform:uppercase;}
-
-  /* ARTICLE LIST */
   .art-item{display:flex;gap:10px;padding:10px;background:var(--bg);border-radius:8px;margin-bottom:7px;border:1px solid var(--border);align-items:center;}
   .art-thumb{width:54px;height:38px;object-fit:cover;border-radius:6px;flex-shrink:0;border:1px solid var(--border);}
   .art-ph{width:54px;height:38px;border-radius:6px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
@@ -136,8 +103,6 @@
   .art-title{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .art-meta{font-size:11px;color:var(--text3);margin-top:2px;}
   .badge{display:inline-block;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:700;text-transform:uppercase;background:#dbeafe;color:#1e40af;}
-
-  /* STEP CARDS */
   .step-card{background:linear-gradient(135deg,#035bb0,#0269cc);border-radius:12px;padding:18px;color:#fff;margin-bottom:12px;}
   .step-card.green{background:linear-gradient(135deg,#0f766e,#0d9488);}
   .step-card h3{font-size:13px;font-weight:700;margin-bottom:5px;}
@@ -145,17 +110,11 @@
   .btn-white{background:#fff;color:var(--blue);border:none;padding:8px 18px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;}
   .btn-white:hover{background:#f0f4f8;}
   .btn-white:disabled{opacity:.5;cursor:not-allowed;}
-
-  /* CSV IMPORT QUEUE */
-  .import-queue{margin-top:14px;}
   .queue-item{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:8px;font-size:12px;}
   .queue-item .q-title{font-weight:600;margin-bottom:4px;}
   .queue-item .q-meta{color:var(--text3);font-size:11px;}
   .queue-item .q-actions{display:flex;gap:6px;margin-top:8px;}
-
-  @media(max-width:768px){.sidebar{width:56px;}.brand,.nav-item span,.nav-section,.sidebar-footer .env-label{display:none;}.form-row.c2,.form-row.c3{grid-template-columns:1fr;}.stats-row{grid-template-columns:1fr;}}
-
-  /* ── MIGRATE MODAL ── */
+  /* MIGRATE MODAL */
   .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:center;justify-content:center;}
   .modal-overlay.open{display:flex;}
   .modal-box{background:#fff;border-radius:14px;width:600px;max-width:95vw;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.3);}
@@ -177,12 +136,49 @@
   .chk-meta{font-size:11px;color:var(--text3);margin-top:2px;}
   .sel-bar{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);}
   .sel-bar span{font-size:12px;color:var(--text2);}
-
+  /* VIEW ARTICLES */
+  .va-search-bar{display:flex;gap:10px;margin-bottom:16px;align-items:center;}
+  .va-search-input{flex:1;background:#fff;border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-size:13px;color:var(--text);}
+  .va-search-input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(3,91,176,.1);}
+  .va-count{font-size:12px;color:var(--text3);white-space:nowrap;}
+  .va-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:1000px){.va-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:640px){.va-grid{grid-template-columns:1fr;}}
+  .va-card{background:#fff;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.07);cursor:pointer;transition:.2s;}
+  .va-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.12);}
+  .va-img{width:100%;height:160px;object-fit:cover;display:block;}
+  .va-img-ph{width:100%;height:160px;background:linear-gradient(135deg,#e6f1fb,#dbeafe);display:flex;align-items:center;justify-content:center;font-size:36px;}
+  .va-body{padding:13px;flex:1;display:flex;flex-direction:column;gap:7px;}
+  .va-badge{background:#035bb0;color:#fff;padding:2px 8px;font-size:10px;font-weight:800;text-transform:uppercase;border-radius:4px;display:inline-block;}
+  .va-title{font-size:13px;font-weight:800;line-height:1.3;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .va-desc{font-size:11px;color:var(--text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .va-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px;border-top:1px solid var(--border);}
+  .va-av{width:22px;height:22px;border-radius:50%;object-fit:cover;border:1.5px solid var(--border);}
+  .va-av-ph{width:22px;height:22px;border-radius:50%;background:#f0a500;color:#000;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+  .va-author{font-size:11px;font-weight:600;color:var(--text2);}
+  .va-date{font-size:10px;color:var(--text3);}
+  .va-empty{grid-column:1/-1;text-align:center;padding:48px;color:var(--text3);font-size:13px;}
+  /* ARTICLE POPUP */
+  .ap-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:2000;display:none;align-items:center;justify-content:center;}
+  .ap-overlay.open{display:flex;}
+  .ap-box{background:#faf8f3;border-radius:14px;width:680px;max-width:95vw;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+  .ap-top{padding:12px 18px;border-bottom:1px solid #d4c9a8;display:flex;align-items:center;justify-content:space-between;background:#f3f0e8;border-radius:14px 14px 0 0;}
+  .ap-sport{background:#035bb0;color:#fff;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;text-transform:uppercase;}
+  .ap-close{background:rgba(0,0,0,.1);border:none;width:28px;height:28px;border-radius:50%;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#2c2418;font-weight:700;}
+  .ap-close:hover{background:rgba(0,0,0,.2);}
+  .ap-scroll{overflow-y:auto;flex:1;padding:22px 26px;}
+  .ap-img{width:100%;max-height:240px;object-fit:cover;border-radius:8px;margin-bottom:14px;border:1px solid #d4c9a8;}
+  .ap-title{font-family:Georgia,serif;font-size:20px;font-weight:700;line-height:1.3;color:#1a1a1a;margin-bottom:12px;}
+  .ap-author-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #d4c9a8;border-bottom:1px solid #d4c9a8;margin-bottom:16px;}
+  .ap-av{width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid #d4c9a8;}
+  .ap-av-ph{width:30px;height:30px;border-radius:50%;background:#8b6914;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .ap-aname{font-size:12px;font-weight:600;color:#2c2418;}
+  .ap-date{font-size:11px;color:#7a7060;}
+  .ap-body{font-family:Georgia,serif;font-size:15px;line-height:1.85;color:#2c2418;white-space:pre-line;}
+  @media(max-width:768px){.sidebar{width:56px;}.brand,.nav-item span,.nav-section,.sidebar-footer .env-label{display:none;}.form-row.c2,.form-row.c3{grid-template-columns:1fr;}.stats-row{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
-
-<!-- SIDEBAR -->
 <nav class="sidebar">
   <div class="sidebar-logo">
     <div class="brand"><span>SPORTS</span><em>rip</em></div>
@@ -192,6 +188,7 @@
     <div class="nav-section">Content</div>
     <div class="nav-item active" onclick="showPanel('write')" id="nav-write"><span class="ico">✍️</span><span>Write Article</span></div>
     <div class="nav-item" onclick="showPanel('published')" id="nav-published"><span class="ico">📰</span><span>Published</span></div>
+    <div class="nav-item" onclick="showPanel('viewarts')" id="nav-viewarts"><span class="ico">🖼️</span><span>View Articles</span></div>
     <div class="nav-section">Sources</div>
     <div class="nav-item" onclick="showPanel('sources')" id="nav-sources"><span class="ico">📡</span><span>Manage Sources</span></div>
     <div class="nav-section">System</div>
@@ -206,13 +203,11 @@
     <div class="env-badge dev" id="envBadge">● DEV</div>
   </div>
 </nav>
-
-<!-- MAIN -->
 <div class="main">
   <div class="topbar">
     <button class="btn btn-outline btn-sm" onclick="document.getElementById('csvFile').click()">📥 Import CSV</button>
     <input type="file" id="csvFile" accept=".csv" style="display:none" onchange="importCSV(this)"/>
-    <select id="topEnvSel" onchange="switchEnv(this.value)" title="Switch environment" style="padding:4px 10px;font-size:12px;font-weight:600;border-radius:8px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;height:30px;min-width:90px;">
+    <select id="topEnvSel" onchange="switchEnv(this.value)" style="padding:4px 8px;font-size:12px;font-weight:600;border-radius:8px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;height:30px;width:90px;flex-shrink:0;">
       <option value="dev">🟠 DEV</option>
       <option value="prod">🔴 PROD</option>
     </select>
@@ -221,61 +216,40 @@
     <div id="topAvatar"></div>
   </div>
   <div class="prod-banner" id="prodBanner">⚠️ PROD MODE ACTIVE — Changes affect live sportsrip.com!</div>
-
   <div class="page">
-
-    <!-- ══ WRITE ARTICLE ══ -->
+    <!-- WRITE -->
     <div class="panel active" id="panel-write">
       <div class="stats-row">
         <div class="stat"><div class="stat-n" id="statArticles">—</div><div class="stat-l">Own Articles</div></div>
         <div class="stat"><div class="stat-n" id="statSources">—</div><div class="stat-l">Feed Sources</div></div>
         <div class="stat"><div class="stat-n" id="statEnv">DEV</div><div class="stat-l">Active Instance</div></div>
       </div>
-
       <div class="card">
         <div class="card-title">📝 Article Details</div>
-
         <div class="form-row">
-          <div>
-            <label>Headline <span class="req">*</span></label>
-            <textarea id="artTitle" class="ta-small" placeholder="Write your article headline..."></textarea>
-          </div>
+          <div><label>Headline <span class="req">*</span></label>
+          <textarea id="artTitle" class="ta-small" placeholder="Write your article headline..."></textarea></div>
         </div>
-
         <div class="form-row">
-          <div>
-            <label>Article Content <span class="req">*</span> <span class="opt">— scroll to read full text</span></label>
-            <textarea id="artDesc" class="ta-large" placeholder="Write your full article content here...&#10;&#10;You can paste long articles and scroll through them."></textarea>
-          </div>
+          <div><label>Article Content <span class="req">*</span> <span class="opt">— scroll to read full text</span></label>
+          <textarea id="artDesc" class="ta-large" placeholder="Write your full article content here..."></textarea></div>
         </div>
-
         <div class="form-row c2">
-          <div>
-            <label>Primary Sport <span class="req">*</span></label>
-            <select id="artSport" onchange="updateEnvStat()">
-              <option value="ipl">🏏 IPL 2026</option>
-              <option value="cricket">🏏 Cricket</option>
-              <option value="football">⚽ Football</option>
-              <option value="f1">🏎️ Formula 1</option>
-              <option value="basketball">🏀 Basketball</option>
-              <option value="tennis">🎾 Tennis</option>
-              <option value="kabaddi">🤼 Kabaddi</option>
-              <option value="boxing">🥊 Boxing</option>
-              <option value="golf">⛳ Golf</option>
-              <option value="badminton">🏸 Badminton</option>
-              <option value="nfl">🏈 NFL</option>
-              <option value="baseball">⚾ Baseball</option>
+          <div><label>Primary Sport <span class="req">*</span></label>
+            <select id="artSport">
+              <option value="ipl">🏏 IPL 2026</option><option value="cricket">🏏 Cricket</option>
+              <option value="football">⚽ Football</option><option value="f1">🏎️ Formula 1</option>
+              <option value="basketball">🏀 Basketball</option><option value="tennis">🎾 Tennis</option>
+              <option value="kabaddi">🤼 Kabaddi</option><option value="boxing">🥊 Boxing</option>
+              <option value="golf">⛳ Golf</option><option value="badminton">🏸 Badminton</option>
+              <option value="nfl">🏈 NFL</option><option value="baseball">⚾ Baseball</option>
             </select>
           </div>
-          <div>
-            <label>Article Link <span class="req">*</span></label>
-            <input type="url" id="artLink" value="https://www.sportsrip.com"/>
-          </div>
+          <div><label>Article Link <span class="req">*</span></label>
+          <input type="url" id="artLink" value="https://www.sportsrip.com"/></div>
         </div>
-
         <div class="form-row">
-          <div>
-            <label>Also appear on tabs <span class="opt">(IPL + Cricket pre-selected for IPL season)</span></label>
+          <div><label>Also appear on tabs <span class="opt">(IPL + Cricket pre-selected)</span></label>
             <div class="ms-wrap">
               <div class="ms-display" id="msDisplay" onclick="toggleMs()">
                 <div class="chip" data-v="ipl">🏏 IPL 2026 <span class="x" onclick="rmChip(event,'ipl')">×</span></div>
@@ -297,10 +271,8 @@
             </div>
           </div>
         </div>
-
         <div class="form-row c2">
-          <div>
-            <label>Thumbnail Image URL <span class="opt">(optional)</span></label>
+          <div><label>Thumbnail Image URL <span class="opt">(optional)</span></label>
             <input type="url" id="artImage" placeholder="https://images.pexels.com/..." oninput="prevImg()"/>
             <img class="img-preview" id="imgPrev"/>
           </div>
@@ -315,19 +287,17 @@
             <img class="av-preview" id="avPrev"/>
           </div>
         </div>
-
         <div class="btn-row">
           <button class="btn btn-outline" onclick="importTxt()">📄 Import .txt</button>
           <input type="file" id="txtFile" accept=".txt" style="display:none" onchange="loadTxt(this)"/>
           <button class="btn btn-outline" onclick="clearForm()">🗑 Clear</button>
           <button class="btn btn-primary" id="btnPublish" onclick="publishArticle()">🚀 Publish</button>
-          <button class="btn btn-amber" id="btnMigrate" onclick="migrateArticles()" style="display:none" title="Copy all DEV articles to PROD">⬆️ Migrate to PROD</button>
+          <button class="btn btn-primary" id="btnMigrate" onclick="migrateArticles()" style="display:none">⬆️ Migrate to PROD</button>
         </div>
         <div class="console" id="consoleA">System ready.</div>
       </div>
     </div>
-
-    <!-- ══ PUBLISHED ══ -->
+    <!-- PUBLISHED -->
     <div class="panel" id="panel-published">
       <div class="card">
         <div class="card-title">📰 Published Articles
@@ -336,8 +306,20 @@
         <div id="pubList"><div style="color:var(--text3);font-size:12px;">Click Refresh to load.</div></div>
       </div>
     </div>
-
-    <!-- ══ SOURCES ══ -->
+    <!-- VIEW ARTICLES -->
+    <div class="panel" id="panel-viewarts">
+      <div class="card">
+        <div class="va-search-bar">
+          <input class="va-search-input" id="vaSearch" type="text" placeholder="🔍  Search by title, author or sport..." oninput="vaFilter()"/>
+          <button class="btn btn-outline btn-sm" onclick="loadViewArts()">↻ Refresh</button>
+          <span class="va-count" id="vaCount"></span>
+        </div>
+        <div class="va-grid" id="vaGrid">
+          <div class="va-empty">Click Refresh to load articles.</div>
+        </div>
+      </div>
+    </div>
+    <!-- SOURCES -->
     <div class="panel" id="panel-sources">
       <div class="card">
         <div class="card-title">➕ Add Feed Source</div>
@@ -371,8 +353,7 @@
         <div id="srcList"><div style="color:var(--text3);font-size:12px;">Click Refresh.</div></div>
       </div>
     </div>
-
-    <!-- ══ REFRESH ══ -->
+    <!-- REFRESH -->
     <div class="panel" id="panel-refresh">
       <div class="step-card">
         <h3>Step 1 — Fetch Raw Articles</h3>
@@ -404,603 +385,26 @@
         <div class="console" id="consoleRef">System ready.</div>
       </div>
     </div>
-
-    <!-- ══ CSV IMPORT QUEUE ══ -->
+    <!-- CSV QUEUE -->
     <div id="importQueue" style="display:none;">
       <div class="card">
         <div class="card-title">📥 CSV Import Queue
           <button class="btn btn-outline btn-sm" onclick="closeQueue()" style="margin-left:auto;">✕ Close</button>
         </div>
-        <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">Review each article and click Publish or Skip. You can edit fields before publishing.</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">Review each article then Publish or Skip.</div>
         <div id="queueList"></div>
       </div>
     </div>
-
   </div>
 </div>
 
-<script>
-// ══ CONFIG ══
-var WORKERS = {
-  dev:  'https://mango-sports-worker-dev.ravi-kompel.workers.dev',
-  prod: 'https://mango-sports-worker.ravi-kompel.workers.dev'
-};
-var PASS = 'sportsrip2026';
-var ENV  = 'dev';
-var WURL = WORKERS.dev;
-
-// Known authors — seeded + loaded from articles
-var AUTHORS = [
-  {name:'Ravi Kompella', photo:'https://i.ibb.co/PvtxHfgF/download.png'}
-];
-
-// ══ AVATAR ══
-function setTopAvatar(photo, name) {
-  var el = document.getElementById('topAvatar');
-  var init = (name||'RK').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2);
-  if (photo) {
-    el.innerHTML = '<img class="topbar-avatar" src="'+photo+'" onerror="this.outerHTML=\'<div class=topbar-avatar-ph>'+init+'</div>\'" title="'+name+'">';
-  } else {
-    el.innerHTML = '<div class="topbar-avatar-ph" title="'+(name||'Admin')+'">'+init+'</div>';
-  }
-}
-setTopAvatar(AUTHORS[0].photo, AUTHORS[0].name);
-
-// ══ ENV SWITCH ══
-function switchEnv(env) {
-  ENV  = env;
-  WURL = WORKERS[env];
-  document.getElementById('envBadge').textContent = '● ' + env.toUpperCase();
-  document.getElementById('envBadge').className = 'env-badge ' + env;
-  document.getElementById('workerLabel').textContent = env.toUpperCase() + ' Worker';
-  document.getElementById('prodBanner').style.display = env === 'prod' ? 'block' : 'none';
-  // Show migrate button only in DEV
-  document.getElementById('btnMigrate').style.display = env === 'dev' ? 'flex' : 'none';
-  document.getElementById('statEnv').textContent = env.toUpperCase();
-  loadStats();
-}
-
-// ══ PANELS ══
-function showPanel(name) {
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('panel-'+name).classList.add('active');
-  document.getElementById('nav-'+name).classList.add('active');
-  var titles={write:'✍️ Write Article',published:'📰 Published',sources:'📡 Manage Sources',refresh:'🔄 Refresh Feeds'};
-  document.getElementById('pageTitle').textContent = titles[name]||name;
-  if(name==='published') loadPublished();
-  if(name==='sources') loadSources();
-  if(name==='write') loadStats();
-}
-
-// ══ STATS ══
-async function loadStats() {
-  try {
-    var r = await fetch(WURL+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
-    var d = await r.json();
-    var arts = d.articles||[];
-    // Deduplicate by title (not link — all links are sportsrip.com)
-    var seen=new Set(), unique=[];
-    arts.forEach(a=>{if(!seen.has(a.title)){seen.add(a.title);unique.push(a);}});
-    document.getElementById('statArticles').textContent = unique.size || unique.length;
-    // Build author list from articles
-    arts.forEach(a=>{
-      if(a.authorName&&a.authorName.trim()){
-        var ex=AUTHORS.find(au=>au.name===a.authorName.trim());
-        if(!ex) AUTHORS.push({name:a.authorName.trim(),photo:a.authorPhoto||''});
-        else if(!ex.photo&&a.authorPhoto) ex.photo=a.authorPhoto;
-      }
-    });
-    // Update top avatar with first author found
-    if(arts.length&&arts[0].authorName) setTopAvatar(arts[0].authorPhoto||'',arts[0].authorName);
-  } catch(e){}
-  try {
-    var r2=await fetch(WURL+'/api/feeds');
-    var d2=await r2.json();
-    document.getElementById('statSources').textContent=d2.count||0;
-  } catch(e){}
-}
-
-function updateEnvStat() {}
-
-// ══ MULTI-SELECT ══
-var msOpen=false, selTabs=['ipl','cricket'];
-
-function toggleMs(){msOpen=!msOpen;document.getElementById('msOpts').style.display=msOpen?'block':'none';}
-document.addEventListener('click',e=>{if(!e.target.closest('.ms-wrap')){msOpen=false;var o=document.getElementById('msOpts');if(o)o.style.display='none';}});
-
-function togChip(val,label,e){if(e)e.stopPropagation();var idx=selTabs.indexOf(val);if(idx>-1){selTabs.splice(idx,1);rmChipDOM(val);var o=document.querySelector('.ms-opt[data-v="'+val+'"]');if(o){o.classList.remove('sel');o.querySelector('input').checked=false;}}else{selTabs.push(val);addChipDOM(val,label);var o=document.querySelector('.ms-opt[data-v="'+val+'"]');if(o){o.classList.add('sel');o.querySelector('input').checked=true;}}}
-
-function addChipDOM(val,label){var d=document.getElementById('msDisplay'),hint=d.querySelector('.ms-hint'),c=document.createElement('div');c.className='chip';c.dataset.v=val;c.innerHTML=label+' <span class="x" onclick="rmChip(event,\''+val+'\')">×</span>';if(hint)d.insertBefore(c,hint);else d.appendChild(c);}
-
-function rmChipDOM(val){var c=document.querySelector('.chip[data-v="'+val+'"]');if(c)c.remove();}
-
-function rmChip(e,val){e.stopPropagation();var idx=selTabs.indexOf(val);if(idx>-1)selTabs.splice(idx,1);rmChipDOM(val);var o=document.querySelector('.ms-opt[data-v="'+val+'"]');if(o){o.classList.remove('sel');o.querySelector('input').checked=false;}}
-
-// ══ AUTHOR AUTOCOMPLETE ══
-function acSearch(){
-  var val=document.getElementById('artAuthor').value.toLowerCase().trim();
-  var list=document.getElementById('acList');
-  var matches=AUTHORS.filter(a=>a.name.toLowerCase().includes(val));
-  if(!val||!matches.length){list.style.display='none';return;}
-  list.innerHTML='';
-  matches.forEach(au=>{
-    var item=document.createElement('div');item.className='ac-item';
-    var init=au.name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2);
-    var av=au.photo?'<img class="ac-av" src="'+au.photo+'" onerror="this.style.display=\'none\'">'
-      :'<div class="ac-av-ph">'+init+'</div>';
-    item.innerHTML=av+'<span>'+au.name+'</span>';
-    item.onclick=()=>{
-      document.getElementById('artAuthor').value=au.name;
-      document.getElementById('artAuthorPhoto').value=au.photo||'';
-      prevAv();
-      setTopAvatar(au.photo||'',au.name);
-      list.style.display='none';
-    };
-    list.appendChild(item);
-  });
-  list.style.display='block';
-}
-document.addEventListener('click',e=>{if(!e.target.closest('.ac-wrap')){var l=document.getElementById('acList');if(l)l.style.display='none';}});
-
-// ══ PREVIEWS ══
-function prevImg(){var u=document.getElementById('artImage').value.trim(),i=document.getElementById('imgPrev');if(u){i.src=u;i.style.display='block';i.onerror=()=>i.style.display='none';}else i.style.display='none';}
-function prevAv(){var u=document.getElementById('artAuthorPhoto').value.trim(),i=document.getElementById('avPrev');if(u){i.src=u;i.style.display='inline-block';i.onerror=()=>i.style.display='none';}else i.style.display='none';}
-
-// ══ IMPORT TXT ══
-function importTxt(){document.getElementById('txtFile').click();}
-function loadTxt(input){var f=input.files[0];if(!f)return;var r=new FileReader();r.onload=e=>{document.getElementById('artDesc').value=e.target.result;};r.readAsText(f);input.value='';}
-
-// ══ LOG ══
-function log(id,msg){var el=document.getElementById(id);if(el){el.innerHTML+=(el.innerHTML?'\n':'')+'> '+msg;el.scrollTop=el.scrollHeight;}}
-
-// ══ PUBLISH ══
-async function publishArticle(overrideData) {
-  var title  = (overrideData?.title  || document.getElementById('artTitle').value).trim();
-  var desc   = (overrideData?.desc   || document.getElementById('artDesc').value).trim();
-  var link   = (overrideData?.link   || document.getElementById('artLink').value).trim() || 'https://www.sportsrip.com';
-  var image  = (overrideData?.image  || document.getElementById('artImage').value).trim();
-  var sport  = overrideData?.sport   || document.getElementById('artSport').value;
-  var author = (overrideData?.author || document.getElementById('artAuthor').value).trim();
-  var photo  = (overrideData?.photo  || document.getElementById('artAuthorPhoto').value).trim();
-
-  if(!title){log('consoleA','<span class="err">❌ Headline required</span>');return false;}
-  if(!desc) {log('consoleA','<span class="err">❌ Content required</span>');return false;}
-
-  var allSports=[sport];
-  if(!overrideData) selTabs.forEach(s=>{if(!allSports.includes(s))allSports.push(s);});
-
-  var btn=document.getElementById('btnPublish');
-  if(!overrideData){btn.disabled=true;btn.textContent='⏳';}
-  log('consoleA','<span class="inf">Publishing "'+title.slice(0,40)+'..." → '+WURL.includes('dev')?'DEV':'PROD'+'</span>');
-
-  try {
-    var res=await fetch(WURL+'/api/publish-own',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
-      body:JSON.stringify({
-        sports:allSports,
-        article:{title,description:desc,link,image:image||'',sport,source:'SPORTSrip',
-          isOwn:true,pubDate:new Date().toISOString(),authorName:author,authorPhoto:photo}
-      })
-    });
-    var d=await res.json();
-    if(res.ok&&d.success){
-      log('consoleA','<span class="ok">✅ Published to '+d.savedTo.join(', ')+'!</span>');
-      if(author&&!AUTHORS.find(a=>a.name===author)) AUTHORS.push({name:author,photo:photo||''});
-      if(!overrideData){clearForm();loadStats();}
-      return true;
-    } else {
-      log('consoleA','<span class="err">❌ '+res.status+': '+(d.error||'Error')+'</span>');
-      return false;
-    }
-  } catch(e){log('consoleA','<span class="err">❌ '+e.message+'</span>');return false;}
-  finally{if(!overrideData){btn.disabled=false;btn.textContent='🚀 Publish';}}
-}
-
-function clearForm(){
-  ['artTitle','artDesc','artImage','artAuthor','artAuthorPhoto'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('artLink').value='https://www.sportsrip.com';
-  document.getElementById('imgPrev').style.display='none';
-  document.getElementById('avPrev').style.display='none';
-  document.getElementById('consoleA').innerHTML='Form cleared.';
-}
-
-// ══ MIGRATE MODAL ══
-var _migrateArts = [];
-
-async function migrateArticles(){
-  // Open modal and load DEV articles
-  document.getElementById('migrateModal').classList.add('open');
-  document.getElementById('modalLoading').style.display='block';
-  document.getElementById('modalContent').style.display='none';
-  document.getElementById('btnDoMigrate').disabled=true;
-  document.getElementById('migrateList').innerHTML='';
-
-  try{
-    var r=await fetch(WORKERS.dev+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
-    var d=await r.json();
-    var arts=d.articles||[];
-    // Deduplicate by title, sort newest first
-    var seen=new Set(), unique=[];
-    arts.forEach(a=>{if(!seen.has(a.title.trim())){seen.add(a.title.trim());unique.push(a);}});
-    unique.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
-    _migrateArts=unique;
-
-    if(!unique.length){
-      document.getElementById('modalLoading').textContent='No articles found in DEV.';
-      return;
-    }
-
-    // Render checklist
-    var list=document.getElementById('migrateList');
-    list.innerHTML='';
-    unique.forEach(function(a,i){
-      var dt=new Date(a.pubDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-      var div=document.createElement('div');
-      div.className='chk-item checked';
-      div.dataset.idx=i;
-      div.onclick=function(e){if(e.target.tagName!=='INPUT')div.querySelector('input').click();};
-      div.innerHTML=
-        '<input type="checkbox" checked onchange="updSelCount();this.closest(\'.chk-item\').classList.toggle(\'checked\',this.checked)">'+
-        '<span class="chk-num">'+(i+1)+'</span>'+
-        '<div class="chk-info">'+
-          '<div class="chk-title">'+a.title+'</div>'+
-          '<div class="chk-meta"><span class="badge">'+(a.sport||'ipl').toUpperCase()+'</span> · '+(a.authorName||'—')+' · '+dt+'</div>'+
-        '</div>';
-      list.appendChild(div);
-    });
-
-    document.getElementById('totalCount').textContent=unique.length+' articles in DEV';
-    document.getElementById('modalLoading').style.display='none';
-    document.getElementById('modalContent').style.display='block';
-    updSelCount();
-  }catch(e){
-    document.getElementById('modalLoading').textContent='Error loading: '+e.message;
-  }
-}
-
-function closeMigrateModal(){
-  document.getElementById('migrateModal').classList.remove('open');
-}
-
-function updSelCount(){
-  var checks=document.querySelectorAll('#migrateList input[type=checkbox]');
-  var sel=Array.from(checks).filter(c=>c.checked).length;
-  document.getElementById('selCount').textContent=sel+' selected';
-  document.getElementById('btnDoMigrate').disabled=sel===0;
-  document.getElementById('modalMeta').textContent=sel>0?sel+' article(s) will be checked against PROD and migrated':'Select articles to migrate';
-}
-
-function selectAll(state){
-  document.querySelectorAll('#migrateList input[type=checkbox]').forEach(c=>{
-    c.checked=state;
-    c.closest('.chk-item').classList.toggle('checked',state);
-  });
-  updSelCount();
-}
-
-async function doMigrate(){
-  var checks=Array.from(document.querySelectorAll('#migrateList input[type=checkbox]'));
-  var selectedIdx=checks.map((c,i)=>c.checked?i:-1).filter(i=>i>=1||i===0);
-  var selected=selectedIdx.map(i=>_migrateArts[i]);
-
-  var btn=document.getElementById('btnDoMigrate');
-  btn.disabled=true; btn.textContent='⏳ Working...';
-  document.getElementById('modalMeta').textContent='Checking PROD for duplicates...';
-
-  // Close modal and show progress in console
-  closeMigrateModal();
-  log('consoleA','<span class="inf">━━━ Migration started ━━━</span>');
-  log('consoleA','<span class="inf">Selected: '+selected.length+' articles</span>');
-
-  try{
-    // Fetch existing PROD titles
-    log('consoleA','<span class="inf">Fetching PROD articles for duplicate check...</span>');
-    var r2=await fetch(WORKERS.prod+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
-    var d2=await r2.json();
-    var prodTitles=new Set((d2.articles||[]).map(a=>a.title.trim().toLowerCase()));
-    log('consoleA','<span class="inf">PROD has '+prodTitles.size+' existing articles</span>');
-    log('consoleA','<span class="inf">─── Duplicate Check ───</span>');
-
-    // Split into new vs duplicate
-    var toMigrate=[], duplicates=[];
-    selected.forEach(a=>{
-      if(prodTitles.has(a.title.trim().toLowerCase())) duplicates.push(a);
-      else toMigrate.push(a);
-    });
-
-    // Report duplicates
-    if(duplicates.length){
-      log('consoleA','<span style="color:#fbbf24">⚠️ '+duplicates.length+' duplicate(s) skipped (already in PROD):</span>');
-      duplicates.forEach((a,i)=>log('consoleA','<span style="color:#fbbf24">  [SKIP '+(i+1)+'] '+a.title.slice(0,65)+'</span>'));
-    } else {
-      log('consoleA','<span class="ok">✓ No duplicates found</span>');
-    }
-
-    if(!toMigrate.length){
-      log('consoleA','<span class="ok">✅ Nothing new to migrate — PROD already has all selected articles.</span>');
-      btn.disabled=false; btn.textContent='⬆️ Migrate Selected';
-      return;
-    }
-
-    log('consoleA','<span class="inf">─── Migrating '+toMigrate.length+' new article(s) ───</span>');
-    var ok=0, fail=0;
-    for(var a of toMigrate){
-      try{
-        var res=await fetch(WORKERS.prod+'/api/publish-own',{
-          method:'POST',
-          headers:{'Content-Type':'application/json','x-admin-pass':PASS},
-          body:JSON.stringify({sports:[a.sport],sport:a.sport,article:{...a,isOwn:true}})
-        });
-        if(res.ok){
-          ok++;
-          log('consoleA','<span class="ok">  ✅ '+a.title.slice(0,60)+'</span>');
-        } else {
-          fail++;
-          log('consoleA','<span class="err">  ❌ FAILED: '+a.title.slice(0,50)+'</span>');
-        }
-      }catch(e){
-        fail++;
-        log('consoleA','<span class="err">  ❌ ERROR: '+a.title.slice(0,50)+' — '+e.message+'</span>');
-      }
-    }
-
-    log('consoleA','<span class="inf">─── Summary ───</span>');
-    log('consoleA','<span class="ok">✅ Migrated: '+ok+' · Skipped (dup): '+duplicates.length+(fail?' · Failed: '+fail:'')+'</span>');
-    loadStats();
-  }catch(e){
-    log('consoleA','<span class="err">❌ '+e.message+'</span>');
-  }
-  btn.disabled=false; btn.textContent='⬆️ Migrate Selected';
-}
-
-// ══ PUBLISHED LIST ══
-async function loadPublished(){
-  var c=document.getElementById('pubList');
-  c.innerHTML='<div style="color:var(--text3);font-size:12px;">Loading...</div>';
-  try{
-    var r=await fetch(WURL+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
-    var d=await r.json();
-    var arts=d.articles||[];
-    // Deduplicate by title (link is same for all)
-    var seen=new Set(),unique=[];
-    arts.forEach(a=>{if(!seen.has(a.title)){seen.add(a.title);unique.push(a);}});
-    if(!unique.length){c.innerHTML='<div style="color:var(--text3);font-size:12px;">No articles yet.</div>';return;}
-    c.innerHTML='<div style="font-size:11px;color:var(--text3);margin-bottom:8px;">'+unique.length+' articles in '+ENV.toUpperCase()+'</div>';
-    unique.forEach(function(a){
-      var div=document.createElement('div');div.className='art-item';
-      var th=a.image?'<img class="art-thumb" src="'+a.image+'" onerror="this.style.display=\'none\'">'
-        :'<div class="art-ph">🏏</div>';
-      var dt=new Date(a.pubDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-      div.innerHTML=th+
-        '<div class="art-info"><div class="art-title">'+a.title+'</div>'+
-        '<div class="art-meta"><span class="badge">'+(a.sport||'ipl').toUpperCase()+'</span> · '+(a.authorName||'—')+' · '+dt+'</div></div>'+
-        '<button class="btn btn-danger btn-sm" onclick="delArt(\''+a.sport+'\',\''+encodeURIComponent(a.title)+'\',\''+encodeURIComponent(a.link)+'\',this)">🗑</button>';
-      c.appendChild(div);
-    });
-  }catch(e){c.innerHTML='<div style="color:var(--red);font-size:12px;">'+e.message+'</div>';}
-}
-
-async function delArt(sport,encTitle,encLink,btn){
-  if(!confirm('Delete this article?'))return;
-  btn.textContent='...';btn.disabled=true;
-  try{
-    var r=await fetch(WURL+'/api/delete-own',{method:'POST',
-      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
-      body:JSON.stringify({sport,link:decodeURIComponent(encLink)})});
-    var d=await r.json();
-    if(d.success)btn.closest('.art-item').remove();
-    else{btn.textContent='🗑';btn.disabled=false;}
-  }catch(e){btn.textContent='🗑';btn.disabled=false;}
-}
-
-// ══ SOURCES ══
-async function loadSources(){
-  var c=document.getElementById('srcList');
-  c.innerHTML='<div style="color:var(--text3);font-size:12px;">Loading...</div>';
-  try{
-    var r=await fetch(WURL+'/api/feeds');
-    var d=await r.json();
-    var feeds=d.feeds||[];
-    if(!feeds.length){c.innerHTML='<div style="color:var(--text3);font-size:12px;">No sources. Click Preload Defaults.</div>';return;}
-    c.innerHTML='';
-    feeds.forEach(f=>{
-      var div=document.createElement('div');div.className='feed-item';
-      div.innerHTML='<div class="feed-l"><div class="feed-name"><span class="pill">'+f.sport+'</span> '+f.name+'</div>'+
-        '<div class="feed-url">'+f.url+'</div></div>'+
-        '<button class="btn btn-danger btn-sm" onclick="delFeed(\''+encodeURIComponent(f.url)+'\',this)">Remove</button>';
-      c.appendChild(div);
-    });
-  }catch(e){c.innerHTML='<div style="color:var(--red);font-size:12px;">'+e.message+'</div>';}
-}
-
-async function testFeed(){
-  var url=document.getElementById('fUrl').value.trim();
-  if(!url){log('consoleSrc','<span class="err">❌ Enter URL first</span>');return;}
-  log('consoleSrc','<span class="inf">Testing...</span>');
-  try{
-    var r=await fetch(WURL+'/api/test-feed',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})});
-    var d=await r.json();
-    if(d.valid)log('consoleSrc','<span class="ok">✅ Valid: '+d.name+' ('+d.itemCount+' items)</span>');
-    else log('consoleSrc','<span class="err">❌ '+d.message+'</span>');
-  }catch(e){log('consoleSrc','<span class="err">❌ '+e.message+'</span>');}
-}
-
-async function saveFeed(){
-  var sport=document.getElementById('fSport').value,name=document.getElementById('fName').value.trim();
-  var url=document.getElementById('fUrl').value.trim(),prio=parseInt(document.getElementById('fPrio').value)||3;
-  if(!name||!url){log('consoleSrc','<span class="err">❌ Name and URL required</span>');return;}
-  try{
-    var r=await fetch(WURL+'/api/feeds',{method:'POST',
-      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
-      body:JSON.stringify({sport,name,url,priority:prio,label:sport.toUpperCase()})});
-    var d=await r.json();
-    if(r.ok)log('consoleSrc','<span class="ok">✅ Added! Total: '+d.total+'</span>');
-    else log('consoleSrc','<span class="err">❌ '+d.error+'</span>');
-    loadSources();
-  }catch(e){log('consoleSrc','<span class="err">❌ '+e.message+'</span>');}
-}
-
-async function delFeed(enc,btn){
-  if(!confirm('Remove this source?'))return;
-  btn.textContent='...';btn.disabled=true;
-  try{
-    var r=await fetch(WURL+'/api/feeds',{method:'DELETE',
-      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
-      body:JSON.stringify({url:decodeURIComponent(enc)})});
-    var d=await r.json();
-    if(d.success)btn.closest('.feed-item').remove();
-    else{btn.textContent='Remove';btn.disabled=false;}
-  }catch(e){btn.textContent='Remove';btn.disabled=false;}
-}
-
-async function preloadFeeds(){
-  log('consoleSrc','<span class="inf">Preloading 29 feeds...</span>');
-  try{
-    var r=await fetch(WURL+'/api/preload-feeds',{method:'POST',
-      headers:{'Content-Type':'application/json','x-admin-pass':PASS}});
-    var d=await r.json();
-    if(r.ok)log('consoleSrc','<span class="ok">✅ Added '+d.added+', Total '+d.total+'</span>');
-    else log('consoleSrc','<span class="err">❌ '+d.error+'</span>');
-    loadSources();
-  }catch(e){log('consoleSrc','<span class="err">❌ '+e.message+'</span>');}
-}
-
-// ══ REFRESH ══
-var refWorker=WORKERS.dev;
-function chkRefEnv(){
-  var env=document.getElementById('refEnv').value;
-  if(env==='prod'&&!confirm('⚠️ PROD refresh updates live sportsrip.com. Continue?')){
-    document.getElementById('refEnv').value='dev';return;
-  }
-  refWorker=WORKERS[env];
-}
-
-async function doRefresh(type){
-  var sport=document.getElementById('refSport').value;
-  var btn=document.getElementById(type==='raw'?'btnS1':'btnS2');
-  btn.disabled=true;btn.textContent='⏳ Running...';
-  log('consoleRef','<span class="inf">Triggering '+type+' for '+sport+'...</span>');
-  try{
-    var r=await fetch(refWorker+'/api/trigger-fetch',{method:'POST',
-      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
-      body:JSON.stringify({type,sport,limit:50})});
-    var d=await r.json();
-    if(r.ok&&d.done)log('consoleRef','<span class="ok">✅ Done! Updated '+d.updated+' sport(s)</span>');
-    else log('consoleRef','<span class="err">❌ Error</span>');
-  }catch(e){log('consoleRef','<span class="err">❌ '+e.message+'</span>');}
-  btn.disabled=false;
-  btn.textContent=type==='raw'?'🔄 Fetch Raw Articles':'⚙️ Curate Articles';
-}
-
-// ══ CSV IMPORT ══
-function importCSV(input){
-  var f=input.files[0]; if(!f)return;
-  var r=new FileReader();
-  r.onload=function(e){
-    var lines=e.target.result.split('\n').filter(l=>l.trim());
-    if(lines.length<2){alert('CSV must have a header row and at least one data row.');return;}
-    var headers=lines[0].split(',').map(h=>h.trim().toLowerCase().replace(/"/g,''));
-    var articles=[];
-    for(var i=1;i<lines.length;i++){
-      var vals=parseCSVLine(lines[i]);
-      var obj={};
-      headers.forEach((h,idx)=>obj[h]=vals[idx]||'');
-      if(obj.title||obj.headline) articles.push(obj);
-    }
-    if(!articles.length){alert('No valid articles found in CSV.');return;}
-    showImportQueue(articles);
-  };
-  r.readAsText(f);
-  input.value='';
-}
-
-function parseCSVLine(line){
-  var result=[],cur='',inQ=false;
-  for(var i=0;i<line.length;i++){
-    var c=line[i];
-    if(c==='"'&&!inQ){inQ=true;}
-    else if(c==='"'&&inQ){inQ=false;}
-    else if(c===','&&!inQ){result.push(cur.trim());cur='';}
-    else cur+=c;
-  }
-  result.push(cur.trim());
-  return result;
-}
-
-function showImportQueue(articles){
-  var qList=document.getElementById('queueList');
-  var qDiv=document.getElementById('importQueue');
-  qList.innerHTML='';
-  qDiv.style.display='block';
-  showPanel('write');
-
-  articles.forEach(function(a,idx){
-    var div=document.createElement('div');
-    div.className='queue-item';
-    div.id='qi-'+idx;
-    var title=a.title||a.headline||'';
-    var desc=a.description||a.content||a.body||'';
-    var sport=a.sport||'ipl';
-    var author=a.author||a.authorname||'';
-    var photo=a.authorphoto||a.photo||'';
-    var image=a.image||a.thumbnail||a.thumb||'';
-    var link=a.link||a.url||'https://www.sportsrip.com';
-    div.innerHTML=
-      '<div class="q-title">'+title.slice(0,80)+(title.length>80?'...':'')+'</div>'+
-      '<div class="q-meta">Sport: '+sport+' · Author: '+(author||'—')+' · '+(desc.length)+' chars</div>'+
-      '<div class="q-actions">'+
-        '<button class="btn btn-primary btn-sm" onclick="publishQueued('+idx+',\''+encodeURIComponent(title)+'\',\''+encodeURIComponent(desc)+'\',\''+sport+'\',\''+encodeURIComponent(author)+'\',\''+encodeURIComponent(photo)+'\',\''+encodeURIComponent(image)+'\',\''+encodeURIComponent(link)+'\',this)">🚀 Publish</button>'+
-        '<button class="btn btn-outline btn-sm" onclick="editQueued('+idx+',\''+encodeURIComponent(title)+'\',\''+encodeURIComponent(desc)+'\',\''+sport+'\',\''+encodeURIComponent(author)+'\',\''+encodeURIComponent(photo)+'\',\''+encodeURIComponent(image)+'\',\''+encodeURIComponent(link)+'\')">✏️ Edit</button>'+
-        '<button class="btn btn-outline btn-sm" onclick="document.getElementById(\'qi-'+idx+'\').remove()">Skip</button>'+
-      '</div>';
-    qList.appendChild(div);
-  });
-  document.getElementById('importQueue').scrollIntoView({behavior:'smooth'});
-}
-
-async function publishQueued(idx,tE,dE,sport,aE,pE,iE,lE,btn){
-  btn.disabled=true;btn.textContent='⏳';
-  var ok=await publishArticle({
-    title:decodeURIComponent(tE), desc:decodeURIComponent(dE),
-    sport, author:decodeURIComponent(aE), photo:decodeURIComponent(pE),
-    image:decodeURIComponent(iE), link:decodeURIComponent(lE)
-  });
-  if(ok){
-    var item=document.getElementById('qi-'+idx);
-    if(item){item.style.background='#f0fff4';item.style.borderColor='#68d391';
-    item.querySelector('.q-actions').innerHTML='<span style="color:var(--green);font-size:11px;font-weight:600;">✅ Published</span>';}
-  } else {btn.disabled=false;btn.textContent='🚀 Publish';}
-}
-
-function editQueued(idx,tE,dE,sport,aE,pE,iE,lE){
-  document.getElementById('artTitle').value=decodeURIComponent(tE);
-  document.getElementById('artDesc').value=decodeURIComponent(dE);
-  document.getElementById('artSport').value=sport;
-  document.getElementById('artAuthor').value=decodeURIComponent(aE);
-  document.getElementById('artAuthorPhoto').value=decodeURIComponent(pE);
-  document.getElementById('artImage').value=decodeURIComponent(iE);
-  document.getElementById('artLink').value=decodeURIComponent(lE)||'https://www.sportsrip.com';
-  prevImg();prevAv();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function closeQueue(){
-  document.getElementById('importQueue').style.display='none';
-}
-
-// ══ INIT ══
-loadStats();
-</script>
-
-<!-- ── MIGRATE MODAL ── -->
+<!-- MIGRATE MODAL -->
 <div class="modal-overlay" id="migrateModal" onclick="if(event.target===this)closeMigrateModal()">
   <div class="modal-box">
     <div class="modal-header">
       <span style="font-size:18px;">⬆️</span>
       <h3>Migrate DEV → PROD</h3>
-      <div style="font-size:11px;color:var(--text3);background:var(--bg);padding:3px 10px;border-radius:20px;border:1px solid var(--border);" id="modalEnvLabel">DEV → PROD</div>
+      <div style="font-size:11px;color:var(--text3);background:var(--bg);padding:3px 10px;border-radius:20px;border:1px solid var(--border);">DEV → PROD</div>
       <button class="modal-close" onclick="closeMigrateModal()">✕</button>
     </div>
     <div class="modal-body">
@@ -1019,10 +423,538 @@ loadStats();
     <div class="modal-footer">
       <div class="modal-meta" id="modalMeta">Select articles to migrate</div>
       <button class="btn btn-outline" onclick="closeMigrateModal()">Cancel</button>
-      <button class="btn btn-amber" id="btnDoMigrate" onclick="doMigrate()" disabled>⬆️ Migrate Selected</button>
+      <button class="btn btn-primary" id="btnDoMigrate" onclick="doMigrate()" disabled>⬆️ Migrate Selected</button>
     </div>
   </div>
 </div>
 
+<!-- ARTICLE POPUP -->
+<div class="ap-overlay" id="apOverlay" onclick="if(event.target===this)closeArtPopup()">
+  <div class="ap-box">
+    <div class="ap-top">
+      <span class="ap-sport" id="apSport">IPL</span>
+      <button class="ap-close" onclick="closeArtPopup()">✕</button>
+    </div>
+    <div class="ap-scroll" id="apScroll"></div>
+  </div>
+</div>
+
+<script>
+var WORKERS={dev:'https://mango-sports-worker-dev.ravi-kompel.workers.dev',prod:'https://mango-sports-worker.ravi-kompel.workers.dev'};
+var PASS='sportsrip2026';
+var ENV='dev';
+var WURL=WORKERS.dev;
+var AUTHORS=[{name:'Ravi Kompella',photo:'https://i.ibb.co/PvtxHfgF/download.png'}];
+
+function setTopAvatar(photo,name){
+  var el=document.getElementById('topAvatar');
+  var init=(name||'RK').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2);
+  el.innerHTML=photo?'<img class="topbar-avatar" src="'+photo+'" onerror="this.outerHTML=\'<div class=topbar-avatar-ph>'+init+'</div>\'" title="'+name+'">'
+    :'<div class="topbar-avatar-ph" title="'+(name||'Admin')+'">'+init+'</div>';
+}
+setTopAvatar(AUTHORS[0].photo,AUTHORS[0].name);
+
+function switchEnv(env){
+  ENV=env; WURL=WORKERS[env];
+  ['topEnvSel','envSel'].forEach(id=>{var e=document.getElementById(id);if(e)e.value=env;});
+  document.getElementById('envBadge').textContent='● '+env.toUpperCase();
+  document.getElementById('envBadge').className='env-badge '+env;
+  document.getElementById('workerLabel').textContent=env.toUpperCase()+' Worker';
+  document.getElementById('prodBanner').style.display=env==='prod'?'block':'none';
+  document.getElementById('btnMigrate').style.display=env==='dev'?'inline-flex':'none';
+  document.getElementById('statEnv').textContent=env.toUpperCase();
+  loadStats();
+}
+
+function showPanel(name){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  var t={write:'✍️ Write Article',published:'📰 Published',viewarts:'🖼️ View Articles',sources:'📡 Manage Sources',refresh:'🔄 Refresh Feeds'};
+  document.getElementById('pageTitle').textContent=t[name]||name;
+  if(name==='published') loadPublished();
+  if(name==='sources') loadSources();
+  if(name==='write') loadStats();
+  if(name==='viewarts') loadViewArts();
+}
+
+async function loadStats(){
+  try{
+    var r=await fetch(WURL+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
+    var d=await r.json();
+    var arts=d.articles||[];
+    var seen=new Set(),unique=[];
+    arts.forEach(a=>{if(!seen.has(a.title)){seen.add(a.title);unique.push(a);}});
+    document.getElementById('statArticles').textContent=unique.length;
+    arts.forEach(a=>{
+      if(a.authorName&&a.authorName.trim()){
+        var ex=AUTHORS.find(au=>au.name===a.authorName.trim());
+        if(!ex) AUTHORS.push({name:a.authorName.trim(),photo:a.authorPhoto||''});
+        else if(!ex.photo&&a.authorPhoto) ex.photo=a.authorPhoto;
+      }
+    });
+    if(arts.length&&arts[0].authorName) setTopAvatar(arts[0].authorPhoto||'',arts[0].authorName);
+  }catch(e){}
+  try{
+    var r2=await fetch(WURL+'/api/feeds');
+    var d2=await r2.json();
+    document.getElementById('statSources').textContent=d2.count||0;
+  }catch(e){}
+}
+
+var msOpen=false,selTabs=['ipl','cricket'];
+function toggleMs(){msOpen=!msOpen;document.getElementById('msOpts').style.display=msOpen?'block':'none';}
+document.addEventListener('click',e=>{if(!e.target.closest('.ms-wrap')){msOpen=false;var o=document.getElementById('msOpts');if(o)o.style.display='none';}});
+function togChip(val,label,e){if(e)e.stopPropagation();var idx=selTabs.indexOf(val);if(idx>-1){selTabs.splice(idx,1);rmChipDOM(val);var o=document.querySelector('.ms-opt[data-v="'+val+'"]');if(o){o.classList.remove('sel');o.querySelector('input').checked=false;}}else{selTabs.push(val);addChipDOM(val,label);var o=document.querySelector('.ms-opt[data-v="'+val+'"]');if(o){o.classList.add('sel');o.querySelector('input').checked=true;}}}
+function addChipDOM(val,label){var d=document.getElementById('msDisplay'),hint=d.querySelector('.ms-hint'),c=document.createElement('div');c.className='chip';c.dataset.v=val;c.innerHTML=label+' <span class="x" onclick="rmChip(event,\''+val+'\')">×</span>';if(hint)d.insertBefore(c,hint);else d.appendChild(c);}
+function rmChipDOM(val){var c=document.querySelector('.chip[data-v="'+val+'"]');if(c)c.remove();}
+function rmChip(e,val){e.stopPropagation();var idx=selTabs.indexOf(val);if(idx>-1)selTabs.splice(idx,1);rmChipDOM(val);var o=document.querySelector('.ms-opt[data-v="'+val+'"]');if(o){o.classList.remove('sel');o.querySelector('input').checked=false;}}
+
+function acSearch(){
+  var val=document.getElementById('artAuthor').value.toLowerCase().trim();
+  var list=document.getElementById('acList');
+  var matches=AUTHORS.filter(a=>a.name.toLowerCase().includes(val));
+  if(!val||!matches.length){list.style.display='none';return;}
+  list.innerHTML='';
+  matches.forEach(au=>{
+    var item=document.createElement('div');item.className='ac-item';
+    var init=au.name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2);
+    var av=au.photo?'<img class="ac-av" src="'+au.photo+'" onerror="this.style.display=\'none\'">'
+      :'<div class="ac-av-ph">'+init+'</div>';
+    item.innerHTML=av+'<span>'+au.name+'</span>';
+    item.onclick=()=>{
+      document.getElementById('artAuthor').value=au.name;
+      document.getElementById('artAuthorPhoto').value=au.photo||'';
+      prevAv(); setTopAvatar(au.photo||'',au.name);
+      list.style.display='none';
+    };
+    list.appendChild(item);
+  });
+  list.style.display='block';
+}
+document.addEventListener('click',e=>{if(!e.target.closest('.ac-wrap')){var l=document.getElementById('acList');if(l)l.style.display='none';}});
+
+function prevImg(){var u=document.getElementById('artImage').value.trim(),i=document.getElementById('imgPrev');if(u){i.src=u;i.style.display='block';i.onerror=()=>i.style.display='none';}else i.style.display='none';}
+function prevAv(){var u=document.getElementById('artAuthorPhoto').value.trim(),i=document.getElementById('avPrev');if(u){i.src=u;i.style.display='inline-block';i.onerror=()=>i.style.display='none';}else i.style.display='none';}
+function importTxt(){document.getElementById('txtFile').click();}
+function loadTxt(input){var f=input.files[0];if(!f)return;var r=new FileReader();r.onload=e=>{document.getElementById('artDesc').value=e.target.result;};r.readAsText(f);input.value='';}
+function log(id,msg){var el=document.getElementById(id);if(el){el.innerHTML+=(el.innerHTML?'\n':'')+'> '+msg;el.scrollTop=el.scrollHeight;}}
+
+async function publishArticle(overrideData){
+  var title=(overrideData?.title||document.getElementById('artTitle').value).trim();
+  var desc=(overrideData?.desc||document.getElementById('artDesc').value).trim();
+  var link=(overrideData?.link||document.getElementById('artLink').value).trim()||'https://www.sportsrip.com';
+  var image=(overrideData?.image||document.getElementById('artImage').value).trim();
+  var sport=overrideData?.sport||document.getElementById('artSport').value;
+  var author=(overrideData?.author||document.getElementById('artAuthor').value).trim();
+  var photo=(overrideData?.photo||document.getElementById('artAuthorPhoto').value).trim();
+  if(!title){log('consoleA','<span class="err">❌ Headline required</span>');return false;}
+  if(!desc){log('consoleA','<span class="err">❌ Content required</span>');return false;}
+  var allSports=[sport];
+  if(!overrideData) selTabs.forEach(s=>{if(!allSports.includes(s))allSports.push(s);});
+  var btn=document.getElementById('btnPublish');
+  if(!overrideData){btn.disabled=true;btn.textContent='⏳';}
+  log('consoleA','<span class="inf">Publishing "'+title.slice(0,40)+'..."</span>');
+  try{
+    var res=await fetch(WURL+'/api/publish-own',{method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+      body:JSON.stringify({sports:allSports,article:{title,description:desc,link,image:image||'',sport,source:'SPORTSrip',isOwn:true,pubDate:new Date().toISOString(),authorName:author,authorPhoto:photo}})});
+    var d=await res.json();
+    if(res.ok&&d.success){
+      log('consoleA','<span class="ok">✅ Published to '+d.savedTo.join(', ')+'!</span>');
+      if(author&&!AUTHORS.find(a=>a.name===author)) AUTHORS.push({name:author,photo:photo||''});
+      if(!overrideData){clearForm();loadStats();}
+      return true;
+    }else{log('consoleA','<span class="err">❌ '+res.status+': '+(d.error||'Error')+'</span>');return false;}
+  }catch(e){log('consoleA','<span class="err">❌ '+e.message+'</span>');return false;}
+  finally{if(!overrideData){btn.disabled=false;btn.textContent='🚀 Publish';}}
+}
+
+function clearForm(){
+  ['artTitle','artDesc','artImage','artAuthor','artAuthorPhoto'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('artLink').value='https://www.sportsrip.com';
+  document.getElementById('imgPrev').style.display='none';
+  document.getElementById('avPrev').style.display='none';
+  document.getElementById('consoleA').innerHTML='Form cleared.';
+}
+
+// MIGRATE MODAL
+var _migrateArts=[];
+async function migrateArticles(){
+  document.getElementById('migrateModal').classList.add('open');
+  document.getElementById('modalLoading').style.display='block';
+  document.getElementById('modalContent').style.display='none';
+  document.getElementById('btnDoMigrate').disabled=true;
+  document.getElementById('migrateList').innerHTML='';
+  try{
+    var r=await fetch(WORKERS.dev+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
+    var d=await r.json();
+    var arts=d.articles||[];
+    var seen=new Set(),unique=[];
+    arts.forEach(a=>{if(!seen.has(a.title.trim())){seen.add(a.title.trim());unique.push(a);}});
+    unique.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+    _migrateArts=unique;
+    if(!unique.length){document.getElementById('modalLoading').textContent='No articles found in DEV.';return;}
+    var list=document.getElementById('migrateList');
+    list.innerHTML='';
+    unique.forEach(function(a,i){
+      var dt=new Date(a.pubDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+      var div=document.createElement('div');div.className='chk-item checked';div.dataset.idx=i;
+      div.onclick=function(e){if(e.target.tagName!=='INPUT')div.querySelector('input').click();};
+      div.innerHTML='<input type="checkbox" checked onchange="updSelCount();this.closest(\'.chk-item\').classList.toggle(\'checked\',this.checked)">'+
+        '<span class="chk-num">'+(i+1)+'</span>'+
+        '<div class="chk-info"><div class="chk-title">'+a.title+'</div>'+
+        '<div class="chk-meta"><span class="badge">'+(a.sport||'ipl').toUpperCase()+'</span> · '+(a.authorName||'—')+' · '+dt+'</div></div>';
+      list.appendChild(div);
+    });
+    document.getElementById('totalCount').textContent=unique.length+' articles in DEV';
+    document.getElementById('modalLoading').style.display='none';
+    document.getElementById('modalContent').style.display='block';
+    updSelCount();
+  }catch(e){document.getElementById('modalLoading').textContent='Error: '+e.message;}
+}
+function closeMigrateModal(){document.getElementById('migrateModal').classList.remove('open');}
+function updSelCount(){
+  var checks=document.querySelectorAll('#migrateList input[type=checkbox]');
+  var sel=Array.from(checks).filter(c=>c.checked).length;
+  document.getElementById('selCount').textContent=sel+' selected';
+  document.getElementById('btnDoMigrate').disabled=sel===0;
+  document.getElementById('modalMeta').textContent=sel>0?sel+' article(s) will be checked against PROD':'Select articles to migrate';
+}
+function selectAll(state){
+  document.querySelectorAll('#migrateList input[type=checkbox]').forEach(c=>{c.checked=state;c.closest('.chk-item').classList.toggle('checked',state);});
+  updSelCount();
+}
+async function doMigrate(){
+  var checks=Array.from(document.querySelectorAll('#migrateList input[type=checkbox]'));
+  var selected=checks.map((c,i)=>c.checked?_migrateArts[i]:null).filter(Boolean);
+  var btn=document.getElementById('btnDoMigrate');
+  btn.disabled=true;btn.textContent='⏳ Working...';
+  closeMigrateModal();
+  log('consoleA','<span class="inf">━━━ Migration started: '+selected.length+' articles ━━━</span>');
+  try{
+    var r2=await fetch(WORKERS.prod+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
+    var d2=await r2.json();
+    var prodTitles=new Set((d2.articles||[]).map(a=>a.title.trim().toLowerCase()));
+    log('consoleA','<span class="inf">PROD has '+prodTitles.size+' existing articles</span>');
+    var toMigrate=[],duplicates=[];
+    selected.forEach(a=>{
+      if(prodTitles.has(a.title.trim().toLowerCase())) duplicates.push(a);
+      else toMigrate.push(a);
+    });
+    if(duplicates.length){
+      log('consoleA','<span style="color:#fbbf24">⚠️ '+duplicates.length+' duplicate(s) skipped:</span>');
+      duplicates.forEach((a,i)=>log('consoleA','<span style="color:#fbbf24">  [SKIP '+(i+1)+'] '+a.title.slice(0,65)+'</span>'));
+    }
+    if(!toMigrate.length){log('consoleA','<span class="ok">✅ Nothing new — PROD already up to date.</span>');btn.disabled=false;btn.textContent='⬆️ Migrate Selected';return;}
+    log('consoleA','<span class="inf">Migrating '+toMigrate.length+' article(s)...</span>');
+    var ok=0,fail=0;
+    for(var a of toMigrate){
+      try{
+        var res=await fetch(WORKERS.prod+'/api/publish-own',{method:'POST',
+          headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+          body:JSON.stringify({sports:[a.sport],sport:a.sport,article:{...a,isOwn:true}})});
+        if(res.ok){ok++;log('consoleA','<span class="ok">  ✅ '+a.title.slice(0,60)+'</span>');}
+        else{fail++;log('consoleA','<span class="err">  ❌ FAILED: '+a.title.slice(0,50)+'</span>');}
+      }catch(e){fail++;log('consoleA','<span class="err">  ❌ ERROR: '+e.message+'</span>');}
+    }
+    log('consoleA','<span class="ok">✅ Done — Migrated: '+ok+' · Skipped: '+duplicates.length+(fail?' · Failed: '+fail:'')+'</span>');
+    loadStats();
+  }catch(e){log('consoleA','<span class="err">❌ '+e.message+'</span>');}
+  btn.disabled=false;btn.textContent='⬆️ Migrate Selected';
+}
+
+// PUBLISHED
+async function loadPublished(){
+  var c=document.getElementById('pubList');
+  c.innerHTML='<div style="color:var(--text3);font-size:12px;">Loading...</div>';
+  try{
+    var r=await fetch(WURL+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
+    var d=await r.json();
+    var arts=d.articles||[];
+    var seen=new Set(),unique=[];
+    arts.forEach(a=>{if(!seen.has(a.title)){seen.add(a.title);unique.push(a);}});
+    if(!unique.length){c.innerHTML='<div style="color:var(--text3);font-size:12px;">No articles yet.</div>';return;}
+    c.innerHTML='<div style="font-size:11px;color:var(--text3);margin-bottom:8px;">'+unique.length+' articles in '+ENV.toUpperCase()+'</div>';
+    unique.forEach(function(a){
+      var div=document.createElement('div');div.className='art-item';
+      var th=a.image?'<img class="art-thumb" src="'+a.image+'" onerror="this.style.display=\'none\'">'
+        :'<div class="art-ph">🏏</div>';
+      var dt=new Date(a.pubDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+      div.innerHTML=th+'<div class="art-info"><div class="art-title">'+a.title+'</div>'+
+        '<div class="art-meta"><span class="badge">'+(a.sport||'ipl').toUpperCase()+'</span> · '+(a.authorName||'—')+' · '+dt+'</div></div>'+
+        '<button class="btn btn-danger btn-sm" onclick="delArt(\''+a.sport+'\',\''+encodeURIComponent(a.title)+'\',\''+encodeURIComponent(a.link)+'\',this)">🗑</button>';
+      c.appendChild(div);
+    });
+  }catch(e){c.innerHTML='<div style="color:var(--red);font-size:12px;">'+e.message+'</div>';}
+}
+async function delArt(sport,encTitle,encLink,btn){
+  if(!confirm('Delete this article?'))return;
+  btn.textContent='...';btn.disabled=true;
+  try{
+    var r=await fetch(WURL+'/api/delete-own',{method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+      body:JSON.stringify({sport,link:decodeURIComponent(encLink)})});
+    var d=await r.json();
+    if(d.success)btn.closest('.art-item').remove();
+    else{btn.textContent='🗑';btn.disabled=false;}
+  }catch(e){btn.textContent='🗑';btn.disabled=false;}
+}
+
+// VIEW ARTICLES
+var _vaArts=[];
+var SPORT_EMOJI={ipl:'🏏',cricket:'🏏',football:'⚽',f1:'🏎️',basketball:'🏀',tennis:'🎾',kabaddi:'🤼',boxing:'🥊',golf:'⛳',badminton:'🏸',nfl:'🏈',baseball:'⚾'};
+var SPORT_LABEL={ipl:'IPL 2026',cricket:'Cricket',football:'Football',f1:'Formula 1',basketball:'NBA',tennis:'Tennis',kabaddi:'Kabaddi',boxing:'Boxing',golf:'Golf',badminton:'Badminton',nfl:'NFL',baseball:'MLB'};
+
+async function loadViewArts(){
+  var grid=document.getElementById('vaGrid');
+  grid.innerHTML='<div class="va-empty">⏳ Loading...</div>';
+  document.getElementById('vaCount').textContent='';
+  document.getElementById('vaSearch').value='';
+  try{
+    var r=await fetch(WURL+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
+    var d=await r.json();
+    var arts=d.articles||[];
+    // Only SPORTSrip articles, deduplicate by title, newest first
+    var seen=new Set(),unique=[];
+    arts.forEach(a=>{
+      if(a.isOwn||a.source==='SPORTSrip'){
+        if(!seen.has(a.title.trim())){seen.add(a.title.trim());unique.push(a);}
+      }
+    });
+    unique.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+    _vaArts=unique;
+    vaRender(unique);
+  }catch(e){
+    grid.innerHTML='<div class="va-empty" style="color:var(--red);">❌ '+e.message+'</div>';
+  }
+}
+
+function vaFilter(){
+  var q=document.getElementById('vaSearch').value.toLowerCase().trim();
+  if(!q){vaRender(_vaArts);return;}
+  vaRender(_vaArts.filter(a=>
+    (a.title||'').toLowerCase().includes(q)||
+    (a.description||'').toLowerCase().includes(q)||
+    (a.authorName||'').toLowerCase().includes(q)||
+    (a.sport||'').toLowerCase().includes(q)
+  ));
+}
+
+function vaRender(arts){
+  var grid=document.getElementById('vaGrid');
+  document.getElementById('vaCount').textContent=arts.length+' article'+(arts.length!==1?'s':'');
+  if(!arts.length){grid.innerHTML='<div class="va-empty">No articles found.</div>';return;}
+  grid.innerHTML='';
+  arts.forEach(function(a){
+    var card=document.createElement('div');
+    card.className='va-card';
+    card.onclick=function(){openArtPopup(a);};
+    var em=SPORT_EMOJI[a.sport]||'🏅';
+    var imgH=a.image
+      ?'<img class="va-img" src="'+a.image+'" loading="lazy" onerror="this.outerHTML=\'<div class=va-img-ph>'+em+'</div>\'">'
+      :'<div class="va-img-ph">'+em+'</div>';
+    var dt=new Date(a.pubDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    var auName=a.authorName||'SPORTSrip';
+    var auInit=auName.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2);
+    var avH=a.authorPhoto
+      ?'<img class="va-av" src="'+a.authorPhoto+'" onerror="this.outerHTML=\'<div class=va-av-ph>'+auInit+'</div>\'">'
+      :'<div class="va-av-ph">'+auInit+'</div>';
+    card.innerHTML=imgH+
+      '<div class="va-body">'+
+        '<div><span class="va-badge">SPORTSrip</span></div>'+
+        '<div class="va-title">'+a.title+'</div>'+
+        '<div class="va-desc">'+(a.description||'').slice(0,100)+'</div>'+
+        '<div class="va-footer">'+
+          '<div style="display:flex;align-items:center;gap:5px;">'+avH+'<span class="va-author">'+auName+'</span></div>'+
+          '<span class="va-date">'+dt+'</span>'+
+        '</div>'+
+      '</div>';
+    grid.appendChild(card);
+  });
+}
+
+function openArtPopup(a){
+  document.getElementById('apSport').textContent=SPORT_LABEL[a.sport]||a.sport.toUpperCase();
+  var dt=new Date(a.pubDate).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  var auName=a.authorName||'SPORTSrip';
+  var auInit=auName.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2);
+  var avH=a.authorPhoto?'<img class="ap-av" src="'+a.authorPhoto+'">'
+    :'<div class="ap-av-ph">'+auInit+'</div>';
+  document.getElementById('apScroll').innerHTML=
+    (a.image?'<img class="ap-img" src="'+a.image+'">':'')+
+    '<div class="ap-title">'+a.title+'</div>'+
+    '<div class="ap-author-row">'+avH+
+      '<div><div class="ap-aname">'+auName+'</div><div class="ap-date">'+dt+'</div></div>'+
+    '</div>'+
+    '<div class="ap-body">'+a.description+'</div>';
+  document.getElementById('apOverlay').classList.add('open');
+  document.getElementById('apScroll').scrollTop=0;
+}
+function closeArtPopup(){document.getElementById('apOverlay').classList.remove('open');}
+
+// SOURCES
+async function loadSources(){
+  var c=document.getElementById('srcList');
+  c.innerHTML='<div style="color:var(--text3);font-size:12px;">Loading...</div>';
+  try{
+    var r=await fetch(WURL+'/api/feeds');
+    var d=await r.json();
+    var feeds=d.feeds||[];
+    if(!feeds.length){c.innerHTML='<div style="color:var(--text3);font-size:12px;">No sources. Click Preload Defaults.</div>';return;}
+    c.innerHTML='';
+    feeds.forEach(f=>{
+      var div=document.createElement('div');div.className='feed-item';
+      div.innerHTML='<div class="feed-l"><div class="feed-name"><span class="pill">'+f.sport+'</span> '+f.name+'</div>'+
+        '<div class="feed-url">'+f.url+'</div></div>'+
+        '<button class="btn btn-danger btn-sm" onclick="delFeed(\''+encodeURIComponent(f.url)+'\',this)">Remove</button>';
+      c.appendChild(div);
+    });
+  }catch(e){c.innerHTML='<div style="color:var(--red);font-size:12px;">'+e.message+'</div>';}
+}
+async function testFeed(){
+  var url=document.getElementById('fUrl').value.trim();
+  if(!url){log('consoleSrc','<span class="err">❌ Enter URL first</span>');return;}
+  log('consoleSrc','<span class="inf">Testing...</span>');
+  try{
+    var r=await fetch(WURL+'/api/test-feed',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})});
+    var d=await r.json();
+    if(d.valid)log('consoleSrc','<span class="ok">✅ Valid: '+d.name+' ('+d.itemCount+' items)</span>');
+    else log('consoleSrc','<span class="err">❌ '+d.message+'</span>');
+  }catch(e){log('consoleSrc','<span class="err">❌ '+e.message+'</span>');}
+}
+async function saveFeed(){
+  var sport=document.getElementById('fSport').value,name=document.getElementById('fName').value.trim();
+  var url=document.getElementById('fUrl').value.trim(),prio=parseInt(document.getElementById('fPrio').value)||3;
+  if(!name||!url){log('consoleSrc','<span class="err">❌ Name and URL required</span>');return;}
+  try{
+    var r=await fetch(WURL+'/api/feeds',{method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+      body:JSON.stringify({sport,name,url,priority:prio,label:sport.toUpperCase()})});
+    var d=await r.json();
+    if(r.ok)log('consoleSrc','<span class="ok">✅ Added! Total: '+d.total+'</span>');
+    else log('consoleSrc','<span class="err">❌ '+d.error+'</span>');
+    loadSources();
+  }catch(e){log('consoleSrc','<span class="err">❌ '+e.message+'</span>');}
+}
+async function delFeed(enc,btn){
+  if(!confirm('Remove this source?'))return;
+  btn.textContent='...';btn.disabled=true;
+  try{
+    var r=await fetch(WURL+'/api/feeds',{method:'DELETE',
+      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+      body:JSON.stringify({url:decodeURIComponent(enc)})});
+    var d=await r.json();
+    if(d.success)btn.closest('.feed-item').remove();
+    else{btn.textContent='Remove';btn.disabled=false;}
+  }catch(e){btn.textContent='Remove';btn.disabled=false;}
+}
+async function preloadFeeds(){
+  log('consoleSrc','<span class="inf">Preloading 29 feeds...</span>');
+  try{
+    var r=await fetch(WURL+'/api/preload-feeds',{method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':PASS}});
+    var d=await r.json();
+    if(r.ok)log('consoleSrc','<span class="ok">✅ Added '+d.added+', Total '+d.total+'</span>');
+    else log('consoleSrc','<span class="err">❌ '+d.error+'</span>');
+    loadSources();
+  }catch(e){log('consoleSrc','<span class="err">❌ '+e.message+'</span>');}
+}
+
+// REFRESH
+var refWorker=WORKERS.dev;
+function chkRefEnv(){
+  var env=document.getElementById('refEnv').value;
+  if(env==='prod'&&!confirm('⚠️ PROD refresh updates live sportsrip.com. Continue?')){document.getElementById('refEnv').value='dev';return;}
+  refWorker=WORKERS[env];
+}
+async function doRefresh(type){
+  var sport=document.getElementById('refSport').value;
+  var btn=document.getElementById(type==='raw'?'btnS1':'btnS2');
+  btn.disabled=true;btn.textContent='⏳ Running...';
+  log('consoleRef','<span class="inf">Triggering '+type+' for '+sport+'...</span>');
+  try{
+    var r=await fetch(refWorker+'/api/trigger-fetch',{method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+      body:JSON.stringify({type,sport,limit:50})});
+    var d=await r.json();
+    if(r.ok&&d.done)log('consoleRef','<span class="ok">✅ Done! Updated '+d.updated+' sport(s)</span>');
+    else log('consoleRef','<span class="err">❌ Error</span>');
+  }catch(e){log('consoleRef','<span class="err">❌ '+e.message+'</span>');}
+  btn.disabled=false;btn.textContent=type==='raw'?'🔄 Fetch Raw Articles':'⚙️ Curate Articles';
+}
+
+// CSV IMPORT
+function importCSV(input){
+  var f=input.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(e){
+    var lines=e.target.result.split('\n').filter(l=>l.trim());
+    if(lines.length<2){alert('CSV needs header + data rows.');return;}
+    var headers=lines[0].split(',').map(h=>h.trim().toLowerCase().replace(/"/g,''));
+    var articles=[];
+    for(var i=1;i<lines.length;i++){
+      var vals=parseCSVLine(lines[i]),obj={};
+      headers.forEach((h,idx)=>obj[h]=vals[idx]||'');
+      if(obj.title||obj.headline) articles.push(obj);
+    }
+    if(!articles.length){alert('No valid articles in CSV.');return;}
+    showImportQueue(articles);
+  };
+  r.readAsText(f);input.value='';
+}
+function parseCSVLine(line){
+  var result=[],cur='',inQ=false;
+  for(var i=0;i<line.length;i++){
+    var c=line[i];
+    if(c==='"'&&!inQ)inQ=true;
+    else if(c==='"'&&inQ)inQ=false;
+    else if(c===','&&!inQ){result.push(cur.trim());cur='';}
+    else cur+=c;
+  }
+  result.push(cur.trim());return result;
+}
+function showImportQueue(articles){
+  var qList=document.getElementById('queueList'),qDiv=document.getElementById('importQueue');
+  qList.innerHTML='';qDiv.style.display='block';showPanel('write');
+  articles.forEach(function(a,idx){
+    var div=document.createElement('div');div.className='queue-item';div.id='qi-'+idx;
+    var title=a.title||a.headline||'',desc=a.description||a.content||a.body||'';
+    var sport=a.sport||'ipl',author=a.author||a.authorname||'';
+    var photo=a.authorphoto||a.photo||'',image=a.image||a.thumbnail||a.thumb||'';
+    var link=a.link||a.url||'https://www.sportsrip.com';
+    div.innerHTML='<div class="q-title">'+title.slice(0,80)+(title.length>80?'...':'')+'</div>'+
+      '<div class="q-meta">Sport: '+sport+' · Author: '+(author||'—')+' · '+desc.length+' chars</div>'+
+      '<div class="q-actions">'+
+        '<button class="btn btn-primary btn-sm" onclick="publishQueued('+idx+',\''+encodeURIComponent(title)+'\',\''+encodeURIComponent(desc)+'\',\''+sport+'\',\''+encodeURIComponent(author)+'\',\''+encodeURIComponent(photo)+'\',\''+encodeURIComponent(image)+'\',\''+encodeURIComponent(link)+'\',this)">🚀 Publish</button>'+
+        '<button class="btn btn-outline btn-sm" onclick="editQueued('+idx+',\''+encodeURIComponent(title)+'\',\''+encodeURIComponent(desc)+'\',\''+sport+'\',\''+encodeURIComponent(author)+'\',\''+encodeURIComponent(photo)+'\',\''+encodeURIComponent(image)+'\',\''+encodeURIComponent(link)+'\')">✏️ Edit</button>'+
+        '<button class="btn btn-outline btn-sm" onclick="document.getElementById(\'qi-'+idx+'\').remove()">Skip</button>'+
+      '</div>';
+    qList.appendChild(div);
+  });
+  document.getElementById('importQueue').scrollIntoView({behavior:'smooth'});
+}
+async function publishQueued(idx,tE,dE,sport,aE,pE,iE,lE,btn){
+  btn.disabled=true;btn.textContent='⏳';
+  var ok=await publishArticle({title:decodeURIComponent(tE),desc:decodeURIComponent(dE),sport,author:decodeURIComponent(aE),photo:decodeURIComponent(pE),image:decodeURIComponent(iE),link:decodeURIComponent(lE)});
+  if(ok){var item=document.getElementById('qi-'+idx);if(item){item.style.background='#f0fff4';item.style.borderColor='#68d391';item.querySelector('.q-actions').innerHTML='<span style="color:var(--green);font-size:11px;font-weight:600;">✅ Published</span>';}}
+  else{btn.disabled=false;btn.textContent='🚀 Publish';}
+}
+function editQueued(idx,tE,dE,sport,aE,pE,iE,lE){
+  document.getElementById('artTitle').value=decodeURIComponent(tE);
+  document.getElementById('artDesc').value=decodeURIComponent(dE);
+  document.getElementById('artSport').value=sport;
+  document.getElementById('artAuthor').value=decodeURIComponent(aE);
+  document.getElementById('artAuthorPhoto').value=decodeURIComponent(pE);
+  document.getElementById('artImage').value=decodeURIComponent(iE);
+  document.getElementById('artLink').value=decodeURIComponent(lE)||'https://www.sportsrip.com';
+  prevImg();prevAv();window.scrollTo({top:0,behavior:'smooth'});
+}
+function closeQueue(){document.getElementById('importQueue').style.display='none';}
+
+// INIT
+loadStats();
+</script>
 </body>
 </html>
