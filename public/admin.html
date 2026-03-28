@@ -580,19 +580,17 @@ async function publishArticle(overrideData){
   if(!overrideData) selTabs.forEach(s=>{if(!allSports.includes(s))allSports.push(s);});
   var btn=document.getElementById('btnPublish');
   if(!overrideData){btn.disabled=true;btn.textContent='⏳';}
-  // If editing, delete old version first
+  // If editing, delete old version from ALL sports it appeared in
   if(!overrideData && _editArt){
-    log('consoleA','<span class="inf">Updating — removing old version...</span>');
-    try{ await fetch(WURL+'/api/delete-own',{method:'POST',
-      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
-      body:JSON.stringify({sport:_editArt.sport,link:_editArt.link})}); }catch(e){}
-    _editArt = null;
-  }
-  if(!overrideData && _editArt){
-    log('consoleA','<span class="inf">Updating — removing old version...</span>');
-    try{ await fetch(WURL+'/api/delete-own',{method:'POST',
-      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
-      body:JSON.stringify({sport:_editArt.sport,link:_editArt.link})}); }catch(e){}
+    var sportsToDelete = _editArt._allSports && _editArt._allSports.length
+      ? _editArt._allSports
+      : [_editArt.sport||'ipl'];
+    log('consoleA','<span class="inf">Updating — removing from: '+sportsToDelete.join(', ')+'...</span>');
+    for(var _sp of sportsToDelete){
+      try{ await fetch(WURL+'/api/delete-own',{method:'POST',
+        headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+        body:JSON.stringify({sport:_sp,link:_editArt.link})}); }catch(e){}
+    }
     _editArt=null;
   }
   log('consoleA','<span class="inf">Publishing "'+title.slice(0,40)+'..."</span>');
@@ -604,7 +602,13 @@ async function publishArticle(overrideData){
     if(res.ok&&d.success){
       log('consoleA','<span class="ok">✅ Published to '+d.savedTo.join(', ')+'!</span>');
       if(author&&!AUTHORS.find(a=>a.name===author)) AUTHORS.push({name:author,photo:photo||''});
-      if(!overrideData){clearForm();loadStats();}
+      if(!overrideData){
+        if(document.getElementById('btnPublish').textContent.includes('Update')){
+          // After update: reset button, clear form, show success
+          var pb=document.getElementById('btnPublish');pb.textContent='🚀 Publish';pb.style.background='';
+        }
+        clearForm();loadStats();
+      }
       return true;
     }else{log('consoleA','<span class="err">❌ '+res.status+': '+(d.error||'Error')+'</span>');return false;}
   }catch(e){log('consoleA','<span class="err">❌ '+e.message+'</span>');return false;}
@@ -711,6 +715,16 @@ async function doMigrate(){
 var _editArt=null;
 
 function editArticle(a){
+  // Find ALL sports this article appears in so we can delete from all of them
+  var allSportsForArticle = [];
+  Object.keys(sportCache||{}).forEach(function(sp){
+    var arts = sportCache[sp]||[];
+    if(arts.find(function(x){return x.isOwn && x.title===a.title;})){
+      allSportsForArticle.push(sp);
+    }
+  });
+  if(!allSportsForArticle.length) allSportsForArticle=[a.sport||'ipl'];
+  a._allSports = allSportsForArticle;
   _editArt=a;
   document.getElementById('artTitle').value       = a.title||'';
   document.getElementById('artDesc').value        = a.description||'';
@@ -724,7 +738,7 @@ function editArticle(a){
   btn.textContent='💾 Update Article'; btn.style.background='#0f766e';
   showPanel('write');
   document.getElementById('consoleA').innerHTML=
-    '> <span class="inf">✏️ Editing: "'+a.title.slice(0,50)+'" — make changes then click Update Article</span>';
+    '> <span class="inf">✏️ Editing: "'+a.title.slice(0,50)+'" (in: '+allSportsForArticle.join(', ')+')</span>';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
