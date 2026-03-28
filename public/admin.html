@@ -176,6 +176,33 @@
   .ap-date{font-size:11px;color:#7a7060;}
   .ap-body{font-family:Georgia,serif;font-size:15px;line-height:1.85;color:#2c2418;white-space:pre-line;}
   @media(max-width:768px){.sidebar{width:56px;}.brand,.nav-item span,.nav-section,.sidebar-footer .env-label{display:none;}.form-row.c2,.form-row.c3{grid-template-columns:1fr;}.stats-row{grid-template-columns:1fr;}}
+
+  /* FOLDERS */
+  .folder-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+  .ftab{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:#fff;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:.15s;white-space:nowrap;}
+  .ftab:hover{border-color:var(--blue);color:var(--blue);}
+  .ftab.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+  .ftab .fc{font-size:10px;opacity:.65;margin-left:2px;}
+  .ftab .fdel{margin-left:4px;opacity:.55;font-size:14px;line-height:1;cursor:pointer;display:none;}
+  .ftab:hover .fdel{display:inline;}
+  .ftab .fdel:hover{opacity:1;}
+  .fm-ov{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.45);z-index:3000;display:none;align-items:center;justify-content:center;}
+  .fm-ov.open{display:flex;}
+  .fm-box{background:#fff;border-radius:12px;width:360px;max-width:94vw;padding:22px;box-shadow:0 16px 48px rgba(0,0,0,.25);}
+  .fm-t{font-size:14px;font-weight:700;margin-bottom:14px;}
+  .fm-inp{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;outline:none;}
+  .fm-inp:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(3,91,176,.1);}
+  .fm-btns{display:flex;gap:8px;margin-top:14px;justify-content:flex-end;}
+  /* card folder badge */
+  .va-folder-badge{position:absolute;top:6px;left:6px;background:rgba(3,91,176,.85);color:#fff;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;pointer-events:none;}
+  .va-assign-btn{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.92);border:1px solid var(--border);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:600;color:var(--text2);cursor:pointer;opacity:0;transition:.15s;z-index:10;}
+  .va-card:hover .va-assign-btn{opacity:1;}
+  .va-card{position:relative;}
+  .va-dd{position:absolute;top:26px;right:6px;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.13);z-index:200;min-width:150px;display:none;padding:4px 0;}
+  .va-dd.open{display:block;}
+  .va-dd-opt{padding:7px 13px;font-size:12px;cursor:pointer;color:var(--text);}
+  .va-dd-opt:hover{background:var(--bg);}
+
 </style>
 </head>
 <body>
@@ -188,7 +215,7 @@
     <div class="nav-section">Content</div>
     <div class="nav-item active" onclick="showPanel('write')" id="nav-write"><span class="ico">✍️</span><span>Write Article</span></div>
     <div class="nav-item" onclick="showPanel('published')" id="nav-published"><span class="ico">📰</span><span>Published</span></div>
-    <div class="nav-item" onclick="showPanel('viewarts')" id="nav-viewarts"><span class="ico">🖼️</span><span>View Articles</span></div>
+    <div class="nav-item" onclick="showPanel('viewarts')" id="nav-viewarts" style="justify-content:space-between;"><div style="display:flex;align-items:center;gap:10px;"><span class="ico">🖼️</span><span>My Articles</span></div><button onclick="event.stopPropagation();openFolderModal()" style="background:rgba(255,255,255,.2);border:none;color:#fff;width:20px;height:20px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0;" title="New folder">+</button></div>
     <div class="nav-section">Sources</div>
     <div class="nav-item" onclick="showPanel('sources')" id="nav-sources"><span class="ico">📡</span><span>Manage Sources</span></div>
     <div class="nav-section">System</div>
@@ -306,9 +333,13 @@
         <div id="pubList"><div style="color:var(--text3);font-size:12px;">Click Refresh to load.</div></div>
       </div>
     </div>
-    <!-- VIEW ARTICLES -->
+    <!-- MY ARTICLES -->
     <div class="panel" id="panel-viewarts">
       <div class="card">
+        <div class="folder-bar" id="folderBar">
+          <div class="ftab active" data-f="all" onclick="setFolder('all')">📋 All <span class="fc" id="fcAll"></span></div>
+          <div class="ftab" data-f="unfiled" onclick="setFolder('unfiled')">📄 Unfiled <span class="fc" id="fcUnfiled"></span></div>
+        </div>
         <div class="va-search-bar">
           <input class="va-search-input" id="vaSearch" type="text" placeholder="🔍  Search by title, author or sport..." oninput="vaFilter()"/>
           <button class="btn btn-outline btn-sm" onclick="loadViewArts()">↻ Refresh</button>
@@ -428,6 +459,18 @@
   </div>
 </div>
 
+<!-- FOLDER MODAL -->
+<div class="fm-ov" id="fmOv" onclick="if(event.target===this)closeFolderModal()">
+  <div class="fm-box">
+    <div class="fm-t">📁 Create New Folder</div>
+    <input class="fm-inp" id="fmInp" type="text" placeholder="e.g. IPL 2026, Best Articles..." maxlength="40"
+           onkeydown="if(event.key==='Enter')saveFolderModal()"/>
+    <div class="fm-btns">
+      <button class="btn btn-outline" onclick="closeFolderModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveFolderModal()">✓ Create</button>
+    </div>
+  </div>
+</div>
 <!-- ARTICLE POPUP -->
 <div class="ap-overlay" id="apOverlay" onclick="if(event.target===this)closeArtPopup()">
   <div class="ap-box">
@@ -471,7 +514,7 @@ function showPanel(name){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('panel-'+name).classList.add('active');
   document.getElementById('nav-'+name).classList.add('active');
-  var t={write:'✍️ Write Article',published:'📰 Published',viewarts:'🖼️ View Articles',sources:'📡 Manage Sources',refresh:'🔄 Refresh Feeds'};
+  var t={write:'✍️ Write Article',published:'📰 Published',viewarts:'🖼️ My Articles',sources:'📡 Manage Sources',refresh:'🔄 Refresh Feeds'};
   document.getElementById('pageTitle').textContent=t[name]||name;
   if(name==='published') loadPublished();
   if(name==='sources') loadSources();
@@ -702,10 +745,91 @@ async function delArt(sport,encTitle,encLink,btn){
   }catch(e){btn.textContent='🗑';btn.disabled=false;}
 }
 
-// VIEW ARTICLES
+// MY ARTICLES + FOLDERS
 var _vaArts=[];
+var _curFolder='all';
 var SPORT_EMOJI={ipl:'🏏',cricket:'🏏',football:'⚽',f1:'🏎️',basketball:'🏀',tennis:'🎾',kabaddi:'🤼',boxing:'🥊',golf:'⛳',badminton:'🏸',nfl:'🏈',baseball:'⚾'};
 var SPORT_LABEL={ipl:'IPL 2026',cricket:'Cricket',football:'Football',f1:'Formula 1',basketball:'NBA',tennis:'Tennis',kabaddi:'Kabaddi',boxing:'Boxing',golf:'Golf',badminton:'Badminton',nfl:'NFL',baseball:'MLB'};
+
+// Folder storage — persisted in localStorage
+function getFolders(){try{return JSON.parse(localStorage.getItem('sr_folders')||'[]');}catch(e){return[];}}
+function saveFolders(f){localStorage.setItem('sr_folders',JSON.stringify(f));}
+function getAssignments(){try{return JSON.parse(localStorage.getItem('sr_assignments')||'{}');}catch(e){return{};}}
+function saveAssignments(a){localStorage.setItem('sr_assignments',JSON.stringify(a));}
+
+function openFolderModal(){
+  document.getElementById('fmInp').value='';
+  document.getElementById('fmOv').classList.add('open');
+  setTimeout(()=>document.getElementById('fmInp').focus(),100);
+}
+function closeFolderModal(){document.getElementById('fmOv').classList.remove('open');}
+function saveFolderModal(){
+  var name=document.getElementById('fmInp').value.trim();
+  if(!name)return;
+  var folders=getFolders();
+  if(folders.find(f=>f.name===name)){alert('Folder already exists!');return;}
+  var id='f_'+Date.now();
+  folders.push({id,name});
+  saveFolders(folders);
+  closeFolderModal();
+  renderFolderBar();
+}
+function deleteFolder(id,e){
+  e.stopPropagation();
+  if(!confirm('Delete this folder? Articles inside will move to Unfiled.'))return;
+  var folders=getFolders().filter(f=>f.id!==id);
+  saveFolders(folders);
+  // Remove assignments to this folder
+  var asgn=getAssignments();
+  Object.keys(asgn).forEach(k=>{if(asgn[k]===id)delete asgn[k];});
+  saveAssignments(asgn);
+  if(_curFolder===id) _curFolder='all';
+  renderFolderBar();
+  vaApplyFolder();
+}
+function assignToFolder(titleKey,folderId){
+  var asgn=getAssignments();
+  if(folderId==='none') delete asgn[titleKey];
+  else asgn[titleKey]=folderId;
+  saveAssignments(asgn);
+  renderFolderBar();
+  vaApplyFolder();
+}
+function setFolder(id){
+  _curFolder=id;
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.toggle('active',t.dataset.f===id));
+  vaApplyFolder();
+}
+function renderFolderBar(){
+  var bar=document.getElementById('folderBar');
+  var folders=getFolders();
+  var asgn=getAssignments();
+  var allCount=_vaArts.length;
+  var unfiledCount=_vaArts.filter(a=>!asgn[a.title.trim()]).length;
+  // Rebuild bar keeping All + Unfiled + user folders
+  bar.innerHTML=
+    '<div class="ftab'+((_curFolder==='all')?' active':'')+'" data-f="all" onclick="setFolder('all')">📋 All <span class="fc">'+allCount+'</span></div>'+
+    '<div class="ftab'+((_curFolder==='unfiled')?' active':'')+'" data-f="unfiled" onclick="setFolder('unfiled')">📄 Unfiled <span class="fc">'+unfiledCount+'</span></div>';
+  folders.forEach(function(f){
+    var cnt=_vaArts.filter(a=>asgn[a.title.trim()]===f.id).length;
+    var div=document.createElement('div');
+    div.className='ftab'+((_curFolder===f.id)?' active':'');
+    div.dataset.f=f.id;
+    div.onclick=()=>setFolder(f.id);
+    div.innerHTML='📁 '+f.name+' <span class="fc">'+cnt+'</span>'
+      +'<span class="fdel" onclick="deleteFolder(''+f.id+'',event)" title="Delete folder">×</span>';
+    bar.appendChild(div);
+  });
+}
+function vaApplyFolder(){
+  var asgn=getAssignments();
+  var filtered=_vaArts;
+  if(_curFolder==='unfiled') filtered=_vaArts.filter(a=>!asgn[a.title.trim()]);
+  else if(_curFolder!=='all') filtered=_vaArts.filter(a=>asgn[a.title.trim()]===_curFolder);
+  var q=document.getElementById('vaSearch').value.toLowerCase().trim();
+  if(q) filtered=filtered.filter(a=>(a.title||'').toLowerCase().includes(q)||(a.description||'').toLowerCase().includes(q)||(a.authorName||'').toLowerCase().includes(q));
+  vaRender(filtered);
+}
 
 async function loadViewArts(){
   var grid=document.getElementById('vaGrid');
@@ -716,7 +840,6 @@ async function loadViewArts(){
     var r=await fetch(WURL+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
     var d=await r.json();
     var arts=d.articles||[];
-    // Only SPORTSrip articles, deduplicate by title, newest first
     var seen=new Set(),unique=[];
     arts.forEach(a=>{
       if(a.isOwn||a.source==='SPORTSrip'){
@@ -725,22 +848,14 @@ async function loadViewArts(){
     });
     unique.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
     _vaArts=unique;
-    vaRender(unique);
+    renderFolderBar();
+    vaApplyFolder();
   }catch(e){
     grid.innerHTML='<div class="va-empty" style="color:var(--red);">❌ '+e.message+'</div>';
   }
 }
 
-function vaFilter(){
-  var q=document.getElementById('vaSearch').value.toLowerCase().trim();
-  if(!q){vaRender(_vaArts);return;}
-  vaRender(_vaArts.filter(a=>
-    (a.title||'').toLowerCase().includes(q)||
-    (a.description||'').toLowerCase().includes(q)||
-    (a.authorName||'').toLowerCase().includes(q)||
-    (a.sport||'').toLowerCase().includes(q)
-  ));
-}
+function vaFilter(){vaApplyFolder();}
 
 function vaRender(arts){
   var grid=document.getElementById('vaGrid');
