@@ -176,6 +176,30 @@
   .ap-date{font-size:11px;color:#7a7060;}
   .ap-body{font-family:Georgia,serif;font-size:15px;line-height:1.85;color:#2c2418;white-space:pre-line;}
   @media(max-width:768px){.sidebar{width:56px;}.brand,.nav-item span,.nav-section,.sidebar-footer .env-label{display:none;}.form-row.c2,.form-row.c3{grid-template-columns:1fr;}.stats-row{grid-template-columns:1fr;}}
+
+  .fbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  .ftab{padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:#fff;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:.15s;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;}
+  .ftab:hover{border-color:var(--blue);color:var(--blue);}
+  .ftab.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+  .ftab .fc{font-size:10px;opacity:.65;}
+  .ftab .fdel{font-size:13px;line-height:1;cursor:pointer;opacity:0;margin-left:2px;}
+  .ftab:hover .fdel{opacity:.6;}
+  .ftab .fdel:hover{opacity:1 !important;}
+  .fmov{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.45);z-index:3000;display:none;align-items:center;justify-content:center;}
+  .fmov.open{display:flex;}
+  .fmbox{background:#fff;border-radius:12px;width:360px;max-width:94vw;padding:22px;box-shadow:0 16px 48px rgba(0,0,0,.25);}
+  .fmbox h4{font-size:14px;font-weight:700;margin-bottom:14px;}
+  .fminp{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;outline:none;}
+  .fminp:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(3,91,176,.1);}
+  .fmbtns{display:flex;gap:8px;margin-top:14px;justify-content:flex-end;}
+  .va-card{position:relative;}
+  .va-movebtn{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.92);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:10px;font-weight:600;color:var(--text2);cursor:pointer;opacity:0;transition:.15s;z-index:10;}
+  .va-card:hover .va-movebtn{opacity:1;}
+  .va-fbadge{position:absolute;top:6px;left:6px;background:rgba(3,91,176,.82);color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;pointer-events:none;z-index:5;}
+  .va-mdd{position:absolute;top:28px;right:6px;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.13);z-index:200;min-width:148px;display:none;padding:4px 0;}
+  .va-mdd.open{display:block;}
+  .va-mdd-o{padding:7px 13px;font-size:12px;cursor:pointer;}
+  .va-mdd-o:hover{background:var(--bg);}
 </style>
 </head>
 <body>
@@ -188,7 +212,7 @@
     <div class="nav-section">Content</div>
     <div class="nav-item active" onclick="showPanel('write')" id="nav-write"><span class="ico">✍️</span><span>Write Article</span></div>
     <div class="nav-item" onclick="showPanel('published')" id="nav-published"><span class="ico">📰</span><span>Published</span></div>
-    <div class="nav-item" onclick="showPanel('viewarts')" id="nav-viewarts"><span class="ico">🖼️</span><span>View Articles</span></div>
+    <div class="nav-item" onclick="showPanel('viewarts')" id="nav-viewarts" style="padding-right:8px;"><span class="ico">🖼️</span><span style="flex:1">My Articles</span><span onclick="event.stopPropagation();openFolderModal()" title="New folder" style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.25);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;flex-shrink:0;line-height:1;">+</span></div>
     <div class="nav-section">Sources</div>
     <div class="nav-item" onclick="showPanel('sources')" id="nav-sources"><span class="ico">📡</span><span>Manage Sources</span></div>
     <div class="nav-section">System</div>
@@ -309,6 +333,7 @@
     <!-- VIEW ARTICLES -->
     <div class="panel" id="panel-viewarts">
       <div class="card">
+        <div class="fbar" id="fbar"><div class="ftab active" data-f="all" onclick="setFolder('all')">📋 All <span class="fc" id="fcAll"></span></div><div class="ftab" data-f="unfiled" onclick="setFolder('unfiled')">📄 Unfiled <span class="fc" id="fcUnfiled"></span></div></div>
         <div class="va-search-bar">
           <input class="va-search-input" id="vaSearch" type="text" placeholder="🔍  Search by title, author or sport..." oninput="vaFilter()"/>
           <button class="btn btn-outline btn-sm" onclick="loadViewArts()">↻ Refresh</button>
@@ -471,7 +496,7 @@ function showPanel(name){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('panel-'+name).classList.add('active');
   document.getElementById('nav-'+name).classList.add('active');
-  var t={write:'✍️ Write Article',published:'📰 Published',viewarts:'🖼️ View Articles',sources:'📡 Manage Sources',refresh:'🔄 Refresh Feeds'};
+  var t={write:'✍️ Write Article',published:'📰 Published',viewarts:'🖼️ My Articles',sources:'📡 Manage Sources',refresh:'🔄 Refresh Feeds'};
   document.getElementById('pageTitle').textContent=t[name]||name;
   if(name==='published') loadPublished();
   if(name==='sources') loadSources();
@@ -725,22 +750,14 @@ async function loadViewArts(){
     });
     unique.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
     _vaArts=unique;
-    vaRender(unique);
+    rebuildFolderBar();
+    applyFolder();
   }catch(e){
     grid.innerHTML='<div class="va-empty" style="color:var(--red);">❌ '+e.message+'</div>';
   }
 }
 
-function vaFilter(){
-  var q=document.getElementById('vaSearch').value.toLowerCase().trim();
-  if(!q){vaRender(_vaArts);return;}
-  vaRender(_vaArts.filter(a=>
-    (a.title||'').toLowerCase().includes(q)||
-    (a.description||'').toLowerCase().includes(q)||
-    (a.authorName||'').toLowerCase().includes(q)||
-    (a.sport||'').toLowerCase().includes(q)
-  ));
-}
+function vaFilter(){applyFolder();}
 
 function vaRender(arts){
   var grid=document.getElementById('vaGrid');
@@ -793,6 +810,70 @@ function openArtPopup(a){
   document.getElementById('apScroll').scrollTop=0;
 }
 function closeArtPopup(){document.getElementById('apOverlay').classList.remove('open');}
+
+
+// FOLDER SYSTEM
+var _curFolder='all';
+function getFolders(){try{return JSON.parse(localStorage.getItem('sr_folders')||'[]');}catch(e){return[];}}
+function saveFolders(f){localStorage.setItem('sr_folders',JSON.stringify(f));}
+function getAsgn(){try{return JSON.parse(localStorage.getItem('sr_asgn')||'{}');}catch(e){return{};}}
+function saveAsgn(a){localStorage.setItem('sr_asgn',JSON.stringify(a));}
+function openFolderModal(){document.getElementById('fminp').value='';document.getElementById('fmov').classList.add('open');setTimeout(function(){document.getElementById('fminp').focus();},80);}
+function closeFolderModal(){document.getElementById('fmov').classList.remove('open');}
+function saveFolderModal(){
+  var name=document.getElementById('fminp').value.trim();if(!name)return;
+  var folders=getFolders();
+  if(folders.find(function(f){return f.name===name;})){alert('Folder already exists!');return;}
+  folders.push({id:'f'+Date.now(),name:name});saveFolders(folders);
+  closeFolderModal();rebuildFolderBar();
+}
+function deleteFolder(id,e){
+  e.stopPropagation();
+  if(!confirm('Delete folder? Articles go back to Unfiled.'))return;
+  saveFolders(getFolders().filter(function(f){return f.id!==id;}));
+  var a=getAsgn();Object.keys(a).forEach(function(k){if(a[k]===id)delete a[k];});saveAsgn(a);
+  if(_curFolder===id)_curFolder='all';
+  rebuildFolderBar();applyFolder();
+}
+function moveArt(titleKey,fid){
+  var a=getAsgn();if(fid==='none')delete a[titleKey];else a[titleKey]=fid;
+  saveAsgn(a);rebuildFolderBar();applyFolder();
+}
+function setFolder(id){
+  _curFolder=id;
+  document.querySelectorAll('.ftab').forEach(function(t){t.classList.toggle('active',t.dataset.f===id);});
+  applyFolder();
+}
+function rebuildFolderBar(){
+  var bar=document.getElementById('fbar');if(!bar)return;
+  var folders=getFolders();var asgn=getAsgn();
+  var allN=_vaArts.length;
+  var unN=_vaArts.filter(function(a){return !asgn[a.title.trim()];}).length;
+  // Clear and rebuild keeping All + Unfiled
+  bar.innerHTML=
+    '<div class="ftab'+((_curFolder==='all')?' active':'')+'" data-f="all" onclick="setFolder('all')">📋 All <span class="fc">'+allN+'</span></div>'+
+    '<div class="ftab'+((_curFolder==='unfiled')?' active':'')+'" data-f="unfiled" onclick="setFolder('unfiled')">📄 Unfiled <span class="fc">'+unN+'</span></div>';
+  folders.forEach(function(f){
+    var cnt=_vaArts.filter(function(a){return asgn[a.title.trim()]===f.id;}).length;
+    var div=document.createElement('div');div.className='ftab'+((_curFolder===f.id)?' active':'');div.dataset.f=f.id;
+    div.onclick=function(){setFolder(f.id);};
+    var txt=document.createTextNode('📁 '+f.name+' ');div.appendChild(txt);
+    var fc=document.createElement('span');fc.className='fc';fc.textContent=cnt;div.appendChild(fc);
+    var del=document.createElement('span');del.className='fdel';del.textContent='×';
+    del.onclick=function(e){deleteFolder(f.id,e);};div.appendChild(del);
+    bar.appendChild(div);
+  });
+}
+function applyFolder(){
+  var asgn=getAsgn();var list=_vaArts;
+  if(_curFolder==='unfiled') list=_vaArts.filter(function(a){return !asgn[a.title.trim()];});
+  else if(_curFolder!=='all') list=_vaArts.filter(function(a){return asgn[a.title.trim()]===_curFolder;});
+  var q=document.getElementById('vaSearch');q=q?q.value.toLowerCase().trim():'';
+  if(q) list=list.filter(function(a){return (a.title||'').toLowerCase().includes(q)||(a.authorName||'').toLowerCase().includes(q)||(a.sport||'').toLowerCase().includes(q);});
+  vaRender(list);
+}
+// Close dropdowns on outside click
+document.addEventListener('click',function(e){if(!e.target.classList.contains('va-movebtn')&&!e.target.closest('.va-mdd')){document.querySelectorAll('.va-mdd.open').forEach(function(d){d.classList.remove('open');});}});
 
 // SOURCES
 async function loadSources(){
@@ -956,5 +1037,7 @@ function closeQueue(){document.getElementById('importQueue').style.display='none
 // INIT
 loadStats();
 </script>
+
+<div class="fmov" id="fmov" onclick="if(event.target===this)closeFolderModal()"><div class="fmbox"><h4>📁 Create New Folder</h4><input class="fminp" id="fminp" type="text" placeholder="e.g. IPL 2026, Best Articles..." maxlength="40" onkeydown="if(event.key==='Enter')saveFolderModal()"/><div class="fmbtns"><button class="btn btn-outline" onclick="closeFolderModal()">Cancel</button><button class="btn btn-primary" onclick="saveFolderModal()">✓ Create</button></div></div></div>
 </body>
 </html>
