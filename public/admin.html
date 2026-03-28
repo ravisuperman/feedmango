@@ -850,9 +850,17 @@ function rebuildFolderBar(){
   var allN=_vaArts.length;
   var unN=_vaArts.filter(function(a){return !asgn[a.title.trim()];}).length;
   // Clear and rebuild keeping All + Unfiled
-  bar.innerHTML=
-    '<div class="ftab'+((_curFolder==='all')?' active':'')+'" data-f="all" onclick="setFolder('all')">📋 All <span class="fc">'+allN+'</span></div>'+
-    '<div class="ftab'+((_curFolder==='unfiled')?' active':'')+'" data-f="unfiled" onclick="setFolder('unfiled')">📄 Unfiled <span class="fc">'+unN+'</span></div>';
+  bar.innerHTML='';
+  var t1=document.createElement('div');
+  t1.className='ftab'+((_curFolder==='all')?' active':'');
+  t1.dataset.f='all';t1.onclick=function(){setFolder('all');};
+  t1.innerHTML='📋 All <span class="fc">'+allN+'</span>';
+  bar.appendChild(t1);
+  var t2=document.createElement('div');
+  t2.className='ftab'+((_curFolder==='unfiled')?' active':'');
+  t2.dataset.f='unfiled';t2.onclick=function(){setFolder('unfiled');};
+  t2.innerHTML='📄 Unfiled <span class="fc">'+unN+'</span>';
+  bar.appendChild(t2);
   folders.forEach(function(f){
     var cnt=_vaArts.filter(function(a){return asgn[a.title.trim()]===f.id;}).length;
     var div=document.createElement('div');div.className='ftab'+((_curFolder===f.id)?' active':'');div.dataset.f=f.id;
