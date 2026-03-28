@@ -886,14 +886,14 @@
 
 <!-- ═══ Article Modal ═══ -->
 <div id="artModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;" onclick="closeArtModal(event)">
-  <div id="artModalBox" style="position:relative;width:20%;height:60%;background:#faf8f3;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+  <div id="artModalBox" style="position:relative;width:20vw;height:50vh;background:#faf8f3;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
     <button onclick="closeArtModalBtn()" style="position:absolute;top:12px;right:14px;background:rgba(0,0,0,0.12);border:none;font-size:18px;width:34px;height:34px;border-radius:50%;cursor:pointer;z-index:10;color:#2c2418;font-weight:700;">✕</button>
     <div id="artModalContent" style="overflow-y:auto;flex:1;padding:32px 36px 40px;font-family:Georgia,serif;color:#2c2418;"></div>
   </div>
 </div>
 <style>
 @media(max-width:768px){
-  #artModalBox { width:92% !important; height:80% !important; border-radius:8px !important; }
+  #artModalBox { width:92vw !important; height:80vh !important; border-radius:8px !important; }
   #artModalContent { padding:20px 18px 30px !important; }
 }
 </style>
