@@ -668,22 +668,24 @@
         openYT(a.videoId);
       };
     } else {
-      // RSS article — popup window on desktop, new tab on mobile
+      // RSS article — popup window for all screen sizes
       c.href = a.link;
       c.onclick = function(e) {
         e.preventDefault();
-        var isMobile = window.innerWidth <= 768;
-        if(isMobile) {
-          var w = Math.round(screen.width * 0.95);
-          var h = Math.round(screen.height * 0.70);
+        var isDesktop = window.innerWidth > 1024;
+        if(isDesktop) {
+          // Desktop: fixed 900x650 popup
+          var w = 900, h = 650;
           var left = Math.round((screen.width - w) / 2);
           var top = Math.round((screen.height - h) / 2);
           window.open(a.link, '_blank',
             'width='+w+',height='+h+',left='+left+',top='+top+
-            ',toolbar=0,menubar=0,scrollbars=1,resizable=0,status=0'
+            ',toolbar=0,menubar=0,scrollbars=1,resizable=1,status=0'
           );
         } else {
-          var w = 900, h = 650;
+          // Mobile + Tablet: 90% of screen, resizable
+          var w = Math.round(screen.width * 0.90);
+          var h = Math.round(screen.height * 0.90);
           var left = Math.round((screen.width - w) / 2);
           var top = Math.round((screen.height - h) / 2);
           window.open(a.link, '_blank',
