@@ -2,7 +2,7 @@
  * Mango Sports Worker — Production Server
  * Cron 1: Fetch raw RSS → NEWS_KV
  * Cron 2: Add OG images → CURATED_KV
- * Admin: Discover sssRSS → Process & Save → MY_NEWS_KV
+ * Admin: Discover RSS → Process & Save → MY_NEWS_KV
  *
  * Change log:
  * 27-Mar-2026 — Added Google sitemap + robots.txt routes
@@ -41,7 +41,8 @@ var SPORTS_FALLBACK = {
   rugby:      { label:'Rugby',      feeds:[{name:'BBC Rugby',url:'https://feeds.bbci.co.uk/sport/rugby-union/rss.xml'}]},
   olympics:   { label:'Olympics',   feeds:[{name:'ESPN Olympics',url:'https://www.espn.com/espn/rss/oly/news'}]},
   nfl:        { label:'NFL',        feeds:[{name:'ESPN NFL',url:'https://www.espn.com/espn/rss/nfl/news'}]},
-  badminton:  { label:'Badminton',  feeds:[{name:'ESPN Badminton',url:'https://www.espn.in/espn/rss/badminton/news'},{name:'SportsAdda',url:'https://www.sportsadda.com/rss/badminton/news'}]}
+  badminton:  { label:'Badminton',  feeds:[{name:'ESPN Badminton',url:'https://www.espn.in/espn/rss/badminton/news'},{name:'SportsAdda',url:'https://www.sportsadda.com/rss/badminton/news'}]},
+  videos:     { label:'Videos',     feeds:[{name:'ESPNcricinfo',url:'https://www.youtube.com/feeds/videos.xml?channel_id=UCujuVKmt_utAQZJghxlRMIQ'}]}
 };
 // BLOCK END: Hardcoded SPORTS — Fallback Only (27-Mar-2026)
 // ============================================================
@@ -82,7 +83,8 @@ var PRELOADED_FEEDS = [
   {sport:'olympics',  label:'Olympics',   priority:1, name:'ESPN Olympics',    url:'https://www.espn.com/espn/rss/oly/news'},
   {sport:'nfl',       label:'NFL',        priority:1, name:'ESPN NFL',         url:'https://www.espn.com/espn/rss/nfl/news'},
   {sport:'badminton', label:'Badminton',  priority:1, name:'ESPN Badminton',   url:'https://www.espn.in/espn/rss/badminton/news'},
-  {sport:'badminton', label:'Badminton',  priority:2, name:'SportsAdda',       url:'https://www.sportsadda.com/rss/badminton/news'}
+  {sport:'badminton', label:'Badminton',  priority:2, name:'SportsAdda',       url:'https://www.sportsadda.com/rss/badminton/news'},
+  {sport:'videos',    label:'Videos',     priority:1, name:'ESPNcricinfo',     url:'https://www.youtube.com/feeds/videos.xml?channel_id=UCujuVKmt_utAQZJghxlRMIQ'}
 ];
 // BLOCK END: Preloaded Feeds Data (27-Mar-2026)
 // ============================================================
@@ -144,18 +146,59 @@ function parseRSS(xml, sourceName) {
     if(mm)img=mm[1]; else if(enc)img=enc[1]; else if(iid)img=iid[1];
     if(!title||!link)continue;
     var published=pub?new Date(pub):new Date();
-    if((Date.now()-published.getTime())/3600000>48)continue;
+    if((Date.now()-published.getTime())/3600000>72)continue;
     if(sourceName==='Sky Sports Cricket'&&!link.toLowerCase().includes('cricket'))continue;
     articles.push({title:cleanText(title),link:link.trim(),pubDate:published.toISOString(),description:cleanText(stripHtml(desc||'')),image:img,source:sourceName});
   }
   return articles;
 }
 
+
+// ============================================================
+// BLOCK START: parseYouTubeRSS — YouTube Atom feed parser
+// Added  : 27-Mar-2026
+// Purpose: YouTube feeds use Atom format with <entry> tags
+//          instead of <item>. Extracts video ID for embedding.
+//          Thumbnail from YouTube's image CDN.
+// ============================================================
+function parseYouTubeRSS(xml, sourceName) {
+  var articles = [], re = /<entry>([\s\S]*?)<\/entry>/g, m;
+  while((m = re.exec(xml)) !== null) {
+    var it = m[1];
+    var title = extractTag(it, 'title');
+    var videoId = null;
+    var vidMatch = it.match(/video_id>([^<]+)/i) || it.match(/yt:videoId>([^<]+)/i) || it.match(/watch\?v=([a-zA-Z0-9_-]+)/);
+    if(vidMatch) videoId = vidMatch[1].trim();
+    var link = videoId ? 'https://www.youtube.com/watch?v=' + videoId : null;
+    var pub = extractTag(it, 'published') || extractTag(it, 'updated');
+    var img = videoId ? 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg' : null;
+    if(!title || !link || !videoId) continue;
+    var published = pub ? new Date(pub) : new Date();
+    if((Date.now() - published.getTime()) / 3600000 > 168) continue; // 7 days for videos
+    articles.push({
+      title: cleanText(title),
+      link: link,
+      pubDate: published.toISOString(),
+      description: '',
+      image: img,
+      source: sourceName,
+      isVideo: true,
+      videoId: videoId
+    });
+  }
+  return articles;
+}
+// BLOCK END: parseYouTubeRSS (27-Mar-2026)
+// ============================================================
+
 async function fetchFeed(feed){
   try{
     var r=await fetch(feed.url,{headers:{'User-Agent':'MangoSports/1.0'},signal:AbortSignal.timeout(6000)});
     if(!r.ok)throw new Error('HTTP '+r.status);
-    return parseRSS(await r.text(),feed.name);
+    var text=await r.text();
+    // Use YouTube parser for YouTube feeds
+    if(feed.url.includes('youtube.com/feeds')) return parseYouTubeRSS(text,feed.name);
+    return parseRSS(text,feed.name);
   }catch(e){console.error('Feed failed:'+feed.name+':'+e.message);return[];}
 }
 
@@ -182,17 +225,20 @@ async function fetchRawSport(sportKey,sportObj,env,overrideLimit){
 }
 
 async function curateSport(sportKey,env){
-  var existingStr=await env.CURATED_KV.get('curated:'+sportKey);
-  var existingArticles=existingStr?JSON.parse(existingStr):[];
   var raw=await env.NEWS_KV.get('raw:'+sportKey); if(!raw)return;
   var articles=JSON.parse(raw);
   articles.forEach(function(a){a.sport=sportKey;});
-  var merged=articles.filter(function(a){return !!a.image;}).concat(existingArticles);
+  // FIXED: Use only fresh raw articles — no merging with old KV
+  // This ensures newest articles always appear, not buried under stale ones
+  var withImg=articles.filter(function(a){return !!a.image;});
+  var noImg=articles.filter(function(a){return !a.image;});
+  // Prefer articles with images, pad with no-image ones
+  var combined=withImg.concat(noImg);
   var unique=[],seen=new Set();
-  merged.forEach(function(a){if(!seen.has(a.link)){seen.add(a.link);unique.push(a);}});
+  combined.forEach(function(a){if(!seen.has(a.link)){seen.add(a.link);unique.push(a);}});
   unique.sort(function(a,b){return new Date(b.pubDate)-new Date(a.pubDate);});
   var cap=unique.slice(0,150);
-  if(cap.length>0)await env.CURATED_KV.put('curated:'+sportKey,JSON.stringify(cap),{expirationTtl:604800});
+  if(cap.length>0)await env.CURATED_KV.put('curated:'+sportKey,JSON.stringify(cap),{expirationTtl:7200});
 }
 
 var cors={
@@ -213,7 +259,339 @@ function isAdmin(req){return req.headers.get('x-admin-pass')===ADMIN_PASS;}
 // BLOCK END: Admin Password Helper (27-Mar-2026)
 // ============================================================
 
+// ============================================================
+// SEO AGENT — SPORTSrip
+// Added  : 28-Mar-2026
+// Purpose: Runs every 30 minutes via Cloudflare Cron.
+//          1. Fetches Google Trends RSS for IPL + cricket
+//          2. Scans our KV articles for keyword matches
+//          3. Boosts matching articles to top
+//          4. Updates SEO sitemap priority
+//          5. Sends email report via EmailJS
+// ============================================================
+
+// ── CONFIG ──────────────────────────────────────────────────
+const SEO_AGENT_CONFIG = {
+  // Sports to watch for trends
+  watchSports: ['ipl', 'cricket', 'football', 'f1'],
+
+  // Google Trends RSS — these are real public RSS feeds
+  trendFeeds: [
+    'https://trends.google.com/trends/trendingsearches/daily/rss?geo=IN', // India trending
+    'https://trends.google.com/trends/trendingsearches/daily/rss?geo=GB', // UK trending
+  ],
+
+  // Keywords to always watch (even if not trending)
+  watchKeywords: [
+    'ipl', 'ipl 2026', 'rcb', 'csk', 'mi', 'kkr', 'srh', 'pbks', 'dc', 'rr', 'lsg', 'gt',
+    'kohli', 'rohit', 'dhoni', 'bumrah', 'hardik', 'warner', 'dhruv',
+    'cricket', 'wicket', 'century', 'six', 'four', 'boundary',
+  ],
+
+  // EmailJS config — fill these in after signup at emailjs.com
+  emailjs: {
+    serviceId:  'YOUR_EMAILJS_SERVICE_ID',   // e.g. 'service_abc123'
+    templateId: 'YOUR_EMAILJS_TEMPLATE_ID',  // e.g. 'template_xyz456'
+    publicKey:  'YOUR_EMAILJS_PUBLIC_KEY',   // e.g. 'abc123xyz'
+    toEmail:    'ravi.kompel@gmail.com',
+  },
+
+  // How many articles to boost per trending term
+  boostLimit: 3,
+};
+
+// ── MAIN AGENT FUNCTION ──────────────────────────────────────
+async function runSEOAgent(env) {
+  console.log('[SEO Agent] Starting run at', new Date().toISOString());
+  const report = {
+    runAt: new Date().toISOString(),
+    trends: [],
+    matches: [],
+    boosted: [],
+    seoActions: [],
+    errors: [],
+  };
+
+  try {
+    // STEP 1: Fetch trending searches
+    report.trends = await fetchTrends();
+    console.log('[SEO Agent] Found trends:', report.trends.slice(0,5));
+
+    // STEP 2: Scan our articles for keyword matches
+    report.matches = await findMatchingArticles(env, report.trends);
+    console.log('[SEO Agent] Found matches:', report.matches.length);
+
+    // STEP 3: Boost matched articles to top
+    if (report.matches.length > 0) {
+      report.boosted = await boostArticles(env, report.matches);
+      console.log('[SEO Agent] Boosted:', report.boosted.length);
+    }
+
+    // STEP 4: Update SEO sitemap priority
+    report.seoActions = await updateSEOPriority(env, report.boosted);
+    console.log('[SEO Agent] SEO updated:', report.seoActions.length);
+
+    // STEP 5: Send email report
+    await sendAgentEmail(report);
+    console.log('[SEO Agent] Email sent!');
+
+  } catch (e) {
+    report.errors.push(e.message);
+    console.error('[SEO Agent] Error:', e.message);
+  }
+
+  // Save last run report to KV
+  try {
+    await env.CONTROL_PANEL_KV.put('seo_agent:last_run', JSON.stringify(report));
+  } catch(e) {}
+
+  return report;
+}
+
+// ── STEP 1: FETCH TRENDING SEARCHES ─────────────────────────
+async function fetchTrends() {
+  const trends = new Set();
+
+  // Always include our base watch keywords
+  SEO_AGENT_CONFIG.watchKeywords.forEach(k => trends.add(k.toLowerCase()));
+
+  // Fetch Google Trends RSS feeds
+  for (const feedUrl of SEO_AGENT_CONFIG.trendFeeds) {
+    try {
+      const res = await fetch(feedUrl, {
+        headers: { 'User-Agent': 'SPORTSrip-SEOAgent/1.0' },
+        signal: AbortSignal.timeout(5000),
+      });
+      if (!res.ok) continue;
+      const xml = await res.text();
+
+      // Extract trending topics from RSS
+      const items = xml.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/g) || [];
+      items.forEach(item => {
+        const match = item.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/);
+        if (match) {
+          const term = match[1].toLowerCase().trim();
+          // Only keep sports-relevant terms
+          const sportsTerms = ['ipl','cricket','football','f1','formula','sports','match','wicket',
+            'century','score','vs','final','semi','league','tournament','cup','trophy',
+            'kohli','rohit','dhoni','bumrah','hardik','rcb','csk','mi','kkr'];
+          if (sportsTerms.some(t => term.includes(t))) {
+            trends.add(term);
+          }
+        }
+      });
+    } catch (e) {
+      console.log('[SEO Agent] Trend feed failed:', feedUrl, e.message);
+    }
+  }
+
+  return [...trends];
+}
+
+// ── STEP 2: FIND MATCHING ARTICLES ──────────────────────────
+async function findMatchingArticles(env, trends) {
+  const matches = [];
+  const sports = ['ipl', 'cricket', 'football', 'f1', 'basketball', 'tennis', 'kabaddi'];
+
+  for (const sport of sports) {
+    try {
+      const raw = await env.CURATED_KV.get('curated:' + sport);
+      const myRaw = await env.MY_NEWS_KV.get('my:' + sport);
+      const articles = [
+        ...(myRaw ? JSON.parse(myRaw).map(a => ({...a, isOwn: true})) : []),
+        ...(raw ? JSON.parse(raw) : []),
+      ];
+
+      for (const article of articles) {
+        const text = ((article.title || '') + ' ' + (article.description || '')).toLowerCase();
+        const matchedTerms = trends.filter(term => text.includes(term));
+
+        if (matchedTerms.length > 0) {
+          matches.push({
+            sport,
+            title: article.title,
+            link: article.link,
+            isOwn: article.isOwn || false,
+            score: matchedTerms.length,
+            matchedTerms: matchedTerms.slice(0, 5),
+            article,
+          });
+        }
+      }
+    } catch (e) {
+      console.log('[SEO Agent] Error scanning sport:', sport, e.message);
+    }
+  }
+
+  // Sort by score descending
+  matches.sort((a, b) => b.score - a.score);
+  return matches.slice(0, 20); // top 20 matches
+}
+
+// ── STEP 3: BOOST MATCHED ARTICLES ──────────────────────────
+async function boostArticles(env, matches) {
+  const boosted = [];
+  const sportGroups = {};
+
+  // Group matches by sport
+  matches.forEach(m => {
+    if (!sportGroups[m.sport]) sportGroups[m.sport] = [];
+    if (sportGroups[m.sport].length < SEO_AGENT_CONFIG.boostLimit) {
+      sportGroups[m.sport].push(m);
+    }
+  });
+
+  // For each sport, move matched articles to top of CURATED_KV
+  for (const [sport, sportMatches] of Object.entries(sportGroups)) {
+    try {
+      const raw = await env.CURATED_KV.get('curated:' + sport);
+      if (!raw) continue;
+      let articles = JSON.parse(raw);
+
+      const matchLinks = new Set(sportMatches.map(m => m.link));
+
+      // Separate matched and non-matched
+      const topArticles = articles.filter(a => matchLinks.has(a.link));
+      const restArticles = articles.filter(a => !matchLinks.has(a.link));
+
+      // Put matched articles at top, mark as boosted
+      topArticles.forEach(a => {
+        a._boosted = true;
+        a._boostedAt = new Date().toISOString();
+        a._boostedFor = sportMatches.find(m => m.link === a.link)?.matchedTerms || [];
+      });
+
+      const newOrder = [...topArticles, ...restArticles];
+      await env.CURATED_KV.put('curated:' + sport, JSON.stringify(newOrder));
+
+      sportMatches.forEach(m => boosted.push({
+        sport,
+        title: m.title.slice(0, 60),
+        terms: m.matchedTerms,
+      }));
+    } catch (e) {
+      console.log('[SEO Agent] Boost failed for:', sport, e.message);
+    }
+  }
+
+  return boosted;
+}
+
+// ── STEP 4: UPDATE SEO PRIORITY ─────────────────────────────
+async function updateSEOPriority(env, boosted) {
+  const actions = [];
+
+  if (boosted.length === 0) return actions;
+
+  try {
+    // Store SEO boost info in KV — SEO engine reads this
+    const seoData = {
+      updatedAt: new Date().toISOString(),
+      boostedArticles: boosted,
+      sitemapPriority: boosted.map(b => ({
+        sport: b.sport,
+        title: b.title,
+        priority: '1.0', // highest priority for Google
+        changefreq: 'hourly',
+      })),
+    };
+
+    await env.CONTROL_PANEL_KV.put('seo:boost_data', JSON.stringify(seoData));
+
+    // Ping Google to recrawl sitemap
+    try {
+      await fetch('https://www.google.com/ping?sitemap=https://www.sportsrip.com/sitemap.xml', {
+        signal: AbortSignal.timeout(3000),
+      });
+      actions.push('Pinged Google sitemap');
+    } catch(e) {
+      actions.push('Google ping skipped: ' + e.message);
+    }
+
+    actions.push('Updated SEO boost data in KV');
+    actions.push('Set priority 1.0 for ' + boosted.length + ' articles');
+  } catch (e) {
+    actions.push('SEO update failed: ' + e.message);
+  }
+
+  return actions;
+}
+
+// ── STEP 5: SEND EMAIL REPORT ────────────────────────────────
+async function sendAgentEmail(report) {
+  const { emailjs } = SEO_AGENT_CONFIG;
+
+  // Skip if EmailJS not configured yet
+  if (emailjs.serviceId.includes('YOUR_')) {
+    console.log('[SEO Agent] EmailJS not configured — skipping email');
+    return;
+  }
+
+  const trendsList = report.trends.slice(0, 10).join(', ');
+  const matchesList = report.matches.slice(0, 5)
+    .map(m => '• "'+m.title.slice(0,50)+'" (matched: '+m.matchedTerms.slice(0,3).join(', ')+')')
+    .join('\n');
+  const boostedList = report.boosted.slice(0, 5)
+    .map(b => '• ['+b.sport.toUpperCase()+'] '+b.title)
+    .join('\n');
+
+  const emailBody = [
+    '🤖 SPORTSrip SEO Agent Report',
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+    '🕐 Run time: ' + report.runAt,
+    '',
+    '📈 TRENDING SEARCHES FOUND:',
+    trendsList || 'None detected',
+    '',
+    '🎯 MATCHING ARTICLES (' + report.matches.length + ' found):',
+    matchesList || 'No matches',
+    '',
+    '🚀 ARTICLES BOOSTED TO TOP (' + report.boosted.length + '):',
+    boostedList || 'None boosted',
+    '',
+    '🔍 SEO ACTIONS:',
+    report.seoActions.join('\n') || 'None',
+    '',
+    report.errors.length ? '⚠️ ERRORS:\n' + report.errors.join('\n') : '✅ No errors',
+    '',
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+    'SPORTSrip SEO Agent — sportsrip.com',
+  ].join('\n');
+
+  try {
+    const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        service_id: emailjs.serviceId,
+        template_id: emailjs.templateId,
+        user_id: emailjs.publicKey,
+        template_params: {
+          to_email: emailjs.toEmail,
+          subject: '🤖 SPORTSrip SEO Agent — ' + report.boosted.length + ' articles boosted',
+          message: emailBody,
+          run_time: report.runAt,
+          trends_count: report.trends.length,
+          matches_count: report.matches.length,
+          boosted_count: report.boosted.length,
+        },
+      }),
+    });
+
+    if (!res.ok) throw new Error('EmailJS returned ' + res.status);
+    console.log('[SEO Agent] Email sent to', emailjs.toEmail);
+  } catch (e) {
+    console.error('[SEO Agent] Email failed:', e.message);
+  }
+}
+
+
+
+
 export default {
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(runSEOAgent(env));
+  },
   async fetch(request,env){
     var url=new URL(request.url);
     if(request.method==='OPTIONS')return new Response(null,{headers:cors});
