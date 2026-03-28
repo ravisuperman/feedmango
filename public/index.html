@@ -538,12 +538,12 @@
 
     // My Take badge + SPORTSrip text (matches card read-more-badge)
     var mtRow = document.createElement('div');
-    mtRow.style.cssText = 'display:flex;align-items:center;gap:6px;';
+    mtRow.style.cssText = 'display:flex;align-items:center;gap:6px;line-height:1;';
     var mt = document.createElement('span');
     mt.style.cssText = 'color:#fff;background:var(--espn-blue,#035bb0);padding:3px 10px;font-family:Inter,sans-serif;font-size:11px;font-weight:800;text-transform:uppercase;border-radius:4px;';
     mt.textContent = 'My Take';
     var mtSrc = document.createElement('span');
-    mtSrc.style.cssText = 'font-family:Inter,sans-serif;font-size:11px;color:#718096;font-weight:600;opacity:0.8;';
+    mtSrc.style.cssText = 'font-family:Inter,sans-serif;font-size:11px;color:#1a1a1a;font-weight:600;vertical-align:middle;margin-top:2px;';
     mtSrc.textContent = 'SPORTSrip';
     mtRow.appendChild(mt);
     mtRow.appendChild(mtSrc);
@@ -551,7 +551,7 @@
 
     // 3px spacer
     var sp2 = document.createElement('div');
-    sp2.style.height = '11px';
+    sp2.style.height = '16px';
     inner.appendChild(sp2);
 
     // Title
