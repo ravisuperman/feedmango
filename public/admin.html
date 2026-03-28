@@ -1,794 +1,773 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SPORTSrip — Admin Panel</title>
-  <!-- ============================================================
-       NOTE: Admin panels is DEV only for now.
-       Access at: https://dev.feedmango.pages.dev/admin
-       Secret key protection removed — re-add when moving to PROD.
-  ============================================================ -->
-  <style>
-    :root { --blue:#035bb0; --bg:#0f0f13; --surface:#1a1a22; --border:#2a2a38; --text:#f0f0f0; --dim:#888; --success:#00ff88; --danger:#ff4d4d; --gold:#f0a500; --amber:#ff9800; }
-    [data-theme="light"] {
-      --bg:#f4f4f4; --surface:#ffffff; --border:#e0e0e0; --text:#141414; --dim:#666;
-      --success:#00a854; --danger:#d32f2f; --gold:#c47f00; --amber:#e65100;
-    }
-    * { box-sizing:border-box; margin:0; padding:0; }
-    body { background:var(--bg); color:var(--text); font-family:'Segoe UI',sans-serif; padding:24px 20px; }
-    .container { max-width:860px; margin:0 auto; }
-    h1 { font-size:20px; font-weight:800; color:var(--gold); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
-    .subtitle { font-size:12px; color:var(--dim); margin-bottom:20px; }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SPORTSrip Admin</title>
+<style>
+  :root {
+    --bg:#f0f4f8; --sidebar:#035bb0; --sidebar-hover:#0269cc; --sidebar-active:#fff;
+    --card:#fff; --border:#e2e8f0; --text:#1a202c; --text2:#4a5568; --text3:#718096;
+    --blue:#035bb0; --green:#38a169; --red:#e53e3e; --amber:#d97706;
+    --input-bg:#f7fafc; --shadow:0 1px 3px rgba(0,0,0,.1);
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); font-family:'Segoe UI',system-ui,sans-serif; color:var(--text); display:flex; min-height:100vh; }
 
-    /* ── Tabs ── */
-    .tabs { display:flex; gap:4px; margin-bottom:20px; border-bottom:1px solid var(--border); }
-    .tab-btn { padding:10px 20px; background:none; border:none; color:var(--dim); font-size:13px; font-weight:700; cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-1px; transition:0.2s; }
-    .tab-btn.active { color:var(--gold); border-bottom-color:var(--gold); }
-    .tab-btn:hover { color:var(--text); }
-    .tab-pane { display:none; }
-    .tab-pane.active { display:block; }
+  /* ── SIDEBAR ── */
+  .sidebar { width:220px; background:var(--sidebar); min-height:100vh; display:flex; flex-direction:column; flex-shrink:0; }
+  .sidebar-logo { padding:20px 16px; border-bottom:1px solid rgba(255,255,255,.15); }
+  .sidebar-logo .brand { font-size:20px; font-weight:800; color:#fff; letter-spacing:1px; }
+  .sidebar-logo .brand em { color:#fbbf24; font-style:normal; }
+  .sidebar-logo .version { font-size:10px; color:rgba(255,255,255,.5); margin-top:2px; }
+  .sidebar-nav { padding:12px 0; flex:1; }
+  .nav-item { display:flex; align-items:center; gap:10px; padding:11px 16px; cursor:pointer; color:rgba(255,255,255,.75); font-size:13px; font-weight:500; transition:0.15s; border-left:3px solid transparent; }
+  .nav-item:hover { background:rgba(255,255,255,.1); color:#fff; }
+  .nav-item.active { background:rgba(255,255,255,.15); color:#fff; border-left-color:#fbbf24; }
+  .nav-item .icon { font-size:16px; width:20px; text-align:center; }
+  .nav-section { padding:8px 16px 4px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:rgba(255,255,255,.35); margin-top:6px; }
+  .sidebar-env { padding:12px 16px; border-top:1px solid rgba(255,255,255,.15); }
+  .env-select { width:100%; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); color:#fff; padding:6px 10px; border-radius:6px; font-size:12px; cursor:pointer; }
+  .env-select option { background:#035bb0; }
+  .env-badge { margin-top:6px; text-align:center; font-size:10px; font-weight:700; padding:3px 8px; border-radius:12px; }
+  .env-badge.dev { background:rgba(251,191,36,.2); color:#fbbf24; }
+  .env-badge.prod { background:rgba(239,68,68,.2); color:#fc8181; }
 
-    /* ── Form elements ── */
-    label { font-size:11px; font-weight:700; color:var(--dim); text-transform:uppercase; letter-spacing:0.06em; display:block; margin-bottom:5px; }
-    input[type=text], input[type=number], textarea, select {
-      width:100%; padding:11px 13px; background:var(--surface);
-      border:1px solid var(--border); border-radius:8px; color:var(--text);
-      font-size:13px; font-family:inherit; outline:none; transition:border-color 0.2s;
-    }
-    input:focus, textarea:focus, select:focus { border-color:var(--blue); }
-    textarea { resize:vertical; min-height:90px; line-height:1.6; }
-    select option { background:var(--surface); }
-    .form-grid { display:grid; gap:14px; }
-    .row2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-    .row3 { display:grid; grid-template-columns:1fr 80px auto; gap:10px; align-items:flex-end; }
+  /* ── MAIN CONTENT ── */
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:#fff; border-bottom:1px solid var(--border); padding:0 24px; height:56px; display:flex; align-items:center; justify-content:space-between; }
+  .topbar-title { font-size:16px; font-weight:700; color:var(--text); }
+  .topbar-right { display:flex; align-items:center; gap:12px; }
+  .worker-badge { font-size:11px; color:var(--text3); background:var(--bg); padding:4px 10px; border-radius:20px; border:1px solid var(--border); }
+  .prod-banner { background:#fef2f2; border-bottom:2px solid #fc8181; padding:8px 24px; font-size:12px; font-weight:700; color:#c53030; display:none; text-align:center; }
 
-    /* ── Buttons ── */
-    .btn { padding:11px 20px; border:none; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer; text-transform:uppercase; transition:opacity 0.2s; white-space:nowrap; }
-    .btn:disabled { opacity:0.4; cursor:wait; }
-    .btn-publish { background:var(--gold); color:#000; flex:1; }
-    .btn-clear { background:var(--surface); color:var(--dim); border:1px solid var(--border); }
-    .btn-test { background:rgba(0,150,255,0.15); color:#60b0ff; border:1px solid rgba(0,150,255,0.3); }
-    .btn-test:hover { background:rgba(0,150,255,0.25); }
-    .btn-save { background:var(--blue); color:#fff; }
-    .btn-preload { background:rgba(0,255,136,0.12); color:var(--success); border:1px solid rgba(0,255,136,0.25); width:100%; padding:13px; font-size:13px; margin-bottom:14px; }
-    .btn-preload:hover { background:rgba(0,255,136,0.2); }
-    .btn-delete-feed { background:rgba(255,77,77,0.1); color:var(--danger); border:1px solid rgba(255,77,77,0.25); border-radius:6px; padding:5px 12px; font-size:11px; font-weight:700; cursor:pointer; }
-    .btn-delete-feed:hover { background:rgba(255,77,77,0.2); }
-    .btn-row { display:flex; gap:10px; margin-top:6px; }
+  /* ── PAGE CONTENT ── */
+  .page { flex:1; overflow-y:auto; padding:24px; }
+  .panel { display:none; }
+  .panel.active { display:block; }
 
-    /* ── Console ── */
-    .console { background:#000; color:#0f0; padding:12px 14px; border-radius:8px; font-family:monospace; font-size:11px; height:100px; overflow-y:auto; margin-top:16px; border:1px solid var(--border); line-height:1.6; }
+  /* ── CARDS ── */
+  .card { background:var(--card); border-radius:12px; padding:20px; border:1px solid var(--border); box-shadow:var(--shadow); margin-bottom:20px; }
+  .card-title { font-size:14px; font-weight:700; color:var(--text); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+  .card-title .icon { color:var(--blue); }
 
-    /* ── Article list ── */
-    .section-title { font-size:12px; font-weight:700; text-transform:uppercase; color:var(--dim); margin:28px 0 12px; border-bottom:1px solid var(--border); padding-bottom:6px; }
-    .article-row { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin-bottom:8px; display:flex; align-items:center; gap:12px; }
-    .article-thumb { width:64px; height:48px; object-fit:cover; border-radius:6px; background:var(--border); flex-shrink:0; }
-    .article-meta { flex:1; min-width:0; }
-    .article-title { font-size:13px; font-weight:700; margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .article-info { font-size:11px; color:var(--dim); }
-    .btn-del-article { background:rgba(255,77,77,0.1); color:var(--danger); border:1px solid rgba(255,77,77,0.25); border-radius:6px; padding:6px 12px; font-size:11px; font-weight:700; cursor:pointer; flex-shrink:0; }
+  /* ── FORM ── */
+  .form-row { display:grid; gap:14px; margin-bottom:14px; }
+  .form-row.cols2 { grid-template-columns:1fr 1fr; }
+  .form-row.cols3 { grid-template-columns:1fr 1fr 1fr; }
+  label { font-size:12px; font-weight:600; color:var(--text2); display:block; margin-bottom:5px; }
+  label .req { color:var(--red); }
+  label .opt { color:var(--text3); font-weight:400; font-size:11px; }
+  input, select, textarea { width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-size:13px; color:var(--text); font-family:inherit; transition:0.15s; }
+  input:focus, select:focus, textarea:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(3,91,176,.1); }
+  textarea { resize:vertical; min-height:120px; }
+  .img-preview { width:100%; height:140px; border-radius:8px; border:2px solid var(--border); object-fit:cover; display:none; margin-top:8px; }
+  .author-photo-preview { width:40px; height:40px; border-radius:50%; border:2px solid var(--border); object-fit:cover; display:none; margin-top:8px; }
 
-    /* ── Feed list (Manage Sources) ── */
-    .feed-group { margin-bottom:16px; }
-    .feed-group-title { font-size:12px; font-weight:800; color:var(--gold); text-transform:uppercase; margin-bottom:8px; padding:6px 10px; background:rgba(240,165,0,0.08); border-radius:6px; border-left:3px solid var(--gold); }
-    .feed-row { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin-bottom:6px; display:flex; align-items:center; gap:12px; }
-    .feed-priority { width:28px; height:28px; border-radius:50%; background:rgba(3,91,176,0.2); color:#60b0ff; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-    .feed-info { flex:1; min-width:0; }
-    .feed-name { font-size:13px; font-weight:700; margin-bottom:2px; }
-    .feed-url-text { font-size:10px; color:var(--dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:monospace; }
-    .feed-list-scroll { max-height:460px; overflow-y:auto; padding-right:4px; }
-    .feed-list-scroll::-webkit-scrollbar { width:4px; }
-    .feed-list-scroll::-webkit-scrollbar-track { background:var(--bg); }
-    .feed-list-scroll::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+  /* ── AUTOCOMPLETE ── */
+  .autocomplete-wrap { position:relative; }
+  .autocomplete-list { position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid var(--border); border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,.1); z-index:100; max-height:180px; overflow-y:auto; display:none; }
+  .autocomplete-item { display:flex; align-items:center; gap:10px; padding:8px 12px; cursor:pointer; font-size:13px; }
+  .autocomplete-item:hover { background:var(--bg); }
+  .autocomplete-av { width:28px; height:28px; border-radius:50%; object-fit:cover; border:1px solid var(--border); }
+  .autocomplete-av-ph { width:28px; height:28px; border-radius:50%; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; flex-shrink:0; }
 
-    /* ── Test result ── */
-    .test-result { padding:10px 14px; border-radius:8px; font-size:12px; margin-top:10px; display:none; }
-    .test-ok { background:rgba(0,255,136,0.08); color:var(--success); border:1px solid rgba(0,255,136,0.2); }
-    .test-fail { background:rgba(255,77,77,0.08); color:var(--danger); border:1px solid rgba(255,77,77,0.2); }
+  /* ── MULTI-SELECT ── */
+  .multi-select { display:flex; flex-wrap:wrap; gap:8px; padding:10px; background:var(--input-bg); border:1px solid var(--border); border-radius:8px; min-height:48px; cursor:pointer; }
+  .multi-select:focus-within { border-color:var(--blue); box-shadow:0 0 0 3px rgba(3,91,176,.1); }
+  .ms-chip { background:var(--blue); color:#fff; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; display:flex; align-items:center; gap:5px; }
+  .ms-chip .x { cursor:pointer; opacity:.7; }
+  .ms-chip .x:hover { opacity:1; }
+  .ms-dropdown { position:relative; }
+  .ms-options { position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid var(--border); border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,.1); z-index:100; display:none; max-height:200px; overflow-y:auto; }
+  .ms-option { padding:8px 12px; cursor:pointer; font-size:13px; display:flex; align-items:center; gap:8px; }
+  .ms-option:hover { background:var(--bg); }
+  .ms-option.selected { color:var(--blue); font-weight:600; }
+  .ms-option input[type=checkbox] { accent-color:var(--blue); }
 
-    /* image preview */
-    #imgPreview { width:100%; height:160px; object-fit:cover; border-radius:8px; border:1px solid var(--border); display:none; margin-top:8px; }
-  </style>
+  /* ── BUTTONS ── */
+  .btn { padding:10px 20px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; border:none; transition:0.15s; display:inline-flex; align-items:center; gap:6px; }
+  .btn-primary { background:var(--blue); color:#fff; }
+  .btn-primary:hover { background:#0269cc; }
+  .btn-primary:disabled { opacity:.5; cursor:not-allowed; }
+  .btn-success { background:var(--green); color:#fff; }
+  .btn-success:hover { background:#2f855a; }
+  .btn-danger { background:var(--red); color:#fff; }
+  .btn-danger:hover { background:#c53030; }
+  .btn-outline { background:transparent; border:1px solid var(--border); color:var(--text2); }
+  .btn-outline:hover { border-color:var(--blue); color:var(--blue); }
+  .btn-full { width:100%; justify-content:center; padding:12px; font-size:14px; }
+  .btn-row { display:flex; gap:10px; margin-top:16px; }
+
+  /* ── CONSOLE ── */
+  .console { background:#0f172a; border-radius:8px; padding:12px 14px; font-family:'Courier New',monospace; font-size:12px; color:#94a3b8; min-height:80px; max-height:150px; overflow-y:auto; }
+  .console .ok { color:#4ade80; }
+  .console .err { color:#f87171; }
+  .console .info { color:#60a5fa; }
+
+  /* ── FEED LIST ── */
+  .feed-item { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--bg); border-radius:8px; margin-bottom:8px; border:1px solid var(--border); font-size:12px; }
+  .feed-item-left { display:flex; flex-direction:column; gap:2px; }
+  .feed-item-name { font-weight:600; color:var(--text); }
+  .feed-item-url { color:var(--text3); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:420px; }
+  .sport-pill { background:var(--blue); color:#fff; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:700; text-transform:uppercase; }
+
+  /* ── PUBLISHED ARTICLES ── */
+  .article-item { display:flex; gap:12px; padding:12px; background:var(--bg); border-radius:8px; margin-bottom:8px; border:1px solid var(--border); align-items:center; }
+  .article-thumb { width:56px; height:40px; object-fit:cover; border-radius:6px; flex-shrink:0; border:1px solid var(--border); }
+  .article-thumb-ph { width:56px; height:40px; border-radius:6px; background:var(--border); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .article-info { flex:1; min-width:0; }
+  .article-title { font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .article-meta { font-size:11px; color:var(--text3); margin-top:2px; }
+  .badge { display:inline-block; padding:1px 7px; border-radius:10px; font-size:10px; font-weight:700; text-transform:uppercase; }
+  .badge-ipl { background:#fef3c7; color:#92400e; }
+  .badge-cricket { background:#d1fae5; color:#065f46; }
+  .badge-blue { background:#dbeafe; color:#1e40af; }
+
+  /* ── STEP BUTTONS ── */
+  .step-card { background:linear-gradient(135deg,#035bb0,#0269cc); border-radius:12px; padding:20px; color:#fff; margin-bottom:14px; }
+  .step-card h3 { font-size:14px; font-weight:700; margin-bottom:6px; }
+  .step-card p { font-size:12px; opacity:.85; margin-bottom:14px; }
+  .btn-white { background:#fff; color:var(--blue); border:none; padding:10px 20px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; transition:0.15s; display:inline-flex; align-items:center; gap:6px; }
+  .btn-white:hover { background:#f0f4f8; }
+  .btn-white:disabled { opacity:.5; cursor:not-allowed; }
+
+  /* ── STATS CARDS ── */
+  .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px; }
+  .stat-card { background:#fff; border-radius:12px; padding:16px; border:1px solid var(--border); text-align:center; }
+  .stat-num { font-size:28px; font-weight:800; color:var(--blue); }
+  .stat-label { font-size:11px; color:var(--text3); margin-top:4px; }
+
+  @media(max-width:768px){ .sidebar { width:60px; } .sidebar-logo .brand, .nav-item span, .nav-section, .sidebar-env { display:none; } .form-row.cols2,.form-row.cols3 { grid-template-columns:1fr; } .stats-grid { grid-template-columns:1fr; } }
+</style>
 </head>
 <body>
-<div class="container">
-  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
-    <h1>✍️ SPORTSrip Admin</h1>
-    <!-- ── Theme toggle ── -->
-    <button onclick="toggleAdminTheme()" id="themeToggle" style="background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;">🌙 Dark</button>
-  </div>
 
-  <!-- ============================================================
-       BLOCK START: Global Environment Selector
-       Added  : 27-Mar-2026
-       Purpose: Single selector at top of page that controls which
-                worker ALL three tabs point to — Write Article,
-                Manage Sources and Refresh Feeds all use this.
-                Switching here updates WORKER_URL globally.
-                PROD shows a red warning banner so you never
-                accidentally publish to production.
-  ============================================================ -->
-  <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 16px;">
-    <span style="font-size:11px; font-weight:700; color:var(--dim); text-transform:uppercase; white-space:nowrap;">Environment</span>
-    <select id="globalEnvSelect" onchange="switchEnv()" style="flex:1; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px; font-weight:700; outline:none;">
-      <option value="dev">🟠 DEV — mango-sports-worker-dev.ravi-kompel.workers.dev</option>
-      <option value="prod">🔴 PROD — mango-sports-worker.ravi-kompel.workers.dev</option>
+<!-- ── SIDEBAR ── -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand"><span>SPORTS</span><em>rip</em></div>
+    <div class="version">Admin Panel v2.0</div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section">Content</div>
+    <div class="nav-item active" onclick="showPanel('write')" id="nav-write">
+      <span class="icon">✍️</span><span>Write Article</span>
+    </div>
+    <div class="nav-item" onclick="showPanel('published')" id="nav-published">
+      <span class="icon">📰</span><span>Published</span>
+    </div>
+    <div class="nav-section">Sources</div>
+    <div class="nav-item" onclick="showPanel('sources')" id="nav-sources">
+      <span class="icon">📡</span><span>Manage Sources</span>
+    </div>
+    <div class="nav-section">System</div>
+    <div class="nav-item" onclick="showPanel('refresh')" id="nav-refresh">
+      <span class="icon">🔄</span><span>Refresh Feeds</span>
+    </div>
+  </div>
+  <div class="sidebar-env">
+    <select class="env-select" id="envSelect" onchange="switchEnv(this.value)">
+      <option value="dev">DEV Instance</option>
+      <option value="prod">PROD Instance</option>
     </select>
-    <div id="envIndicator" style="font-size:11px; font-weight:800; padding:4px 12px; border-radius:20px; background:rgba(255,107,0,0.15); color:#ff9800; white-space:nowrap;">DEV</div>
+    <div class="env-badge dev" id="envBadge">● DEV</div>
   </div>
+</nav>
 
-  <!-- PROD warning banner — hidden by default, shown when PROD selected -->
-  <div id="prodWarning" style="display:none; background:rgba(255,77,77,0.1); border:1px solid rgba(255,77,77,0.3); border-radius:8px; padding:10px 16px; margin-bottom:14px; font-size:12px; color:var(--danger); font-weight:700;">
-    ⚠️ PROD MODE ACTIVE — All changes will affect the live sportsrip.com website!
+<!-- ── MAIN ── -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="pageTitle">✍️ Write Article</div>
+    <div class="topbar-right">
+      <span class="worker-badge" id="workerLabel">DEV Worker</span>
+    </div>
   </div>
-  <!-- BLOCK END: Global Environment Selector (27-Mar-2026) -->
+  <div class="prod-banner" id="prodBanner">⚠️ PROD MODE — Changes affect live sportsrip.com</div>
 
-  <p class="subtitle" id="workerLabel"></p>
+  <div class="page">
 
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('articles')">📝 Write Article</button>
-    <button class="tab-btn" onclick="switchTab('sources')">📡 Manage Sources</button>
-    <button class="tab-btn" onclick="switchTab('refresh')">🔄 Refresh Feeds</button>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════
-       TAB 1: Write Article
-  ═══════════════════════════════════════════════ -->
-  <div id="tab-articles" class="tab-pane active">
-    <div class="form-grid">
-      <div>
-        <label>Article Title *</label>
-        <input type="text" id="f-title" placeholder="e.g. Rohit smashes century as MI defeats CSK"/>
-      </div>
-      <div>
-        <!-- ============================================================
-             BLOCK START: Summary / Description with Import button
-             Added  : 27-Mar-2026
-             Purpose: Import button lets you load summary text from a
-                      .txt file directly into the textarea.
-                      Click Import → pick a .txt file → text loads in.
-        ============================================================ -->
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:5px;">
-          <label style="margin-bottom:0;">Summary / Description</label>
-          <button type="button" onclick="document.getElementById('importTxt').click()" style="background:rgba(0,150,255,0.12);color:#60b0ff;border:1px solid rgba(0,150,255,0.3);border-radius:6px;padding:4px 12px;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;">📂 Import .txt</button>
-          <input type="file" id="importTxt" accept=".txt" style="display:none" onchange="importTextFile(event)"/>
-        </div>
-        <textarea id="f-desc" placeholder="2-3 sentence summary... or import from a .txt file"></textarea>
-        <!-- BLOCK END: Summary with Import (27-Mar-2026) -->
-      </div>
-      <div class="row2">
-        <div>
-          <label>Primary Sport Category *</label>
-          <select id="f-sport">
-            <option value="ipl">🏏 IPL 2026</option>
-            <option value="cricket">🏏 Cricket</option>
-            <option value="football">⚽ Football</option>
-            <option value="f1">🏎️ Formula 1</option>
-            <option value="basketball">🏀 Basketball</option>
-            <option value="tennis">🎾 Tennis</option>
-            <option value="boxing">🥊 Boxing</option>
-            <option value="golf">⛳ Golf</option>
-            <option value="badminton">🏸 Badminton</option>
-            <option value="kabaddi">🤼 Kabaddi</option>
-            <option value="rugby">🏉 Rugby</option>
-            <option value="athletics">🏃 Athletics</option>
-            <option value="olympics">🏅 Olympics</option>
-            <option value="nfl">🏈 NFL</option>
-            <option value="baseball">⚾ Baseball</option>
-          </select>
-        </div>
-        <div>
-          <label>Article Link (URL) *</label>
-          <input type="text" id="f-link" placeholder="https://sportsrip.com/your-article"/>
-        </div>
+    <!-- ══ WRITE ARTICLE ══ -->
+    <div class="panel active" id="panel-write">
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card"><div class="stat-num" id="statArticles">—</div><div class="stat-label">Own Articles</div></div>
+        <div class="stat-card"><div class="stat-num" id="statSources">—</div><div class="stat-label">Feed Sources</div></div>
+        <div class="stat-card"><div class="stat-num" id="statSport">IPL</div><div class="stat-label">Active Sport</div></div>
       </div>
 
-      <!-- ============================================================
-           BLOCK START: Also appear on (multi-select)
-           Added  : 27-Mar-2026
-           Purpose: Lets you publish one article to multiple sport tabs.
-                    Hold Ctrl (Windows) or Cmd (Mac) to select multiple.
-                    Leave empty = default (primary sport + Top Stories).
-                    Example: Write IPL article → also select Cricket
-                    so it appears on both IPL and Cricket tabs.
-      ============================================================ -->
-      <div>
-        <label>Also appear on tabs <span style="color:var(--dim);font-weight:400;text-transform:none">(optional — hold Ctrl/Cmd to pick multiple)</span></label>
-        <select id="f-also" multiple style="height:120px;">
-          <option value="ipl">🏏 IPL 2026</option>
-          <option value="cricket">🏏 Cricket</option>
-          <option value="football">⚽ Football</option>
-          <option value="f1">🏎️ Formula 1</option>
-          <option value="basketball">🏀 Basketball</option>
-          <option value="tennis">🎾 Tennis</option>
-          <option value="boxing">🥊 Boxing</option>
-          <option value="golf">⛳ Golf</option>
-          <option value="badminton">🏸 Badminton</option>
-          <option value="kabaddi">🤼 Kabaddi</option>
-          <option value="rugby">🏉 Rugby</option>
-          <option value="athletics">🏃 Athletics</option>
-          <option value="olympics">🏅 Olympics</option>
-          <option value="nfl">🏈 NFL</option>
-          <option value="baseball">⚾ Baseball</option>
-        </select>
-        <div style="font-size:11px;color:var(--dim);margin-top:5px;">Leave empty → article only goes to primary sport tab + Top Stories (default)</div>
-      </div>
-      <!-- BLOCK END: Also appear on (27-Mar-2026) -->
-      <div>
-        <label>Thumbnail Image URL</label>
-        <input type="text" id="f-image" placeholder="https://images.pexels.com/..." oninput="previewImg(this.value)"/>
-        <img id="imgPreview" alt="Preview"/>
-      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">📝</span> Article Details</div>
 
-      <!-- ============================================================
-           BLOCK START: Author fields
-           Added  : 27-Mar-2026
-           Purpose: Optional author name and photo for the article page.
-                    Leave empty → shows "SPORTSrip Team" with initials.
-      ============================================================ -->
-      <div class="row2">
-        <div>
-          <label>Author Name <span style="color:var(--dim);font-weight:400;text-transform:none">(optional)</span></label>
-          <input type="text" id="f-author-name" placeholder="e.g. Ravi Kumar"/>
+        <div class="form-row">
+          <div>
+            <label>Headline <span class="req">*</span></label>
+            <textarea id="artTitle" placeholder="Write your article headline here..." rows="2"></textarea>
+          </div>
         </div>
-        <div>
-          <label>Author Photo URL <span style="color:var(--dim);font-weight:400;text-transform:none">(optional)</span></label>
-          <input type="text" id="f-author-photo" placeholder="https://your-photo-url.jpg"/>
+
+        <div class="form-row">
+          <div>
+            <label>Article Content / Description <span class="req">*</span></label>
+            <textarea id="artDesc" placeholder="Write your article content..." rows="6"></textarea>
+          </div>
         </div>
-      </div>
-      <!-- BLOCK END: Author fields (27-Mar-2026) -->
-      <div class="btn-row">
-        <button class="btn btn-clear" onclick="clearArticleForm()">Clear</button>
-        <button class="btn btn-publish" id="btnPublish" onclick="publishArticle()">Publish Article</button>
+
+        <div class="form-row cols2">
+          <div>
+            <label>Primary Sport <span class="req">*</span></label>
+            <select id="artSport" onchange="updateStat()">
+              <option value="ipl">🏏 IPL 2026</option>
+              <option value="cricket">🏏 Cricket</option>
+              <option value="football">⚽ Football</option>
+              <option value="f1">🏎️ Formula 1</option>
+              <option value="basketball">🏀 Basketball</option>
+              <option value="tennis">🎾 Tennis</option>
+              <option value="kabaddi">🤼 Kabaddi</option>
+              <option value="boxing">🥊 Boxing</option>
+              <option value="golf">⛳ Golf</option>
+              <option value="athletics">🏃 Athletics</option>
+              <option value="rugby">🏉 Rugby</option>
+              <option value="badminton">🏸 Badminton</option>
+              <option value="nfl">🏈 NFL</option>
+              <option value="baseball">⚾ Baseball</option>
+            </select>
+          </div>
+          <div>
+            <label>Article Link <span class="req">*</span></label>
+            <input type="url" id="artLink" value="https://www.sportsrip.com" placeholder="https://www.sportsrip.com"/>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>Also appear on tabs <span class="opt">(IPL and Cricket pre-selected for IPL season)</span></label>
+            <div class="ms-dropdown">
+              <div class="multi-select" id="alsoTabsDisplay" onclick="toggleMsDropdown()">
+                <div class="ms-chip" data-val="ipl">🏏 IPL 2026 <span class="x" onclick="removeChip(event,'ipl')">×</span></div>
+                <div class="ms-chip" data-val="cricket">🏏 Cricket <span class="x" onclick="removeChip(event,'cricket')">×</span></div>
+                <span style="font-size:12px;color:var(--text3);align-self:center;padding:2px 4px;">Click to add more...</span>
+              </div>
+              <div class="ms-options" id="msOptions">
+                <div class="ms-option selected" data-val="ipl" onclick="toggleChip('ipl','🏏 IPL 2026',event)"><input type="checkbox" checked> 🏏 IPL 2026</div>
+                <div class="ms-option selected" data-val="cricket" onclick="toggleChip('cricket','🏏 Cricket',event)"><input type="checkbox" checked> 🏏 Cricket</div>
+                <div class="ms-option" data-val="football" onclick="toggleChip('football','⚽ Football',event)"><input type="checkbox"> ⚽ Football</div>
+                <div class="ms-option" data-val="f1" onclick="toggleChip('f1','🏎️ Formula 1',event)"><input type="checkbox"> 🏎️ Formula 1</div>
+                <div class="ms-option" data-val="basketball" onclick="toggleChip('basketball','🏀 Basketball',event)"><input type="checkbox"> 🏀 Basketball</div>
+                <div class="ms-option" data-val="tennis" onclick="toggleChip('tennis','🎾 Tennis',event)"><input type="checkbox"> 🎾 Tennis</div>
+                <div class="ms-option" data-val="kabaddi" onclick="toggleChip('kabaddi','🤼 Kabaddi',event)"><input type="checkbox"> 🤼 Kabaddi</div>
+                <div class="ms-option" data-val="boxing" onclick="toggleChip('boxing','🥊 Boxing',event)"><input type="checkbox"> 🥊 Boxing</div>
+                <div class="ms-option" data-val="golf" onclick="toggleChip('golf','⛳ Golf',event)"><input type="checkbox"> ⛳ Golf</div>
+                <div class="ms-option" data-val="nfl" onclick="toggleChip('nfl','🏈 NFL',event)"><input type="checkbox"> 🏈 NFL</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row cols2">
+          <div>
+            <label>Thumbnail Image URL <span class="opt">(optional — use pexels.com)</span></label>
+            <input type="url" id="artImage" placeholder="https://images.pexels.com/..." oninput="previewImg()"/>
+            <img class="img-preview" id="imgPreview"/>
+          </div>
+          <div>
+            <!-- Author section with autocomplete -->
+            <label>Author Name <span class="opt">(optional)</span></label>
+            <div class="autocomplete-wrap">
+              <input type="text" id="artAuthorName" placeholder="e.g. Ravi Kompella" oninput="authorSearch()" onfocus="authorSearch()" autocomplete="off"/>
+              <div class="autocomplete-list" id="authorList"></div>
+            </div>
+            <label style="margin-top:10px;">Author Photo URL <span class="opt">(auto-fills when author selected)</span></label>
+            <input type="url" id="artAuthorPhoto" placeholder="https://..." oninput="previewAuthorPhoto()"/>
+            <img class="author-photo-preview" id="authorPhotoPreview"/>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="clearForm()">🗑 Clear</button>
+          <button class="btn btn-primary btn-full" id="btnPublish" onclick="publishArticle()">
+            🚀 Publish Article
+          </button>
+        </div>
+        <div class="console" id="consoleArticle" style="margin-top:12px;">System ready.</div>
       </div>
     </div>
 
-    <div class="console" id="consoleArticle">System ready.<br></div>
-
-    <div class="section-title">Published Articles <span id="articleCount" style="color:var(--gold)"></span></div>
-    <div id="articlesList"></div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════
-       TAB 2: Manage Sources
-  ═══════════════════════════════════════════════ -->
-  <div id="tab-sources" class="tab-pane">
-
-    <!-- Preload button -->
-    <button class="btn btn-preload" id="btnPreload" onclick="preloadFeeds()">
-      ⚡ Preload All 28 Default Feeds (run once on first setup)
-    </button>
-
-    <!-- Add new feed form -->
-    <div class="form-grid" style="margin-bottom:16px;">
-      <div class="row2">
-        <div>
-          <label>Sport Category *</label>
-          <select id="s-sport">
-            <option value="ipl" data-label="IPL">🏏 IPL 2026</option>
-            <option value="cricket" data-label="Cricket">🏏 Cricket</option>
-            <option value="football" data-label="Football">⚽ Football</option>
-            <option value="f1" data-label="Formula 1">🏎️ Formula 1</option>
-            <option value="basketball" data-label="Basketball">🏀 Basketball</option>
-            <option value="tennis" data-label="Tennis">🎾 Tennis</option>
-            <option value="boxing" data-label="Boxing">🥊 Boxing</option>
-            <option value="golf" data-label="Golf">⛳ Golf</option>
-            <option value="badminton" data-label="Badminton">🏸 Badminton</option>
-            <option value="kabaddi" data-label="Kabaddi">🤼 Kabaddi</option>
-            <option value="rugby" data-label="Rugby">🏉 Rugby</option>
-            <option value="athletics" data-label="Athletics">🏃 Athletics</option>
-            <option value="olympics" data-label="Olympics">🏅 Olympics</option>
-            <option value="nfl" data-label="NFL">🏈 NFL</option>
-            <option value="baseball" data-label="Baseball">⚾ Baseball</option>
-          </select>
-        </div>
-        <div>
-          <label>Priority (1 = highest)</label>
-          <input type="number" id="s-priority" min="1" max="100" value="10" placeholder="1-100"/>
-        </div>
-      </div>
-      <div>
-        <label>RSS Feed URL *</label>
-        <div style="display:flex;gap:8px;">
-          <input type="text" id="s-url" placeholder="https://feeds.bbci.co.uk/sport/cricket/rss.xml"/>
-          <button class="btn btn-test" id="btnTest" onclick="testFeed()">Test Feed</button>
-        </div>
-        <div class="test-result" id="testResult"></div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-save" id="btnSaveFeed" onclick="saveFeed()">Save Feed</button>
+    <!-- ══ PUBLISHED ARTICLES ══ -->
+    <div class="panel" id="panel-published">
+      <div class="card">
+        <div class="card-title"><span class="icon">📰</span> Published Articles</div>
+        <button class="btn btn-outline" onclick="loadPublished()" style="margin-bottom:14px;">🔄 Refresh</button>
+        <div id="publishedList"><div style="color:var(--text3);font-size:13px;">Click Refresh to load articles.</div></div>
       </div>
     </div>
 
-    <div class="console" id="consoleSources">System ready.<br></div>
+    <!-- ══ MANAGE SOURCES ══ -->
+    <div class="panel" id="panel-sources">
+      <div class="card">
+        <div class="card-title"><span class="icon">📡</span> Add Feed Source</div>
+        <div class="form-row cols3">
+          <div>
+            <label>Sport</label>
+            <select id="feedSport">
+              <option value="ipl">IPL</option><option value="cricket">Cricket</option>
+              <option value="football">Football</option><option value="f1">Formula 1</option>
+              <option value="basketball">Basketball</option><option value="tennis">Tennis</option>
+              <option value="kabaddi">Kabaddi</option><option value="boxing">Boxing</option>
+              <option value="golf">Golf</option><option value="badminton">Badminton</option>
+            </select>
+          </div>
+          <div>
+            <label>Source Name</label>
+            <input type="text" id="feedName" placeholder="e.g. BBC Cricket"/>
+          </div>
+          <div>
+            <label>Priority (1=highest)</label>
+            <input type="number" id="feedPriority" value="3" min="1" max="10"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>RSS Feed URL</label>
+            <input type="url" id="feedUrl" placeholder="https://feeds.example.com/rss.xml"/>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="testFeed()">🔍 Test Feed</button>
+          <button class="btn btn-primary" onclick="saveFeed()">➕ Add Source</button>
+          <button class="btn btn-success" onclick="preloadFeeds()" style="margin-left:auto;">⚡ Preload 29 Defaults</button>
+        </div>
+        <div class="console" id="consoleSources" style="margin-top:12px;">System ready.</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">📋</span> Current Sources <button class="btn btn-outline" onclick="loadSources()" style="font-size:11px;padding:4px 10px;margin-left:auto;">↻ Refresh</button></div>
+        <div id="sourcesList"><div style="color:var(--text3);font-size:13px;">Click Refresh to load.</div></div>
+      </div>
+    </div>
 
-    <!-- Scrollable feed list -->
-    <div class="section-title">Saved Feeds <span id="feedCount" style="color:var(--gold)"></span></div>
-    <div class="feed-list-scroll" id="feedsList"></div>
+    <!-- ══ REFRESH FEEDS ══ -->
+    <div class="panel" id="panel-refresh">
+      <div class="step-card">
+        <h3>Step 1 — Fetch Raw Articles</h3>
+        <p>Fetches fresh articles from all RSS sources and stores them in NEWS_KV. Run this first.</p>
+        <button class="btn-white" id="btnStep1" onclick="triggerRefresh('raw')">🔄 Fetch Raw Articles</button>
+      </div>
+      <div class="step-card" style="background:linear-gradient(135deg,#0f766e,#0d9488);">
+        <h3>Step 2 — Curate Articles</h3>
+        <p>Merges raw articles with existing curated list. Removes duplicates. Updates CURATED_KV.</p>
+        <button class="btn-white" id="btnStep2" onclick="triggerRefresh('curate')">⚙️ Curate Articles</button>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🎯</span> Refresh Target</div>
+        <div class="form-row cols2">
+          <div>
+            <label>Environment</label>
+            <select id="refreshEnv" onchange="updateRefreshTarget()">
+              <option value="dev">DEV</option>
+              <option value="prod">PROD — LIVE SITE</option>
+            </select>
+          </div>
+          <div>
+            <label>Sport (or all)</label>
+            <select id="refreshSport">
+              <option value="all">All Sports</option>
+              <option value="ipl">IPL</option><option value="cricket">Cricket</option>
+              <option value="football">Football</option><option value="f1">Formula 1</option>
+            </select>
+          </div>
+        </div>
+        <div class="console" id="consoleRefresh">System ready.</div>
+      </div>
+    </div>
+
   </div>
-
-  <!-- ═══════════════════════════════════════════════
-       TAB 3: Refresh Feeds
-  ═══════════════════════════════════════════════ -->
-  <div id="tab-refresh" class="tab-pane">
-
-    <!-- ============================================================
-         BLOCK START: Environment Selector
-         Added  : 27-Mar-2026
-         Purpose: Choose DEV or PROD before triggering fetch.
-                  Prevents accidentally running on wrong environment.
-    ============================================================ -->
-    <div style="margin-bottom:20px;">
-      <label>Target Environment</label>
-      <select id="envSelect" onchange="updateRefreshEnv()">
-        <option value="dev">🟠 DEV — mango-sports-worker-dev.ravi-kompel.workers.dev</option>
-        <option value="prod">🔴 PROD — mango-sports-worker.ravi-kompel.workers.dev</option>
-      </select>
-    </div>
-    <!-- BLOCK END: Environment Selector (27-Mar-2026) -->
-
-    <!-- Active URL display -->
-    <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin-bottom:20px; font-size:12px; font-family:monospace; color:var(--dim);">
-      <span style="color:var(--gold); font-weight:700;">Targeting:</span>
-      <span id="refreshTargetUrl"></span>
-    </div>
-
-    <!-- Sport selector -->
-    <div style="margin-bottom:16px;">
-      <label>Sport (select one or all)</label>
-      <select id="refreshSport">
-        <option value="all">🌐 All Sports (15)</option>
-        <option value="ipl">🏏 IPL</option>
-        <option value="cricket">🏏 Cricket</option>
-        <option value="football">⚽ Football</option>
-        <option value="f1">🏎️ Formula 1</option>
-        <option value="basketball">🏀 Basketball</option>
-        <option value="tennis">🎾 Tennis</option>
-        <option value="boxing">🥊 Boxing</option>
-        <option value="golf">⛳ Golf</option>
-        <option value="badminton">🏸 Badminton</option>
-        <option value="kabaddi">🤼 Kabaddi</option>
-        <option value="rugby">🏉 Rugby</option>
-        <option value="athletics">🏃 Athletics</option>
-        <option value="olympics">🏅 Olympics</option>
-        <option value="nfl">🏈 NFL</option>
-        <option value="baseball">⚾ Baseball</option>
-      </select>
-    </div>
-
-    <!-- Status dot -->
-    <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px; font-size:12px; color:var(--dim);">
-      <div id="refreshDot" style="width:8px;height:8px;border-radius:50%;background:#28a745;flex-shrink:0;"></div>
-      <span id="refreshStatus">Ready</span>
-    </div>
-
-    <!-- Step buttons -->
-    <button class="btn" id="btnStep1" onclick="triggerRefresh('raw')"
-      style="display:block;width:100%;padding:15px;margin-bottom:12px;background:#007bff;color:#fff;font-size:14px;font-weight:800;">
-      Step 1 — Fetch Raw RSS Data
-    </button>
-    <button class="btn" id="btnStep2" onclick="triggerRefresh('curate')"
-      style="display:block;width:100%;padding:15px;margin-bottom:12px;background:#28a745;color:#fff;font-size:14px;font-weight:800;">
-      Step 2 — Curate &amp; Publish News
-    </button>
-
-    <div class="console" id="consoleRefresh">System ready.<br></div>
-  </div>
-
 </div>
 
 <script>
-  // ============================================================
-  // BLOCK START: Configuration + Global Environment Switcher
-  // Added  : 27-Mar-2026
-  // Purpose: WORKER_URL is controlled globally by the environment
-  //          selector at the top of the page.
-  //          All 3 tabs — Write Article, Manage Sources, Refresh —
-  //          automatically use whichever environment is selected.
-  //
-  // ADMIN ACCESS URL (bookmark these!):
-  
-  
-  //
-  // To reset the key: change ADMIN_URL_KEY in worker.js on GitHub.
-  // ============================================================
-  var WORKER_URLS = {
-    dev:  'https://mango-sports-worker-dev.ravi-kompel.workers.dev',
-    prod: 'https://mango-sports-worker.ravi-kompel.workers.dev'
-  };
-  var WORKER_URL = WORKER_URLS.dev; // Default to DEV
-  var ADMIN_PASS = 'sportsrip2026';
+// ══ CONFIG ══
+var WORKER_URLS = {
+  dev:  'https://mango-sports-worker-dev.ravi-kompel.workers.dev',
+  prod: 'https://mango-sports-worker.ravi-kompel.workers.dev'
+};
+var ADMIN_PASS = 'sportsrip2026';
+var WORKER_URL = WORKER_URLS.dev;
 
-  function switchEnv() {
-    var env = document.getElementById('globalEnvSelect').value;
-    var isProd = env === 'prod';
+// ── Known authors (loaded from published articles + seeded) ──
+var KNOWN_AUTHORS = [
+  { name:'Ravi Kompella', photo:'https://i.ibb.co/PvtxHfgF/download.png' },
+];
 
-    // Update global WORKER_URL used by all tabs
-    WORKER_URL = WORKER_URLS[env];
+// ══ ENV SWITCH ══
+function switchEnv(env) {
+  WORKER_URL = WORKER_URLS[env];
+  document.getElementById('envBadge').textContent = '● ' + env.toUpperCase();
+  document.getElementById('envBadge').className = 'env-badge ' + env;
+  document.getElementById('workerLabel').textContent = env.toUpperCase() + ' Worker';
+  document.getElementById('prodBanner').style.display = env === 'prod' ? 'block' : 'none';
+}
 
-    // Update indicator badge
-    var badge = document.getElementById('envIndicator');
-    badge.textContent = env.toUpperCase();
-    badge.style.background = isProd ? 'rgba(255,77,77,0.15)' : 'rgba(255,107,0,0.15)';
-    badge.style.color = isProd ? '#ff4d4d' : '#ff9800';
+// ══ PANEL NAVIGATION ══
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  const titles = { write:'✍️ Write Article', published:'📰 Published Articles', sources:'📡 Manage Sources', refresh:'🔄 Refresh Feeds' };
+  document.getElementById('pageTitle').textContent = titles[name] || name;
+  if (name === 'published') loadPublished();
+  if (name === 'sources') loadSources();
+  if (name === 'write') loadStats();
+}
 
-    // Show/hide PROD warning banner
-    document.getElementById('prodWarning').style.display = isProd ? 'block' : 'none';
+// ══ STATS ══
+async function loadStats() {
+  try {
+    var r = await fetch(WORKER_URL+'/api/own-articles',{headers:{'x-admin-pass':ADMIN_PASS}});
+    var d = await r.json();
+    var arts = d.articles||[];
+    var seen = new Set(); arts.forEach(a => seen.add(a.link));
+    document.getElementById('statArticles').textContent = seen.size;
+    // Extract known authors from articles
+    arts.forEach(a => {
+      if (a.authorName && a.authorName.trim()) {
+        var existing = KNOWN_AUTHORS.find(au => au.name === a.authorName.trim());
+        if (!existing) KNOWN_AUTHORS.push({name:a.authorName.trim(), photo:a.authorPhoto||''});
+        else if (!existing.photo && a.authorPhoto) existing.photo = a.authorPhoto;
+      }
+    });
+  } catch(e) {}
+  try {
+    var r2 = await fetch(WORKER_URL+'/api/feeds');
+    var d2 = await r2.json();
+    document.getElementById('statSources').textContent = d2.count||0;
+  } catch(e) {}
+}
 
-    // Update subtitle
-    document.getElementById('workerLabel').textContent = 'Worker: ' + WORKER_URL;
+function updateStat() {
+  var labels = {ipl:'IPL',cricket:'Cricket',football:'Football',f1:'F1',basketball:'NBA',tennis:'Tennis'};
+  document.getElementById('statSport').textContent = labels[document.getElementById('artSport').value] || document.getElementById('artSport').value.toUpperCase();
+}
 
-    // Update Refresh tab target display if visible
-    var refreshTarget = document.getElementById('refreshTargetUrl');
-    if(refreshTarget) refreshTarget.textContent = WORKER_URL;
+// ══ MULTI-SELECT for "Also Appear On" ══
+var msOpen = false;
+var selectedTabs = ['ipl','cricket']; // default for IPL season
 
-    // Sync the Refresh tab env selector too
-    var refreshSel = document.getElementById('envSelect');
-    if(refreshSel) refreshSel.value = env;
+function toggleMsDropdown() {
+  msOpen = !msOpen;
+  document.getElementById('msOptions').style.display = msOpen ? 'block' : 'none';
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.ms-dropdown')) {
+    msOpen = false;
+    var opts = document.getElementById('msOptions');
+    if (opts) opts.style.display = 'none';
   }
-  // BLOCK END: Configuration + Global Environment Switcher (27-Mar-2026)
-  // ============================================================
+});
 
-  document.getElementById('workerLabel').textContent = 'Worker: ' + WORKER_URL;
-
-  // ============================================================
-  // BLOCK START: Admin Theme Toggle (light/dark)
-  // Added  : 27-Mar-2026
-  // ============================================================
-  function toggleAdminTheme() {
-    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
-    document.documentElement.setAttribute('data-theme', isLight ? '' : 'light');
-    document.getElementById('themeToggle').textContent = isLight ? '🌙 Dark' : '☀️ Light';
-    localStorage.setItem('admin-theme', isLight ? 'dark' : 'light');
+function toggleChip(val, label, e) {
+  if (e) e.stopPropagation();
+  var idx = selectedTabs.indexOf(val);
+  if (idx > -1) {
+    selectedTabs.splice(idx, 1);
+    removeChipDOM(val);
+    var opt = document.querySelector('.ms-option[data-val="'+val+'"]');
+    if (opt) { opt.classList.remove('selected'); opt.querySelector('input').checked = false; }
+  } else {
+    selectedTabs.push(val);
+    addChipDOM(val, label);
+    var opt = document.querySelector('.ms-option[data-val="'+val+'"]');
+    if (opt) { opt.classList.add('selected'); opt.querySelector('input').checked = true; }
   }
-  (function(){
-    if(localStorage.getItem('admin-theme') === 'light') {
-      document.documentElement.setAttribute('data-theme', 'light');
-      if(document.getElementById('themeToggle')) document.getElementById('themeToggle').textContent = '☀️ Light';
-    }
-  })();
-  // BLOCK END: Admin Theme Toggle (27-Mar-2026)
-  // ============================================================
+}
 
-  // ============================================================
-  // BLOCK START: Import .txt file into Summary field
-  // Added  : 27-Mar-2026
-  // ============================================================
-  function importTextFile(event) {
-    var file = event.target.files[0];
-    if(!file) return;
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      document.getElementById('f-desc').value = e.target.result.trim();
-      log('consoleArticle', '📂 Imported: "' + file.name + '" (' + e.target.result.length + ' chars)');
+function addChipDOM(val, label) {
+  var display = document.getElementById('alsoTabsDisplay');
+  var hint = display.querySelector('span[style]');
+  var chip = document.createElement('div');
+  chip.className = 'ms-chip'; chip.dataset.val = val;
+  chip.innerHTML = label + ' <span class="x" onclick="removeChip(event,\''+val+'\')">×</span>';
+  if (hint) display.insertBefore(chip, hint);
+  else display.appendChild(chip);
+}
+
+function removeChipDOM(val) {
+  var chip = document.querySelector('.ms-chip[data-val="'+val+'"]');
+  if (chip) chip.remove();
+}
+
+function removeChip(e, val) {
+  e.stopPropagation();
+  var idx = selectedTabs.indexOf(val);
+  if (idx > -1) selectedTabs.splice(idx, 1);
+  removeChipDOM(val);
+  var opt = document.querySelector('.ms-option[data-val="'+val+'"]');
+  if (opt) { opt.classList.remove('selected'); opt.querySelector('input').checked = false; }
+}
+
+// ══ AUTHOR AUTOCOMPLETE ══
+function authorSearch() {
+  var val = document.getElementById('artAuthorName').value.toLowerCase().trim();
+  var list = document.getElementById('authorList');
+  var matches = KNOWN_AUTHORS.filter(a => a.name.toLowerCase().includes(val));
+  if (!val || matches.length === 0) { list.style.display = 'none'; return; }
+  list.innerHTML = '';
+  matches.forEach(function(au) {
+    var item = document.createElement('div');
+    item.className = 'autocomplete-item';
+    var init = au.name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2);
+    var avHtml = au.photo
+      ? '<img class="autocomplete-av" src="'+au.photo+'" onerror="this.style.display=\'none\'">'
+      : '<div class="autocomplete-av-ph">'+init+'</div>';
+    item.innerHTML = avHtml + '<span>'+au.name+'</span>';
+    item.onclick = function() {
+      document.getElementById('artAuthorName').value = au.name;
+      document.getElementById('artAuthorPhoto').value = au.photo || '';
+      previewAuthorPhoto();
+      list.style.display = 'none';
     };
-    reader.readAsText(file);
-    event.target.value = '';
+    list.appendChild(item);
+  });
+  list.style.display = 'block';
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.autocomplete-wrap')) {
+    var list = document.getElementById('authorList');
+    if (list) list.style.display = 'none';
   }
-  // BLOCK END: Import .txt file (27-Mar-2026)
-  // ============================================================
-  // Added  : 27-Mar-2026
-  // Purpose: Updates WORKER_URL and display when user picks DEV/PROD.
-  // ============================================================
-  function updateRefreshEnv() {
-    // Sync Refresh tab display with global selector
-    var env = document.getElementById('globalEnvSelect').value;
-    document.getElementById('envSelect').value = env;
-    document.getElementById('refreshTargetUrl').textContent = WORKER_URL;
-    log('consoleRefresh', 'Target: <span style="color:' + (env==='prod'?'#ff4d4d':'#ff9800') + '">' + env.toUpperCase() + '</span> — ' + WORKER_URL);
-  }
-  // BLOCK END: Environment switcher (27-Mar-2026)
-  // ============================================================
+});
 
-  function switchTab(tab) {
-    document.querySelectorAll('.tab-pane').forEach(function(p){ p.classList.remove('active'); });
-    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
-    document.getElementById('tab-'+tab).classList.add('active');
-    event.target.classList.add('active');
-    if(tab === 'sources') loadFeeds();
-    if(tab === 'refresh') updateRefreshEnv();
-    if(tab === 'articles') loadPublished();
-  }
+// ══ IMAGE PREVIEW ══
+function previewImg() {
+  var url = document.getElementById('artImage').value.trim();
+  var img = document.getElementById('imgPreview');
+  if (url) { img.src = url; img.style.display = 'block'; img.onerror = ()=>img.style.display='none'; }
+  else img.style.display = 'none';
+}
 
-  function log(consoleId, msg) {
-    var c = document.getElementById(consoleId);
-    c.innerHTML += '> ' + msg + '<br>';
-    c.scrollTop = c.scrollHeight;
-  }
+function previewAuthorPhoto() {
+  var url = document.getElementById('artAuthorPhoto').value.trim();
+  var img = document.getElementById('authorPhotoPreview');
+  if (url) { img.src = url; img.style.display = 'block'; img.onerror = ()=>img.style.display='none'; }
+  else img.style.display = 'none';
+}
 
-  function previewImg(url) {
-    var p = document.getElementById('imgPreview');
-    if(url && url.startsWith('http')){ p.src=url; p.style.display='block'; }
-    else { p.style.display='none'; }
-  }
+// ══ PUBLISH ARTICLE ══
+function log(id, msg) {
+  var el = document.getElementById(id);
+  el.innerHTML += '\n> ' + msg;
+  el.scrollTop = el.scrollHeight;
+}
 
-  function clearArticleForm() {
-    ['f-title','f-desc','f-link','f-image','f-author-name','f-author-photo'].forEach(function(id){ document.getElementById(id).value=''; });
-    Array.from(document.getElementById('f-also').options).forEach(function(o){ o.selected=false; });
-    document.getElementById('imgPreview').style.display='none';
-  }
+async function publishArticle() {
+  var title = document.getElementById('artTitle').value.trim();
+  var desc  = document.getElementById('artDesc').value.trim();
+  var link  = document.getElementById('artLink').value.trim() || 'https://www.sportsrip.com';
+  var image = document.getElementById('artImage').value.trim();
+  var sport = document.getElementById('artSport').value;
+  var authorName  = document.getElementById('artAuthorName').value.trim();
+  var authorPhoto = document.getElementById('artAuthorPhoto').value.trim();
 
-  // ── Publish Article ──────────────────────────────
-  async function publishArticle() {
-    var title=document.getElementById('f-title').value.trim();
-    var desc=document.getElementById('f-desc').value.trim();
-    var sport=document.getElementById('f-sport').value;
-    var link=document.getElementById('f-link').value.trim();
-    var image=document.getElementById('f-image').value.trim();
-    var authorName=document.getElementById('f-author-name').value.trim();
-    var authorPhoto=document.getElementById('f-author-photo').value.trim();
+  if (!title) { log('consoleArticle','<span class="err">❌ Headline is required</span>'); return; }
+  if (!desc)  { log('consoleArticle','<span class="err">❌ Content is required</span>'); return; }
 
-    // ============================================================
-    // BLOCK START: Collect multi-select sports
-    // Added  : 27-Mar-2026
-    // Purpose: Reads selected options from the "Also appear on"
-    //          multi-select. Combines with primary sport to build
-    //          full list of tabs this article will appear on.
-    //          Deduplicates so primary sport isn't saved twice.
-    // ============================================================
-    var alsoEls = document.getElementById('f-also').selectedOptions;
-    var alsoSports = Array.from(alsoEls).map(function(o){ return o.value; });
-    // Merge primary + also, deduplicate
-    var allSports = [sport];
-    alsoSports.forEach(function(s){ if(!allSports.includes(s)) allSports.push(s); });
-    // ============================================================
-    // BLOCK END: Collect multi-select sports (27-Mar-2026)
-    // ============================================================
+  // Build sports array: primary sport + also-appear-on tabs (deduplicated)
+  var allSports = [sport];
+  selectedTabs.forEach(s => { if (!allSports.includes(s)) allSports.push(s); });
 
-    if(!title){log('consoleArticle','<span style="color:var(--danger)">❌ Title required</span>');return;}
-    if(!link){log('consoleArticle','<span style="color:var(--danger)">❌ Link required</span>');return;}
-    var btn=document.getElementById('btnPublish');
-    btn.disabled=true; btn.textContent='Publishing...';
-    log('consoleArticle','Publishing "'+title.slice(0,40)+'..." to: '+allSports.join(', ')+'...');
-    try{
-      var res=await fetch(WORKER_URL+'/api/publish-own',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS},
-        body:JSON.stringify({
-          sports: allSports,
-          article:{title,description:desc,link,image:image||'',sport,source:'SPORTSrip',isOwn:true,pubDate:new Date().toISOString(),authorName:authorName||'',authorPhoto:authorPhoto||''}
-        })
-      });
-      if(res.ok){
-        var d=await res.json();
-        log('consoleArticle','<span style="color:var(--success)">✅ Published to '+d.savedTo.join(', ')+'! ('+d.savedTo.length+' tabs)</span>');
-        clearArticleForm(); loadPublished();
-      } else { log('consoleArticle','<span style="color:var(--danger)">❌ Error: '+res.status+'</span>'); }
-    }catch(e){ log('consoleArticle','<span style="color:var(--danger)">❌ '+e.message+'</span>'); }
-    btn.disabled=false; btn.textContent='Publish Article';
-  }
+  var btn = document.getElementById('btnPublish');
+  btn.disabled = true; btn.textContent = '⏳ Publishing...';
+  log('consoleArticle','<span class="info">Publishing "'+title.slice(0,40)+'..." to: '+allSports.join(', ')+'</span>');
 
-  async function loadPublished() {
-    try{
-      var res=await fetch(WORKER_URL+'/api/own-articles',{headers:{'x-admin-pass':ADMIN_PASS}});
-      if(!res.ok)return;
-      var d=await res.json(); var all=d.articles||[];
-      document.getElementById('articleCount').textContent='('+all.length+')';
-      var list=document.getElementById('articlesList'); list.innerHTML='';
-      if(!all.length){list.innerHTML='<div style="color:var(--dim);font-size:13px;padding:16px 0">No articles published yet.</div>';return;}
-      all.forEach(function(a){
-        var row=document.createElement('div'); row.className='article-row';
-        var thumb=a.image?'<img class="article-thumb" src="'+a.image+'" onerror="this.style.display=\'none\'">':'<div class="article-thumb"></div>';
-        row.innerHTML=thumb+'<div class="article-meta"><div class="article-title">'+a.title+'</div><div class="article-info">'+a.sport.toUpperCase()+' · '+new Date(a.pubDate).toLocaleString()+'</div></div><button class="btn-del-article" onclick="deleteArticle(\''+a.sport+'\',\''+encodeURIComponent(a.link)+'\')">Delete</button>';
-        list.appendChild(row);
-      });
-    }catch(e){ log('consoleArticle','<span style="color:var(--danger)">Could not load: '+e.message+'</span>'); }
-  }
-
-  async function deleteArticle(sport, encodedLink) {
-    if(!confirm('Delete this article?'))return;
-    try{
-      var res=await fetch(WORKER_URL+'/api/delete-own',{method:'POST',headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS},body:JSON.stringify({sport,link:decodeURIComponent(encodedLink)})});
-      if(res.ok){log('consoleArticle','✅ Deleted.');loadPublished();}
-    }catch(e){ log('consoleArticle','<span style="color:var(--danger)">❌ '+e.message+'</span>'); }
-  }
-
-  // ── Manage Sources ───────────────────────────────
-
-  // ============================================================
-  // BLOCK START: Preload 28 default feeds
-  // Added  : 27-Mar-2026
-  // Purpose: One-time setup button. Calls /api/preload-feeds
-  //          which seeds CONTROL_PANEL_KV with all hardcoded feeds.
-  //          Safe to run multiple times — skips existing URLs.
-  // ============================================================
-  async function preloadFeeds() {
-    var btn=document.getElementById('btnPreload');
-    btn.disabled=true; btn.textContent='Preloading...';
-    log('consoleSources','Preloading all 28 default feeds...');
-    try{
-      var res=await fetch(WORKER_URL+'/api/preload-feeds',{method:'POST',headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS}});
-      if(res.ok){
-        var d=await res.json();
-        log('consoleSources','<span style="color:var(--success)">✅ Done! Added '+d.added+' feeds. Total: '+d.total+'</span>');
-        loadFeeds();
-      } else { log('consoleSources','<span style="color:var(--danger)">❌ Error: '+res.status+'</span>'); }
-    }catch(e){ log('consoleSources','<span style="color:var(--danger)">❌ '+e.message+'</span>'); }
-    btn.disabled=false; btn.textContent='⚡ Preload All 28 Default Feeds (run once on first setup)';
-  }
-  // BLOCK END: Preload feeds (27-Mar-2026)
-  // ============================================================
-
-  // ============================================================
-  // BLOCK START: Test Feed
-  // Added  : 27-Mar-2026
-  // Purpose: Calls /api/test-feed to validate RSS URL before saving.
-  //          Auto-fills feed name from RSS channel title.
-  // ============================================================
-  async function testFeed() {
-    var feedUrl=document.getElementById('s-url').value.trim();
-    if(!feedUrl){alert('Enter a feed URL first');return;}
-    var btn=document.getElementById('btnTest');
-    var resultEl=document.getElementById('testResult');
-    btn.disabled=true; btn.textContent='Testing...';
-    resultEl.style.display='none';
-    try{
-      var res=await fetch(WORKER_URL+'/api/test-feed',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:feedUrl})});
-      var d=await res.json();
-      resultEl.style.display='block';
-      if(d.valid){
-        resultEl.className='test-result test-ok';
-        resultEl.innerHTML='✅ Valid feed — <strong>'+d.name+'</strong> — '+d.itemCount+' items found';
-        log('consoleSources','<span style="color:var(--success)">✅ Valid: "'+d.name+'" — '+d.itemCount+' items</span>');
-      } else {
-        resultEl.className='test-result test-fail';
-        resultEl.innerHTML='❌ '+d.message;
-        log('consoleSources','<span style="color:var(--danger)">❌ Invalid: '+d.message+'</span>');
-      }
-    }catch(e){
-      resultEl.style.display='block';
-      resultEl.className='test-result test-fail';
-      resultEl.innerHTML='❌ Could not reach worker';
+  try {
+    var res = await fetch(WORKER_URL+'/api/publish-own', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS},
+      body:JSON.stringify({
+        sports: allSports,
+        article:{title,description:desc,link,image:image||'',sport,source:'SPORTSrip',
+          isOwn:true,pubDate:new Date().toISOString(),authorName,authorPhoto}
+      })
+    });
+    var d = await res.json();
+    if (res.ok && d.success) {
+      log('consoleArticle','<span class="ok">✅ Published to '+d.savedTo.join(', ')+'! ('+d.savedTo.length+' tabs)</span>');
+      // Save author to known authors
+      if (authorName && !KNOWN_AUTHORS.find(a=>a.name===authorName))
+        KNOWN_AUTHORS.push({name:authorName, photo:authorPhoto||''});
+      loadStats();
+    } else {
+      log('consoleArticle','<span class="err">❌ Error '+res.status+': '+(d.error||'Unknown error')+'</span>');
     }
-    btn.disabled=false; btn.textContent='Test Feed';
+  } catch(e) {
+    log('consoleArticle','<span class="err">❌ Network error: '+e.message+'</span>');
   }
-  // BLOCK END: Test Feed (27-Mar-2026)
-  // ============================================================
+  btn.disabled = false; btn.textContent = '🚀 Publish Article';
+}
 
-  async function saveFeed() {
-    var sport=document.getElementById('s-sport').value;
-    var label=document.getElementById('s-sport').selectedOptions[0].getAttribute('data-label');
-    var priority=parseInt(document.getElementById('s-priority').value)||10;
-    var feedUrl=document.getElementById('s-url').value.trim();
-    var testResult=document.getElementById('testResult');
-    if(!feedUrl){log('consoleSources','<span style="color:var(--danger)">❌ Enter a feed URL</span>');return;}
+function clearForm() {
+  document.getElementById('artTitle').value = '';
+  document.getElementById('artDesc').value = '';
+  document.getElementById('artLink').value = 'https://www.sportsrip.com';
+  document.getElementById('artImage').value = '';
+  document.getElementById('artAuthorName').value = '';
+  document.getElementById('artAuthorPhoto').value = '';
+  document.getElementById('imgPreview').style.display = 'none';
+  document.getElementById('authorPhotoPreview').style.display = 'none';
+  document.getElementById('consoleArticle').innerHTML = 'Form cleared.';
+}
 
-    // Get the auto-extracted name from test result if available
-    var name='Unknown Feed';
-    if(testResult.style.display!=='none'&&testResult.classList.contains('test-ok')){
-      var strong=testResult.querySelector('strong');
-      if(strong)name=strong.textContent;
+// ══ PUBLISHED ARTICLES ══
+async function loadPublished() {
+  var container = document.getElementById('publishedList');
+  container.innerHTML = '<div style="color:var(--text3);font-size:13px;">Loading...</div>';
+  try {
+    var r = await fetch(WORKER_URL+'/api/own-articles',{headers:{'x-admin-pass':ADMIN_PASS}});
+    var d = await r.json();
+    var arts = d.articles||[];
+    if (!arts.length) { container.innerHTML = '<div style="color:var(--text3);font-size:13px;">No articles published yet.</div>'; return; }
+    var seen = new Set(); var unique = [];
+    arts.forEach(a => { if(!seen.has(a.link)){seen.add(a.link);unique.push(a);} });
+    container.innerHTML = '';
+    unique.forEach(function(a) {
+      var div = document.createElement('div');
+      div.className = 'article-item';
+      var thumb = a.image
+        ? '<img class="article-thumb" src="'+a.image+'" onerror="this.style.display=\'none\'">'
+        : '<div class="article-thumb-ph">🏏</div>';
+      var date = new Date(a.pubDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+      var sport = (a.sport||'ipl').toUpperCase();
+      div.innerHTML = thumb +
+        '<div class="article-info"><div class="article-title">'+a.title+'</div>'+
+        '<div class="article-meta"><span class="badge badge-blue">'+sport+'</span> · '+(a.authorName||'Ravi Kompella')+' · '+date+'</div></div>'+
+        '<button class="btn btn-danger" style="font-size:11px;padding:5px 10px;" onclick="deleteArticle(\''+a.sport+'\',\''+encodeURIComponent(a.link)+'\',this)">🗑</button>';
+      container.appendChild(div);
+    });
+  } catch(e) {
+    container.innerHTML = '<div style="color:var(--text3);font-size:13px;">Error loading articles: '+e.message+'</div>';
+  }
+}
+
+async function deleteArticle(sport, encodedLink, btn) {
+  if (!confirm('Delete this article?')) return;
+  btn.textContent = '⏳'; btn.disabled = true;
+  try {
+    var r = await fetch(WORKER_URL+'/api/delete-own',{method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS},
+      body:JSON.stringify({sport,link:decodeURIComponent(encodedLink)})});
+    var d = await r.json();
+    if (d.success) { btn.closest('.article-item').remove(); }
+    else btn.textContent = '🗑';
+  } catch(e) { btn.textContent = '🗑'; btn.disabled = false; }
+}
+
+// ══ MANAGE SOURCES ══
+async function loadSources() {
+  var container = document.getElementById('sourcesList');
+  container.innerHTML = '<div style="color:var(--text3);font-size:13px;">Loading...</div>';
+  try {
+    var r = await fetch(WORKER_URL+'/api/feeds');
+    var d = await r.json();
+    var feeds = d.feeds||[];
+    if (!feeds.length) { container.innerHTML = '<div style="color:var(--text3);font-size:13px;">No sources. Click Preload Defaults.</div>'; return; }
+    container.innerHTML = '';
+    feeds.forEach(function(f) {
+      var div = document.createElement('div');
+      div.className = 'feed-item';
+      div.innerHTML =
+        '<div class="feed-item-left"><div class="feed-item-name"><span class="sport-pill">'+f.sport+'</span> '+f.name+'</div><div class="feed-item-url">'+f.url+'</div></div>'+
+        '<button class="btn btn-danger" style="font-size:11px;padding:4px 10px;flex-shrink:0;" onclick="deleteFeed(\''+encodeURIComponent(f.url)+'\',this)">Remove</button>';
+      container.appendChild(div);
+    });
+  } catch(e) {
+    container.innerHTML = '<div style="color:var(--text3);font-size:13px;">Error: '+e.message+'</div>';
+  }
+}
+
+async function testFeed() {
+  var url = document.getElementById('feedUrl').value.trim();
+  if (!url) { log('consoleSources','<span class="err">❌ Enter a URL first</span>'); return; }
+  log('consoleSources','<span class="info">Testing: '+url+'...</span>');
+  try {
+    var r = await fetch(WORKER_URL+'/api/test-feed',{method:'POST',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify({url})});
+    var d = await r.json();
+    if (d.valid) log('consoleSources','<span class="ok">✅ Valid: '+d.name+' ('+d.itemCount+' items)</span>');
+    else log('consoleSources','<span class="err">❌ Invalid: '+d.message+'</span>');
+  } catch(e) { log('consoleSources','<span class="err">❌ '+e.message+'</span>'); }
+}
+
+async function saveFeed() {
+  var sport = document.getElementById('feedSport').value;
+  var name  = document.getElementById('feedName').value.trim();
+  var url   = document.getElementById('feedUrl').value.trim();
+  var prio  = parseInt(document.getElementById('feedPriority').value)||3;
+  if (!name||!url) { log('consoleSources','<span class="err">❌ Name and URL required</span>'); return; }
+  try {
+    var r = await fetch(WORKER_URL+'/api/feeds',{method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS},
+      body:JSON.stringify({sport,name,url,priority:prio,label:sport.toUpperCase()})});
+    var d = await r.json();
+    if (r.ok) { log('consoleSources','<span class="ok">✅ Added! Total: '+d.total+'</span>'); loadSources(); }
+    else log('consoleSources','<span class="err">❌ '+d.error+'</span>');
+  } catch(e) { log('consoleSources','<span class="err">❌ '+e.message+'</span>'); }
+}
+
+async function deleteFeed(encodedUrl, btn) {
+  if (!confirm('Remove this source?')) return;
+  btn.textContent = '...'; btn.disabled = true;
+  try {
+    var r = await fetch(WORKER_URL+'/api/feeds',{method:'DELETE',
+      headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS},
+      body:JSON.stringify({url:decodeURIComponent(encodedUrl)})});
+    var d = await r.json();
+    if (d.success) btn.closest('.feed-item').remove();
+    else { btn.textContent = 'Remove'; btn.disabled = false; }
+  } catch(e) { btn.textContent = 'Remove'; btn.disabled = false; }
+}
+
+async function preloadFeeds() {
+  log('consoleSources','<span class="info">Preloading 29 default feeds...</span>');
+  try {
+    var r = await fetch(WORKER_URL+'/api/preload-feeds',{method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS}});
+    var d = await r.json();
+    if (r.ok) { log('consoleSources','<span class="ok">✅ Done! Added '+d.added+', Total '+d.total+'</span>'); loadSources(); }
+    else log('consoleSources','<span class="err">❌ '+d.error+'</span>');
+  } catch(e) { log('consoleSources','<span class="err">❌ '+e.message+'</span>'); }
+}
+
+// ══ REFRESH FEEDS ══
+var refreshWorker = WORKER_URLS.dev;
+function updateRefreshTarget() {
+  var env = document.getElementById('refreshEnv').value;
+  refreshWorker = WORKER_URLS[env];
+  if (env === 'prod') {
+    if (!confirm('⚠️ PROD refresh will update the LIVE sportsrip.com website. Continue?')) {
+      document.getElementById('refreshEnv').value = 'dev';
+      refreshWorker = WORKER_URLS.dev;
     }
-
-    var btn=document.getElementById('btnSaveFeed');
-    btn.disabled=true; btn.textContent='Saving...';
-    log('consoleSources','Saving feed for '+sport+' (priority '+priority+')...');
-    try{
-      var res=await fetch(WORKER_URL+'/api/feeds',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS},
-        body:JSON.stringify({sport,label,priority,name,url:feedUrl})
-      });
-      if(res.ok){
-        var d=await res.json();
-        log('consoleSources','<span style="color:var(--success)">✅ Saved! Total feeds: '+d.total+'</span>');
-        document.getElementById('s-url').value='';
-        document.getElementById('testResult').style.display='none';
-        loadFeeds();
-      } else if(res.status===409){
-        log('consoleSources','<span style="color:var(--amber)">⚠️ Feed URL already exists</span>');
-      } else {
-        log('consoleSources','<span style="color:var(--danger)">❌ Error: '+res.status+'</span>');
-      }
-    }catch(e){ log('consoleSources','<span style="color:var(--danger)">❌ '+e.message+'</span>'); }
-    btn.disabled=false; btn.textContent='Save Feed';
   }
+}
 
-  async function loadFeeds() {
-    try{
-      var res=await fetch(WORKER_URL+'/api/feeds');
-      if(!res.ok)return;
-      var d=await res.json(); var feeds=d.feeds||[];
-      document.getElementById('feedCount').textContent='('+feeds.length+')';
-      var list=document.getElementById('feedsList'); list.innerHTML='';
-      if(!feeds.length){list.innerHTML='<div style="color:var(--dim);font-size:13px;padding:16px 0">No feeds saved yet. Click Preload to get started!</div>';return;}
+async function triggerRefresh(type) {
+  var sport = document.getElementById('refreshSport').value;
+  var btn = document.getElementById(type==='raw'?'btnStep1':'btnStep2');
+  btn.disabled = true; btn.textContent = '⏳ Running...';
+  log('consoleRefresh','<span class="info">Triggering '+type+' for '+sport+' on '+refreshWorker.split('.')[0].split('//')[1]+'...</span>');
+  try {
+    var r = await fetch(refreshWorker+'/api/trigger-fetch',{method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS},
+      body:JSON.stringify({type,sport,limit:50})});
+    var d = await r.json();
+    if (r.ok && d.done) log('consoleRefresh','<span class="ok">✅ Done! Updated '+d.updated+' sport(s)</span>');
+    else log('consoleRefresh','<span class="err">❌ Error: '+(d.error||res.status)+'</span>');
+  } catch(e) { log('consoleRefresh','<span class="err">❌ '+e.message+'</span>'); }
+  btn.disabled = false; btn.textContent = type==='raw' ? '🔄 Fetch Raw Articles' : '⚙️ Curate Articles';
+}
 
-      // Group by sport
-      var groups={};
-      feeds.forEach(function(f){
-        if(!groups[f.sport])groups[f.sport]={label:f.label,feeds:[]};
-        groups[f.sport].feeds.push(f);
-      });
-
-      Object.keys(groups).forEach(function(sport){
-        var g=groups[sport];
-        var groupEl=document.createElement('div'); groupEl.className='feed-group';
-        var titleEl=document.createElement('div'); titleEl.className='feed-group-title';
-        titleEl.textContent=g.label+' ('+g.feeds.length+' feeds)';
-        groupEl.appendChild(titleEl);
-        g.feeds.forEach(function(f){
-          var row=document.createElement('div'); row.className='feed-row';
-          row.innerHTML='<div class="feed-priority">'+f.priority+'</div><div class="feed-info"><div class="feed-name">'+f.name+'</div><div class="feed-url-text">'+f.url+'</div></div><button class="btn-delete-feed" onclick="deleteFeed(\''+encodeURIComponent(f.url)+'\')">Delete</button>';
-          groupEl.appendChild(row);
-        });
-        list.appendChild(groupEl);
-      });
-    }catch(e){ log('consoleSources','<span style="color:var(--danger)">Could not load feeds: '+e.message+'</span>'); }
-  }
-
-  async function deleteFeed(encodedUrl) {
-    if(!confirm('Delete this feed?'))return;
-    try{
-      var res=await fetch(WORKER_URL+'/api/feeds',{method:'DELETE',headers:{'Content-Type':'application/json','x-admin-pass':ADMIN_PASS},body:JSON.stringify({url:decodeURIComponent(encodedUrl)})});
-      if(res.ok){log('consoleSources','✅ Feed deleted.');loadFeeds();}
-    }catch(e){ log('consoleSources','<span style="color:var(--danger)">❌ '+e.message+'</span>'); }
-  }
-
-  // ============================================================
-  // BLOCK START: triggerRefresh — Refresh Feeds tab
-  // Added  : 27-Mar-2026
-  // Purpose: Calls /api/trigger-fetch on selected environment.
-  //          Step 1 (raw) fetches RSS feeds into NEWS_KV.
-  //          Step 2 (curate) filters images into CURATED_KV.
-  //          Always run Step 1 before Step 2.
-  // ============================================================
-  async function triggerRefresh(actionType) {
-    var sport = document.getElementById('refreshSport').value;
-    var label = sport === 'all' ? 'all sports' : sport.toUpperCase();
-    var env = document.getElementById('globalEnvSelect').value;
-    var targetUrl = WORKER_URL; // Always uses global WORKER_URL
-
-    // Safety confirmation for PROD
-    if(env === 'prod' && !confirm('⚠️ You are about to run on PROD (' + targetUrl + '). Are you sure?')) return;
-
-    var dot = document.getElementById('refreshDot');
-    var statusEl = document.getElementById('refreshStatus');
-    var btn1 = document.getElementById('btnStep1');
-    var btn2 = document.getElementById('btnStep2');
-
-    dot.style.background = '#ff9800';
-    dot.style.animation = 'none';
-    setTimeout(function(){ dot.style.animation = 'pulse 1s infinite'; }, 10);
-    statusEl.textContent = actionType === 'raw' ? 'Fetching RSS...' : 'Curating...';
-    btn1.disabled = true; btn2.disabled = true;
-
-    log('consoleRefresh', 'Targeting <span style="color:' + (env==='prod'?'#ff4d4d':'#ff9800') + '">' + env.toUpperCase() + '</span> — ' + actionType + ' for ' + label + '...');
-
-    try {
-      var res = await fetch(targetUrl + '/api/trigger-fetch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: actionType, sport: sport, limit: 50 })
-      });
-      if(res.ok) {
-        var d = await res.json();
-        log('consoleRefresh', '<span style="color:var(--success)">✅ SUCCESS — updated ' + d.updated + ' sport(s)</span>');
-        dot.style.background = '#28a745';
-        dot.style.animation = 'none';
-        statusEl.textContent = 'Done ✅';
-      } else {
-        log('consoleRefresh', '<span style="color:var(--danger)">❌ HTTP ' + res.status + '</span>');
-        dot.style.background = '#ff4d4d';
-        statusEl.textContent = 'Error ❌';
-      }
-    } catch(e) {
-      log('consoleRefresh', '<span style="color:var(--danger)">❌ Could not reach worker: ' + e.message + '</span>');
-      dot.style.background = '#ff4d4d';
-      statusEl.textContent = 'Failed ❌';
-    }
-    btn1.disabled = false; btn2.disabled = false;
-  }
-  // BLOCK END: triggerRefresh (27-Mar-2026)
-  // ============================================================
-
-  // Add pulse animation for status dot
-  var style = document.createElement('style');
-  style.textContent = '@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }';
-  document.head.appendChild(style);
-
-  // Load articles on start
-  loadPublished();
+// ══ INIT ══
+loadStats();
 </script>
 </body>
 </html>
