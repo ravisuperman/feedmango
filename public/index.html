@@ -543,7 +543,7 @@
     mt.style.cssText = 'color:#fff;background:var(--espn-blue,#035bb0);padding:3px 10px;font-family:Inter,sans-serif;font-size:11px;font-weight:800;text-transform:uppercase;border-radius:4px;';
     mt.textContent = 'My Take';
     var mtSrc = document.createElement('span');
-    mtSrc.style.cssText = 'font-family:Inter,sans-serif;font-size:11px;color:#1a1a1a;font-weight:600;vertical-align:middle;margin-top:2px;';
+    mtSrc.style.cssText = 'font-family:Inter,sans-serif;font-size:11px;color:#1a1a1a;font-weight:400;vertical-align:middle;margin-top:2px;';
     mtSrc.textContent = 'SPORTSrip';
     mtRow.appendChild(mt);
     mtRow.appendChild(mtSrc);
@@ -551,7 +551,7 @@
 
     // 3px spacer
     var sp2 = document.createElement('div');
-    sp2.style.height = '16px';
+    sp2.style.height = '21px';
     inner.appendChild(sp2);
 
     // Title
@@ -730,8 +730,15 @@
     var el = document.createElement('a'); 
     el.className = 'sidebar-article';
     if(a.isOwn) {
-      el.href = 'blog.html?data=' + encodeURIComponent(JSON.stringify(a));
-      el.target = '_self';
+      el.href = '#';
+      el.onclick = (function(art){ return function(ev) {
+        ev.preventDefault();
+        if(window.innerWidth > 768) {
+          openArtModal(art);
+        } else {
+          window.location.href = 'blog.html?data=' + encodeURIComponent(JSON.stringify(art));
+        }
+      }; })(a);
     } else {
       el.href = a.link;
       el.onclick = function(ev) {
