@@ -340,8 +340,8 @@
   // Added  : 27-Mar-2026
   // Change to PROD URL when deploying to production.
   // ============================================================
-//   var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev'; // DEV
-  var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev'; // PROD
+  var WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev'; // DEV
+  // var WORKER = 'https://mango-sports-worker.ravi-kompel.workers.dev'; // PROD
   // BLOCK END: Worker URL (27-Mar-2026)
   // ============================================================
 
@@ -562,7 +562,7 @@
 
     // Article body — fills space, scrolls
     var body = document.createElement('div');
-    body.style.cssText = 'font-size:13px;line-height:1.8;color:#1a1a1a;font-family:Georgia,serif;flex:1;margin-bottom:12px;';
+    body.style.cssText = 'font-size:14px;line-height:1.8;color:#1a1a1a;font-family:Georgia,serif;flex:1;margin-bottom:12px;';
     body.innerHTML = desc;
     inner.appendChild(body);
 
@@ -950,6 +950,7 @@
 @media(max-width:768px){
   #artModalBox { width:92vw !important; height:80vh !important; border-radius:8px !important; }
   #artModalContent { padding:20px 18px 30px !important; }
+  #artModalContent { font-size:14px !important; color:#000 !important; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
 }
 </style>
 </body>
