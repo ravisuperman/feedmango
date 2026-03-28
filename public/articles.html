@@ -197,20 +197,29 @@
     }catch(e){var s=document.getElementById('relStrip');if(s)s.innerHTML='<div style="color:var(--ink3);font-size:11px;font-style:italic">Could not load.</div>';}
   }
 
-  // ── Sidebar: use /api/own-articles for all articles in one call ──
+  // ── Sidebar: fetch own articles from each sport ──
   async function loadSidebar(){
     try{
-      var r=await fetch(WORKER+'/api/own-articles',{headers:{'x-admin-pass':ADMIN_PASS}});
-      var d=await r.json();
-      var all=d.articles||[];
-      var box=document.getElementById('sbList');
-      if(!all.length){box.innerHTML='<div style="color:var(--ink3);font-size:11px;font-style:italic;padding:8px">No articles yet.</div>';return;}
-
-      // Deduplicate by link
+      var sports=['ipl','cricket','football','f1','basketball','tennis','boxing','golf','badminton','kabaddi'];
       var seen=new Set(); var unique=[];
-      all.forEach(function(a){ if(!seen.has(a.link)){seen.add(a.link);unique.push(a);} });
-      unique.sort(function(a,b){return new Date(b.pubDate)-new Date(a.pubDate);});
 
+      // Fetch all sports in parallel
+      var results = await Promise.allSettled(sports.map(function(sp){
+        return fetch(WORKER+'/api/news?sport='+sp).then(function(r){return r.json();});
+      }));
+
+      results.forEach(function(r){
+        if(r.status==='fulfilled'){
+          (r.value.articles||[]).filter(function(a){return a.isOwn;}).forEach(function(a){
+            if(!seen.has(a.link)){seen.add(a.link);unique.push(a);}
+          });
+        }
+      });
+
+      var box=document.getElementById('sbList');
+      if(!unique.length){box.innerHTML='<div style="color:var(--ink3);font-size:11px;font-style:italic;padding:8px">No articles yet.</div>';return;}
+
+      unique.sort(function(a,b){return new Date(b.pubDate)-new Date(a.pubDate);});
       box.innerHTML='';
       unique.forEach(function(a){
         var el=document.createElement('a'); el.className='sb-card';
