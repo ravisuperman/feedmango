@@ -826,7 +826,23 @@ export default {
     // BLOCK END: /api/delete-own (27-Mar-2026)
     // ============================================================
 
-    return new Response(JSON.stringify({error:'Not found'}),{status:404,headers:cors});
+    // ── /api/save-curated — receive pre-parsed articles from browser ──
+    if(url.pathname==='/api/save-curated'&&request.method==='POST'){
+      if(!isAdmin(request))return new Response(JSON.stringify({error:'Unauthorized'}),{status:401,headers:cors});
+      var body=await request.json();
+      var sport=body.sport;
+      var articles=body.articles||[];
+      if(!sport||!articles.length)return new Response(JSON.stringify({error:'Missing sport or articles'}),{status:400,headers:cors});
+      // Deduplicate by link, sort newest first, cap at 150
+      var seen=new Set(),unique=[];
+      articles.sort(function(a,b){return new Date(b.pubDate)-new Date(a.pubDate);});
+      articles.forEach(function(a){if(!seen.has(a.link)){seen.add(a.link);unique.push(a);}});
+      unique=unique.slice(0,150);
+      await env.CURATED_KV.put('curated:'+sport,JSON.stringify(unique),{expirationTtl:86400});
+      return new Response(JSON.stringify({success:true,sport:sport,saved:unique.length}),{headers:cors});
+    }
+
+        return new Response(JSON.stringify({error:'Not found'}),{status:404,headers:cors});
   },
 
   async scheduled(event,env,ctx){
