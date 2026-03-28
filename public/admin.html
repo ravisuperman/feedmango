@@ -580,6 +580,21 @@ async function publishArticle(overrideData){
   if(!overrideData) selTabs.forEach(s=>{if(!allSports.includes(s))allSports.push(s);});
   var btn=document.getElementById('btnPublish');
   if(!overrideData){btn.disabled=true;btn.textContent='⏳';}
+  // If editing, delete old version first
+  if(!overrideData && _editArt){
+    log('consoleA','<span class="inf">Updating — removing old version...</span>');
+    try{ await fetch(WURL+'/api/delete-own',{method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+      body:JSON.stringify({sport:_editArt.sport,link:_editArt.link})}); }catch(e){}
+    _editArt = null;
+  }
+  if(!overrideData && _editArt){
+    log('consoleA','<span class="inf">Updating — removing old version...</span>');
+    try{ await fetch(WURL+'/api/delete-own',{method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+      body:JSON.stringify({sport:_editArt.sport,link:_editArt.link})}); }catch(e){}
+    _editArt=null;
+  }
   log('consoleA','<span class="inf">Publishing "'+title.slice(0,40)+'..."</span>');
   try{
     var res=await fetch(WURL+'/api/publish-own',{method:'POST',
@@ -602,6 +617,8 @@ function clearForm(){
   document.getElementById('imgPrev').style.display='none';
   document.getElementById('avPrev').style.display='none';
   document.getElementById('consoleA').innerHTML='Form cleared.';
+  _editArt=null;
+  var pb=document.getElementById('btnPublish');pb.textContent='🚀 Publish';pb.style.background='';
 }
 
 // MIGRATE MODAL
@@ -691,6 +708,26 @@ async function doMigrate(){
 }
 
 // PUBLISHED
+var _editArt=null;
+
+function editArticle(a){
+  _editArt=a;
+  document.getElementById('artTitle').value       = a.title||'';
+  document.getElementById('artDesc').value        = a.description||'';
+  document.getElementById('artSport').value       = a.sport||'ipl';
+  document.getElementById('artLink').value        = a.link||'https://www.sportsrip.com';
+  document.getElementById('artImage').value       = a.image||'';
+  document.getElementById('artAuthor').value      = a.authorName||'';
+  document.getElementById('artAuthorPhoto').value = a.authorPhoto||'';
+  prevImg(); prevAv();
+  var btn=document.getElementById('btnPublish');
+  btn.textContent='💾 Update Article'; btn.style.background='#0f766e';
+  showPanel('write');
+  document.getElementById('consoleA').innerHTML=
+    '> <span class="inf">✏️ Editing: "'+a.title.slice(0,50)+'" — make changes then click Update Article</span>';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
 async function loadPublished(){
   var c=document.getElementById('pubList');
   c.innerHTML='<div style="color:var(--text3);font-size:12px;">Loading...</div>';
@@ -699,92 +736,42 @@ async function loadPublished(){
     var d=await r.json();
     var arts=d.articles||[];
     var seen=new Set(),unique=[];
-    arts.forEach(a=>{if(!seen.has(a.title)){seen.add(a.title);unique.push(a);}});
+    arts.forEach(function(a){if(!seen.has(a.title)){seen.add(a.title);unique.push(a);}});
     if(!unique.length){c.innerHTML='<div style="color:var(--text3);font-size:12px;">No articles yet.</div>';return;}
     c.innerHTML='<div style="font-size:11px;color:var(--text3);margin-bottom:8px;">'+unique.length+' articles in '+ENV.toUpperCase()+'</div>';
     unique.forEach(function(a){
       var div=document.createElement('div');div.className='art-item';
-      var th=a.image?'<img class="art-thumb" src="'+a.image+'" onerror="this.style.display=\'none\'">'
-        :'<div class="art-ph">🏏</div>';
+      if(a.image){var th=document.createElement('img');th.className='art-thumb';th.src=a.image;th.onerror=function(){this.style.display='none';};div.appendChild(th);}
+      else{var th=document.createElement('div');th.className='art-ph';th.textContent='🏏';div.appendChild(th);}
+      var info=document.createElement('div');info.className='art-info';
       var dt=new Date(a.pubDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-      div.innerHTML=th+'<div class="art-info"><div class="art-title">'+a.title+'</div>'+
-        '<div class="art-meta"><span class="badge">'+(a.sport||'ipl').toUpperCase()+'</span> · '+(a.authorName||'—')+' · '+dt+'</div></div>'+
-        '<button class="btn btn-danger btn-sm" onclick="delArt(\''+a.sport+'\',\''+encodeURIComponent(a.title)+'\',\''+encodeURIComponent(a.link)+'\',this)">🗑</button>';
+      info.innerHTML='<div class="art-title">'+a.title+'</div>'+
+        '<div class="art-meta"><span class="badge">'+(a.sport||'ipl').toUpperCase()+'</span> · '+(a.authorName||'—')+' · '+dt+'</div>';
+      div.appendChild(info);
+      var btns=document.createElement('div');btns.style.cssText='display:flex;gap:6px;flex-shrink:0;';
+      var eb=document.createElement('button');eb.className='btn btn-primary btn-sm';eb.textContent='✏️ Edit';
+      (function(art){eb.onclick=function(){editArticle(art);};})(a);
+      var db=document.createElement('button');db.className='btn btn-danger btn-sm';db.textContent='🗑';
+      (function(art,b){db.onclick=function(){delArt(art.sport,art.link,b);};})(a,db);
+      btns.appendChild(eb);btns.appendChild(db);
+      div.appendChild(btns);
       c.appendChild(div);
     });
   }catch(e){c.innerHTML='<div style="color:var(--red);font-size:12px;">'+e.message+'</div>';}
 }
-async function delArt(sport,encTitle,encLink,btn){
+
+async function delArt(sport,link,btn){
   if(!confirm('Delete this article?'))return;
   btn.textContent='...';btn.disabled=true;
   try{
     var r=await fetch(WURL+'/api/delete-own',{method:'POST',
       headers:{'Content-Type':'application/json','x-admin-pass':PASS},
-      body:JSON.stringify({sport,link:decodeURIComponent(encLink)})});
+      body:JSON.stringify({sport:sport,link:link})});
     var d=await r.json();
     if(d.success)btn.closest('.art-item').remove();
     else{btn.textContent='🗑';btn.disabled=false;}
   }catch(e){btn.textContent='🗑';btn.disabled=false;}
 }
-
-function editArticle(a){
-  // Populate Write Article form with this article's data
-  document.getElementById('artTitle').value = a.title||'';
-  document.getElementById('artDesc').value  = a.description||'';
-  document.getElementById('artSport').value = a.sport||'ipl';
-  document.getElementById('artLink').value  = a.link||'https://www.sportsrip.com';
-  document.getElementById('artImage').value = a.image||'';
-  document.getElementById('artAuthor').value      = a.authorName||'';
-  document.getElementById('artAuthorPhoto').value = a.authorPhoto||'';
-  prevImg(); prevAv();
-  // Mark as editing — store original sport/link so we can delete old on publish
-  window._editingArticle = a;
-  document.getElementById('btnPublish').textContent = '💾 Update Article';
-  document.getElementById('btnPublish').style.background = '#0f766e';
-  // Switch to Write Article panel
-  showPanel('write');
-  document.getElementById('consoleA').innerHTML =
-    '> <span class="inf">✏️ Editing: "'+a.title.slice(0,50)+'" — make changes and click Update Article</span>';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-// Override publishArticle to handle update (delete old + publish new)
-var _origPublish = publishArticle;
-publishArticle = async function(overrideData){
-  if(!overrideData && window._editingArticle){
-    var orig = window._editingArticle;
-    var btn=document.getElementById('btnPublish');
-    btn.disabled=true; btn.textContent='⏳ Updating...';
-    log('consoleA','<span class="inf">Updating article — deleting old version...</span>');
-    // Delete old version from all sports it was in
-    var sportsToDelete = orig.sport ? [orig.sport] : ['ipl'];
-    for(var sp of sportsToDelete){
-      try{
-        await fetch(WURL+'/api/delete-own',{method:'POST',
-          headers:{'Content-Type':'application/json','x-admin-pass':PASS},
-          body:JSON.stringify({sport:sp, link:orig.link})});
-      }catch(e){}
-    }
-    window._editingArticle = null;
-    // Now publish new version
-    var result = await _origPublish(overrideData);
-    // Reset button
-    btn.disabled=false;
-    btn.textContent='🚀 Publish';
-    btn.style.background='';
-    return result;
-  }
-  return _origPublish(overrideData);
-};
-
-// Reset edit mode when Clear is clicked
-var _origClear = clearForm;
-clearForm = function(){
-  _origClear();
-  window._editingArticle = null;
-  document.getElementById('btnPublish').textContent='🚀 Publish';
-  document.getElementById('btnPublish').style.background='';
-};
 
 // VIEW ARTICLES
 var _vaArts=[];
