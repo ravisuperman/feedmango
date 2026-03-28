@@ -538,13 +538,13 @@
 
     // "My Take"
     var mt = document.createElement('div');
-    mt.style.cssText = 'font-family:Inter,sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#035bb0;';
+    mt.style.cssText = 'display:inline-block;font-family:Inter,sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#fff;background:#035bb0;padding:3px 10px;border-radius:4px;';
     mt.textContent = '✍️ My Take';
     inner.appendChild(mt);
 
     // 3px spacer
     var sp2 = document.createElement('div');
-    sp2.style.height = '6px';
+    sp2.style.height = '11px';
     inner.appendChild(sp2);
 
     // Title
@@ -602,6 +602,11 @@
     footer.appendChild(auLeft);
     footer.appendChild(shareRight);
     inner.appendChild(footer);
+    // Disclaimer
+    var disc = document.createElement('div');
+    disc.style.cssText = 'font-family:Inter,sans-serif;font-size:10px;color:#7a7060;font-style:italic;margin-top:8px;padding-top:8px;border-top:1px solid #e8e0d0;line-height:1.5;';
+    disc.textContent = 'Disclaimer: This article reflects my personal opinions and perspectives as a passionate sports fan.';
+    inner.appendChild(disc);
 
     // Show modal
     document.getElementById('artModal').style.display = 'flex';
@@ -922,7 +927,7 @@
 
 <!-- ═══ Article Modal ═══ -->
 <div id="artModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;" onclick="closeArtModal(event)">
-  <div id="artModalBox" style="position:relative;width:25vw;height:75vh;background:#faf8f3;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+  <div id="artModalBox" style="position:relative;width:calc(25vw + 10px);height:calc(75vh + 25px);background:#faf8f3;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
     <button onclick="closeArtModalBtn()" style="position:absolute;top:12px;right:14px;background:rgba(0,0,0,0.12);border:none;font-size:18px;width:34px;height:34px;border-radius:50%;cursor:pointer;z-index:10;color:#2c2418;font-weight:700;">✕</button>
     <div id="artModalContent" style="overflow-y:auto;flex:1;font-family:Georgia,serif;color:#2c2418;"></div>
   </div>
