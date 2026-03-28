@@ -697,7 +697,7 @@
     var d = cleanText(a.description || ""); if (!d || d.trim().length < 5) d = "Experience full depth and insight beyond the preview. Click to reach the complete article and stay ahead of the game.";
     // ALL cards show blue READ MORE badge — own articles show SPORTSrip as source text
     var badge = a.isVideo ? '<span class="read-more-badge">▶ WATCH</span>' : '<span class="read-more-badge">READ MORE</span>';
-    var sourceText = a.isOwn ? 'SPORTSrip' : (a.source||'');
+    var sourceText = a.isOwn ? 'Net Sessions' : (a.source||'');
     var sourceTag = sourceText ? '<span class="card-source"> '+sourceText+'</span>' : '';
     var playOverlay = a.isVideo ? '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;background:rgba(255,0,0,0.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;pointer-events:none;">▶</div>' : '';
     var imgWrap = a.isVideo ? '<div style="position:relative;line-height:0;">'+img+playOverlay+'</div>' : img;
