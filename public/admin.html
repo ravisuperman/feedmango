@@ -715,16 +715,9 @@ async function doMigrate(){
 var _editArt=null;
 
 function editArticle(a){
-  // Find ALL sports this article appears in so we can delete from all of them
-  var allSportsForArticle = [];
-  Object.keys(sportCache||{}).forEach(function(sp){
-    var arts = sportCache[sp]||[];
-    if(arts.find(function(x){return x.isOwn && x.title===a.title;})){
-      allSportsForArticle.push(sp);
-    }
-  });
-  if(!allSportsForArticle.length) allSportsForArticle=[a.sport||'ipl'];
-  a._allSports = allSportsForArticle;
+  // Store sport — admin deletes from all known sports to be safe
+  var allSports=['ipl','cricket','football','f1','basketball','tennis','kabaddi','boxing','golf','badminton','nfl','baseball'];
+  a._allSports = allSports;
   _editArt=a;
   document.getElementById('artTitle').value       = a.title||'';
   document.getElementById('artDesc').value        = a.description||'';
