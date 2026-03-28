@@ -153,6 +153,30 @@
   .queue-item .q-actions{display:flex;gap:6px;margin-top:8px;}
 
   @media(max-width:768px){.sidebar{width:56px;}.brand,.nav-item span,.nav-section,.sidebar-footer .env-label{display:none;}.form-row.c2,.form-row.c3{grid-template-columns:1fr;}.stats-row{grid-template-columns:1fr;}}
+
+  /* ── MIGRATE MODAL ── */
+  .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:#fff;border-radius:14px;width:600px;max-width:95vw;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+  .modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+  .modal-header h3{font-size:15px;font-weight:700;flex:1;}
+  .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text3);padding:0 4px;line-height:1;}
+  .modal-close:hover{color:var(--text);}
+  .modal-body{flex:1;overflow-y:auto;padding:16px 20px;}
+  .modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+  .modal-meta{font-size:11px;color:var(--text3);flex:1;}
+  .chk-list{display:flex;flex-direction:column;gap:6px;}
+  .chk-item{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:8px;border:1px solid var(--border);cursor:pointer;transition:.1s;}
+  .chk-item:hover{background:var(--bg);}
+  .chk-item.checked{background:#eff6ff;border-color:#bfdbfe;}
+  .chk-item input[type=checkbox]{margin-top:2px;width:15px;height:15px;accent-color:var(--blue);flex-shrink:0;cursor:pointer;}
+  .chk-num{font-size:11px;color:var(--text3);min-width:22px;margin-top:1px;font-weight:600;}
+  .chk-info{flex:1;min-width:0;}
+  .chk-title{font-size:12px;font-weight:600;color:var(--text);line-height:1.4;}
+  .chk-meta{font-size:11px;color:var(--text3);margin-top:2px;}
+  .sel-bar{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+  .sel-bar span{font-size:12px;color:var(--text2);}
+
 </style>
 </head>
 <body>
@@ -185,9 +209,12 @@
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <!-- Import CSV button -->
-    <button class="btn btn-outline btn-sm" onclick="document.getElementById('csvFile').click()" title="Import articles from CSV">📥 Import CSV</button>
+    <button class="btn btn-outline btn-sm" onclick="document.getElementById('csvFile').click()">📥 Import CSV</button>
     <input type="file" id="csvFile" accept=".csv" style="display:none" onchange="importCSV(this)"/>
+    <select id="topEnvSel" onchange="switchEnv(this.value)" title="Switch environment" style="padding:4px 10px;font-size:12px;font-weight:600;border-radius:8px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;height:30px;min-width:90px;">
+      <option value="dev">🟠 DEV</option>
+      <option value="prod">🔴 PROD</option>
+    </select>
     <div class="topbar-title" id="pageTitle">✍️ Write Article</div>
     <span class="worker-badge" id="workerLabel">DEV Worker</span>
     <div id="topAvatar"></div>
@@ -578,37 +605,153 @@ function clearForm(){
   document.getElementById('consoleA').innerHTML='Form cleared.';
 }
 
-// ══ MIGRATE DEV → PROD ══
+// ══ MIGRATE MODAL ══
+var _migrateArts = [];
+
 async function migrateArticles(){
-  if(!confirm('Copy ALL DEV articles to PROD (live site)?\n\nThis cannot be undone.')) return;
-  var btn=document.getElementById('btnMigrate');
-  btn.disabled=true; btn.textContent='⏳ Migrating...';
-  log('consoleA','<span class="inf">Fetching DEV articles...</span>');
-  try {
+  // Open modal and load DEV articles
+  document.getElementById('migrateModal').classList.add('open');
+  document.getElementById('modalLoading').style.display='block';
+  document.getElementById('modalContent').style.display='none';
+  document.getElementById('btnDoMigrate').disabled=true;
+  document.getElementById('migrateList').innerHTML='';
+
+  try{
     var r=await fetch(WORKERS.dev+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
     var d=await r.json();
     var arts=d.articles||[];
-    // Deduplicate by title
-    var seen=new Set(),unique=[];
-    arts.forEach(a=>{if(!seen.has(a.title)){seen.add(a.title);unique.push(a);}});
-    log('consoleA','<span class="inf">Found '+unique.length+' articles. Migrating to PROD...</span>');
-    var ok=0,fail=0;
-    for(var a of unique){
+    // Deduplicate by title, sort newest first
+    var seen=new Set(), unique=[];
+    arts.forEach(a=>{if(!seen.has(a.title.trim())){seen.add(a.title.trim());unique.push(a);}});
+    unique.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+    _migrateArts=unique;
+
+    if(!unique.length){
+      document.getElementById('modalLoading').textContent='No articles found in DEV.';
+      return;
+    }
+
+    // Render checklist
+    var list=document.getElementById('migrateList');
+    list.innerHTML='';
+    unique.forEach(function(a,i){
+      var dt=new Date(a.pubDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+      var div=document.createElement('div');
+      div.className='chk-item checked';
+      div.dataset.idx=i;
+      div.onclick=function(e){if(e.target.tagName!=='INPUT')div.querySelector('input').click();};
+      div.innerHTML=
+        '<input type="checkbox" checked onchange="updSelCount();this.closest(\'.chk-item\').classList.toggle(\'checked\',this.checked)">'+
+        '<span class="chk-num">'+(i+1)+'</span>'+
+        '<div class="chk-info">'+
+          '<div class="chk-title">'+a.title+'</div>'+
+          '<div class="chk-meta"><span class="badge">'+(a.sport||'ipl').toUpperCase()+'</span> · '+(a.authorName||'—')+' · '+dt+'</div>'+
+        '</div>';
+      list.appendChild(div);
+    });
+
+    document.getElementById('totalCount').textContent=unique.length+' articles in DEV';
+    document.getElementById('modalLoading').style.display='none';
+    document.getElementById('modalContent').style.display='block';
+    updSelCount();
+  }catch(e){
+    document.getElementById('modalLoading').textContent='Error loading: '+e.message;
+  }
+}
+
+function closeMigrateModal(){
+  document.getElementById('migrateModal').classList.remove('open');
+}
+
+function updSelCount(){
+  var checks=document.querySelectorAll('#migrateList input[type=checkbox]');
+  var sel=Array.from(checks).filter(c=>c.checked).length;
+  document.getElementById('selCount').textContent=sel+' selected';
+  document.getElementById('btnDoMigrate').disabled=sel===0;
+  document.getElementById('modalMeta').textContent=sel>0?sel+' article(s) will be checked against PROD and migrated':'Select articles to migrate';
+}
+
+function selectAll(state){
+  document.querySelectorAll('#migrateList input[type=checkbox]').forEach(c=>{
+    c.checked=state;
+    c.closest('.chk-item').classList.toggle('checked',state);
+  });
+  updSelCount();
+}
+
+async function doMigrate(){
+  var checks=Array.from(document.querySelectorAll('#migrateList input[type=checkbox]'));
+  var selectedIdx=checks.map((c,i)=>c.checked?i:-1).filter(i=>i>=1||i===0);
+  var selected=selectedIdx.map(i=>_migrateArts[i]);
+
+  var btn=document.getElementById('btnDoMigrate');
+  btn.disabled=true; btn.textContent='⏳ Working...';
+  document.getElementById('modalMeta').textContent='Checking PROD for duplicates...';
+
+  // Close modal and show progress in console
+  closeMigrateModal();
+  log('consoleA','<span class="inf">━━━ Migration started ━━━</span>');
+  log('consoleA','<span class="inf">Selected: '+selected.length+' articles</span>');
+
+  try{
+    // Fetch existing PROD titles
+    log('consoleA','<span class="inf">Fetching PROD articles for duplicate check...</span>');
+    var r2=await fetch(WORKERS.prod+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
+    var d2=await r2.json();
+    var prodTitles=new Set((d2.articles||[]).map(a=>a.title.trim().toLowerCase()));
+    log('consoleA','<span class="inf">PROD has '+prodTitles.size+' existing articles</span>');
+    log('consoleA','<span class="inf">─── Duplicate Check ───</span>');
+
+    // Split into new vs duplicate
+    var toMigrate=[], duplicates=[];
+    selected.forEach(a=>{
+      if(prodTitles.has(a.title.trim().toLowerCase())) duplicates.push(a);
+      else toMigrate.push(a);
+    });
+
+    // Report duplicates
+    if(duplicates.length){
+      log('consoleA','<span style="color:#fbbf24">⚠️ '+duplicates.length+' duplicate(s) skipped (already in PROD):</span>');
+      duplicates.forEach((a,i)=>log('consoleA','<span style="color:#fbbf24">  [SKIP '+(i+1)+'] '+a.title.slice(0,65)+'</span>'));
+    } else {
+      log('consoleA','<span class="ok">✓ No duplicates found</span>');
+    }
+
+    if(!toMigrate.length){
+      log('consoleA','<span class="ok">✅ Nothing new to migrate — PROD already has all selected articles.</span>');
+      btn.disabled=false; btn.textContent='⬆️ Migrate Selected';
+      return;
+    }
+
+    log('consoleA','<span class="inf">─── Migrating '+toMigrate.length+' new article(s) ───</span>');
+    var ok=0, fail=0;
+    for(var a of toMigrate){
       try{
         var res=await fetch(WORKERS.prod+'/api/publish-own',{
           method:'POST',
           headers:{'Content-Type':'application/json','x-admin-pass':PASS},
-          body:JSON.stringify({
-            sports:[a.sport],sport:a.sport,
-            article:{...a,isOwn:true}
-          })
+          body:JSON.stringify({sports:[a.sport],sport:a.sport,article:{...a,isOwn:true}})
         });
-        if(res.ok) ok++; else fail++;
-      }catch(e){fail++;}
+        if(res.ok){
+          ok++;
+          log('consoleA','<span class="ok">  ✅ '+a.title.slice(0,60)+'</span>');
+        } else {
+          fail++;
+          log('consoleA','<span class="err">  ❌ FAILED: '+a.title.slice(0,50)+'</span>');
+        }
+      }catch(e){
+        fail++;
+        log('consoleA','<span class="err">  ❌ ERROR: '+a.title.slice(0,50)+' — '+e.message+'</span>');
+      }
     }
-    log('consoleA','<span class="ok">✅ Migrated '+ok+' articles to PROD!'+(fail?' ('+fail+' failed)':'')+'</span>');
-  }catch(e){log('consoleA','<span class="err">❌ '+e.message+'</span>');}
-  btn.disabled=false; btn.textContent='⬆️ Migrate to PROD';
+
+    log('consoleA','<span class="inf">─── Summary ───</span>');
+    log('consoleA','<span class="ok">✅ Migrated: '+ok+' · Skipped (dup): '+duplicates.length+(fail?' · Failed: '+fail:'')+'</span>');
+    loadStats();
+  }catch(e){
+    log('consoleA','<span class="err">❌ '+e.message+'</span>');
+  }
+  btn.disabled=false; btn.textContent='⬆️ Migrate Selected';
 }
 
 // ══ PUBLISHED LIST ══
@@ -849,5 +992,36 @@ function closeQueue(){
 // ══ INIT ══
 loadStats();
 </script>
+
+<!-- ── MIGRATE MODAL ── -->
+<div class="modal-overlay" id="migrateModal" onclick="if(event.target===this)closeMigrateModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span style="font-size:18px;">⬆️</span>
+      <h3>Migrate DEV → PROD</h3>
+      <div style="font-size:11px;color:var(--text3);background:var(--bg);padding:3px 10px;border-radius:20px;border:1px solid var(--border);" id="modalEnvLabel">DEV → PROD</div>
+      <button class="modal-close" onclick="closeMigrateModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="modalLoading" style="text-align:center;padding:32px;color:var(--text3);font-size:13px;">⏳ Loading DEV articles...</div>
+      <div id="modalContent" style="display:none;">
+        <div class="sel-bar">
+          <span id="selCount">0 selected</span>
+          <button class="btn btn-outline btn-sm" onclick="selectAll(true)">Select All</button>
+          <button class="btn btn-outline btn-sm" onclick="selectAll(false)">Clear All</button>
+          <span style="flex:1;"></span>
+          <span style="font-size:11px;color:var(--text3);" id="totalCount"></span>
+        </div>
+        <div class="chk-list" id="migrateList"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-meta" id="modalMeta">Select articles to migrate</div>
+      <button class="btn btn-outline" onclick="closeMigrateModal()">Cancel</button>
+      <button class="btn btn-amber" id="btnDoMigrate" onclick="doMigrate()" disabled>⬆️ Migrate Selected</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
