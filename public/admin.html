@@ -211,7 +211,7 @@
   <div class="topbar">
     <button class="btn btn-outline btn-sm" onclick="document.getElementById('csvFile').click()">📥 Import CSV</button>
     <input type="file" id="csvFile" accept=".csv" style="display:none" onchange="importCSV(this)"/>
-    <select id="topEnvSel" onchange="switchEnv(this.value)" title="Switch environment" style="padding:4px 10px;font-size:12px;font-weight:600;border-radius:8px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;height:30px;min-width:90px;">
+    <select id="topEnvSel" onchange="switchEnv(this.value)" title="Switch environment" style="padding:4px 8px;font-size:12px;font-weight:600;border-radius:8px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;height:30px;width:90px;flex-shrink:0;">
       <option value="dev">🟠 DEV</option>
       <option value="prod">🔴 PROD</option>
     </select>
@@ -320,7 +320,7 @@
           <input type="file" id="txtFile" accept=".txt" style="display:none" onchange="loadTxt(this)"/>
           <button class="btn btn-outline" onclick="clearForm()">🗑 Clear</button>
           <button class="btn btn-primary" id="btnPublish" onclick="publishArticle()">🚀 Publish</button>
-          <button class="btn btn-amber" id="btnMigrate" onclick="migrateArticles()" style="display:none" title="Copy all DEV articles to PROD">⬆️ Migrate to PROD</button>
+          <button class="btn btn-primary" id="btnMigrate" onclick="migrateArticles()" style="display:none" title="Copy all DEV articles to PROD">⬆️ Migrate to PROD</button>
         </div>
         <div class="console" id="consoleA">System ready.</div>
       </div>
