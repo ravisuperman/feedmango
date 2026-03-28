@@ -27,9 +27,9 @@
 //          DO NOT remove — keeps site working if KV is empty.
 // ============================================================
 var SPORTS_FALLBACK = {
-  ipl:        { label:'IPL',        feeds:[{name:'ESPN Cricinfo',   url:'https://www.espncricinfo.com/rss/content/story/feeds/0.xml'},{name:'Hindustan Times',url:'https://www.hindustantimes.com/feeds/rss/cricket/ipl/rssfeed.xml'},{name:'Times of India',url:'https://timesofindia.indiatimes.com/rssfeeds/54829575.cms'},{name:'NDTV Sports',url:'https://sports.ndtv.com/cricket/rss'}]},
+  ipl:        { label:'IPL',        feeds:[{name:'ESPN Cricinfo',url:'https://www.espncricinfo.com/rss/content/story/feeds/0.xml'},{name:'CricTracker',url:'https://crictracker.com/feed'},{name:'Hindustan Times',url:'https://www.hindustantimes.com/feeds/rss/cricket/ipl/rssfeed.xml'},{name:'Times of India',url:'https://timesofindia.indiatimes.com/rssfeeds/54829575.cms'}]},
   f1:         { label:'Formula 1',  feeds:[{name:'BBC F1',url:'https://feeds.bbci.co.uk/sport/formula1/rss.xml'},{name:'ESPN Autos',url:'https://www.espn.com/espn/rss/rpm/news'}]},
-  cricket:    { label:'Cricket',    feeds:[{name:'BBC Cricket',url:'https://feeds.bbci.co.uk/sport/cricket/rss.xml'},{name:'Sky Sports Cricket',url:'https://www.skysports.com/rss/12040'},{name:'CricTracker',url:'https://crictracker.com/feed'}]},
+  cricket:    { label:'Cricket',    feeds:[{name:'ESPN Cricinfo',url:'https://www.espncricinfo.com/rss/content/story/feeds/0.xml'},{name:'CricTracker',url:'https://crictracker.com/feed'},{name:'BBC Cricket',url:'https://feeds.bbci.co.uk/sport/cricket/rss.xml'}]},
   basketball: { label:'Basketball', feeds:[{name:'ESPN NBA',url:'https://www.espn.com/espn/rss/nba/news'},{name:'BBC Basketball',url:'https://feeds.bbci.co.uk/sport/basketball/rss.xml'}]},
   baseball:   { label:'Baseball',   feeds:[{name:'ESPN Baseball',url:'https://www.espn.com/espn/rss/mlb/news'}]},
   football:   { label:'Football',   feeds:[{name:'BBC Football',url:'https://feeds.bbci.co.uk/sport/football/rss.xml'},{name:'ESPN Soccer',url:'https://www.espn.com/espn/rss/soccer/news'}]},
@@ -143,7 +143,9 @@ function parseRSS(xml, sourceName) {
       var encMatch=encTag[0].match(/url=["']([^"']+)["']/i);
       if(encMatch)enc=encMatch;
     }
-    if(mm)img=mm[1]; else if(enc)img=enc[1]; else if(iid)img=iid[1];
+    // Also check media:thumbnail and og:image
+    var thumb=it.match(/media:thumbnail[^>]+url=["']([^"']+)["']/i);
+    if(mm)img=mm[1]; else if(thumb)img=thumb[1]; else if(enc)img=enc[1]; else if(iid)img=iid[1];
     if(!title||!link)continue;
     var published=pub?new Date(pub):new Date();
     if((Date.now()-published.getTime())/3600000>72)continue;
