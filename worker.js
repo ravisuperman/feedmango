@@ -1,10 +1,13 @@
 /*
- * Mango Sports Worker — Production Server (ENHANCED WITH OG IMAGES)
+ * Mango Sports Worker — Production Server (ENHANCED WITH OG IMAGES + NO CACHE)
  * Cron 1: Fetch raw RSS → NEWS_KV
  * Cron 2: Add OG images → CURATED_KV
  * Admin: Discover RSS → Process & Save → MY_NEWS_KV
  *
  * Change log:
+ * 28-Mar-2026 — CRITICAL: Added Cache-Control headers to prevent stale cache
+ *                         Forces fresh data on every API call (no-cache, no-store)
+ *                         Fixes: Cloudflare/browser cache showing old data
  * 28-Mar-2026 — MAJOR: Added OG image fetching in curateSport
  *                      Articles without RSS images now fetch og:image from article URL
  *                      Filters out articles that still have no image after OG fetch
@@ -301,7 +304,10 @@ var cors={
   'Access-Control-Allow-Origin':'*',
   'Access-Control-Allow-Methods':'GET,POST,DELETE,OPTIONS',
   'Access-Control-Allow-Headers':'Content-Type,x-admin-pass',
-  'Content-Type':'application/json'
+  'Content-Type':'application/json',
+  'Cache-Control':'no-cache, no-store, must-revalidate',
+  'Pragma':'no-cache',
+  'Expires':'0'
 };
 
 // ============================================================
