@@ -781,11 +781,41 @@
     // BLOCK END: Pin own articles to top (27-Mar-2026)
     // ============================================================
 
-    o.innerHTML = ''; var f = document.createDocumentFragment(); var count = 0;
-    a.forEach(x => { 
-      if (x.source === 'Sky Sports Cricket' && (!x.link || !x.link.toLowerCase().includes('cricket'))) return; 
-      var s = (count === 0 && x.image && window.innerWidth > 1000) ? 'card-hero' : ''; 
-      f.appendChild(buildCard(x, EMOJI[x.sport] || '✨', s)); count++; 
+    o.innerHTML = ''; var f = document.createDocumentFragment();
+
+    // Separate own articles and RSS articles
+    var ownArts = a.filter(function(x){ return x.isOwn; });
+    var rssArts = a.filter(function(x){
+      if(!x.isOwn && x.source === 'Sky Sports Cricket' && (!x.link || !x.link.toLowerCase().includes('cricket'))) return false;
+      return !x.isOwn;
+    });
+
+    // Build interleaved list:
+    // Position 0 = first own article (hero)
+    // Then every 2 RSS articles, insert next own article
+    // Once own articles exhausted, just RSS continues
+    var interleaved = [];
+    var oi = 0; // own article index
+    var ri = 0; // rss article index
+
+    // First card = first own article if available, else first RSS
+    if(ownArts.length > 0){ interleaved.push(ownArts[oi++]); }
+    else if(rssArts.length > 0){ interleaved.push(rssArts[ri++]); }
+
+    // Rest: every 2 RSS then 1 own (until own exhausted)
+    while(ri < rssArts.length){
+      interleaved.push(rssArts[ri++]);
+      if(ri < rssArts.length) interleaved.push(rssArts[ri++]);
+      if(oi < ownArts.length) interleaved.push(ownArts[oi++]);
+    }
+
+    // Track which titles appear in main feed (to exclude from sidebar)
+    window._mainFeedTitles = new Set(interleaved.map(function(x){ return x.title; }));
+
+    var count = 0;
+    interleaved.forEach(function(x){
+      var s = (count === 0 && x.image && window.innerWidth > 1000) ? 'card-hero' : '';
+      f.appendChild(buildCard(x, EMOJI[x.sport] || '✨', s)); count++;
     });
     o.appendChild(f);
   }
@@ -907,9 +937,12 @@
     // Show sidebar immediately
     if (allCache.length) {
       var tr = document.getElementById('trendingList'); tr.innerHTML = '';
-      pinnedSort(allCache.filter(x=>x.image)).slice(0,6).forEach(a=>tr.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')));
+      var mainTitles = window._mainFeedTitles || new Set();
+      var sidebarPool = pinnedSort(allCache.filter(function(x){ return x.image && !mainTitles.has(x.title); }));
+      sidebarPool.slice(0,6).forEach(function(a){ tr.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')); });
       var rc = document.getElementById('recentList'); rc.innerHTML = '';
-      pinnedSort(allCache).slice(6, 11).forEach(a=>rc.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')));
+      var recentPool = pinnedSort(allCache.filter(function(x){ return !mainTitles.has(x.title); }));
+      recentPool.slice(6,11).forEach(function(a){ rc.appendChild(buildSidebarItem(a, EMOJI[a.sport]||'🏆')); });
     }
 
     // Show IPL immediately
