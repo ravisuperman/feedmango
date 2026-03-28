@@ -113,15 +113,14 @@ function parseRSS(xml, sourceName) {
     var title=extractTag(it,'title'), link=extractTag(it,'link'), pub=extractTag(it,'pubDate'), desc=extractTag(it,'description');
     var img=null;
     var mm=it.match(/media:content[^>]+url=["']([^"']+)["']/i);
+    var thumb=it.match(/media:thumbnail[^>]+url=["']([^"']+)["']/i);
     var iid=desc&&desc.match(/<img[^>]+src=["']([^"']+)["']/i);
-    var enc=null, encTag=it.match(/<enclosure[^>]*>/i);
+    var enc=null,encTag=it.match(/<enclosure[^>]*>/i);
     if(encTag&&encTag[0].toLowerCase().includes('image')){
       var encMatch=encTag[0].match(/url=["']([^"']+)["']/i);
-      if(encMatch)enc=encMatch;
+      if(encMatch)enc=encMatch[1];
     }
-    // Also check media:thumbnail and og:image
-    var thumb=it.match(/media:thumbnail[^>]+url=["']([^"']+)["']/i);
-    if(mm)img=mm[1]; else if(thumb)img=thumb[1]; else if(enc)img=enc[1]; else if(iid)img=iid[1];
+    if(mm)img=mm[1]; else if(thumb)img=thumb[1]; else if(enc)img=enc; else if(iid)img=iid[1];
     if(!title||!link)continue;
     var published=pub?new Date(pub):new Date();
     if((Date.now()-published.getTime())/3600000>72)continue;
