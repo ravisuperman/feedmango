@@ -317,7 +317,6 @@
           <button class="btn btn-outline" onclick="clearForm()">🗑 Clear</button>
           <button class="btn btn-primary" id="btnPublish" onclick="publishArticle()">🚀 Publish</button>
           <button class="btn btn-primary" id="btnMigrate" onclick="migrateArticles()" style="display:none">⬆️ Migrate to PROD</button>
-          <button class="btn btn-outline btn-sm" onclick="updateAllThumbnails()" title="Set default thumbnail for all articles" style="margin-left:auto;">🖼 Fix Thumbnails</button>
         </div>
         <div class="console" id="consoleA">System ready.</div>
       </div>
@@ -728,6 +727,65 @@ async function delArt(sport,encTitle,encLink,btn){
   }catch(e){btn.textContent='🗑';btn.disabled=false;}
 }
 
+function editArticle(a){
+  // Populate Write Article form with this article's data
+  document.getElementById('artTitle').value = a.title||'';
+  document.getElementById('artDesc').value  = a.description||'';
+  document.getElementById('artSport').value = a.sport||'ipl';
+  document.getElementById('artLink').value  = a.link||'https://www.sportsrip.com';
+  document.getElementById('artImage').value = a.image||'';
+  document.getElementById('artAuthor').value      = a.authorName||'';
+  document.getElementById('artAuthorPhoto').value = a.authorPhoto||'';
+  prevImg(); prevAv();
+  // Mark as editing — store original sport/link so we can delete old on publish
+  window._editingArticle = a;
+  document.getElementById('btnPublish').textContent = '💾 Update Article';
+  document.getElementById('btnPublish').style.background = '#0f766e';
+  // Switch to Write Article panel
+  showPanel('write');
+  document.getElementById('consoleA').innerHTML =
+    '> <span class="inf">✏️ Editing: "'+a.title.slice(0,50)+'" — make changes and click Update Article</span>';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Override publishArticle to handle update (delete old + publish new)
+var _origPublish = publishArticle;
+publishArticle = async function(overrideData){
+  if(!overrideData && window._editingArticle){
+    var orig = window._editingArticle;
+    var btn=document.getElementById('btnPublish');
+    btn.disabled=true; btn.textContent='⏳ Updating...';
+    log('consoleA','<span class="inf">Updating article — deleting old version...</span>');
+    // Delete old version from all sports it was in
+    var sportsToDelete = orig.sport ? [orig.sport] : ['ipl'];
+    for(var sp of sportsToDelete){
+      try{
+        await fetch(WURL+'/api/delete-own',{method:'POST',
+          headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+          body:JSON.stringify({sport:sp, link:orig.link})});
+      }catch(e){}
+    }
+    window._editingArticle = null;
+    // Now publish new version
+    var result = await _origPublish(overrideData);
+    // Reset button
+    btn.disabled=false;
+    btn.textContent='🚀 Publish';
+    btn.style.background='';
+    return result;
+  }
+  return _origPublish(overrideData);
+};
+
+// Reset edit mode when Clear is clicked
+var _origClear = clearForm;
+clearForm = function(){
+  _origClear();
+  window._editingArticle = null;
+  document.getElementById('btnPublish').textContent='🚀 Publish';
+  document.getElementById('btnPublish').style.background='';
+};
+
 // VIEW ARTICLES
 var _vaArts=[];
 var SPORT_EMOJI={ipl:'🏏',cricket:'🏏',football:'⚽',f1:'🏎️',basketball:'🏀',tennis:'🎾',kabaddi:'🤼',boxing:'🥊',golf:'⛳',badminton:'🏸',nfl:'🏈',baseball:'⚾'};
@@ -814,35 +872,6 @@ function closeArtPopup(){document.getElementById('apOverlay').classList.remove('
 
 
 
-// ── UPDATE THUMBNAILS ──
-async function updateAllThumbnails(){
-  var THUMB='https://images.pexels.com/photos/7702229/pexels-photo-7702229.jpeg';
-  var sports=['ipl','cricket','football','f1','basketball','tennis','kabaddi','boxing','golf','badminton','nfl','baseball'];
-  log('consoleA','<span class="inf">Updating thumbnails for all articles...</span>');
-  var updated=0,failed=0;
-  for(var sp of sports){
-    try{
-      var r=await fetch(WURL+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
-      var d=await r.json();
-      var arts=(d.articles||[]).filter(function(a){return a.sport===sp;});
-      if(!arts.length) continue;
-      for(var a of arts){
-        var updated_art=Object.assign({},a,{image:THUMB});
-        // Delete and re-publish with new image
-        await fetch(WURL+'/api/delete-own',{method:'POST',
-          headers:{'Content-Type':'application/json','x-admin-pass':PASS},
-          body:JSON.stringify({sport:sp,link:a.link})});
-        var res=await fetch(WURL+'/api/publish-own',{method:'POST',
-          headers:{'Content-Type':'application/json','x-admin-pass':PASS},
-          body:JSON.stringify({sports:[sp],article:updated_art})});
-        if(res.ok) updated++;
-        else failed++;
-      }
-    }catch(e){failed++;}
-  }
-  log('consoleA','<span class="ok">✅ Updated '+updated+' articles'+(failed?' · '+failed+' failed':'')+' with new thumbnail</span>');
-  loadStats();
-}
 
 // FOLDER SYSTEM
 var _curFolder='all';
