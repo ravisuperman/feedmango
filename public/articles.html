@@ -67,13 +67,13 @@
     .arr-btn.l { left:0; } .arr-btn.r { right:0; }
     .rel-strip { display:flex; gap:12px; overflow-x:auto; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
     .rel-strip::-webkit-scrollbar { display:none; }
-    .rel-card { flex-shrink:0; width:200px; background:var(--paper2); border-radius:4px; overflow:hidden; text-decoration:none; color:inherit; border:1px solid var(--rule); transition:0.2s; }
-    .rel-card:hover { border-color:var(--accent); box-shadow:0 3px 12px rgba(0,0,0,0.08); }
+    .rel-card { flex-shrink:0; width:200px; background:#f3f0e8; border-radius:4px; overflow:hidden; text-decoration:none; color:#2c2418; border:1px solid #d4c9a8; transition:0.2s; }
+    .rel-card:hover { border-color:#8b6914; box-shadow:0 3px 12px rgba(0,0,0,0.08); }
     .rel-img { width:100%; height:110px; object-fit:cover; display:block; }
-    .rel-img-ph { width:100%; height:110px; background:var(--paper2); display:flex; align-items:center; justify-content:center; font-size:20px; opacity:0.3; }
-    .rel-body { padding:10px; }
-    .rel-src { font-family:'Inter',sans-serif; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--accent); margin-bottom:4px; }
-    .rel-title { font-family:'Lora',serif; font-size:13px; line-height:1.4; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+    .rel-img-ph { width:100%; height:110px; background:#f3f0e8; display:flex; align-items:center; justify-content:center; font-size:20px; opacity:0.3; }
+    .rel-body { padding:10px; background:#f3f0e8; }
+    .rel-src { font-family:'Inter',sans-serif; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#8b6914; margin-bottom:4px; }
+    .rel-title { font-family:'Lora',serif; font-size:13px; line-height:1.4; color:#2c2418; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
 
     /* ── Sidebar ── */
     .sidebar { display:flex; flex-direction:column; gap:14px; position:sticky; top:20px; }
@@ -163,7 +163,7 @@
         '<div class="au-right"><span class="sp-badge">'+san(label)+'</span>'+(isOwn?'<span class="own-badge">SPORTSrip</span>':'')+'</div>'+
       '</div>'+
       (a.description?'<div class="art-desc">'+san(a.description)+'</div>':'')+
-      '<a href="'+san(a.link)+'" target="_blank" rel="noopener noreferrer" class="read-btn">Read Full Article →</a>'+
+      ((!a.link||a.isOwn||a.link.indexOf('sportsrip.com')>-1)?'':'<a href="'+san(a.link)+'" target="_blank" rel="noopener noreferrer" class="read-btn">Read Full Article →</a>')+
       '<div class="related-sec">'+
         '<div class="sec-label">Related Articles</div>'+
         '<div class="strip-wrap">'+
