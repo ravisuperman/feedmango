@@ -317,6 +317,7 @@
           <button class="btn btn-outline" onclick="clearForm()">🗑 Clear</button>
           <button class="btn btn-primary" id="btnPublish" onclick="publishArticle()">🚀 Publish</button>
           <button class="btn btn-primary" id="btnMigrate" onclick="migrateArticles()" style="display:none">⬆️ Migrate to PROD</button>
+          <button class="btn btn-outline btn-sm" onclick="updateAllThumbnails()" title="Set default thumbnail for all articles" style="margin-left:auto;">🖼 Fix Thumbnails</button>
         </div>
         <div class="console" id="consoleA">System ready.</div>
       </div>
@@ -812,6 +813,37 @@ function openArtPopup(a){
 function closeArtPopup(){document.getElementById('apOverlay').classList.remove('open');}
 
 
+
+// ── UPDATE THUMBNAILS ──
+async function updateAllThumbnails(){
+  var THUMB='https://images.pexels.com/photos/7702229/pexels-photo-7702229.jpeg';
+  var sports=['ipl','cricket','football','f1','basketball','tennis','kabaddi','boxing','golf','badminton','nfl','baseball'];
+  log('consoleA','<span class="inf">Updating thumbnails for all articles...</span>');
+  var updated=0,failed=0;
+  for(var sp of sports){
+    try{
+      var r=await fetch(WURL+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
+      var d=await r.json();
+      var arts=(d.articles||[]).filter(function(a){return a.sport===sp;});
+      if(!arts.length) continue;
+      for(var a of arts){
+        var updated_art=Object.assign({},a,{image:THUMB});
+        // Delete and re-publish with new image
+        await fetch(WURL+'/api/delete-own',{method:'POST',
+          headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+          body:JSON.stringify({sport:sp,link:a.link})});
+        var res=await fetch(WURL+'/api/publish-own',{method:'POST',
+          headers:{'Content-Type':'application/json','x-admin-pass':PASS},
+          body:JSON.stringify({sports:[sp],article:updated_art})});
+        if(res.ok) updated++;
+        else failed++;
+      }
+    }catch(e){failed++;}
+  }
+  log('consoleA','<span class="ok">✅ Updated '+updated+' articles'+(failed?' · '+failed+' failed':'')+' with new thumbnail</span>');
+  loadStats();
+}
+
 // FOLDER SYSTEM
 var _curFolder='all';
 function getFolders(){try{return JSON.parse(localStorage.getItem('sr_folders')||'[]');}catch(e){return[];}}
@@ -825,7 +857,8 @@ function saveFolderModal(){
   var folders=getFolders();
   if(folders.find(function(f){return f.name===name;})){alert('Folder already exists!');return;}
   folders.push({id:'f'+Date.now(),name:name});saveFolders(folders);
-  closeFolderModal();rebuildFolderBar();
+  closeFolderModal();
+  showPanel('viewarts');
 }
 function deleteFolder(id,e){
   e.stopPropagation();
