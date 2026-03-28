@@ -496,6 +496,50 @@
     if(e.target === document.getElementById('ytModal')) closeYTBtn();
   }
 
+
+  // ── Article Modal ──
+  function openArtModal(a) {
+    var EMOJI = {ipl:'🏏',f1:'🏎️',cricket:'🏏',basketball:'🏀',football:'⚽',baseball:'⚾',tennis:'🎾',kabaddi:'🤼',boxing:'🥊',golf:'⛳',athletics:'🏃',rugby:'🏉',olympics:'🏅',nfl:'🏈',badminton:'🏸'};
+    var LABEL = {ipl:'IPL 2026',f1:'Formula 1',cricket:'Cricket',basketball:'NBA',football:'Soccer',baseball:'MLB',tennis:'Tennis',kabaddi:'Kabaddi',boxing:'Boxing',golf:'Golf',athletics:'Athletics',rugby:'Rugby',olympics:'Olympics',nfl:'NFL',badminton:'Badminton'};
+    var sport = a.sport||'ipl';
+    var label = LABEL[sport]||sport.toUpperCase();
+    var emoji = EMOJI[sport]||'🏆';
+    var author = (a.authorName&&a.authorName.trim()) ? a.authorName : 'SPORTSrip Team';
+    var photo = a.authorPhoto||'';
+    var init = author.split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2)||'SR';
+    var avHtml = photo
+      ? '<img src="'+photo+'" style="width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid #d4c9a8;flex-shrink:0;" onerror="this.outerHTML='<div style=width:38px;height:38px;border-radius:50%;background:#8b6914;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0>'+init+'</div>'">'
+      : '<div style="width:38px;height:38px;border-radius:50%;background:#8b6914;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">'+init+'</div>';
+    var heroHtml = a.image
+      ? '<img src="'+a.image+'" style="width:100%;max-height:340px;object-fit:cover;border-radius:8px;border:3px solid #7B61C4;margin-bottom:20px;display:block;">'
+      : '';
+    var dateStr = a.pubDate ? new Date(a.pubDate).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}) : '';
+    var desc = (a.description||'').replace(/\n/g,'<br>');
+
+    document.getElementById('artModalContent').innerHTML =
+      '<div style="font-family:Inter,sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#8b6914;margin-bottom:12px;">'+emoji+' '+label+'</div>'+
+      '<h1 style="font-family:Georgia,serif;font-size:22px;font-weight:700;line-height:1.3;color:#2c2418;margin-bottom:16px;">'+a.title+'</h1>'+
+      '<div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid #d4c9a8;border-bottom:1px solid #d4c9a8;margin-bottom:20px;">'+
+        avHtml+
+        '<div><div style="font-family:Inter,sans-serif;font-size:13px;font-weight:600;color:#2c2418;">'+author+'</div>'+
+        '<div style="font-family:Inter,sans-serif;font-size:11px;color:#7a7060;">'+dateStr+'</div></div>'+
+      '</div>'+
+      heroHtml+
+      '<div style="font-size:16px;line-height:1.9;color:#4a4030;">'+desc+'</div>';
+
+    var modal = document.getElementById('artModal');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeArtModalBtn() {
+    document.getElementById('artModal').style.display = 'none';
+    document.getElementById('artModalContent').innerHTML = '';
+    document.body.style.overflow = '';
+  }
+  function closeArtModal(e) {
+    if(e.target === document.getElementById('artModal')) closeArtModalBtn();
+  }
+
   function updateClock() { var n = new Date(); if(document.getElementById('clockDisplay')) document.getElementById('clockDisplay').innerHTML = n.toLocaleDateString('en-GB',{day:'numeric',month:'short'}) + ' · ' + n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }
   updateClock(); setInterval(updateClock, 60000);
 
@@ -525,18 +569,9 @@
     var c = document.createElement('a'); 
     c.className = 'card ' + (size || '') + (a.isOwn ? ' own-article' : '');
     if(a.isOwn) {
-      // Own articles — open articles.html in same popup style as RSS
-      c.href = 'articles.html?data=' + encodeURIComponent(JSON.stringify(a));
-      c.onclick = function(ev) {
-        ev.preventDefault();
-        var isMobile = window.innerWidth <= 768;
-        if(isMobile) {
-          window.open(c.href, '_blank');
-        } else {
-          var w=900, h=650, left=(screen.width-w)/2, top=(screen.height-h)/2;
-          window.open(c.href, '_blank', 'width='+w+',height='+h+',left='+left+',top='+top+',toolbar=0,menubar=0,scrollbars=1,resizable=1,status=0');
-        }
-      };
+      // Own articles — open in modal overlay
+      c.href = '#';
+      (function(article){ c.onclick = function(ev) { ev.preventDefault(); openArtModal(article); }; })(a);
     } else if(a.isVideo && a.videoId) {
       // Video card — open YouTube modal
       c.href = '#';
@@ -778,5 +813,17 @@
 
   init();
 </script>
+
+<!-- ═══ Article Modal ═══ -->
+<div id="artModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;" onclick="closeArtModal(event)">
+  <div id="artModalBox" style="position:relative;width:50%;height:75%;background:#faf8f3;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+    <!-- Close button -->
+    <button onclick="closeArtModalBtn()" style="position:absolute;top:12px;right:14px;background:rgba(0,0,0,0.12);border:none;font-size:18px;width:34px;height:34px;border-radius:50%;cursor:pointer;z-index:10;color:#2c2418;font-weight:700;">✕</button>
+    <!-- Scrollable content -->
+    <div id="artModalContent" style="overflow-y:auto;flex:1;padding:32px 36px 40px;font-family:Georgia,serif;color:#2c2418;">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</div>
 </body>
 </html>
