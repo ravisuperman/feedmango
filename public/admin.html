@@ -497,7 +497,17 @@ var WORKERS = {
 };
 var PASS = 'sportsrip2026';
 var ENV  = 'dev';
-var WURL = WORKERS.dev;
+
+// Smart URL detection:
+// If running on Cloudflare Pages (feedmango.pages.dev or sportsrip.com),
+// use relative /api/* calls — same origin, no CORS needed.
+// If running locally (file:// or localhost), use full worker URL.
+var ON_PAGES = window.location.hostname.includes('pages.dev') || window.location.hostname.includes('sportsrip.com');
+var WORKERS_RELATIVE = {
+  dev:  ON_PAGES ? '' : 'https://mango-sports-worker-dev.ravi-kompel.workers.dev',
+  prod: 'https://mango-sports-worker.ravi-kompel.workers.dev'
+};
+var WURL = WORKERS_RELATIVE.dev;
 
 // Known authors — seeded + loaded from articles
 var AUTHORS = [
@@ -519,7 +529,7 @@ setTopAvatar(AUTHORS[0].photo, AUTHORS[0].name);
 // ══ ENV SWITCH ══
 function switchEnv(env) {
   ENV  = env;
-  WURL = WORKERS[env];
+  WURL = WORKERS_RELATIVE[env];
   document.getElementById('envBadge').textContent = '● ' + env.toUpperCase();
   document.getElementById('envBadge').className = 'env-badge ' + env;
   document.getElementById('workerLabel').textContent = env.toUpperCase() + ' Worker';
@@ -548,13 +558,12 @@ function showPanel(name) {
 async function loadStats() {
   try {
     var r = await fetch(WURL+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
+    if(!r.ok) throw new Error('HTTP '+r.status);
     var d = await r.json();
     var arts = d.articles||[];
-    // Deduplicate by title (not link — all links are sportsrip.com)
     var seen=new Set(), unique=[];
     arts.forEach(a=>{if(!seen.has(a.title)){seen.add(a.title);unique.push(a);}});
     document.getElementById('statArticles').textContent = unique.length;
-    // Build author list from articles
     arts.forEach(a=>{
       if(a.authorName&&a.authorName.trim()){
         var ex=AUTHORS.find(au=>au.name===a.authorName.trim());
@@ -562,14 +571,13 @@ async function loadStats() {
         else if(!ex.photo&&a.authorPhoto) ex.photo=a.authorPhoto;
       }
     });
-    // Update top avatar with first author found
     if(arts.length&&arts[0].authorName) setTopAvatar(arts[0].authorPhoto||'',arts[0].authorName);
-  } catch(e){}
+  } catch(e){ log('consoleA','<span class="err">❌ Stats error: '+e.message+'</span>'); }
   try {
     var r2=await fetch(WURL+'/api/feeds');
     var d2=await r2.json();
     document.getElementById('statSources').textContent=d2.count||0;
-  } catch(e){}
+  } catch(e){ log('consoleA','<span class="err">❌ Feeds count error: '+e.message+'</span>'); }
 }
 
 function updateEnvStat() {}
@@ -689,7 +697,7 @@ async function migrateArticles(){
   document.getElementById('migrateList').innerHTML='';
 
   try{
-    var r=await fetch(WORKERS.dev+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
+    var r=await fetch((ON_PAGES?'':WORKERS.dev)+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
     var d=await r.json();
     var arts=d.articles||[];
     // Deduplicate by title, sort newest first
@@ -768,7 +776,7 @@ async function doMigrate(){
   try{
     // Fetch existing PROD titles
     log('consoleA','<span class="inf">Fetching PROD articles for duplicate check...</span>');
-    var r2=await fetch(WORKERS.prod+'/api/own-articles',{headers:{'x-admin-pass':PASS}});
+    var r2=await fetch(WORKERS.prod+'/api/own-articles',{headers:{'x-admin-pass':PASS}}); // always full URL for prod
     var d2=await r2.json();
     var prodTitles=new Set((d2.articles||[]).map(a=>a.title.trim().toLowerCase()));
     log('consoleA','<span class="inf">PROD has '+prodTitles.size+' existing articles</span>');
@@ -799,7 +807,7 @@ async function doMigrate(){
     var ok=0, fail=0;
     for(var a of toMigrate){
       try{
-        var res=await fetch(WORKERS.prod+'/api/publish-own',{
+        var res=await fetch(WORKERS.prod+'/api/publish-own',{ // always full URL for prod
           method:'POST',
           headers:{'Content-Type':'application/json','x-admin-pass':PASS},
           body:JSON.stringify({sports:[a.sport],sport:a.sport,article:{...a,isOwn:true}})
@@ -850,7 +858,7 @@ async function loadPublished(){
         '<button class="btn btn-danger btn-sm" onclick="delArt(\''+a.sport+'\',\''+encodeURIComponent(a.title)+'\',\''+encodeURIComponent(a.link)+'\',this)">🗑</button>';
       c.appendChild(div);
     });
-  }catch(e){c.innerHTML='<div style="color:var(--red);font-size:12px;">'+e.message+'</div>';}
+  }catch(e){c.innerHTML='<div style="color:var(--red);font-size:12px;">Error loading articles: '+e.message+'<br><small>Worker: '+WURL+'</small></div>';}
 }
 
 async function delArt(sport,encTitle,encLink,btn){
@@ -883,7 +891,7 @@ async function loadSources(){
         '<button class="btn btn-danger btn-sm" onclick="delFeed(\''+encodeURIComponent(f.url)+'\',this)">Remove</button>';
       c.appendChild(div);
     });
-  }catch(e){c.innerHTML='<div style="color:var(--red);font-size:12px;">'+e.message+'</div>';}
+  }catch(e){c.innerHTML='<div style="color:var(--red);font-size:12px;">Error loading articles: '+e.message+'<br><small>Worker: '+WURL+'</small></div>';}
 }
 
 async function testFeed(){
@@ -1080,7 +1088,7 @@ async function loadViewArts(){
     _vaArts=unique;
     vaRender(unique);
   }catch(e){
-    grid.innerHTML='<div class="va-empty" style="color:var(--red);">Error: '+e.message+'</div>';
+    grid.innerHTML='<div class="va-empty" style="color:var(--red);">❌ Error: '+e.message+'<br><small style="color:var(--text3)">Worker: '+WURL+'</small></div>';
   }
 }
 
@@ -1151,8 +1159,17 @@ function closeArtPopup(){
   document.getElementById('artPopup').classList.remove('open');
 }
 
-// ══ INIT ══
-loadStats();
+// ══ INIT — test connection on startup ══
+(async function(){
+  try{
+    var r = await fetch(WURL+'/api/mode');
+    var d = await r.json();
+    log('consoleA','<span class="ok">✅ Connected to '+ENV.toUpperCase()+' worker: '+d.version+'</span>');
+  } catch(e){
+    log('consoleA','<span class="err">❌ Cannot reach worker: '+e.message+' — Check WORKER_URL in code</span>');
+  }
+  loadStats();
+})();
 </script>
 
 <!-- ── MIGRATE MODAL ── -->
