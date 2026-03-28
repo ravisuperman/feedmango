@@ -553,7 +553,7 @@ async function loadStats() {
     // Deduplicate by title (not link — all links are sportsrip.com)
     var seen=new Set(), unique=[];
     arts.forEach(a=>{if(!seen.has(a.title)){seen.add(a.title);unique.push(a);}});
-    document.getElementById('statArticles').textContent = unique.size || unique.length;
+    document.getElementById('statArticles').textContent = unique.length;
     // Build author list from articles
     arts.forEach(a=>{
       if(a.authorName&&a.authorName.trim()){
