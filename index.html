@@ -44,7 +44,7 @@
 <div class="mobile-menu" id="mobileMenu"></div>
 
 <!-- ═══════════════════════════════════════════════════════════
-     CRICKET SCHEDULE CAROUSEL (below header)
+     ROW 1: CRICKET SCHEDULE CAROUSEL
      ═══════════════════════════════════════════════════════════ -->
 <div class="schedule-strip">
   <div class="schedule-strip-header">
@@ -60,6 +60,24 @@
       <div class="schedule-loading">Loading matches...</div>
     </div>
     <button class="carousel-arrow carousel-arrow-right" id="carouselRight" onclick="scrollCarousel(1)" aria-label="Scroll right">›</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ROW 2: TRENDING STORIES CAROUSEL
+     ═══════════════════════════════════════════════════════════ -->
+<div class="trending-strip">
+  <div class="schedule-strip-header">
+    <div class="schedule-strip-title">
+      <span>🔥 Trending Stories</span>
+    </div>
+  </div>
+  <div class="schedule-carousel-wrapper">
+    <button class="carousel-arrow carousel-arrow-left" id="trendingLeft" onclick="scrollTrending(-1)" aria-label="Scroll left">‹</button>
+    <div class="trending-carousel" id="trendingStripContent">
+      <div class="schedule-loading">Loading stories...</div>
+    </div>
+    <button class="carousel-arrow carousel-arrow-right" id="trendingRight" onclick="scrollTrending(1)" aria-label="Scroll right">›</button>
   </div>
 </div>
 
@@ -83,11 +101,11 @@
       <img src="https://images.pexels.com/photos/8941571/pexels-photo-8941571.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Kids Sports" style="width:100%; height:auto; display:block;">
     </div>
     
-    <!-- Trending Now -->
+    <!-- Trending Now (populated by widget) -->
     <div class="sidebar-section">
-      <div class="sidebar-title">Trending Now</div>
-      <div class="trending-container">
-        <div id="trendingList" class="trending-track"></div>
+      <div class="sidebar-title">🔥 Trending Now</div>
+      <div id="trendingList" class="trending-track">
+        <div class="widget-loading">Loading...</div>
       </div>
     </div>
     
