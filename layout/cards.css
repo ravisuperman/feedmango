@@ -1,0 +1,239 @@
+/* ============================================================
+   CARDS - Enhanced with Better Hover, Gradients, Shadows
+   ============================================================ */
+
+/* ── Main Card ── */
+.card { 
+  background: var(--surface); 
+  border-radius: 16px; 
+  overflow: hidden; 
+  display: flex; 
+  flex-direction: column; 
+  text-decoration: none; 
+  color: inherit; 
+  box-shadow: 0 2px 8px var(--shadow), 0 1px 3px rgba(0,0,0,0.04); 
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+  border: 1px solid var(--border);
+  position: relative;
+}
+
+/* Enhanced Hover - Lift + Scale + Blue Outline */
+.card:hover { 
+  transform: translateY(-8px) scale(1.02); 
+  box-shadow: 
+    0 12px 32px var(--shadow2), 
+    0 6px 16px var(--shadow3),
+    0 0 0 1px var(--espn-blue); 
+  border-color: transparent;
+}
+
+/* ── Card Image with Gradient Placeholder ── */
+.card-img { 
+  width: 100%; 
+  height: 200px; 
+  object-fit: cover; 
+  /* Beautiful animated gradient instead of boring gray */
+  background: linear-gradient(135deg, 
+    #667eea 0%, 
+    #764ba2 25%, 
+    #f093fb 50%, 
+    #4facfe 75%, 
+    #00f2fe 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  border-radius: 16px 16px 0 0;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Stop animation when image loads */
+.card-img[src]:not([src=""]) {
+  animation: none;
+}
+
+/* ── Card Body ── */
+.card-body { 
+  padding: 20px; 
+  flex: 1; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px; 
+}
+
+/* ── Read More Badge ── */
+.read-more-badge { 
+  color: #fff; 
+  background: var(--espn-blue); 
+  padding: 5px 12px; 
+  font-size: 11px; 
+  font-weight: 800; 
+  text-transform: uppercase; 
+  border-radius: 8px; 
+  letter-spacing: 0.5px;
+  align-self: flex-start;
+  box-shadow: 0 2px 6px rgba(3, 91, 176, 0.3);
+}
+
+/* ── Source ── */
+.card-source { 
+  font-size: 12px; 
+  color: var(--text3); 
+  font-weight: 700; 
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+/* ── Card Title - Sharper Typography ── */
+.card-title { 
+  font-size: 19px; 
+  font-weight: 800; 
+  line-height: 1.35; 
+  display: -webkit-box; 
+  -webkit-line-clamp: 3; 
+  -webkit-box-orient: vertical; 
+  overflow: hidden;
+  letter-spacing: -0.3px;
+  color: var(--text);
+}
+
+/* ── Card Description ── */
+.card-desc { 
+  font-size: 14px; 
+  color: var(--text2); 
+  line-height: 1.6; 
+  display: -webkit-box; 
+  -webkit-line-clamp: 3; 
+  -webkit-box-orient: vertical; 
+  overflow: hidden; 
+  font-weight: 400;
+}
+
+.own-article .card-desc { 
+  -webkit-line-clamp: 6; 
+}
+
+/* ── Own Article Badge ── */
+.own-badge { 
+  display: inline-block; 
+  background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-dark) 100%);
+  color: #000; 
+  font-size: 10px; 
+  font-weight: 900; 
+  padding: 4px 10px; 
+  border-radius: 8px; 
+  letter-spacing: 0.6px; 
+  box-shadow: 0 2px 6px rgba(240, 165, 0, 0.4);
+}
+
+/* ── Author Row ── */
+.card-author-row { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  margin-top: auto; 
+  padding-top: 12px; 
+  border-top: 1px solid var(--border); 
+}
+
+.card-author-left { 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+}
+
+/* ── Avatar ── */
+.card-av { 
+  width: 36px; 
+  height: 36px; 
+  border-radius: 50%; 
+  object-fit: cover; 
+  border: 2px solid var(--border2); 
+  flex-shrink: 0; 
+  box-shadow: 0 2px 6px var(--shadow);
+}
+
+.card-av-ph { 
+  width: 36px; 
+  height: 36px; 
+  border-radius: 50%; 
+  background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-dark) 100%);
+  color: #000; 
+  font-size: 13px; 
+  font-weight: 900; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  flex-shrink: 0; 
+  box-shadow: 0 2px 6px rgba(240, 165, 0, 0.3);
+}
+
+/* ── Author Name ── */
+.card-author-name { 
+  font-size: 14px; 
+  font-weight: 700; 
+  color: var(--text2);
+  letter-spacing: 0.2px;
+}
+
+/* ── Share Buttons ── */
+.card-share-btns { 
+  display: flex; 
+  gap: 6px; 
+}
+
+.card-share-btn { 
+  width: 30px; 
+  height: 30px; 
+  border-radius: 50%; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  font-size: 14px; 
+  text-decoration: none; 
+  border: 1px solid var(--border2); 
+  background: var(--surface2); 
+  cursor: pointer; 
+  transition: all 0.2s ease; 
+  color: var(--text2); 
+}
+
+.card-share-btn:hover { 
+  background: var(--espn-blue); 
+  color: #fff; 
+  border-color: var(--espn-blue); 
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(3, 91, 176, 0.4);
+}
+
+/* ── Hero Card - Enhanced ── */
+.card-hero { 
+  grid-column: span 2; 
+  flex-direction: row; 
+  height: 360px;
+  box-shadow: 0 4px 16px var(--shadow2), 0 2px 8px var(--shadow);
+}
+
+.card-hero:hover {
+  transform: translateY(-10px) scale(1.01);
+  box-shadow: 
+    0 16px 48px var(--shadow3), 
+    0 8px 24px var(--shadow2),
+    0 0 0 1px var(--espn-blue);
+}
+
+.card-hero .card-img { 
+  width: 60%; 
+  height: 100%; 
+  border-radius: 16px 0 0 16px; 
+}
+
+.card-hero .card-body { 
+  width: 40%; 
+  justify-content: center; 
+}
