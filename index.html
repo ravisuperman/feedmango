@@ -44,40 +44,40 @@
 <div class="mobile-menu" id="mobileMenu"></div>
 
 <!-- ═══════════════════════════════════════════════════════════
-     ROW 1: CRICKET SCHEDULE CAROUSEL
+     HERO STRIP: Two-Column — IPL Schedule + IPL Stars
      ═══════════════════════════════════════════════════════════ -->
-<div class="schedule-strip">
-  <div class="schedule-strip-header">
-    <div class="schedule-strip-title">
-      <span>🏏 Cricket Schedule</span>
-      <button class="refresh-btn" onclick="refreshIPLData()">↻</button>
-    </div>
-    <div id="lastUpdated" class="last-updated-inline" style="display: none;"></div>
-  </div>
-  <div class="schedule-carousel-wrapper">
-    <button class="carousel-arrow carousel-arrow-left" id="carouselLeft" onclick="scrollCarousel(-1)" aria-label="Scroll left">‹</button>
-    <div class="schedule-carousel" id="iplLiveContent">
-      <div class="schedule-loading">Loading matches...</div>
-    </div>
-    <button class="carousel-arrow carousel-arrow-right" id="carouselRight" onclick="scrollCarousel(1)" aria-label="Scroll right">›</button>
-  </div>
-</div>
+<div class="hero-strip">
+  <div class="hero-strip-inner">
 
-<!-- ═══════════════════════════════════════════════════════════
-     ROW 2: IPL STARS - Player Profile Carousel
-     ═══════════════════════════════════════════════════════════ -->
-<div class="player-strip">
-  <div class="schedule-strip-header">
-    <div class="schedule-strip-title">
-      <span>⭐ IPL Stars</span>
+    <!-- COLUMN 1: Cricket Schedule -->
+    <div class="hero-column">
+      <div class="hero-column-header">
+        <div class="hero-column-title">🏏 IPL Schedule <span id="lastUpdated" style="display:none;"></span></div>
+        <button class="refresh-btn-dark" onclick="refreshIPLData()">↻</button>
+      </div>
+      <div class="hero-carousel-wrap">
+        <button class="hero-arrow hero-arrow-left" id="carouselLeft" onclick="scrollCarousel(-1)">‹</button>
+        <div class="hero-carousel" id="iplLiveContent">
+          <div class="dark-loading">Loading matches...</div>
+        </div>
+        <button class="hero-arrow hero-arrow-right" id="carouselRight" onclick="scrollCarousel(1)">›</button>
+      </div>
     </div>
-  </div>
-  <div class="schedule-carousel-wrapper">
-    <button class="carousel-arrow carousel-arrow-left" id="playerLeft" onclick="scrollPlayers(-1)" aria-label="Scroll left">‹</button>
-    <div class="player-carousel" id="playerStripContent">
-      <div class="schedule-loading">Loading players...</div>
+
+    <!-- COLUMN 2: IPL Stars -->
+    <div class="hero-column">
+      <div class="hero-column-header">
+        <div class="hero-column-title">⭐ IPL Stars</div>
+      </div>
+      <div class="hero-carousel-wrap">
+        <button class="hero-arrow hero-arrow-left" id="playerLeft" onclick="scrollPlayers(-1)">‹</button>
+        <div class="hero-carousel" id="playerStripContent">
+          <div class="dark-loading">Loading players...</div>
+        </div>
+        <button class="hero-arrow hero-arrow-right" id="playerRight" onclick="scrollPlayers(1)">›</button>
+      </div>
     </div>
-    <button class="carousel-arrow carousel-arrow-right" id="playerRight" onclick="scrollPlayers(1)" aria-label="Scroll right">›</button>
+
   </div>
 </div>
 
@@ -178,7 +178,6 @@
 
 <!-- ═══════════════════════════════════════════════════════════
      MODULAR JAVASCRIPT
-     Load in correct order: config → api → render → ui → init → widget
      ═══════════════════════════════════════════════════════════ -->
 <script src="scripts/config.js"></script>
 <script src="scripts/api.js"></script>
