@@ -1,82 +1,114 @@
 /**
  * ============================================================
- * CRICKET SCHEDULE WIDGET - Worldwide Cricket Matches
+ * CRICKET SCHEDULE WIDGET - Horizontal Carousel
  * ============================================================
- * Shows all cricket matches from CricAPI (via your worker)
- * IPL matches are sorted to the top
+ * Shows worldwide cricket matches in a scrollable carousel
+ * IPL matches sorted to the top
+ * Arrow buttons for navigation
  * Auto-refreshes every 5 minutes
  */
 
 (function() {
 
   /**
+   * Scroll carousel left or right
+   * direction: -1 for left, 1 for right
+   */
+  window.scrollCarousel = function(direction) {
+    var carousel = document.getElementById('iplLiveContent');
+    var cardWidth = 294; // card width (280) + gap (14)
+    carousel.scrollBy({ left: direction * cardWidth * 2, behavior: 'smooth' });
+  };
+
+  /**
+   * Update arrow visibility based on scroll position
+   */
+  function updateArrows() {
+    var carousel = document.getElementById('iplLiveContent');
+    var leftBtn = document.getElementById('carouselLeft');
+    var rightBtn = document.getElementById('carouselRight');
+    
+    if (!carousel || !leftBtn || !rightBtn) return;
+    
+    var atStart = carousel.scrollLeft <= 10;
+    var atEnd = carousel.scrollLeft >= (carousel.scrollWidth - carousel.clientWidth - 10);
+    
+    leftBtn.style.opacity = atStart ? '0.3' : '1';
+    leftBtn.style.pointerEvents = atStart ? 'none' : 'auto';
+    rightBtn.style.opacity = atEnd ? '0.3' : '1';
+    rightBtn.style.pointerEvents = atEnd ? 'none' : 'auto';
+  }
+
+  /**
    * Load Cricket Match Data
    */
   async function loadCricketSchedule() {
     try {
-      const response = await fetch(IPL_WORKER_URL);
+      var response = await fetch(IPL_WORKER_URL);
       
       if (!response.ok) {
         throw new Error('HTTP ' + response.status);
       }
       
-      const data = await response.json();
+      var data = await response.json();
       
       if (!data || !data.data || data.data.length === 0) {
         document.getElementById('iplLiveContent').innerHTML = 
-          '<div class="widget-empty">No matches found</div>';
+          '<div class="schedule-loading">No matches found</div>';
         return;
       }
       
-      // Sort matches: IPL first, then by date (newest first)
-      const matches = sortMatches(data.data);
+      // Sort matches: IPL first, then by status, then by date
+      var matches = sortMatches(data.data);
       
       if (matches.length === 0) {
         document.getElementById('iplLiveContent').innerHTML = 
-          '<div class="widget-empty">No cricket matches scheduled</div>';
+          '<div class="schedule-loading">No cricket matches scheduled</div>';
         return;
       }
       
-      // Build match cards
-      let html = '';
-      matches.slice(0, 8).forEach(function(match) {
-        html += buildMatchCard(match);
+      // Build match cards as horizontal cards
+      var container = document.getElementById('iplLiveContent');
+      container.innerHTML = '';
+      
+      matches.slice(0, 12).forEach(function(match) {
+        var card = document.createElement('div');
+        card.className = 'cricket-match-card' + (isIPLMatch(match) ? ' ipl-highlight' : '');
+        card.innerHTML = buildMatchCardHTML(match);
+        container.appendChild(card);
       });
       
-      document.getElementById('iplLiveContent').innerHTML = html;
-      
-      // Show last updated time
+      // Show last updated
       var lastUpdatedEl = document.getElementById('lastUpdated');
       lastUpdatedEl.style.display = 'block';
-      lastUpdatedEl.textContent = 'Updated: ' + new Date().toLocaleTimeString('en-IN', { 
+      lastUpdatedEl.textContent = 'Updated ' + new Date().toLocaleTimeString('en-IN', { 
         hour: 'numeric', minute: '2-digit' 
       });
+      
+      // Set up arrow visibility
+      updateArrows();
+      container.addEventListener('scroll', updateArrows, { passive: true });
       
     } catch (error) {
       console.error('Failed to load cricket data:', error);
       document.getElementById('iplLiveContent').innerHTML = 
-        '<div class="widget-error">⚠️ Failed to load matches<br><small>Click refresh to try again</small></div>';
+        '<div class="schedule-loading">⚠️ Failed to load — <span onclick="refreshIPLData()" style="color:var(--espn-blue);cursor:pointer;font-weight:700;">try again</span></div>';
     }
   }
 
   /**
-   * Sort matches: IPL first, then Live, then Upcoming, then Completed
-   * Within each group, sort by date (newest first)
+   * Sort matches: IPL first → Live → Upcoming → Completed → by date
    */
   function sortMatches(matches) {
     return matches.slice().sort(function(a, b) {
       var aIPL = isIPLMatch(a) ? 0 : 1;
       var bIPL = isIPLMatch(b) ? 0 : 1;
-      
-      // IPL matches always come first
       if (aIPL !== bIPL) return aIPL - bIPL;
       
-      // Then sort by status: Live > Upcoming > Completed
       var aStatus = getStatusPriority(a);
       var bStatus = getStatusPriority(b);
       if (aStatus !== bStatus) return aStatus - bStatus;
       
-      // Then by date (newest first)
       var aDate = new Date(a.dateTimeGMT || a.date || 0);
       var bDate = new Date(b.dateTimeGMT || b.date || 0);
       return bDate - aDate;
@@ -84,18 +116,12 @@
   }
 
   /**
-   * Check if match is an IPL match
+   * Check if match is IPL
    */
   function isIPLMatch(match) {
     var name = (match.name || '').toLowerCase();
-    var seriesId = (match.series_id || '').toLowerCase();
+    if (name.includes('indian premier league') || name.includes('ipl')) return true;
     
-    // Check name for IPL indicators
-    if (name.includes('indian premier league') || name.includes('ipl')) {
-      return true;
-    }
-    
-    // Check for IPL team names in the match
     var iplTeams = ['chennai super kings', 'mumbai indians', 'royal challengers', 
                     'kolkata knight riders', 'sunrisers hyderabad', 'rajasthan royals',
                     'delhi capitals', 'punjab kings', 'lucknow super giants', 'gujarat titans',
@@ -105,42 +131,36 @@
       if (name.includes(iplTeams[i])) return true;
     }
     
-    // Check teams array
     if (match.teams) {
       var teamsStr = match.teams.join(' ').toLowerCase();
       for (var j = 0; j < iplTeams.length; j++) {
         if (teamsStr.includes(iplTeams[j])) return true;
       }
     }
-    
     return false;
   }
 
   /**
-   * Get status priority for sorting (lower = shown first)
+   * Status priority: Live=0, Upcoming=1, Completed=2
    */
   function getStatusPriority(match) {
-    if (match.matchStarted && !match.matchEnded) return 0; // Live
-    if (!match.matchStarted && !match.matchEnded) return 1; // Upcoming
-    return 2; // Completed
+    if (match.matchStarted && !match.matchEnded) return 0;
+    if (!match.matchStarted && !match.matchEnded) return 1;
+    return 2;
   }
 
   /**
-   * Build a match card
+   * Build match card inner HTML
    */
-  function buildMatchCard(match) {
+  function buildMatchCardHTML(match) {
     var status = getMatchStatus(match);
     var teams = getTeamDisplay(match);
-    var score = getScore(match);
-    var venue = shortenVenue(match.venue || 'Venue TBD');
+    var venue = shortenVenue(match.venue || 'TBD');
     var date = formatMatchDate(match.dateTimeGMT || match.date);
-    var isIPL = isIPLMatch(match);
-    var matchName = getCleanMatchName(match);
-    
-    // Series/tournament badge
     var seriesBadge = '';
-    if (isIPL) {
-      seriesBadge = '<span class="match-series-badge ipl-badge">IPL</span>';
+    
+    if (isIPLMatch(match)) {
+      seriesBadge = '<span class="match-series-badge ipl-badge">IPL 2026</span>';
     } else {
       var series = getSeriesName(match);
       if (series) {
@@ -148,23 +168,20 @@
       }
     }
     
-    return '<div class="cricket-match-card' + (isIPL ? ' ipl-highlight' : '') + '">' +
-      '<div class="match-header-row">' +
+    return '<div class="match-header-row">' +
         seriesBadge +
         '<span class="match-status status-' + status.cls + '">' + status.text + '</span>' +
       '</div>' +
       teams +
-      (score ? '<div class="match-score">' + score + '</div>' : '') +
       '<div class="match-info">' +
         (date ? '<span>📅 ' + date + '</span>' : '') +
         '<span>📍 ' + venue + '</span>' +
       '</div>' +
-      (match.status ? '<div class="match-result">' + match.status + '</div>' : '') +
-    '</div>';
+      (match.status ? '<div class="match-result">' + match.status + '</div>' : '');
   }
 
   /**
-   * Get team display with logos
+   * Get team display with logos and inline scores
    */
   function getTeamDisplay(match) {
     if (match.teamInfo && match.teamInfo.length >= 2) {
@@ -174,7 +191,6 @@
       var t2Name = t2.shortname || t2.name;
       var defaultImg = 'https://h.cricapi.com/img/icon512.png';
       
-      // Get scores for each team
       var t1Score = '';
       var t2Score = '';
       if (match.score && match.score.length > 0) {
@@ -182,9 +198,12 @@
           var inning = (s.inning || '').toLowerCase();
           var t1NameLower = (t1.name || '').toLowerCase();
           var t2NameLower = (t2.name || '').toLowerCase();
-          if (inning.includes(t1NameLower.split(' ')[0])) {
+          // Match by first word of team name
+          var t1First = t1NameLower.split(' ')[0];
+          var t2First = t2NameLower.split(' ')[0];
+          if (inning.includes(t1First) && !t1Score) {
             t1Score = s.r + '/' + s.w + ' (' + s.o + ')';
-          } else if (inning.includes(t2NameLower.split(' ')[0])) {
+          } else if (inning.includes(t2First) && !t2Score) {
             t2Score = s.r + '/' + s.w + ' (' + s.o + ')';
           }
         });
@@ -192,26 +211,25 @@
       
       var img1 = (t1.img && t1.img !== defaultImg) 
         ? '<img class="team-logo" src="' + t1.img + '" onerror="this.style.display=\'none\'" alt="">' 
-        : '';
+        : '<div class="team-logo" style="background:var(--espn-blue);display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:800;">' + (t1Name || '').slice(0,2) + '</div>';
       var img2 = (t2.img && t2.img !== defaultImg) 
         ? '<img class="team-logo" src="' + t2.img + '" onerror="this.style.display=\'none\'" alt="">' 
-        : '';
+        : '<div class="team-logo" style="background:var(--espn-blue);display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:800;">' + (t2Name || '').slice(0,2) + '</div>';
       
       return '<div class="match-teams-row">' +
         '<div class="team-row">' +
           img1 +
           '<span class="team-name">' + t1Name + '</span>' +
-          (t1Score ? '<span class="team-score">' + t1Score + '</span>' : '') +
+          (t1Score ? '<span class="team-score">' + t1Score + '</span>' : '<span class="team-score" style="color:var(--text3);">—</span>') +
         '</div>' +
         '<div class="team-row">' +
           img2 +
           '<span class="team-name">' + t2Name + '</span>' +
-          (t2Score ? '<span class="team-score">' + t2Score + '</span>' : '') +
+          (t2Score ? '<span class="team-score">' + t2Score + '</span>' : '<span class="team-score" style="color:var(--text3);">—</span>') +
         '</div>' +
       '</div>';
     }
     
-    // Fallback to simple text
     if (match.teams && match.teams.length >= 2) {
       return '<div class="match-teams">' + match.teams[0] + ' vs ' + match.teams[1] + '</div>';
     }
@@ -220,43 +238,27 @@
   }
 
   /**
-   * Get clean match name (remove team names, keep series info)
-   */
-  function getCleanMatchName(match) {
-    var name = match.name || '';
-    // Extract just the match number/type part
-    var parts = name.split(',');
-    if (parts.length >= 2) {
-      return parts.slice(1).join(',').trim();
-    }
-    return name;
-  }
-
-  /**
-   * Extract series name from match name
+   * Extract series name
    */
   function getSeriesName(match) {
     var name = match.name || '';
     var parts = name.split(',');
     if (parts.length >= 3) {
-      return parts[parts.length - 1].trim().replace(/\s*\d{4}(-\d{2,4})?\s*$/, '').trim();
+      return parts[parts.length - 1].trim().replace(/\s*\d{4}(-\d{2,4})?\s*$/,'').trim();
     }
     if (parts.length >= 2) {
-      return parts[parts.length - 1].trim().replace(/\s*\d{4}(-\d{2,4})?\s*$/, '').trim();
+      return parts[parts.length - 1].trim().replace(/\s*\d{4}(-\d{2,4})?\s*$/,'').trim();
     }
     return '';
   }
 
   /**
-   * Shorten venue name
+   * Shorten venue
    */
   function shortenVenue(venue) {
-    // Take only the city part if venue is too long
-    if (venue.length > 30) {
+    if (venue.length > 25) {
       var parts = venue.split(',');
-      if (parts.length >= 2) {
-        return parts[parts.length - 1].trim();
-      }
+      if (parts.length >= 2) return parts[parts.length - 1].trim();
     }
     return venue;
   }
@@ -275,25 +277,6 @@
   }
 
   /**
-   * Get score summary
-   */
-  function getScore(match) {
-    if (!match.score || match.score.length === 0) return null;
-    
-    var scores = [];
-    match.score.forEach(function(s) {
-      var inning = s.inning || '';
-      // Shorten inning name
-      var shortInning = inning.replace(/ Inning \d+/i, '').trim();
-      // Get first word as identifier
-      var teamId = shortInning.split(' ')[0];
-      scores.push(teamId + ': ' + s.r + '/' + s.w + ' (' + s.o + ')');
-    });
-    
-    return null; // We show scores inline with team names now
-  }
-
-  /**
    * Format date
    */
   function formatMatchDate(dateStr) {
@@ -305,20 +288,11 @@
     var yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
     
-    if (date.toDateString() === today.toDateString()) {
-      return 'Today';
-    }
-    if (date.toDateString() === tomorrow.toDateString()) {
-      return 'Tomorrow';
-    }
-    if (date.toDateString() === yesterday.toDateString()) {
-      return 'Yesterday';
-    }
+    if (date.toDateString() === today.toDateString()) return 'Today';
+    if (date.toDateString() === tomorrow.toDateString()) return 'Tomorrow';
+    if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
     
-    return date.toLocaleDateString('en-IN', { 
-      month: 'short', 
-      day: 'numeric' 
-    });
+    return date.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
   }
 
   /**
@@ -326,8 +300,9 @@
    */
   window.refreshIPLData = async function() {
     document.getElementById('iplLiveContent').innerHTML = 
-      '<div class="widget-loading">Refreshing...</div>';
-    document.getElementById('lastUpdated').style.display = 'none';
+      '<div class="schedule-loading">Refreshing...</div>';
+    var el = document.getElementById('lastUpdated');
+    if (el) el.style.display = 'none';
     await loadCricketSchedule();
   };
 
@@ -336,7 +311,6 @@
    */
   function initCricketWidget() {
     loadCricketSchedule();
-    // Auto-refresh every 5 minutes
     setInterval(loadCricketSchedule, 5 * 60 * 1000);
   }
 
