@@ -1,105 +1,90 @@
 /* ============================================================
-   WIDGETS - Cricket Schedule + IPL Stars Player Carousels
+   WIDGETS - Two-Column: Cricket Schedule + IPL Stars
+   Dark card design, split layout with independent carousels
    ============================================================ */
 
 /* ══════════════════════════════════════════
-   SHARED STRIP STYLES (Row 1 & Row 2)
+   TWO-COLUMN STRIP CONTAINER
    ══════════════════════════════════════════ */
 
-.schedule-strip,
-.player-strip {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 0 14px;
+.hero-strip {
+  background: #0f1523;
+  padding: 16px 0 20px;
   position: relative;
   z-index: 50;
+  border-bottom: 3px solid var(--espn-blue);
 }
 
-.schedule-strip {
-  box-shadow: 0 2px 8px var(--shadow);
-}
-
-.player-strip {
-  background: var(--surface2);
-  border-bottom: 1px solid var(--border2);
-}
-
-.schedule-strip-header {
+.hero-strip-inner {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* ── Column ── */
+.hero-column {
+  position: relative;
+}
+
+.hero-column-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
+  padding: 0 4px;
 }
 
-.schedule-strip-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 15px;
+.hero-column-title {
+  font-size: 14px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text);
-}
-
-.last-updated-inline {
-  font-size: 11px;
-  color: var(--text3);
-  font-weight: 600;
-}
-
-/* ── Carousel Wrapper ── */
-.schedule-carousel-wrapper {
-  max-width: 1400px;
-  margin: 0 auto;
-  position: relative;
-  padding: 0 50px;
-}
-
-/* ── Carousel Track ── */
-.schedule-carousel,
-.player-carousel {
+  letter-spacing: 1px;
+  color: #ffffff;
   display: flex;
-  gap: 14px;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-column-title span {
+  opacity: 0.6;
+  font-size: 12px;
+}
+
+/* ── Carousel Wrapper (per column) ── */
+.hero-carousel-wrap {
+  position: relative;
+  padding: 0 38px;
+}
+
+.hero-carousel {
+  display: flex;
+  gap: 12px;
   overflow-x: auto;
   scroll-behavior: smooth;
   scrollbar-width: none;
-  padding: 4px 4px 8px;
+  padding: 4px 2px 6px;
   -webkit-overflow-scrolling: touch;
 }
 
-.schedule-carousel::-webkit-scrollbar,
-.player-carousel::-webkit-scrollbar {
+.hero-carousel::-webkit-scrollbar {
   display: none;
 }
 
-/* ── Loading State ── */
-.schedule-loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 120px;
-  color: var(--text3);
-  font-size: 14px;
-  font-weight: 600;
-}
-
-/* ── Navigation Arrows ── */
-.carousel-arrow {
+/* ── Dark Arrows ── */
+.hero-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 38px;
-  height: 38px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  border: 1.5px solid var(--border2);
-  background: var(--surface);
-  color: var(--text);
-  font-size: 22px;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-size: 18px;
   font-weight: 300;
   cursor: pointer;
   display: flex;
@@ -107,178 +92,225 @@
   justify-content: center;
   z-index: 10;
   transition: all 0.25s ease;
-  box-shadow: 0 2px 8px var(--shadow);
   line-height: 1;
   padding-bottom: 2px;
 }
 
-.carousel-arrow:hover {
+.hero-arrow:hover {
   background: var(--espn-blue);
-  color: #fff;
   border-color: var(--espn-blue);
-  box-shadow: 0 4px 14px rgba(3, 91, 176, 0.35);
-  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 2px 12px rgba(3, 91, 176, 0.5);
+  transform: translateY(-50%) scale(1.1);
 }
 
-.carousel-arrow:active {
+.hero-arrow:active {
   transform: translateY(-50%) scale(0.95);
 }
 
-.carousel-arrow-left { left: 8px; }
-.carousel-arrow-right { right: 8px; }
+.hero-arrow-left { left: 2px; }
+.hero-arrow-right { right: 2px; }
+
+/* ── Last Updated ── */
+.last-updated-inline {
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  font-weight: 600;
+}
+
+/* ── Refresh Button ── */
+.refresh-btn-dark {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.5);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.refresh-btn-dark:hover {
+  background: var(--espn-blue);
+  color: white;
+  border-color: var(--espn-blue);
+}
 
 
 /* ══════════════════════════════════════════
-   ROW 1: CRICKET MATCH CARDS
+   DARK CRICKET MATCH CARDS
    ══════════════════════════════════════════ */
 
-.cricket-match-card {
-  min-width: 270px;
-  max-width: 290px;
+.dark-match-card {
+  min-width: 260px;
+  max-width: 280px;
   flex-shrink: 0;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px 16px;
-  box-shadow: 0 2px 8px var(--shadow), 0 1px 3px rgba(0,0,0,0.04);
+  background: #1a2035;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: default;
   position: relative;
   overflow: hidden;
 }
 
-.cricket-match-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px var(--shadow2), 0 4px 10px var(--shadow3);
-  border-color: var(--border2);
+.dark-match-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+  border-color: rgba(255,255,255,0.12);
 }
 
-/* IPL Highlight */
-.cricket-match-card.ipl-highlight {
-  border-left: 2px solid var(--espn-blue);
-  background: linear-gradient(135deg, rgba(3, 91, 176, 0.03) 0%, var(--surface) 100%);
+/* IPL accent */
+.dark-match-card.ipl-accent {
+  border-bottom: 2px solid var(--espn-blue);
 }
 
-[data-theme="dark"] .cricket-match-card.ipl-highlight {
-  background: linear-gradient(135deg, rgba(3, 91, 176, 0.08) 0%, var(--surface) 100%);
-}
-
-/* ── Match Header ── */
-.match-header-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-/* ── Match Number ── */
-.match-number {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text3);
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-/* ── Series Badge ── */
-.match-series-badge {
+/* ── Status Banner ── */
+.dark-status-bar {
+  padding: 6px 12px;
   font-size: 9px;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  padding: 3px 8px;
-  border-radius: 6px;
-  background: var(--surface2);
-  color: var(--text3);
-  border: 1px solid var(--border);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 140px;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
 }
 
-.match-series-badge.ipl-badge {
-  background: linear-gradient(135deg, #035bb0, #0470d6);
-  color: #fff;
-  border: none;
-  box-shadow: 0 1px 6px rgba(3, 91, 176, 0.35);
-  letter-spacing: 1px;
-}
-
-/* ── TODAY Badge ── */
-.match-today-badge {
-  font-size: 9px;
-  font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #f59e0b, #f97316);
-  color: #fff;
-  letter-spacing: 0.5px;
+.dark-status-bar.status-live {
+  background: linear-gradient(90deg, #e63946, #ff4757);
   animation: pulse 2s infinite;
 }
 
-/* ── Teams ── */
-.match-teams-row {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 8px;
+.dark-status-bar.status-result {
+  background: linear-gradient(90deg, #10b981, #34d399);
 }
 
-.team-row {
+.dark-status-bar.status-upcoming {
+  background: linear-gradient(90deg, #6366f1, #818cf8);
+}
+
+.dark-status-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+}
+
+.dark-status-badge {
+  font-size: 8px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.2);
+  flex-shrink: 0;
+}
+
+/* ── Card Body ── */
+.dark-card-body {
+  padding: 10px 14px 12px;
+}
+
+/* ── Teams ── */
+.dark-team-row {
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-bottom: 6px;
 }
 
-.team-logo {
-  width: 24px;
-  height: 24px;
+.dark-team-logo {
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   object-fit: contain;
   flex-shrink: 0;
-  background: var(--surface2);
-  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.08);
 }
 
-.team-logo-text {
+.dark-team-logo-text {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
   background: var(--espn-blue);
   color: #fff;
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 800;
-  border: none;
+  flex-shrink: 0;
 }
 
-.team-name {
-  font-size: 13px;
+.dark-team-name {
+  font-size: 12px;
   font-weight: 700;
-  color: var(--text);
+  color: #e2e8f0;
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.team-score {
+.dark-team-score {
   font-size: 13px;
   font-weight: 800;
-  color: var(--espn-blue);
+  color: #60a5fa;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 
-/* ── Match Info ── */
-.match-title {
-  font-size: 13px;
+.dark-team-score.no-score {
+  color: rgba(255,255,255,0.2);
+  font-size: 16px;
+}
+
+/* ── Info Row ── */
+.dark-info-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9.5px;
+  color: rgba(255,255,255,0.35);
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ── Tournament Badge ── */
+.dark-tournament {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dark-tournament-badge {
+  font-size: 8px;
   font-weight: 700;
-  color: var(--text);
-  margin-bottom: 8px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.dark-tournament-badge.ipl-badge {
+  background: rgba(3, 91, 176, 0.2);
+  color: #60a5fa;
+  border-color: rgba(3, 91, 176, 0.3);
+}
+
+/* ── Result Text ── */
+.dark-result {
+  font-size: 10px;
+  color: rgba(255,255,255,0.45);
+  margin-top: 6px;
+  font-weight: 600;
   line-height: 1.35;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -287,67 +319,202 @@
   overflow: hidden;
 }
 
-.match-teams {
-  font-size: 12px;
-  color: var(--text2);
-  margin-bottom: 6px;
-  font-weight: 600;
-}
-
-.match-info {
-  font-size: 10.5px;
-  color: var(--text3);
+/* ── Loading ── */
+.dark-loading {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 4px;
-}
-
-.match-result {
-  font-size: 11px;
-  color: var(--text2);
-  margin-top: 8px;
+  justify-content: center;
+  width: 100%;
+  min-height: 120px;
+  color: rgba(255,255,255,0.3);
+  font-size: 13px;
   font-weight: 600;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  padding-top: 8px;
-  border-top: 1px solid var(--border);
 }
 
-/* ── Status Badges ── */
-.match-status {
-  display: inline-flex;
+
+/* ══════════════════════════════════════════
+   DARK PLAYER CARDS
+   ══════════════════════════════════════════ */
+
+.dark-player-card {
+  min-width: 200px;
+  max-width: 220px;
+  flex-shrink: 0;
+  background: #1a2035;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 16px 14px 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.dark-player-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #035bb0, #3b9dff, #035bb0);
+}
+
+.dark-player-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+  border-color: rgba(96, 165, 250, 0.25);
+}
+
+/* ── Player Photo ── */
+.dark-player-img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 8px;
+  display: block;
+  border: 2px solid rgba(96, 165, 250, 0.3);
+  background: rgba(255,255,255,0.05);
+}
+
+.dark-player-fallback {
+  display: flex;
   align-items: center;
-  padding: 3px 10px;
-  border-radius: 6px;
-  font-size: 10px;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  margin: 0 auto 8px;
+  background: linear-gradient(135deg, #035bb0, #3b9dff);
+  color: white;
+  font-size: 22px;
+  font-weight: 800;
+  border: none;
+}
+
+/* ── Player Info ── */
+.dark-player-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #e2e8f0;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dark-player-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.dark-player-team {
+  font-size: 8px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
-  flex-shrink: 0;
-  margin-left: auto;
+  letter-spacing: 1px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(3, 91, 176, 0.25);
+  color: #60a5fa;
 }
 
-.status-live {
-  background: var(--cricket-red);
-  color: white;
-  animation: pulse 2s infinite;
-  box-shadow: 0 1px 6px rgba(230, 57, 70, 0.4);
+.dark-player-role {
+  font-size: 8px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
 }
 
-.status-upcoming {
-  background: var(--cricket-blue);
-  color: white;
+.dark-role-bat {
+  background: rgba(245,158,11,0.15);
+  color: #fbbf24;
 }
 
-.status-completed {
-  background: var(--cricket-gray);
-  color: white;
+.dark-role-bowl {
+  background: rgba(16,185,129,0.15);
+  color: #34d399;
+}
+
+.dark-role-all {
+  background: rgba(139,92,246,0.15);
+  color: #a78bfa;
+}
+
+.dark-role-wk {
+  background: rgba(236,72,153,0.15);
+  color: #f472b6;
+}
+
+/* ── Player Stats ── */
+.dark-player-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  padding: 8px 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.dark-stat {
+  text-align: center;
+}
+
+.dark-stat-value {
+  font-size: 15px;
+  font-weight: 800;
+  color: #60a5fa;
+  font-variant-numeric: tabular-nums;
+  display: block;
+}
+
+.dark-stat-label {
+  font-size: 8px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.dark-player-foot {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.dark-foot-tag {
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.35);
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.04);
+}
+
+/* ══════════════════════════════════════════
+   WIDGET GENERAL
+   ══════════════════════════════════════════ */
+
+.widget-empty,
+.widget-loading {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text3);
+  font-size: 13px;
+}
+
+.widget-error {
+  padding: 30px 20px;
+  text-align: center;
+  color: #e63946;
+  font-size: 12px;
 }
 
 @keyframes pulse {
@@ -357,308 +524,52 @@
 
 
 /* ══════════════════════════════════════════
-   ROW 2: IPL STARS PLAYER CARDS
-   ══════════════════════════════════════════ */
-
-.player-card {
-  min-width: 300px;
-  max-width: 320px;
-  flex-shrink: 0;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 18px 20px 14px;
-  box-shadow: 0 2px 10px var(--shadow), 0 1px 4px rgba(0,0,0,0.04);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: default;
-  position: relative;
-  overflow: hidden;
-}
-
-.player-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #035bb0, #0470d6, #3b9dff);
-}
-
-.player-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 32px var(--shadow2), 0 4px 12px var(--shadow3);
-  border-color: var(--espn-blue);
-}
-
-/* ── Player Header ── */
-.player-card-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 14px;
-}
-
-.player-img {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-  border: 2px solid var(--border);
-  background: var(--surface2);
-}
-
-.player-img-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #035bb0, #0470d6);
-  color: white;
-  font-size: 24px;
-  font-weight: 800;
-  border: none;
-}
-
-.player-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.player-name {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-bottom: 2px;
-}
-
-.player-country {
-  font-size: 11px;
-  color: var(--text3);
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.player-badges {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.player-team-badge {
-  font-size: 9px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 2px 8px;
-  border-radius: 4px;
-  background: linear-gradient(135deg, #035bb0, #0470d6);
-  color: #fff;
-  box-shadow: 0 1px 4px rgba(3, 91, 176, 0.3);
-}
-
-.player-role {
-  font-size: 9px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-.role-bat {
-  background: rgba(245, 158, 11, 0.12);
-  color: #d97706;
-  border: 1px solid rgba(245, 158, 11, 0.25);
-}
-
-.role-bowl {
-  background: rgba(16, 185, 129, 0.12);
-  color: #059669;
-  border: 1px solid rgba(16, 185, 129, 0.25);
-}
-
-.role-all {
-  background: rgba(139, 92, 246, 0.12);
-  color: #7c3aed;
-  border: 1px solid rgba(139, 92, 246, 0.25);
-}
-
-.role-wk {
-  background: rgba(236, 72, 153, 0.12);
-  color: #db2777;
-  border: 1px solid rgba(236, 72, 153, 0.25);
-}
-
-/* ── Player Stats Grid ── */
-.player-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
-  padding: 12px 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 10px;
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.stat-value {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--espn-blue);
-  font-variant-numeric: tabular-nums;
-}
-
-.stat-label {
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-/* ── Player Bottom Stats ── */
-.player-bottom {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-}
-
-.stat-mini {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text2);
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: var(--surface2);
-}
-
-
-/* ══════════════════════════════════════════
-   WIDGET GENERAL STATES
-   ══════════════════════════════════════════ */
-
-.widget-empty {
-  padding: 40px 20px;
-  text-align: center;
-  color: var(--text3);
-  font-size: 13px;
-}
-
-.widget-loading {
-  padding: 40px 20px;
-  text-align: center;
-  color: var(--text2);
-  font-size: 13px;
-}
-
-.widget-error {
-  padding: 30px 20px;
-  text-align: center;
-  color: var(--cricket-red);
-  font-size: 12px;
-  background: rgba(230, 57, 70, 0.05);
-  border-radius: 8px;
-  margin: 12px;
-}
-
-/* ── Refresh Button ── */
-.refresh-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text2);
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.refresh-btn:hover {
-  background: var(--espn-blue);
-  color: white;
-  border-color: var(--espn-blue);
-  transform: scale(1.05);
-}
-
-
-/* ══════════════════════════════════════════
    RESPONSIVE
    ══════════════════════════════════════════ */
 
 @media (max-width: 1000px) {
-  .schedule-carousel-wrapper {
-    padding: 0 40px;
+  .hero-strip-inner {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
-  .carousel-arrow {
-    width: 32px;
-    height: 32px;
-    font-size: 18px;
+  .hero-carousel-wrap {
+    padding: 0 34px;
   }
-  .carousel-arrow-left { left: 4px; }
-  .carousel-arrow-right { right: 4px; }
-  .cricket-match-card {
-    min-width: 240px;
-    max-width: 260px;
-  }
-  .player-card {
-    min-width: 260px;
-    max-width: 280px;
+  .hero-arrow {
+    width: 26px;
+    height: 26px;
+    font-size: 15px;
   }
 }
 
 @media (max-width: 600px) {
-  .schedule-strip,
-  .player-strip {
-    padding: 10px 0 12px;
+  .hero-strip {
+    padding: 12px 0 14px;
   }
-  .schedule-strip-header {
-    padding: 0 16px;
-    margin-bottom: 8px;
+  .hero-strip-inner {
+    padding: 0 12px;
   }
-  .schedule-strip-title {
-    font-size: 13px;
+  .hero-column-title {
+    font-size: 12px;
   }
-  .schedule-carousel-wrapper {
-    padding: 0 36px;
+  .hero-carousel-wrap {
+    padding: 0 28px;
   }
-  .carousel-arrow {
-    width: 28px;
-    height: 28px;
-    font-size: 16px;
+  .hero-arrow {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
   }
-  .carousel-arrow-left { left: 4px; }
-  .carousel-arrow-right { right: 4px; }
-  .cricket-match-card {
+  .dark-match-card {
     min-width: 220px;
     max-width: 240px;
-    padding: 12px 14px;
-    border-radius: 12px;
   }
-  .player-card {
-    min-width: 240px;
-    max-width: 260px;
-    padding: 14px 16px 12px;
-    border-radius: 12px;
+  .dark-player-card {
+    min-width: 170px;
+    max-width: 190px;
   }
-  .player-img {
-    width: 48px;
-    height: 48px;
-  }
-  .player-name {
-    font-size: 14px;
-  }
-  .stat-value {
-    font-size: 14px;
+  .dark-player-img, .dark-player-fallback {
+    width: 44px;
+    height: 44px;
   }
 }
