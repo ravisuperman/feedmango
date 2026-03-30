@@ -1,263 +1,172 @@
 /**
  * ============================================================
- * CRICKET SCHEDULE WIDGET - Horizontal Carousel
+ * CRICKET SCHEDULE + IPL STARS WIDGET
  * ============================================================
- * Row 1: Full cricket schedule (IPL first with all 70 matches)
- * Merges currentMatches + series_info from worker
- * Auto-refreshes every 30 minutes (to stay within 100 hits/day)
+ * Two-column dark layout:
+ *   Column 1: Cricket match schedule carousel (3 visible)
+ *   Column 2: IPL star player profiles carousel (3 visible)
+ * Auto-refreshes every 30 minutes
  */
+
+// ═══════════════════════════════════════════
+// COLUMN 1: CRICKET SCHEDULE CAROUSEL
+// ═══════════════════════════════════════════
 
 (function() {
 
-  // ─── Carousel Scroll ───
+  // ─── Scroll (3 cards at ~284px each + gaps) ───
   window.scrollCarousel = function(direction) {
-    var carousel = document.getElementById('iplLiveContent');
-    if (!carousel) return;
-    carousel.scrollBy({ left: direction * 600, behavior: 'smooth' });
+    var c = document.getElementById('iplLiveContent');
+    if (!c) return;
+    c.scrollBy({ left: direction * 852, behavior: 'smooth' });
   };
 
-  // ─── Arrow Visibility ───
   function updateArrows() {
-    var carousel = document.getElementById('iplLiveContent');
-    var leftBtn = document.getElementById('carouselLeft');
-    var rightBtn = document.getElementById('carouselRight');
-    if (!carousel || !leftBtn || !rightBtn) return;
-
-    leftBtn.style.opacity = carousel.scrollLeft <= 10 ? '0.3' : '1';
-    leftBtn.style.pointerEvents = carousel.scrollLeft <= 10 ? 'none' : 'auto';
-
-    var atEnd = carousel.scrollLeft >= (carousel.scrollWidth - carousel.clientWidth - 10);
-    rightBtn.style.opacity = atEnd ? '0.3' : '1';
-    rightBtn.style.pointerEvents = atEnd ? 'none' : 'auto';
+    var c = document.getElementById('iplLiveContent');
+    var l = document.getElementById('carouselLeft');
+    var r = document.getElementById('carouselRight');
+    if (!c || !l || !r) return;
+    l.style.opacity = c.scrollLeft <= 10 ? '0.3' : '1';
+    l.style.pointerEvents = c.scrollLeft <= 10 ? 'none' : 'auto';
+    var end = c.scrollLeft >= (c.scrollWidth - c.clientWidth - 10);
+    r.style.opacity = end ? '0.3' : '1';
+    r.style.pointerEvents = end ? 'none' : 'auto';
   }
 
-  // ─── Load Cricket Data ───
-  async function loadCricketSchedule() {
+  // ─── Load ───
+  async function loadSchedule() {
     var container = document.getElementById('iplLiveContent');
     if (!container) return;
 
     try {
-      var response = await fetch(IPL_WORKER_URL);
-      if (!response.ok) throw new Error('HTTP ' + response.status);
-
-      var data = await response.json();
-      var matches = [];
-
-      // Support both old format (data.data = array) and new format (data.data = array from merged worker)
-      if (data && data.data && Array.isArray(data.data)) {
-        matches = data.data;
-      }
+      var res = await fetch(IPL_WORKER_URL);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var data = await res.json();
+      var matches = (data && data.data && Array.isArray(data.data)) ? data.data : [];
 
       if (matches.length === 0) {
-        container.innerHTML = '<div class="schedule-loading">No matches found</div>';
+        container.innerHTML = '<div class="dark-loading">No matches found</div>';
         return;
       }
 
-      // Sort: IPL upcoming nearest first, then IPL live, then IPL results, then others
       matches = sortMatches(matches);
-
-      // Render cards
       container.innerHTML = '';
       var count = Math.min(matches.length, 30);
       for (var i = 0; i < count; i++) {
         var card = document.createElement('div');
         var ipl = isIPLMatch(matches[i]);
-        card.className = 'cricket-match-card' + (ipl ? ' ipl-highlight' : '');
-        card.innerHTML = buildCard(matches[i]);
+        card.className = 'dark-match-card' + (ipl ? ' ipl-accent' : '');
+        card.innerHTML = buildMatchCard(matches[i]);
         container.appendChild(card);
       }
 
-      // Last updated
       var upd = document.getElementById('lastUpdated');
       if (upd) {
-        upd.style.display = 'block';
-        upd.textContent = 'Updated ' + new Date().toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' });
+        upd.style.display = 'inline';
+        upd.textContent = '• Updated ' + new Date().toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' });
       }
 
-      // Arrows
       updateArrows();
       container.removeEventListener('scroll', updateArrows);
       container.addEventListener('scroll', updateArrows, { passive: true });
 
     } catch (err) {
-      console.error('Cricket widget error:', err);
-      container.innerHTML =
-        '<div class="schedule-loading">Could not load matches - ' +
-        '<span onclick="refreshIPLData()" style="color:var(--espn-blue);cursor:pointer;font-weight:700;">try again</span></div>';
+      console.error('Schedule error:', err);
+      container.innerHTML = '<div class="dark-loading">Failed to load — <span onclick="refreshIPLData()" style="color:#60a5fa;cursor:pointer;">retry</span></div>';
     }
   }
 
-  // ─── Sort Logic ───
-  // IPL upcoming (nearest date first) → IPL live → IPL results (newest) → Other live → Other upcoming → Other results
+  // ─── Sort ───
   function sortMatches(matches) {
-    var now = Date.now();
     return matches.slice().sort(function(a, b) {
-      var aIPL = isIPLMatch(a) ? 0 : 1;
-      var bIPL = isIPLMatch(b) ? 0 : 1;
-      if (aIPL !== bIPL) return aIPL - bIPL;
-
-      // Within same group, sort by status
-      var aP = getStatusSort(a, now);
-      var bP = getStatusSort(b, now);
+      var aI = isIPLMatch(a) ? 0 : 1, bI = isIPLMatch(b) ? 0 : 1;
+      if (aI !== bI) return aI - bI;
+      var aP = statusPri(a), bP = statusPri(b);
       if (aP !== bP) return aP - bP;
-
-      // Within same status, upcoming = nearest first, completed = newest first
       var aD = new Date(a.dateTimeGMT || a.date || 0).getTime();
       var bD = new Date(b.dateTimeGMT || b.date || 0).getTime();
-
-      // Upcoming matches: nearest date first (ascending)
       if (!a.matchStarted && !a.matchEnded) return aD - bD;
-      // Live & completed: newest first (descending)
       return bD - aD;
     });
   }
 
-  function getStatusSort(m, now) {
-    if (m.matchStarted && !m.matchEnded) return 0; // Live
-    if (!m.matchStarted && !m.matchEnded) return 1; // Upcoming
-    return 2; // Completed
+  function statusPri(m) {
+    if (m.matchStarted && !m.matchEnded) return 0;
+    if (!m.matchStarted && !m.matchEnded) return 1;
+    return 2;
   }
 
-  // ─── IPL Detection (full names only) ───
-  function isIPLMatch(match) {
-    var name = (match.name || '').toLowerCase();
-    if (name.indexOf('indian premier league') !== -1) return true;
-    if (name.indexOf(' ipl ') !== -1 || name.indexOf('ipl ') === 0 || name.indexOf(', ipl') !== -1) return true;
-
-    var teams = [
-      'chennai super kings', 'mumbai indians', 'royal challengers bengaluru',
-      'royal challengers bangalore', 'kolkata knight riders', 'sunrisers hyderabad',
-      'rajasthan royals', 'delhi capitals', 'punjab kings',
-      'lucknow super giants', 'gujarat titans'
-    ];
-    for (var i = 0; i < teams.length; i++) {
-      if (name.indexOf(teams[i]) !== -1) return true;
-    }
-    if (match.teams) {
-      var ts = match.teams.join(' ').toLowerCase();
-      for (var j = 0; j < teams.length; j++) {
-        if (ts.indexOf(teams[j]) !== -1) return true;
-      }
-    }
+  // ─── IPL Detection ───
+  function isIPLMatch(m) {
+    var n = (m.name || '').toLowerCase();
+    if (n.indexOf('indian premier league') !== -1 || n.indexOf(' ipl ') !== -1 || n.indexOf('ipl ') === 0 || n.indexOf(', ipl') !== -1) return true;
+    var teams = ['chennai super kings','mumbai indians','royal challengers bengaluru','royal challengers bangalore','kolkata knight riders','sunrisers hyderabad','rajasthan royals','delhi capitals','punjab kings','lucknow super giants','gujarat titans'];
+    for (var i = 0; i < teams.length; i++) if (n.indexOf(teams[i]) !== -1) return true;
+    if (m.teams) { var ts = m.teams.join(' ').toLowerCase(); for (var j = 0; j < teams.length; j++) if (ts.indexOf(teams[j]) !== -1) return true; }
     return false;
   }
 
-  // ─── Badge Text ───
-  function getBadge(match) {
-    if (isIPLMatch(match)) return { text: 'IPL 2026', cls: 'ipl-badge' };
+  // ─── Build Match Card (Dark Theme) ───
+  function buildMatchCard(m) {
+    var isLive = m.matchStarted && !m.matchEnded;
+    var isDone = m.matchEnded;
+    var isUp = !m.matchStarted && !m.matchEnded;
+    var ipl = isIPLMatch(m);
 
-    var name = match.name || '';
-    var parts = name.split(',');
-    var series = '';
-    if (parts.length >= 3) {
-      series = parts[parts.length - 1].trim().replace(/\s*\d{4}(-\d{2,4})?\s*$/, '').trim();
-    } else if (parts.length >= 2) {
-      series = parts[parts.length - 1].trim().replace(/\s*\d{4}(-\d{2,4})?\s*$/, '').trim();
-    }
-    if (!series) return null;
+    // Status bar
+    var statusCls = isLive ? 'status-live' : isDone ? 'status-result' : 'status-upcoming';
+    var statusText = isLive ? '● LIVE' : isDone ? (m.status || 'Result') : 'Forthcoming';
+    var badgeText = ipl ? 'IPL 2026' : getBadgeShort(m);
 
-    // Common abbreviations
-    var lc = series.toLowerCase();
-    if (lc.indexOf('pakistan super league') !== -1) return { text: 'PSL', cls: '' };
-    if (lc.indexOf('big bash') !== -1) return { text: 'BBL', cls: '' };
-    if (lc.indexOf('caribbean premier') !== -1) return { text: 'CPL', cls: '' };
-    if (lc.indexOf('legends league') !== -1) return { text: 'Legends', cls: '' };
-    if (lc.indexOf('sheffield shield') !== -1) return { text: 'Sheffield', cls: '' };
-    if (lc.indexOf('plunket shield') !== -1) return { text: 'Plunket', cls: '' };
-    if (lc.indexOf('world cup') !== -1) return { text: 'World Cup', cls: '' };
-    if (lc.indexOf('asia cup') !== -1) return { text: 'Asia Cup', cls: '' };
-
-    if (series.length > 18) series = series.substring(0, 18) + '..';
-    return { text: series, cls: '' };
-  }
-
-  // ─── Match Status ───
-  function getStatus(match) {
-    if (match.matchStarted && !match.matchEnded) return { text: '\u25CF LIVE', cls: 'live' };
-    if (match.matchEnded) return { text: 'RESULT', cls: 'completed' };
-    return { text: 'UPCOMING', cls: 'upcoming' };
-  }
-
-  // ─── Today check ───
-  function isToday(dateStr) {
-    if (!dateStr) return false;
-    return new Date(dateStr).toDateString() === new Date().toDateString();
-  }
-
-  // ─── Build Card HTML ───
-  function buildCard(m) {
-    var status = getStatus(m);
-    var badge = getBadge(m);
-    var venue = shortenVenue(m.venue || 'TBD');
-    var date = formatDate(m.dateTimeGMT || m.date);
-    var today = isToday(m.dateTimeGMT || m.date);
-
-    // Match number from name (e.g. "2nd Match" or "1st Match")
-    var matchNum = '';
-    var parts = (m.name || '').split(',');
-    if (parts.length >= 2) {
-      var mp = parts[1].trim();
-      if (mp.toLowerCase().indexOf('match') !== -1 || mp.toLowerCase().indexOf('final') !== -1 || mp.toLowerCase().indexOf('semi') !== -1) {
-        matchNum = mp;
-      }
-    }
-
-    var html = '<div class="match-header-row">';
-    if (badge) {
-      html += '<span class="match-series-badge ' + badge.cls + '">' + badge.text + '</span>';
-    }
-    if (today && !m.matchEnded) {
-      html += '<span class="match-today-badge">TODAY</span>';
-    }
-    html += '<span class="match-status status-' + status.cls + '">' + status.text + '</span>';
+    var html = '<div class="dark-status-bar ' + statusCls + '">';
+    html += '<span class="dark-status-text">' + statusText + '</span>';
+    if (badgeText) html += '<span class="dark-status-badge">' + badgeText + '</span>';
     html += '</div>';
 
-    // Match number label
-    if (matchNum) {
-      html += '<div class="match-number">' + matchNum + '</div>';
-    }
-
-    // Teams
-    html += getTeams(m);
+    html += '<div class="dark-card-body">';
+    html += getTeamRows(m);
 
     // Info row
-    html += '<div class="match-info">';
-    if (date) html += '<span>\uD83D\uDCC5 ' + date + '</span>';
-    html += '<span>\uD83D\uDCCD ' + venue + '</span>';
+    var date = fmtDate(m.dateTimeGMT || m.date);
+    var venue = shortVenue(m.venue || '');
+    html += '<div class="dark-info-row">';
+    if (date) html += '<span>📅 ' + date + '</span>';
+    if (venue) html += '<span>📍 ' + venue + '</span>';
     html += '</div>';
 
-    // Result text
-    if (m.status && m.matchEnded) {
-      html += '<div class="match-result">' + m.status + '</div>';
-    } else if (m.status && !m.matchStarted && !m.matchEnded && m.status.indexOf('Match starts') !== -1) {
-      // Show time for upcoming
-      var time = m.status.replace('Match starts at ', '');
-      html += '<div class="match-result" style="color:var(--espn-blue);">Starts: ' + time + '</div>';
+    // Tournament badge
+    var tourney = getBadgeFull(m);
+    if (tourney) {
+      html += '<div class="dark-tournament"><span class="dark-tournament-badge' + (ipl ? ' ipl-badge' : '') + '">' + tourney + '</span></div>';
     }
 
+    // Result text (only for completed, not already in status bar)
+    if (isDone && m.status && m.status.length > 20) {
+      html += '<div class="dark-result">' + m.status + '</div>';
+    }
+
+    html += '</div>';
     return html;
   }
 
-  // ─── Team Display ───
-  function getTeams(m) {
+  // ─── Team Rows ───
+  function getTeamRows(m) {
     if (!m.teamInfo || m.teamInfo.length < 2) {
       if (m.teams && m.teams.length >= 2) {
-        return '<div class="match-teams">' + m.teams[0] + ' vs ' + m.teams[1] + '</div>';
+        return '<div class="dark-team-row"><span class="dark-team-name">' + m.teams[0] + '</span></div>' +
+               '<div class="dark-team-row"><span class="dark-team-name">' + m.teams[1] + '</span></div>';
       }
-      return '<div class="match-title">' + (m.name || 'Cricket Match') + '</div>';
+      return '<div class="dark-team-row"><span class="dark-team-name">' + (m.name || 'TBD').split(',')[0] + '</span></div>';
     }
 
     var t1 = m.teamInfo[0], t2 = m.teamInfo[1];
-    var n1 = t1.shortname || t1.name || '??';
-    var n2 = t2.shortname || t2.name || '??';
-    var defImg = 'https://h.cricapi.com/img/icon512.png';
+    var n1 = t1.shortname || t1.name || '??', n2 = t2.shortname || t2.name || '??';
+    var def = 'https://h.cricapi.com/img/icon512.png';
 
-    // Scores
     var s1 = '', s2 = '';
     if (m.score && m.score.length > 0) {
       for (var i = 0; i < m.score.length; i++) {
-        var sc = m.score[i];
-        var inn = (sc.inning || '').toLowerCase();
+        var sc = m.score[i], inn = (sc.inning || '').toLowerCase();
         var k1 = (t1.name || '').toLowerCase().split(' ')[0];
         var k2 = (t2.name || '').toLowerCase().split(' ')[0];
         var str = sc.r + '/' + sc.w + ' (' + sc.o + ')';
@@ -270,85 +179,68 @@
       }
     }
 
-    // Logos
-    var l1 = (t1.img && t1.img !== defImg)
-      ? '<img class="team-logo" src="' + t1.img + '" onerror="this.style.display=\'none\'" alt="">'
-      : '<div class="team-logo team-logo-text">' + n1.slice(0, 2) + '</div>';
-    var l2 = (t2.img && t2.img !== defImg)
-      ? '<img class="team-logo" src="' + t2.img + '" onerror="this.style.display=\'none\'" alt="">'
-      : '<div class="team-logo team-logo-text">' + n2.slice(0, 2) + '</div>';
+    var l1 = (t1.img && t1.img !== def) ? '<img class="dark-team-logo" src="' + t1.img + '" onerror="this.style.display=\'none\'" alt="">' : '<div class="dark-team-logo-text">' + n1.slice(0,2) + '</div>';
+    var l2 = (t2.img && t2.img !== def) ? '<img class="dark-team-logo" src="' + t2.img + '" onerror="this.style.display=\'none\'" alt="">' : '<div class="dark-team-logo-text">' + n2.slice(0,2) + '</div>';
 
-    var dash = m.matchStarted ? '' : '<span class="team-score" style="color:var(--text3);">&mdash;</span>';
+    var dash = '<span class="dark-team-score no-score">—</span>';
 
-    return '<div class="match-teams-row">' +
-      '<div class="team-row">' + l1 + '<span class="team-name">' + n1 + '</span>' + (s1 ? '<span class="team-score">' + s1 + '</span>' : dash) + '</div>' +
-      '<div class="team-row">' + l2 + '<span class="team-name">' + n2 + '</span>' + (s2 ? '<span class="team-score">' + s2 + '</span>' : dash) + '</div>' +
-    '</div>';
+    return '<div class="dark-team-row">' + l1 + '<span class="dark-team-name">' + n1 + '</span>' + (s1 ? '<span class="dark-team-score">' + s1 + '</span>' : dash) + '</div>' +
+           '<div class="dark-team-row">' + l2 + '<span class="dark-team-name">' + n2 + '</span>' + (s2 ? '<span class="dark-team-score">' + s2 + '</span>' : dash) + '</div>';
   }
 
-  // ─── Helpers ───
-  function shortenVenue(v) {
-    if (v.length > 25) {
-      var p = v.split(',');
-      if (p.length >= 2) return p[p.length - 1].trim();
-    }
-    return v;
+  // ─── Badge Helpers ───
+  function getBadgeShort(m) {
+    var n = m.name || '', parts = n.split(',');
+    if (parts.length >= 2) { var s = parts[parts.length - 1].trim().replace(/\s*\d{4}.*$/, '').trim(); if (s.length > 12) s = s.substring(0,12) + '..'; return s || ''; }
+    return '';
   }
 
-  function formatDate(d) {
+  function getBadgeFull(m) {
+    if (isIPLMatch(m)) return 'Indian Premier League';
+    var n = m.name || '', parts = n.split(',');
+    if (parts.length >= 2) { var s = parts[parts.length - 1].trim().replace(/\s*\d{4}(-\d{2,4})?\s*$/, '').trim(); return s || ''; }
+    return '';
+  }
+
+  function shortVenue(v) { if (v.length > 22) { var p = v.split(','); if (p.length >= 2) return p[p.length-1].trim(); } return v; }
+
+  function fmtDate(d) {
     if (!d) return '';
-    var date = new Date(d);
-    var today = new Date();
-    var tmr = new Date(today); tmr.setDate(tmr.getDate() + 1);
-    var yest = new Date(today); yest.setDate(yest.getDate() - 1);
-    if (date.toDateString() === today.toDateString()) return 'Today';
-    if (date.toDateString() === tmr.toDateString()) return 'Tomorrow';
-    if (date.toDateString() === yest.toDateString()) return 'Yesterday';
-    return date.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
+    var dt = new Date(d), now = new Date();
+    var tmr = new Date(now); tmr.setDate(tmr.getDate() + 1);
+    if (dt.toDateString() === now.toDateString()) return 'Today';
+    if (dt.toDateString() === tmr.toDateString()) return 'Tomorrow';
+    return dt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
   }
 
   // ─── Refresh ───
   window.refreshIPLData = async function() {
     var c = document.getElementById('iplLiveContent');
-    if (c) c.innerHTML = '<div class="schedule-loading">Refreshing...</div>';
-    var u = document.getElementById('lastUpdated');
-    if (u) u.style.display = 'none';
-    await loadCricketSchedule();
+    if (c) c.innerHTML = '<div class="dark-loading">Refreshing...</div>';
+    await loadSchedule();
   };
 
-  // ─── Init ───
   function init() {
-    loadCricketSchedule();
-    // Refresh every 30 minutes to stay within free API limits
-    setInterval(loadCricketSchedule, 30 * 60 * 1000);
+    loadSchedule();
+    setInterval(loadSchedule, 30 * 60 * 1000);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 
 })();
 
 
-/**
- * ============================================================
- * IPL STARS WIDGET - Player Profile Carousel (Row 2)
- * ============================================================
- * Fetches 10 IPL star player profiles from the worker
- * Shows 3 cards at once with scroll arrows
- * Does NOT touch the sidebar
- */
+// ═══════════════════════════════════════════
+// COLUMN 2: IPL STARS PLAYER CAROUSEL
+// ═══════════════════════════════════════════
 
 (function() {
 
-  // ─── Scroll ───
   window.scrollPlayers = function(direction) {
-    var carousel = document.getElementById('playerStripContent');
-    if (!carousel) return;
-    // Scroll by exactly 3 cards (each ~320px + gap)
-    carousel.scrollBy({ left: direction * 990, behavior: 'smooth' });
+    var c = document.getElementById('playerStripContent');
+    if (!c) return;
+    c.scrollBy({ left: direction * 696, behavior: 'smooth' });
   };
 
   function updatePlayerArrows() {
@@ -356,35 +248,33 @@
     var l = document.getElementById('playerLeft');
     var r = document.getElementById('playerRight');
     if (!c || !l || !r) return;
-
     l.style.opacity = c.scrollLeft <= 10 ? '0.3' : '1';
     l.style.pointerEvents = c.scrollLeft <= 10 ? 'none' : 'auto';
-
-    var atEnd = c.scrollLeft >= (c.scrollWidth - c.clientWidth - 10);
-    r.style.opacity = atEnd ? '0.3' : '1';
-    r.style.pointerEvents = atEnd ? 'none' : 'auto';
+    var end = c.scrollLeft >= (c.scrollWidth - c.clientWidth - 10);
+    r.style.opacity = end ? '0.3' : '1';
+    r.style.pointerEvents = end ? 'none' : 'auto';
   }
 
-  // ─── Load Players from Worker ───
+  // ─── Load Players ───
   async function loadPlayers() {
     var container = document.getElementById('playerStripContent');
     if (!container) return;
 
     try {
-      var response = await fetch(IPL_WORKER_URL);
-      if (!response.ok) throw new Error('HTTP ' + response.status);
-      var data = await response.json();
-
+      var res = await fetch(IPL_WORKER_URL);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var data = await res.json();
       var players = data.players || [];
+
       if (players.length === 0) {
-        container.innerHTML = '<div class="schedule-loading">No player data</div>';
+        container.innerHTML = '<div class="dark-loading">No player data</div>';
         return;
       }
 
       container.innerHTML = '';
       players.forEach(function(p) {
         var card = document.createElement('div');
-        card.className = 'player-card';
+        card.className = 'dark-player-card';
         card.innerHTML = buildPlayerCard(p);
         container.appendChild(card);
       });
@@ -394,65 +284,58 @@
       container.addEventListener('scroll', updatePlayerArrows, { passive: true });
 
     } catch (err) {
-      console.error('Player widget error:', err);
-      container.innerHTML = '<div class="schedule-loading">Could not load players</div>';
+      console.error('Player error:', err);
+      container.innerHTML = '<div class="dark-loading">Could not load</div>';
     }
   }
 
-  // ─── Build Player Card ───
+  // ─── Build Player Card (Dark Theme) ───
   function buildPlayerCard(p) {
-    var defaultImg = 'https://h.cricapi.com/img/icon512.png';
-    var imgSrc = (p.playerImg && p.playerImg !== defaultImg) ? p.playerImg : '';
+    var def = 'https://h.cricapi.com/img/icon512.png';
+    var img = (p.playerImg && p.playerImg !== def) ? p.playerImg : '';
 
-    var roleBadge = '';
+    var roleCls = 'dark-role-bat';
     if (p.role) {
-      var roleClass = 'role-bat';
       var r = p.role.toLowerCase();
-      if (r.indexOf('bowl') !== -1) roleClass = 'role-bowl';
-      else if (r.indexOf('all') !== -1) roleClass = 'role-all';
-      else if (r.indexOf('keeper') !== -1 || r.indexOf('wk') !== -1) roleClass = 'role-wk';
-      roleBadge = '<span class="player-role ' + roleClass + '">' + p.role + '</span>';
+      if (r.indexOf('bowl') !== -1) roleCls = 'dark-role-bowl';
+      else if (r.indexOf('all') !== -1) roleCls = 'dark-role-all';
+      else if (r.indexOf('keeper') !== -1 || r.indexOf('wk') !== -1) roleCls = 'dark-role-wk';
     }
 
-    var teamBadge = p.team ? '<span class="player-team-badge">' + p.team + '</span>' : '';
+    var html = '';
+    if (img) {
+      html += '<img class="dark-player-img" src="' + img + '" alt="' + p.name + '" onerror="this.src=\'' + def + '\'">';
+    } else {
+      html += '<div class="dark-player-fallback">' + p.name.charAt(0) + '</div>';
+    }
 
-    var html =
-      '<div class="player-card-header">' +
-        (imgSrc ? '<img class="player-img" src="' + imgSrc + '" alt="' + p.name + '" onerror="this.src=\'https://h.cricapi.com/img/icon512.png\'">' :
-                  '<div class="player-img player-img-fallback">' + p.name.charAt(0) + '</div>') +
-        '<div class="player-info">' +
-          '<div class="player-name">' + p.name + '</div>' +
-          '<div class="player-country">' + (p.country || '') + '</div>' +
-          '<div class="player-badges">' + teamBadge + roleBadge + '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="player-stats">' +
-        '<div class="stat-item"><span class="stat-value">' + (p.iplRuns || '0') + '</span><span class="stat-label">Runs</span></div>' +
-        '<div class="stat-item"><span class="stat-value">' + (p.iplAvg || '0') + '</span><span class="stat-label">Avg</span></div>' +
-        '<div class="stat-item"><span class="stat-value">' + (p.iplSR || '0') + '</span><span class="stat-label">SR</span></div>' +
-        '<div class="stat-item"><span class="stat-value">' + (p.iplMatches || '0') + '</span><span class="stat-label">Mat</span></div>' +
-      '</div>' +
-      '<div class="player-bottom">' +
-        '<span class="stat-mini">' + (p.ipl100s || '0') + ' 100s</span>' +
-        '<span class="stat-mini">' + (p.ipl50s || '0') + ' 50s</span>' +
-        '<span class="stat-mini">HS ' + (p.iplHS || '-') + '</span>' +
-      '</div>';
+    html += '<div class="dark-player-name">' + p.name + '</div>';
+    html += '<div class="dark-player-meta">';
+    if (p.team) html += '<span class="dark-player-team">' + p.team + '</span>';
+    if (p.role) html += '<span class="dark-player-role ' + roleCls + '">' + p.role + '</span>';
+    html += '</div>';
+
+    html += '<div class="dark-player-stats">';
+    html += '<div class="dark-stat"><span class="dark-stat-value">' + (p.iplRuns || '0') + '</span><span class="dark-stat-label">Runs</span></div>';
+    html += '<div class="dark-stat"><span class="dark-stat-value">' + (p.iplAvg || '0') + '</span><span class="dark-stat-label">Avg</span></div>';
+    html += '<div class="dark-stat"><span class="dark-stat-value">' + (p.iplSR || '0') + '</span><span class="dark-stat-label">SR</span></div>';
+    html += '<div class="dark-stat"><span class="dark-stat-value">' + (p.iplMatches || '0') + '</span><span class="dark-stat-label">Mat</span></div>';
+    html += '</div>';
+
+    html += '<div class="dark-player-foot">';
+    html += '<span class="dark-foot-tag">' + (p.ipl100s || '0') + ' 100s</span>';
+    html += '<span class="dark-foot-tag">' + (p.ipl50s || '0') + ' 50s</span>';
+    html += '<span class="dark-foot-tag">HS ' + (p.iplHS || '-') + '</span>';
+    html += '</div>';
 
     return html;
   }
 
-  // ─── Init ───
   function initPlayers() {
-    // Delay slightly to not compete with match data fetch
     setTimeout(loadPlayers, 2000);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPlayers);
-  } else {
-    initPlayers();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initPlayers);
+  else initPlayers();
 
 })();
-
-
