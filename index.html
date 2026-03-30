@@ -7,7 +7,7 @@
 
   <title>SPORTSrip — Live Sports Feed</title>
   
-  <!-- Fontsa -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -44,6 +44,26 @@
 <div class="mobile-menu" id="mobileMenu"></div>
 
 <!-- ═══════════════════════════════════════════════════════════
+     CRICKET SCHEDULE CAROUSEL (below header)
+     ═══════════════════════════════════════════════════════════ -->
+<div class="schedule-strip">
+  <div class="schedule-strip-header">
+    <div class="schedule-strip-title">
+      <span>🏏 Cricket Schedule</span>
+      <button class="refresh-btn" onclick="refreshIPLData()">↻</button>
+    </div>
+    <div id="lastUpdated" class="last-updated-inline" style="display: none;"></div>
+  </div>
+  <div class="schedule-carousel-wrapper">
+    <button class="carousel-arrow carousel-arrow-left" id="carouselLeft" onclick="scrollCarousel(-1)" aria-label="Scroll left">‹</button>
+    <div class="schedule-carousel" id="iplLiveContent">
+      <div class="schedule-loading">Loading matches...</div>
+    </div>
+    <button class="carousel-arrow carousel-arrow-right" id="carouselRight" onclick="scrollCarousel(1)" aria-label="Scroll right">›</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
      MAIN LAYOUT
      ═══════════════════════════════════════════════════════════ -->
 <div class="layout-box">
@@ -57,18 +77,6 @@
 
   <!-- Sidebar -->
   <div class="sidebar">
-    
-    <!-- IPL LIVE WIDGET -->
-    <div class="cricket-widget" id="cricketLiveWidget">
-      <div class="cricket-widget-title">
-        <span>🏏 Cricket Schedule<</span>
-        <button class="refresh-btn" onclick="refreshIPLData()">↻</button>
-      </div>
-      <div id="iplLiveContent">
-        <div class="widget-loading">Loading live matches...</div>
-      </div>
-      <div id="lastUpdated" class="last-updated" style="display: none;"></div>
-    </div>
     
     <!-- Kids Sports Image -->
     <div class="sidebar-section">
