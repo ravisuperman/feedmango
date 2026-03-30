@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="google-site-verification" content="Jht59lHwkn9XZKP7kyAcKtk9SMl9tPmllXm4ehBH-7c" />
+
+  <title>SPORTSrip — Live Sports Feed</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><circle cx=%2212%22 cy=%2212%22 r=%2210.5%22 fill=%22%23035bb0%22 stroke=%22%23fff%22 stroke-width=%223%22/><path d=%22M12 1.5v21M1.5 12h21%22 stroke=%22%23fff%22 stroke-width=%223%22/></svg>">  
+
+  <!-- Modular Stylesheets -->
+  <link rel="stylesheet" href="styles/variables.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/cards.css">
+  <link rel="stylesheet" href="styles/widgets.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════════════════ -->
+<header id="main-header">
+  <a href="/" class="brand">
+    <div class="logo-text"><span>SPORTS</span><em>rip</em></div>
+  </a>
+  <nav class="nav-tabs" id="desktopTabs"></nav>
+  <div class="header-right" id="clockDisplay"></div>
+  <button class="dark-toggle" id="darkToggle" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <div class="line1"></div>
+    <div class="line2"></div>
+    <div class="line3"></div>
+  </div>
+</header>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN LAYOUT
+     ═══════════════════════════════════════════════════════════ -->
+<div class="layout-box">
+<div class="layout">
+  
+  <!-- Main Content Area -->
+  <div class="main-pane">
+    <div class="section-label" id="sectionLabel">🏏 IPL 2026</div>
+    <div id="output"></div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    
+    <!-- IPL LIVE WIDGET -->
+    <div class="cricket-widget" id="cricketLiveWidget">
+      <div class="cricket-widget-title">
+        <span>🏏 IPL Live Scores</span>
+        <button class="refresh-btn" onclick="refreshIPLData()">↻</button>
+      </div>
+      <div id="iplLiveContent">
+        <div class="widget-loading">Loading live matches...</div>
+      </div>
+      <div id="lastUpdated" class="last-updated" style="display: none;"></div>
+    </div>
+    
+    <!-- Kids Sports Image -->
+    <div class="sidebar-section">
+      <img src="https://images.pexels.com/photos/8941571/pexels-photo-8941571.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Kids Sports" style="width:100%; height:auto; display:block;">
+    </div>
+    
+    <!-- Trending Now -->
+    <div class="sidebar-section">
+      <div class="sidebar-title">Trending Now</div>
+      <div class="trending-container">
+        <div id="trendingList" class="trending-track"></div>
+      </div>
+    </div>
+    
+    <!-- Recent Updates (Sticky) -->
+    <div class="sidebar-section sticky-widget">
+      <div class="sidebar-title">Recent Updates</div>
+      <div id="recentList"></div>
+    </div>
+    
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="disclaimer">
+    Disclaimer: Headlines are sourced from official RSS feeds of their respective publishers. 
+    All rights and copyrights remain with the original content owners.
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODALS
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- YouTube Video Modal -->
+<div id="ytModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;" onclick="closeYT(event)">
+  <div style="position:relative;width:90%;max-width:900px;background:#000;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <button onclick="closeYTBtn()" style="position:absolute;top:10px;right:12px;background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:20px;width:36px;height:36px;border-radius:50%;cursor:pointer;z-index:10;">✕</button>
+    <div style="position:relative;padding-bottom:56.25%;height:0;">
+      <iframe id="ytFrame" src="" frameborder="0" allow="autoplay;encrypted-media" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- Article Modal -->
+<div id="artModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;" onclick="closeArtModal(event)">
+  <div id="artModalBox" style="position:relative;width:calc(25vw + 10px);height:calc(75vh + 25px);background:#faf8f3;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+    <button onclick="closeArtModalBtn()" style="position:absolute;top:12px;right:14px;background:rgba(0,0,0,0.12);border:none;font-size:18px;width:34px;height:34px;border-radius:50%;cursor:pointer;z-index:10;color:#2c2418;font-weight:700;">✕</button>
+    <div id="artModalContent" style="overflow-y:auto;flex:1;font-family:Georgia,serif;color:#2c2418;"></div>
+  </div>
+</div>
+
+<!-- Responsive Modal Styles -->
+<style>
+@media(max-width:768px){
+  #artModalBox { width:92vw !important; height:80vh !important; border-radius:8px !important; background:#fff !important; }
+  #artModalContent { padding:20px 18px 30px !important; background:#fff !important; font-size:14px !important; color:#000 !important; }
+}
+@media(min-width:769px) and (max-width:1024px){
+  #artModalBox { width:75vw !important; height:75vh !important; }
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FLOATING CONTROLS
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- Back to Top Button -->
+<button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+
+<!-- Floating Hamburger (Mobile) -->
+<div class="float-menu" id="floatMenu" onclick="toggleMenu()">
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODULAR JAVASCRIPT
+     Load in correct order: config → api → render → ui → init → widget
+     ═══════════════════════════════════════════════════════════ -->
+<script src="scripts/config.js"></script>
+<script src="scripts/api.js"></script>
+<script src="scripts/render.js"></script>
+<script src="scripts/ui.js"></script>
+<script src="scripts/init.js"></script>
+<script src="widgets/ipl-widget.js"></script>
+
+</body>
+</html>
