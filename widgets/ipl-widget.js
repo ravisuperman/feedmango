@@ -336,8 +336,8 @@
  * ============================================================
  * TRENDING STORIES WIDGET - Horizontal Carousel (Row 2)
  * ============================================================
- * Shows trending articles from RSS feeds
- * First card is always SPORTSrip's latest article
+ * Reads articles from the rendered DOM (#output) after main feed loads
+ * Does NOT touch the sidebar — existing auto-scroll is preserved
  */
 
 (function() {
@@ -363,39 +363,101 @@
     r.style.pointerEvents = end ? 'none' : 'auto';
   }
 
-  // ─── Load Trending ───
+  // ─── Extract articles from rendered DOM ───
+  function extractArticlesFromDOM() {
+    var output = document.getElementById('output');
+    if (!output) return [];
+
+    var articles = [];
+    // Get all card elements (anchor tags or divs with onclick)
+    var cards = output.querySelectorAll('a, [onclick]');
+    
+    cards.forEach(function(card) {
+      var img = card.querySelector('img');
+      var imgSrc = img ? (img.src || img.dataset.src || '') : '';
+      
+      // Find title text — look for heading or strong text
+      var titleEl = card.querySelector('h3, h4, .card-title, .headline, strong, b');
+      var title = '';
+      if (titleEl) {
+        title = titleEl.textContent.trim();
+      } else {
+        // Fallback: get first significant text
+        var texts = card.querySelectorAll('div, span, p');
+        for (var i = 0; i < texts.length; i++) {
+          var t = texts[i].textContent.trim();
+          if (t.length > 15 && t.length < 200) { title = t; break; }
+        }
+      }
+      
+      if (!title || title.length < 5) return; // skip empty cards
+
+      // Find source
+      var sourceEl = card.querySelector('.source, .card-source, .src-label');
+      var source = sourceEl ? sourceEl.textContent.trim() : '';
+      
+      // Detect own articles
+      var isOwn = source.toLowerCase().indexOf('sportsrip') !== -1 ||
+                  card.className.indexOf('own') !== -1 ||
+                  (card.getAttribute('onclick') || '').indexOf('openArt') !== -1;
+
+      var link = card.href || '#';
+
+      articles.push({
+        title: title,
+        image: imgSrc,
+        link: link,
+        source: source || (isOwn ? 'SPORTSrip' : ''),
+        isOwn: isOwn
+      });
+    });
+
+    return articles;
+  }
+
+  // ─── Load Trending from DOM ───
   async function loadTrendingStories() {
     var container = document.getElementById('trendingStripContent');
     if (!container) return;
 
-    // Wait for main feed data to load (allCache from api.js)
+    // Wait for #output to have content
     var attempts = 0;
-    while ((!window.allCache || window.allCache.length === 0) && attempts < 20) {
+    var output = document.getElementById('output');
+    while ((!output || output.children.length === 0) && attempts < 30) {
       await new Promise(function(r) { setTimeout(r, 500); });
       attempts++;
+      output = document.getElementById('output');
     }
 
-    var articles = window.allCache || [];
+    if (!output || output.children.length === 0) {
+      container.innerHTML = '<div class="schedule-loading">No stories yet</div>';
+      return;
+    }
+
+    // Small delay to let rendering settle
+    await new Promise(function(r) { setTimeout(r, 1000); });
+
+    var articles = extractArticlesFromDOM();
     if (articles.length === 0) {
       container.innerHTML = '<div class="schedule-loading">No stories yet</div>';
       return;
     }
 
-    // Separate own articles and RSS articles
-    var ownArticles = articles.filter(function(a) { return a.isOwn; });
-    var rssArticles = articles.filter(function(a) { return !a.isOwn; });
-
-    // Sort RSS by date (newest first)
-    rssArticles.sort(function(a, b) {
-      return new Date(b.pubDate || 0) - new Date(a.pubDate || 0);
+    // Remove duplicates by title
+    var seen = {};
+    articles = articles.filter(function(a) {
+      var key = a.title.toLowerCase().substring(0, 30);
+      if (seen[key]) return false;
+      seen[key] = true;
+      return true;
     });
 
-    // Build trending list: SPORTSrip article first, then RSS
-    var trending = [];
-    if (ownArticles.length > 0) trending.push(ownArticles[0]);
-    trending = trending.concat(rssArticles.slice(0, 15));
+    // SPORTSrip articles first
+    var own = articles.filter(function(a) { return a.isOwn; });
+    var rss = articles.filter(function(a) { return !a.isOwn; });
+    var trending = own.concat(rss).slice(0, 16);
 
-    // Render
+    // Render cards
     container.innerHTML = '';
     trending.forEach(function(article) {
       var card = document.createElement('a');
@@ -404,34 +466,18 @@
       card.target = '_blank';
       card.rel = 'noopener';
 
-      if (article.isOwn) {
-        card.href = '#';
-        card.onclick = function(e) {
-          e.preventDefault();
-          if (typeof openArtModal === 'function') openArtModal(article);
-        };
-      }
-
-      var img = article.image || article.thumbnail || '';
-      var source = article.source || (article.isOwn ? 'SPORTSrip' : '');
-      var timeAgo = getTimeAgo(article.pubDate);
-
       card.innerHTML =
-        (img ? '<div class="trending-card-img"><img src="' + img + '" alt="" onerror="this.parentElement.style.display=\'none\'"></div>' : '') +
+        (article.image ? '<div class="trending-card-img"><img src="' + article.image + '" alt="" onerror="this.parentElement.style.display=\'none\'"></div>' : '') +
         '<div class="trending-card-body">' +
           (article.isOwn ? '<span class="trending-own-badge">OUR COLUMN</span>' : '') +
-          '<div class="trending-card-title">' + (article.title || 'Untitled') + '</div>' +
+          '<div class="trending-card-title">' + article.title + '</div>' +
           '<div class="trending-card-meta">' +
-            (source ? '<span class="trending-source">' + source + '</span>' : '') +
-            (timeAgo ? '<span>' + timeAgo + '</span>' : '') +
+            (article.source ? '<span class="trending-source">' + article.source + '</span>' : '') +
           '</div>' +
         '</div>';
 
       container.appendChild(card);
     });
-
-    // Also populate sidebar trending with same data
-    populateSidebarTrending(trending);
 
     // Arrows
     updateTrendingArrows();
@@ -439,60 +485,9 @@
     container.addEventListener('scroll', updateTrendingArrows, { passive: true });
   }
 
-  // ─── Populate Sidebar Trending ───
-  function populateSidebarTrending(trending) {
-    var sidebar = document.getElementById('trendingList');
-    if (!sidebar) return;
-
-    sidebar.innerHTML = '';
-    var count = Math.min(trending.length, 8);
-    for (var i = 0; i < count; i++) {
-      var a = trending[i];
-      var item = document.createElement('a');
-      item.className = 'sidebar-trending-item' + (a.isOwn ? ' own-article' : '');
-      item.href = a.link || '#';
-      item.target = '_blank';
-
-      if (a.isOwn) {
-        item.href = '#';
-        item.onclick = (function(article) {
-          return function(e) {
-            e.preventDefault();
-            if (typeof openArtModal === 'function') openArtModal(article);
-          };
-        })(a);
-      }
-
-      var num = i + 1;
-      item.innerHTML =
-        '<span class="trending-num">' + (num < 10 ? '0' + num : num) + '</span>' +
-        '<div class="trending-item-text">' +
-          (a.isOwn ? '<span class="trending-own-tag">SPORTSrip</span>' : '') +
-          '<span class="trending-item-title">' + (a.title || 'Untitled') + '</span>' +
-        '</div>';
-
-      sidebar.appendChild(item);
-    }
-  }
-
-  // ─── Time Ago ───
-  function getTimeAgo(dateStr) {
-    if (!dateStr) return '';
-    var diff = Date.now() - new Date(dateStr).getTime();
-    var mins = Math.floor(diff / 60000);
-    if (mins < 1) return 'Just now';
-    if (mins < 60) return mins + 'm ago';
-    var hrs = Math.floor(mins / 60);
-    if (hrs < 24) return hrs + 'h ago';
-    var days = Math.floor(hrs / 24);
-    if (days < 7) return days + 'd ago';
-    return new Date(dateStr).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
-  }
-
-  // ─── Init ───
+  // ─── Init (does NOT touch sidebar — existing auto-scroll preserved) ───
   function initTrending() {
-    // Delay to allow main feed to load first
-    setTimeout(loadTrendingStories, 3000);
+    setTimeout(loadTrendingStories, 4000);
   }
 
   if (document.readyState === 'loading') {
