@@ -4,15 +4,7 @@
 
 /* ── Schedule Strip (below header) ── */
 .schedule-strip {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  box-shadow: 0 2px 8px var(--shadow);
-  padding: 12px 0 14px;
-  position: relative;
-  z-index: 50;
-}
-
-.schedule-strip-header {
+  backgedule-strip-header {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 24px;
@@ -143,10 +135,10 @@
   border-color: transparent;
 }
 
-/* IPL Match Highlight — blue left border + subtle glow */
+/* IPL Match Highlight — subtle left accent */
 .cricket-match-card.ipl-highlight {
-  border-left: 4px solid var(--espn-blue);
-  background: linear-gradient(135deg, rgba(3, 91, 176, 0.04) 0%, var(--surface) 100%);
+  border-left: 2px solid var(--espn-blue);
+  background: linear-gradient(135deg, rgba(3, 91, 176, 0.03) 0%, var(--surface) 100%);
 }
 
 [data-theme="dark"] .cricket-match-card.ipl-highlight {
@@ -157,7 +149,7 @@
   box-shadow: 
     0 12px 28px var(--shadow2), 
     0 6px 14px var(--shadow3),
-    0 0 0 2px var(--espn-blue);
+    0 0 0 1px var(--espn-blue);
 }
 
 /* ── Match Header Row (Badge + Status) ── */
