@@ -1,10 +1,30 @@
 /* ============================================================
-   WIDGETS - Cricket Schedule Carousel & Match Cards
+   WIDGETS - Cricket Schedule + Trending Stories Carousels
    ============================================================ */
 
-/* ── Schedule Strip (below header) ── */
+/* ══════════════════════════════════════════
+   SHARED STRIP STYLES (Row 1 & Row 2)
+   ══════════════════════════════════════════ */
+
+.schedule-strip,
+.trending-strip {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0 14px;
+  position: relative;
+  z-index: 50;
+}
+
 .schedule-strip {
-  backgedule-strip-header {
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.trending-strip {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border2);
+}
+
+.schedule-strip-header {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 24px;
@@ -40,7 +60,8 @@
 }
 
 /* ── Carousel Track ── */
-.schedule-carousel {
+.schedule-carousel,
+.trending-carousel {
   display: flex;
   gap: 14px;
   overflow-x: auto;
@@ -50,7 +71,8 @@
   -webkit-overflow-scrolling: touch;
 }
 
-.schedule-carousel::-webkit-scrollbar {
+.schedule-carousel::-webkit-scrollbar,
+.trending-carousel::-webkit-scrollbar {
   display: none;
 }
 
@@ -66,7 +88,7 @@
   font-weight: 600;
 }
 
-/* ── Carousel Navigation Arrows ── */
+/* ── Navigation Arrows ── */
 .carousel-arrow {
   position: absolute;
   top: 50%;
@@ -102,23 +124,22 @@
   transform: translateY(-50%) scale(0.95);
 }
 
-.carousel-arrow-left {
-  left: 8px;
-}
+.carousel-arrow-left { left: 8px; }
+.carousel-arrow-right { right: 8px; }
 
-.carousel-arrow-right {
-  right: 8px;
-}
 
-/* ── Match Card (Horizontal) ── */
+/* ══════════════════════════════════════════
+   ROW 1: CRICKET MATCH CARDS
+   ══════════════════════════════════════════ */
+
 .cricket-match-card {
-  min-width: 280px;
-  max-width: 300px;
+  min-width: 270px;
+  max-width: 290px;
   flex-shrink: 0;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px 18px;
+  border-radius: 14px;
+  padding: 14px 16px;
   box-shadow: 0 2px 8px var(--shadow), 0 1px 3px rgba(0,0,0,0.04);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: default;
@@ -127,38 +148,39 @@
 }
 
 .cricket-match-card:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 
-    0 12px 28px var(--shadow2), 
-    0 6px 14px var(--shadow3),
-    0 0 0 1px var(--espn-blue);
-  border-color: transparent;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px var(--shadow2), 0 4px 10px var(--shadow3);
+  border-color: var(--border2);
 }
 
-/* IPL Match Highlight — subtle left accent */
+/* IPL Highlight */
 .cricket-match-card.ipl-highlight {
   border-left: 2px solid var(--espn-blue);
   background: linear-gradient(135deg, rgba(3, 91, 176, 0.03) 0%, var(--surface) 100%);
 }
 
 [data-theme="dark"] .cricket-match-card.ipl-highlight {
-  background: linear-gradient(135deg, rgba(3, 91, 176, 0.1) 0%, var(--surface) 100%);
+  background: linear-gradient(135deg, rgba(3, 91, 176, 0.08) 0%, var(--surface) 100%);
 }
 
-.cricket-match-card.ipl-highlight:hover {
-  box-shadow: 
-    0 12px 28px var(--shadow2), 
-    0 6px 14px var(--shadow3),
-    0 0 0 1px var(--espn-blue);
-}
-
-/* ── Match Header Row (Badge + Status) ── */
+/* ── Match Header ── */
 .match-header-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
-  gap: 8px;
+  margin-bottom: 8px;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* ── Match Number ── */
+.match-number {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text3);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 /* ── Series Badge ── */
@@ -175,7 +197,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 160px;
+  max-width: 140px;
 }
 
 .match-series-badge.ipl-badge {
@@ -186,12 +208,24 @@
   letter-spacing: 1px;
 }
 
-/* ── Teams Row (with logos & scores) ── */
+/* ── TODAY Badge ── */
+.match-today-badge {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  color: #fff;
+  letter-spacing: 0.5px;
+  animation: pulse 2s infinite;
+}
+
+/* ── Teams ── */
 .match-teams-row {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: 6px;
+  margin-bottom: 8px;
 }
 
 .team-row {
@@ -201,13 +235,24 @@
 }
 
 .team-logo {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   object-fit: contain;
   flex-shrink: 0;
   background: var(--surface2);
   border: 1px solid var(--border);
+}
+
+.team-logo-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--espn-blue);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  border: none;
 }
 
 .team-name {
@@ -228,7 +273,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ── Match Info & Result ── */
+/* ── Match Info ── */
 .match-title {
   font-size: 13px;
   font-weight: 700;
@@ -246,13 +291,6 @@
   color: var(--text2);
   margin-bottom: 6px;
   font-weight: 600;
-}
-
-.match-score {
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--espn-blue);
-  margin-bottom: 6px;
 }
 
 .match-info {
@@ -279,7 +317,7 @@
   border-top: 1px solid var(--border);
 }
 
-/* ── Match Status Badges ── */
+/* ── Status Badges ── */
 .match-status {
   display: inline-flex;
   align-items: center;
@@ -290,7 +328,7 @@
   text-transform: uppercase;
   letter-spacing: 0.4px;
   flex-shrink: 0;
-  gap: 4px;
+  margin-left: auto;
 }
 
 .status-live {
@@ -315,7 +353,176 @@
   50% { opacity: 0.7; }
 }
 
-/* ── Widget States ── */
+
+/* ══════════════════════════════════════════
+   ROW 2: TRENDING STORY CARDS
+   ══════════════════════════════════════════ */
+
+.trending-card {
+  min-width: 260px;
+  max-width: 280px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+}
+
+.trending-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px var(--shadow2);
+  border-color: var(--border2);
+}
+
+.trending-card.own-trending {
+  border-left: 2px solid var(--espn-blue);
+}
+
+.trending-card-img {
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+  background: var(--surface2);
+}
+
+.trending-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.trending-card:hover .trending-card-img img {
+  transform: scale(1.05);
+}
+
+.trending-card-body {
+  padding: 12px 14px 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.trending-own-badge {
+  display: inline-block;
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #035bb0, #0470d6);
+  color: #fff;
+  margin-bottom: 6px;
+  align-self: flex-start;
+}
+
+.trending-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 8px;
+  flex: 1;
+}
+
+.trending-card-meta {
+  font-size: 10px;
+  color: var(--text3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trending-source {
+  font-weight: 700;
+  color: var(--espn-blue);
+}
+
+
+/* ══════════════════════════════════════════
+   SIDEBAR TRENDING 
+   ══════════════════════════════════════════ */
+
+.sidebar-trending-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.2s;
+}
+
+.sidebar-trending-item:last-child {
+  border-bottom: none;
+}
+
+.sidebar-trending-item:hover {
+  color: var(--espn-blue);
+}
+
+.sidebar-trending-item.own-article {
+  background: linear-gradient(90deg, rgba(3, 91, 176, 0.04) 0%, transparent 100%);
+  border-radius: 6px;
+  padding: 10px 8px;
+  margin: 0 -8px;
+}
+
+.trending-num {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--border2);
+  line-height: 1;
+  min-width: 28px;
+  flex-shrink: 0;
+}
+
+.sidebar-trending-item:hover .trending-num {
+  color: var(--espn-blue);
+}
+
+.trending-item-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.trending-own-tag {
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--espn-blue);
+}
+
+.trending-item-title {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+/* ══════════════════════════════════════════
+   WIDGET GENERAL STATES
+   ══════════════════════════════════════════ */
+
 .widget-empty {
   padding: 40px 20px;
   text-align: center;
@@ -360,78 +567,66 @@
   transform: scale(1.05);
 }
 
-/* ── Last Updated ── */
-.last-updated {
-  padding: 8px 18px;
-  font-size: 10px;
-  color: var(--text3);
-  text-align: center;
-  border-top: 1px solid var(--border);
-  background: var(--surface2);
-}
 
-/* ── Responsive ── */
+/* ══════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════ */
+
 @media (max-width: 1000px) {
   .schedule-carousel-wrapper {
     padding: 0 40px;
   }
-  
   .carousel-arrow {
     width: 32px;
     height: 32px;
     font-size: 18px;
   }
-  
-  .carousel-arrow-left {
-    left: 4px;
-  }
-  
-  .carousel-arrow-right {
-    right: 4px;
-  }
-  
+  .carousel-arrow-left { left: 4px; }
+  .carousel-arrow-right { right: 4px; }
   .cricket-match-card {
-    min-width: 250px;
-    max-width: 270px;
+    min-width: 240px;
+    max-width: 260px;
+  }
+  .trending-card {
+    min-width: 230px;
+    max-width: 250px;
   }
 }
 
 @media (max-width: 600px) {
-  .schedule-strip {
+  .schedule-strip,
+  .trending-strip {
     padding: 10px 0 12px;
   }
-  
   .schedule-strip-header {
     padding: 0 16px;
     margin-bottom: 8px;
   }
-  
   .schedule-strip-title {
     font-size: 13px;
   }
-  
   .schedule-carousel-wrapper {
     padding: 0 36px;
   }
-  
   .carousel-arrow {
     width: 28px;
     height: 28px;
     font-size: 16px;
   }
-  
-  .carousel-arrow-left {
-    left: 4px;
-  }
-  
-  .carousel-arrow-right {
-    right: 4px;
-  }
-  
+  .carousel-arrow-left { left: 4px; }
+  .carousel-arrow-right { right: 4px; }
   .cricket-match-card {
-    min-width: 230px;
-    max-width: 250px;
-    padding: 14px 14px;
+    min-width: 220px;
+    max-width: 240px;
+    padding: 12px 14px;
     border-radius: 12px;
+  }
+  .trending-card {
+    min-width: 200px;
+    max-width: 220px;
+    border-radius: 12px;
+  }
+  .trending-card-img {
+    height: 110px;
   }
 }
