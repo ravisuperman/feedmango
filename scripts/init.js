@@ -1,107 +1,58 @@
 /**
  * ============================================================
- * INIT - Initialization & Startup Logic
+ * INIT - App Start
  * ============================================================
  */
 
-/**
- * Main initialization function
- * Optimized: Load priority sports first, lazy load rest
- */
-async function init() {
-  // Load dynamic sports + priority sports IN PARALLEL
-  const [_, priorityResults] = await Promise.all([
-    loadDynamicSports(),  // runs in background
-    Promise.allSettled(PRIORITY_FIRST.map(fetchSport)) // runs immediately
-  ]);
-
-  // Render priority sports immediately
-  const sa = {};
-  priorityResults.forEach((r, i) => {
+(async function() {
+  // Show loading in output
+  const o = document.getElementById('output');
+  if (o) o.innerHTML = '<div class="dark-loading" style="color:#666; grid-column:1/-1;">Initializing feed...</div>';
+  
+  // Parallel fetch all priority sports
+  const res = await Promise.allSettled(PRIORITY_SPORTS.map(fetchSport));
+  
+  res.forEach((r, i) => {
     if (r.status === 'fulfilled' && r.value.length) {
-      sportCache[PRIORITY_FIRST[i]] = pinnedSort(r.value);
-      sa[PRIORITY_FIRST[i]] = sportCache[PRIORITY_FIRST[i]].slice();
+      sportCache[PRIORITY_SPORTS[i]] = r.value.sort((a,b) => new Date(b.pubDate) - new Date(a.pubDate));
     }
   });
-
-  const active = [];
-  for (const s of PRIORITY_SPORTS) {
-    if (sportCache[s] && sportCache[s].length && active.length < 10) {
-      active.push(s);
-    }
-  }
-
-  // Build allCache from priority sports first
-  const all = [];
-  const seen = new Set();
-  let keep = true;
   
-  while (keep) {
-    keep = false;
-    active.forEach(sk => {
-      if (sa[sk] && sa[sk].length) {
-        keep = true;
-        const a = sa[sk].shift();
-        if (!seen.has(a.link)) {
-          seen.add(a.link);
-          all.push(a);
-        }
-      }
-    });
-  }
-
-  allCache = pinnedSort(all);
-  generateTabs(active);
-
-  // Show sidebar immediately
-  if (allCache.length) {
-    const tr = document.getElementById('trendingList');
+  // Create allCache (main) by interleaving top 2 from each sport
+  const mainItems = [];
+  const activeSports = [];
+  
+  PRIORITY_SPORTS.forEach(s => {
+    if (sportCache[s] && sportCache[s].length) {
+      mainItems.push(...sportCache[s].slice(0, 5));
+      if (activeSports.length < 12) activeSports.push(s);
+    }
+  });
+  
+  allCache = mainItems.sort((a,b) => new Date(b.pubDate) - new Date(a.pubDate));
+  
+  // Create tabs
+  generateTabs(activeSports);
+  
+  // Set default view (IPL)
+  setActive('ipl');
+  
+  // Sidebar trending
+  const tr = document.getElementById('trendingList');
+  if (tr && allCache.length) {
     tr.innerHTML = '';
-    const mainTitles = window._mainFeedTitles || new Set();
-    const sidebarPool = pinnedSort(allCache.filter(x => x.image && !mainTitles.has(x.title)));
-    sidebarPool.slice(0, 6).forEach(a => {
+    allCache.filter(x => x.image).slice(0, 6).forEach(a => {
       tr.appendChild(buildSidebarItem(a, EMOJI[a.sport] || '🏆'));
     });
-    
-    const rc = document.getElementById('recentList');
+  }
+  
+  // Sidebar recent
+  const rc = document.getElementById('recentList');
+  if (rc && allCache.length) {
     rc.innerHTML = '';
-    const recentPool = pinnedSort(allCache.filter(x => !mainTitles.has(x.title)));
-    recentPool.slice(6, 11).forEach(a => {
+    allCache.slice(6, 11).forEach(a => {
       rc.appendChild(buildSidebarItem(a, EMOJI[a.sport] || '🏆'));
     });
   }
-
-  // Show IPL immediately
-  setActive('ipl');
-
-  // Lazy load remaining sports in background
-  setTimeout(async function() {
-    const restSports = PRIORITY_REST.filter(s => !sportCache[s]);
-    if (restSports.length === 0) return;
-    
-    const restResults = await Promise.allSettled(restSports.map(fetchSport));
-    restResults.forEach((r, i) => {
-      if (r.status === 'fulfilled' && r.value.length) {
-        sportCache[restSports[i]] = pinnedSort(r.value);
-      }
-    });
-    
-    // Regenerate tabs with all sports now loaded
-    const allActive = [];
-    for (const s of PRIORITY_SPORTS) {
-      if (sportCache[s] && sportCache[s].length && allActive.length < 10) {
-        allActive.push(s);
-      }
-    }
-    generateTabs(allActive);
-  }, 100); // 100ms delay - after first render
-}
-
-/**
- * Start the app when DOM is ready
- */
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
+  
+})();
