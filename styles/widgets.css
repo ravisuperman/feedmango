@@ -1,18 +1,14 @@
 /* ============================================================
-   WIDGETS - Two-Column: Cricket Schedule + IPL Stars
-   Dark card design, split layout with independent carousels
+   WIDGETS - LIGHT GREY ASH THEME
+   Redesigned for IPL Schedule & Stars components
    ============================================================ */
 
-/* ══════════════════════════════════════════
-   TWO-COLUMN STRIP CONTAINER
-   ══════════════════════════════════════════ */
-
+/* ── Hero Strip (Top) ── */
 .hero-strip {
-  background: #0f1523;
-  padding: 16px 0 20px;
-  position: relative;
+  background: #f0f2f5; /* Light grey ash */
+  padding: 8px 0 10px;
+  border-bottom: 2px solid #e0e4e9;
   z-index: 50;
-  border-bottom: 3px solid var(--espn-blue);
 }
 
 .hero-strip-inner {
@@ -21,555 +17,168 @@
   padding: 0 20px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-/* ── Column ── */
-.hero-column {
-  position: relative;
+  gap: 15px;
 }
 
 .hero-column-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
-  padding: 0 4px;
+  margin-bottom: 8px;
 }
 
 .hero-column-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.hero-column-title span {
-  opacity: 0.6;
-  font-size: 12px;
-}
-
-/* ── Carousel Wrapper (per column) ── */
-.hero-carousel-wrap {
-  position: relative;
-  padding: 0 38px;
+  color: #1a2035;
+  letter-spacing: 0.5px;
 }
 
 .hero-carousel {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   overflow-x: auto;
   scroll-behavior: smooth;
   scrollbar-width: none;
-  padding: 4px 2px 6px;
-  -webkit-overflow-scrolling: touch;
+  padding: 4px 2px;
+}
+.hero-carousel::-webkit-scrollbar { display: none; }
+
+.hero-carousel-wrap {
+  position: relative;
+  padding: 0 32px;
 }
 
-.hero-carousel::-webkit-scrollbar {
-  display: none;
-}
-
-/* ── Dark Arrows ── */
+/* ── Light Arrows ── */
 .hero-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  border: 1.5px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.08);
-  color: #fff;
-  font-size: 18px;
-  font-weight: 300;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #333;
+  font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
-  transition: all 0.25s ease;
-  line-height: 1;
-  padding-bottom: 2px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: 0.2s;
 }
+.hero-arrow:hover { background: #035bb0; color: #fff; border-color: #035bb0; }
+.hero-arrow-left { left: 0; }
+.hero-arrow-right { right: 0; }
 
-.hero-arrow:hover {
-  background: var(--espn-blue);
-  border-color: var(--espn-blue);
-  box-shadow: 0 2px 12px rgba(3, 91, 176, 0.5);
-  transform: translateY(-50%) scale(1.1);
-}
-
-.hero-arrow:active {
-  transform: translateY(-50%) scale(0.95);
-}
-
-.hero-arrow-left { left: 2px; }
-.hero-arrow-right { right: 2px; }
-
-/* ── Last Updated ── */
-.last-updated-inline {
-  font-size: 10px;
-  color: rgba(255,255,255,0.4);
-  font-weight: 600;
-}
-
-/* ── Refresh Button ── */
-.refresh-btn-dark {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.5);
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.refresh-btn-dark:hover {
-  background: var(--espn-blue);
-  color: white;
-  border-color: var(--espn-blue);
-}
-
-
-/* ══════════════════════════════════════════
-   DARK CRICKET MATCH CARDS
-   ══════════════════════════════════════════ */
-
-.dark-match-card {
-  min-width: 260px;
-  max-width: 280px;
-  flex-shrink: 0;
-  background: #1a2035;
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  padding: 0;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: default;
-  position: relative;
+/* ── LIGHT MATCH CARD (Matching Screenshot) ── */
+.light-match-card {
+  min-width: 240px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
   overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  flex-shrink: 0;
 }
 
-.dark-match-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.12);
-}
-
-/* IPL accent */
-.dark-match-card.ipl-accent {
-  border-bottom: 2px solid var(--espn-blue);
-}
-
-/* ── Status Banner ── */
-.dark-status-bar {
+.light-status-strip {
   padding: 6px 12px;
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 6px;
 }
+.st-live { background: #fff1f2; color: #e11d48; }
+.st-result { background: #f0fdf4; color: #166534; }
+.st-upcoming { background: #f8fafc; color: #64748b; }
 
-.dark-status-bar.status-live {
-  background: linear-gradient(90deg, #e63946, #ff4757);
-  animation: pulse 2s infinite;
+.light-card-body {
+  padding: 10px 14px;
 }
 
-.dark-status-bar.status-result {
-  background: linear-gradient(90deg, #10b981, #34d399);
-}
-
-.dark-status-bar.status-upcoming {
-  background: linear-gradient(90deg, #6366f1, #818cf8);
-}
-
-.dark-status-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 70%;
-}
-
-.dark-status-badge {
-  font-size: 8px;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 3px;
-  background: rgba(255,255,255,0.2);
-  flex-shrink: 0;
-}
-
-/* ── Card Body ── */
-.dark-card-body {
-  padding: 10px 14px 12px;
-}
-
-/* ── Teams ── */
-.dark-team-row {
+.lt-team-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 6px;
 }
+.lt-logo { width: 22px; height: 22px; object-fit: contain; }
+.lt-logo-ph { width: 22px; height: 22px; background: #eee; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+.lt-team-name { flex: 1; font-size: 13px; font-weight: 700; color: #1e293b; }
+.lt-team-score { font-size: 13px; font-weight: 800; color: #000; }
 
-.dark-team-logo {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  object-fit: contain;
-  flex-shrink: 0;
-  background: rgba(255,255,255,0.08);
-}
-
-.dark-team-logo-text {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--espn-blue);
-  color: #fff;
-  font-size: 8px;
-  font-weight: 800;
-  flex-shrink: 0;
-}
-
-.dark-team-name {
-  font-size: 12px;
-  font-weight: 700;
-  color: #e2e8f0;
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.dark-team-score {
-  font-size: 13px;
-  font-weight: 800;
-  color: #60a5fa;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-}
-
-.dark-team-score.no-score {
-  color: rgba(255,255,255,0.2);
-  font-size: 16px;
-}
-
-/* ── Info Row ── */
-.dark-info-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 9.5px;
-  color: rgba(255,255,255,0.35);
+.light-meta-row {
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-}
-
-/* ── Tournament Badge ── */
-.dark-tournament {
-  margin-top: 6px;
+  border-top: 1px solid #f1f5f9;
   display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.dark-tournament-badge {
-  font-size: 8px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 4px;
-  background: rgba(99, 102, 241, 0.15);
-  color: #818cf8;
-  border: 1px solid rgba(99, 102, 241, 0.2);
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-.dark-tournament-badge.ipl-badge {
-  background: rgba(3, 91, 176, 0.2);
-  color: #60a5fa;
-  border-color: rgba(3, 91, 176, 0.3);
-}
-
-/* ── Result Text ── */
-.dark-result {
+  gap: 12px;
   font-size: 10px;
-  color: rgba(255,255,255,0.45);
+  color: #64748b;
+  font-weight: 600;
+}
+
+.light-tourney-row {
   margin-top: 6px;
-  font-weight: 600;
-  line-height: 1.35;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* ── Loading ── */
-.dark-loading {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 120px;
-  color: rgba(255,255,255,0.3);
-  font-size: 13px;
-  font-weight: 600;
-}
-
-
-/* ══════════════════════════════════════════
-   DARK PLAYER CARDS
-   ══════════════════════════════════════════ */
-
-.dark-player-card {
-  min-width: 200px;
-  max-width: 220px;
-  flex-shrink: 0;
-  background: #1a2035;
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  padding: 16px 14px 12px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: default;
-  position: relative;
-  overflow: hidden;
-  text-align: center;
-}
-
-.dark-player-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #035bb0, #3b9dff, #035bb0);
-}
-
-.dark-player-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.4);
-  border-color: rgba(96, 165, 250, 0.25);
-}
-
-/* ── Player Photo ── */
-.dark-player-img {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin: 0 auto 8px;
-  display: block;
-  border: 2px solid rgba(96, 165, 250, 0.3);
-  background: rgba(255,255,255,0.05);
-}
-
-.dark-player-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  margin: 0 auto 8px;
-  background: linear-gradient(135deg, #035bb0, #3b9dff);
-  color: white;
-  font-size: 22px;
-  font-weight: 800;
-  border: none;
-}
-
-/* ── Player Info ── */
-.dark-player-name {
-  font-size: 13px;
-  font-weight: 800;
-  color: #e2e8f0;
-  margin-bottom: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.dark-player-meta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 6px;
-  margin-bottom: 10px;
-}
-
-.dark-player-team {
-  font-size: 8px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 2px 6px;
-  border-radius: 3px;
-  background: rgba(3, 91, 176, 0.25);
-  color: #60a5fa;
-}
-
-.dark-player-role {
-  font-size: 8px;
+  font-size: 10.5px;
   font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 3px;
-  text-transform: uppercase;
-  letter-spacing: 0.2px;
+  color: #334155;
+}
+.tourney-icon { color: #e11d48; }
+
+/* ── LIGHT PLAYER CARD (Integrated/Grid) ── */
+.light-player-card {
+  min-width: 130px;
+  max-width: 140px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 10px;
+  text-align: center;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-.dark-role-bat {
-  background: rgba(245,158,11,0.15);
-  color: #fbbf24;
-}
+.lp-img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; margin: 0 auto 6px; border: 1.5px solid #035bb0; }
+.lp-img-ph { width: 44px; height: 44px; background: #035bb0; color:#fff; border-radius: 50%; margin: 0 auto 6px; display: flex; align-items: center; justify-content: center; font-weight: 900; }
 
-.dark-role-bowl {
-  background: rgba(16,185,129,0.15);
-  color: #34d399;
-}
+.lp-name { font-size: 11.5px; font-weight: 800; color: #1e293b; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lp-team { font-size: 8.5px; font-weight: 800; color: #035bb0; text-transform: uppercase; margin-bottom: 8px; display: block; }
+.lp-role { display: none; }
 
-.dark-role-all {
-  background: rgba(139,92,246,0.15);
-  color: #a78bfa;
-}
-
-.dark-role-wk {
-  background: rgba(236,72,153,0.15);
-  color: #f472b6;
-}
-
-/* ── Player Stats ── */
-.dark-player-stats {
+.lp-stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 4px;
-  padding: 8px 0;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 6px;
+  border-top: 1px solid #f1f5f9;
+}
+.lp-stat { display: flex; flex-direction: column; }
+.lp-stat span { font-size: 11px; font-weight: 800; color: #000; }
+.lp-stat small { font-size: 7.5px; font-weight: 700; color: #94a3b8; text-transform: uppercase; }
+
+/* ── GRID INTEGRATION ── */
+.widget-grid-card {
+  background: #f8fafc !important;
+  border: 1px dashed #cbd5e1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: auto !important;
+  padding: 0 !important;
 }
 
-.dark-stat {
-  text-align: center;
+.widget-grid-card .hero-carousel {
+  padding-bottom: 8px;
 }
-
-.dark-stat-value {
-  font-size: 15px;
-  font-weight: 800;
-  color: #60a5fa;
-  font-variant-numeric: tabular-nums;
-  display: block;
-}
-
-.dark-stat-label {
-  font-size: 8px;
-  font-weight: 700;
-  color: rgba(255,255,255,0.3);
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-.dark-player-foot {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 6px;
-}
-
-.dark-foot-tag {
-  font-size: 9px;
-  font-weight: 700;
-  color: rgba(255,255,255,0.35);
-  padding: 1px 5px;
-  border-radius: 3px;
-  background: rgba(255,255,255,0.04);
-}
-
-/* ══════════════════════════════════════════
-   WIDGET GENERAL
-   ══════════════════════════════════════════ */
-
-.widget-empty,
-.widget-loading {
-  padding: 40px 20px;
-  text-align: center;
-  color: var(--text3);
-  font-size: 13px;
-}
-
-.widget-error {
-  padding: 30px 20px;
-  text-align: center;
-  color: #e63946;
-  font-size: 12px;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-}
-
-
-/* ══════════════════════════════════════════
-   RESPONSIVE
-   ══════════════════════════════════════════ */
 
 @media (max-width: 1000px) {
-  .hero-strip-inner {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  .hero-carousel-wrap {
-    padding: 0 34px;
-  }
-  .hero-arrow {
-    width: 26px;
-    height: 26px;
-    font-size: 15px;
-  }
-}
-
-@media (max-width: 600px) {
-  .hero-strip {
-    padding: 12px 0 14px;
-  }
-  .hero-strip-inner {
-    padding: 0 12px;
-  }
-  .hero-column-title {
-    font-size: 12px;
-  }
-  .hero-carousel-wrap {
-    padding: 0 28px;
-  }
-  .hero-arrow {
-    width: 24px;
-    height: 24px;
-    font-size: 14px;
-  }
-  .dark-match-card {
-    min-width: 220px;
-    max-width: 240px;
-  }
-  .dark-player-card {
-    min-width: 170px;
-    max-width: 190px;
-  }
-  .dark-player-img, .dark-player-fallback {
-    width: 44px;
-    height: 44px;
-  }
+  .hero-strip-inner { grid-template-columns: 1fr; }
 }
