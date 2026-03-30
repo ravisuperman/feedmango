@@ -334,166 +334,125 @@
 
 /**
  * ============================================================
- * TRENDING STORIES WIDGET - Horizontal Carousel (Row 2)
+ * IPL STARS WIDGET - Player Profile Carousel (Row 2)
  * ============================================================
- * Reads articles from the rendered DOM (#output) after main feed loads
- * Does NOT touch the sidebar — existing auto-scroll is preserved
+ * Fetches 10 IPL star player profiles from the worker
+ * Shows 3 cards at once with scroll arrows
+ * Does NOT touch the sidebar
  */
 
 (function() {
 
   // ─── Scroll ───
-  window.scrollTrending = function(direction) {
-    var carousel = document.getElementById('trendingStripContent');
+  window.scrollPlayers = function(direction) {
+    var carousel = document.getElementById('playerStripContent');
     if (!carousel) return;
-    carousel.scrollBy({ left: direction * 600, behavior: 'smooth' });
+    // Scroll by exactly 3 cards (each ~320px + gap)
+    carousel.scrollBy({ left: direction * 990, behavior: 'smooth' });
   };
 
-  function updateTrendingArrows() {
-    var c = document.getElementById('trendingStripContent');
-    var l = document.getElementById('trendingLeft');
-    var r = document.getElementById('trendingRight');
+  function updatePlayerArrows() {
+    var c = document.getElementById('playerStripContent');
+    var l = document.getElementById('playerLeft');
+    var r = document.getElementById('playerRight');
     if (!c || !l || !r) return;
 
     l.style.opacity = c.scrollLeft <= 10 ? '0.3' : '1';
     l.style.pointerEvents = c.scrollLeft <= 10 ? 'none' : 'auto';
 
-    var end = c.scrollLeft >= (c.scrollWidth - c.clientWidth - 10);
-    r.style.opacity = end ? '0.3' : '1';
-    r.style.pointerEvents = end ? 'none' : 'auto';
+    var atEnd = c.scrollLeft >= (c.scrollWidth - c.clientWidth - 10);
+    r.style.opacity = atEnd ? '0.3' : '1';
+    r.style.pointerEvents = atEnd ? 'none' : 'auto';
   }
 
-  // ─── Extract articles from rendered DOM ───
-  function extractArticlesFromDOM() {
-    var output = document.getElementById('output');
-    if (!output) return [];
-
-    var articles = [];
-    // Get all card elements (anchor tags or divs with onclick)
-    var cards = output.querySelectorAll('a, [onclick]');
-    
-    cards.forEach(function(card) {
-      var img = card.querySelector('img');
-      var imgSrc = img ? (img.src || img.dataset.src || '') : '';
-      
-      // Find title text — look for heading or strong text
-      var titleEl = card.querySelector('h3, h4, .card-title, .headline, strong, b');
-      var title = '';
-      if (titleEl) {
-        title = titleEl.textContent.trim();
-      } else {
-        // Fallback: get first significant text
-        var texts = card.querySelectorAll('div, span, p');
-        for (var i = 0; i < texts.length; i++) {
-          var t = texts[i].textContent.trim();
-          if (t.length > 15 && t.length < 200) { title = t; break; }
-        }
-      }
-      
-      if (!title || title.length < 5) return; // skip empty cards
-
-      // Find source
-      var sourceEl = card.querySelector('.source, .card-source, .src-label');
-      var source = sourceEl ? sourceEl.textContent.trim() : '';
-      
-      // Detect own articles
-      var isOwn = source.toLowerCase().indexOf('sportsrip') !== -1 ||
-                  card.className.indexOf('own') !== -1 ||
-                  (card.getAttribute('onclick') || '').indexOf('openArt') !== -1;
-
-      var link = card.href || '#';
-
-      articles.push({
-        title: title,
-        image: imgSrc,
-        link: link,
-        source: source || (isOwn ? 'SPORTSrip' : ''),
-        isOwn: isOwn
-      });
-    });
-
-    return articles;
-  }
-
-  // ─── Load Trending from DOM ───
-  async function loadTrendingStories() {
-    var container = document.getElementById('trendingStripContent');
+  // ─── Load Players from Worker ───
+  async function loadPlayers() {
+    var container = document.getElementById('playerStripContent');
     if (!container) return;
 
-    // Wait for #output to have content
-    var attempts = 0;
-    var output = document.getElementById('output');
-    while ((!output || output.children.length === 0) && attempts < 30) {
-      await new Promise(function(r) { setTimeout(r, 500); });
-      attempts++;
-      output = document.getElementById('output');
+    try {
+      var response = await fetch(IPL_WORKER_URL);
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      var data = await response.json();
+
+      var players = data.players || [];
+      if (players.length === 0) {
+        container.innerHTML = '<div class="schedule-loading">No player data</div>';
+        return;
+      }
+
+      container.innerHTML = '';
+      players.forEach(function(p) {
+        var card = document.createElement('div');
+        card.className = 'player-card';
+        card.innerHTML = buildPlayerCard(p);
+        container.appendChild(card);
+      });
+
+      updatePlayerArrows();
+      container.removeEventListener('scroll', updatePlayerArrows);
+      container.addEventListener('scroll', updatePlayerArrows, { passive: true });
+
+    } catch (err) {
+      console.error('Player widget error:', err);
+      container.innerHTML = '<div class="schedule-loading">Could not load players</div>';
     }
-
-    if (!output || output.children.length === 0) {
-      container.innerHTML = '<div class="schedule-loading">No stories yet</div>';
-      return;
-    }
-
-    // Small delay to let rendering settle
-    await new Promise(function(r) { setTimeout(r, 1000); });
-
-    var articles = extractArticlesFromDOM();
-    if (articles.length === 0) {
-      container.innerHTML = '<div class="schedule-loading">No stories yet</div>';
-      return;
-    }
-
-    // Remove duplicates by title
-    var seen = {};
-    articles = articles.filter(function(a) {
-      var key = a.title.toLowerCase().substring(0, 30);
-      if (seen[key]) return false;
-      seen[key] = true;
-      return true;
-    });
-
-    // SPORTSrip articles first
-    var own = articles.filter(function(a) { return a.isOwn; });
-    var rss = articles.filter(function(a) { return !a.isOwn; });
-    var trending = own.concat(rss).slice(0, 16);
-
-    // Render cards
-    container.innerHTML = '';
-    trending.forEach(function(article) {
-      var card = document.createElement('a');
-      card.className = 'trending-card' + (article.isOwn ? ' own-trending' : '');
-      card.href = article.link || '#';
-      card.target = '_blank';
-      card.rel = 'noopener';
-
-      card.innerHTML =
-        (article.image ? '<div class="trending-card-img"><img src="' + article.image + '" alt="" onerror="this.parentElement.style.display=\'none\'"></div>' : '') +
-        '<div class="trending-card-body">' +
-          (article.isOwn ? '<span class="trending-own-badge">OUR COLUMN</span>' : '') +
-          '<div class="trending-card-title">' + article.title + '</div>' +
-          '<div class="trending-card-meta">' +
-            (article.source ? '<span class="trending-source">' + article.source + '</span>' : '') +
-          '</div>' +
-        '</div>';
-
-      container.appendChild(card);
-    });
-
-    // Arrows
-    updateTrendingArrows();
-    container.removeEventListener('scroll', updateTrendingArrows);
-    container.addEventListener('scroll', updateTrendingArrows, { passive: true });
   }
 
-  // ─── Init (does NOT touch sidebar — existing auto-scroll preserved) ───
-  function initTrending() {
-    setTimeout(loadTrendingStories, 4000);
+  // ─── Build Player Card ───
+  function buildPlayerCard(p) {
+    var defaultImg = 'https://h.cricapi.com/img/icon512.png';
+    var imgSrc = (p.playerImg && p.playerImg !== defaultImg) ? p.playerImg : '';
+
+    var roleBadge = '';
+    if (p.role) {
+      var roleClass = 'role-bat';
+      var r = p.role.toLowerCase();
+      if (r.indexOf('bowl') !== -1) roleClass = 'role-bowl';
+      else if (r.indexOf('all') !== -1) roleClass = 'role-all';
+      else if (r.indexOf('keeper') !== -1 || r.indexOf('wk') !== -1) roleClass = 'role-wk';
+      roleBadge = '<span class="player-role ' + roleClass + '">' + p.role + '</span>';
+    }
+
+    var teamBadge = p.team ? '<span class="player-team-badge">' + p.team + '</span>' : '';
+
+    var html =
+      '<div class="player-card-header">' +
+        (imgSrc ? '<img class="player-img" src="' + imgSrc + '" alt="' + p.name + '" onerror="this.src=\'https://h.cricapi.com/img/icon512.png\'">' :
+                  '<div class="player-img player-img-fallback">' + p.name.charAt(0) + '</div>') +
+        '<div class="player-info">' +
+          '<div class="player-name">' + p.name + '</div>' +
+          '<div class="player-country">' + (p.country || '') + '</div>' +
+          '<div class="player-badges">' + teamBadge + roleBadge + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="player-stats">' +
+        '<div class="stat-item"><span class="stat-value">' + (p.iplRuns || '0') + '</span><span class="stat-label">Runs</span></div>' +
+        '<div class="stat-item"><span class="stat-value">' + (p.iplAvg || '0') + '</span><span class="stat-label">Avg</span></div>' +
+        '<div class="stat-item"><span class="stat-value">' + (p.iplSR || '0') + '</span><span class="stat-label">SR</span></div>' +
+        '<div class="stat-item"><span class="stat-value">' + (p.iplMatches || '0') + '</span><span class="stat-label">Mat</span></div>' +
+      '</div>' +
+      '<div class="player-bottom">' +
+        '<span class="stat-mini">' + (p.ipl100s || '0') + ' 100s</span>' +
+        '<span class="stat-mini">' + (p.ipl50s || '0') + ' 50s</span>' +
+        '<span class="stat-mini">HS ' + (p.iplHS || '-') + '</span>' +
+      '</div>';
+
+    return html;
+  }
+
+  // ─── Init ───
+  function initPlayers() {
+    // Delay slightly to not compete with match data fetch
+    setTimeout(loadPlayers, 2000);
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initTrending);
+    document.addEventListener('DOMContentLoaded', initPlayers);
   } else {
-    initTrending();
+    initPlayers();
   }
 
 })();
+
+
