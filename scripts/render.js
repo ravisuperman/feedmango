@@ -2,6 +2,8 @@
  * ============================================================
  * RENDER - All HTML Building Functions
  * ============================================================
+ * MODIFIED: Own article clicks now navigate to article.html
+ *           instead of opening the small modal popup.
  */
 
 /**
@@ -12,14 +14,8 @@ function buildCard(a, e, size) {
   c.className = 'card ' + (size || '') + (a.isOwn ? ' own-article' : '');
   
   if (a.isOwn) {
-    // Own articles - open in modal
-    c.href = '#';
-    (function(article) {
-      c.onclick = function(ev) {
-        ev.preventDefault();
-        openArtModal(article);
-      };
-    })(a);
+    // ── CHANGED: Navigate to full article page instead of modal ──
+    c.href = 'article.html?data=' + encodeURIComponent(JSON.stringify(a));
   } else if (a.isVideo && a.videoId) {
     // Video card - open YouTube modal
     c.href = '#';
@@ -106,17 +102,8 @@ function buildSidebarItem(a, e) {
   el.className = 'sidebar-article';
   
   if (a.isOwn) {
-    el.href = '#';
-    el.onclick = (function(art) {
-      return function(ev) {
-        ev.preventDefault();
-        if (window.innerWidth > 768) {
-          openArtModal(art);
-        } else {
-          window.location.href = 'blog.html?data=' + encodeURIComponent(JSON.stringify(art));
-        }
-      };
-    })(a);
+    // ── CHANGED: Navigate to full article page instead of modal ──
+    el.href = 'article.html?data=' + encodeURIComponent(JSON.stringify(a));
   } else {
     el.href = a.link;
     el.onclick = function(ev) {
