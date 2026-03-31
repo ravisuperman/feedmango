@@ -12,7 +12,7 @@ function buildCard(a, e, size) {
   c.className = 'card ' + (size || '') + (a.isOwn ? ' own-article' : '');
   
   if (a.isOwn) {
-    // Own articles - open in modal
+    // Own articles - open in professional modal
     c.href = '#';
     (function(article) {
       c.onclick = function(ev) {
@@ -33,22 +33,13 @@ function buildCard(a, e, size) {
     c.onclick = function(e) {
       e.preventDefault();
       const isDesktop = window.innerWidth > 1024;
-      if (isDesktop) {
-        const w = 900, h = 650;
-        const left = Math.round((screen.width - w) / 2);
-        const top = Math.round((screen.height - h) / 2);
-        window.open(a.link, '_blank',
-          `width=${w},height=${h},left=${left},top=${top},toolbar=0,menubar=0,scrollbars=1,resizable=1,status=0`
-        );
-      } else {
-        const w = Math.round(screen.width * 0.90);
-        const h = Math.round(screen.height * 0.90);
-        const left = Math.round((screen.width - w) / 2);
-        const top = Math.round((screen.height - h) / 2);
-        window.open(a.link, '_blank',
-          `width=${w},height=${h},left=${left},top=${top},toolbar=0,menubar=0,scrollbars=1,resizable=1,status=0`
-        );
-      }
+      const w = isDesktop ? 900 : Math.round(screen.width * 0.90);
+      const h = isDesktop ? 650 : Math.round(screen.height * 0.90);
+      const left = Math.round((screen.width - w) / 2);
+      const top = Math.round((screen.height - h) / 2);
+      window.open(a.link, '_blank',
+        `width=${w},height=${h},left=${left},top=${top},toolbar=0,menubar=0,scrollbars=1,resizable=1,status=0`
+      );
     };
   }
   
@@ -64,8 +55,10 @@ function buildCard(a, e, size) {
   const badge = a.isVideo 
     ? '<span class="read-more-badge">▶ WATCH</span>' 
     : '<span class="read-more-badge">READ MORE</span>';
+  
+  // BRANDING: Use 'Net Sessions' for all professional originals
   const sourceText = a.isOwn ? 'Net Sessions' : (a.source || '');
-  const sourceTag = sourceText ? `<span class="card-source"> ${sourceText}</span>` : '';
+  const sourceTag = sourceText ? `<span class="card-source">${sourceText}</span>` : '';
   
   const playOverlay = a.isVideo 
     ? '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;background:rgba(255,0,0,0.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;pointer-events:none;">▶</div>'
@@ -81,6 +74,7 @@ function buildCard(a, e, size) {
     const avHtml = auPhoto
       ? `<img class="card-av" src="${auPhoto}">`
       : `<div class="card-av-ph">${auInit}</div>`;
+    
     const shareText = encodeURIComponent(a.title + ' - SPORTSrip');
     const shareUrl = encodeURIComponent('https://www.sportsrip.com');
     
@@ -94,7 +88,14 @@ function buildCard(a, e, size) {
     </div>`;
   }
   
-  c.innerHTML = `${imgWrap}<div class="card-body"><div class="card-meta">${badge}${sourceTag}</div><div class="card-title">${a.title}</div><div class="card-desc">${d}</div>${authorRow}</div>`;
+  c.innerHTML = `
+    ${imgWrap}
+    <div class="card-body">
+      <div class="card-meta">${badge}${sourceTag}</div>
+      <div class="card-title">${a.title}</div>
+      <div class="card-desc">${d}</div>
+      ${authorRow}
+    </div>`;
   return c;
 }
 
@@ -110,29 +111,18 @@ function buildSidebarItem(a, e) {
     el.onclick = (function(art) {
       return function(ev) {
         ev.preventDefault();
-        if (window.innerWidth > 768) {
-          openArtModal(art);
-        } else {
-          window.location.href = 'blog.html?data=' + encodeURIComponent(JSON.stringify(art));
-        }
+        if (window.innerWidth > 768) { openArtModal(art); } 
+        else { window.location.href = 'blog.html?data=' + encodeURIComponent(JSON.stringify(art)); }
       };
     })(a);
   } else {
     el.href = a.link;
     el.onclick = function(ev) {
       ev.preventDefault();
-      if (window.innerWidth <= 768) {
-        const w = Math.round(screen.width * 0.95);
-        const h = Math.round(screen.height * 0.70);
-        const left = Math.round((screen.width - w) / 2);
-        const top = Math.round((screen.height - h) / 2);
-        window.open(a.link, '_blank', `width=${w},height=${h},left=${left},top=${top},toolbar=0,menubar=0,scrollbars=1,resizable=0,status=0`);
-      } else {
-        const w = 900, h = 650;
-        const left = Math.round((screen.width - w) / 2);
-        const top = Math.round((screen.height - h) / 2);
-        window.open(a.link, '_blank', `width=${w},height=${h},left=${left},top=${top},toolbar=0,menubar=0,scrollbars=1,resizable=1,status=0`);
-      }
+      const w = 900, h = 650;
+      const left = Math.round((screen.width - w) / 2);
+      const top = Math.round((screen.height - h) / 2);
+      window.open(a.link, '_blank', `width=${w},height=${h},left=${left},top=${top},toolbar=0,menubar=0,scrollbars=1,resizable=1,status=0`);
     };
   }
   
@@ -140,7 +130,7 @@ function buildSidebarItem(a, e) {
     ? `<img class="sidebar-thumb" src="${a.image}" onerror="this.outerHTML='<div class=sidebar-thumb-placeholder>${e}</div>'">`
     : `<div class="sidebar-thumb-placeholder">${e}</div>`;
   
-  el.innerHTML = `${thumb}<div class="sidebar-text"><div class="sidebar-headline">${a.title}</div><div class="sidebar-source">${a.source || 'SPORTSrip'}</div></div>`;
+  el.innerHTML = `${thumb}<div class="sidebar-text"><div class="sidebar-headline">${a.title}</div><div class="sidebar-source">${a.isOwn ? 'Net Sessions' : (a.source || 'SPORTSrip')}</div></div>`;
   return el;
 }
 
@@ -153,9 +143,9 @@ async function renderNews() {
   
   let a = currentSport === 'main' ? allCache : (sportCache[currentSport] || []);
   
-  // IPL fallback to cricket with filtering
+  // IPL fallback filtering
   if (currentSport === 'ipl' && !a.length && sportCache['cricket']) {
-    const re = /\b(ipl|csk|rcb|mi|kkr|srh|pbks|dc|rr|lsg|gt|dhoni|kohli|rohit|chennai|mumbai|tata|league|duckett)\b/i;
+    const re = /\b(ipl|csk|rcb|mi|kkr|srh|pbks|dc|rr|lsg|gt|dhoni|kohli|rohit)\b/i;
     a = sportCache['cricket'].filter(x => re.test((x.title + " " + (x.description || "")).toLowerCase()));
   }
   
@@ -164,46 +154,41 @@ async function renderNews() {
     return;
   }
   
-  // Pin own articles to top for 24 hours
-  a = pinnedSort(a);
-  
   o.innerHTML = '';
   const f = document.createDocumentFragment();
   
-  // Separate own and RSS articles
-  const ownArts = a.filter(x => x.isOwn);
-  const rssArts = a.filter(x => {
-    if (!x.isOwn && x.source === 'Sky Sports Cricket' && (!x.link || !x.link.toLowerCase().includes('cricket'))) {
-      return false;
+  // --- MASTER FEED LOGIC ---
+  // If we are in Net Sessions, show pure chronological originals
+  // Otherwise, use the interleaving pattern (Hero -> RSS/Own blend)
+  let interleaved = [];
+  
+  if (currentSport === 'net-sessions') {
+    interleaved = a;
+  } else {
+    const ownArts = a.filter(x => x.isOwn);
+    const rssArts = a.filter(x => !x.isOwn);
+    
+    let oi = 0, ri = 0;
+    while (ri < rssArts.length || oi < ownArts.length) {
+        // Hero is always the Pinned/Latest Original if available
+        if (interleaved.length === 0 && oi < ownArts.length) { 
+            interleaved.push(ownArts[oi++]); 
+        } else if (ri < rssArts.length) {
+            interleaved.push(rssArts[ri++]);
+            if (ri < rssArts.length) interleaved.push(rssArts[ri++]); // 2 RSS
+            if (oi < ownArts.length) interleaved.push(ownArts[oi++]); // 1 Own
+        } else if (oi < ownArts.length) {
+            interleaved.push(ownArts[oi++]); // Drain remaining own
+        }
     }
-    return !x.isOwn;
-  });
-  
-  // Interleave: First own article as hero, then every 2 RSS + 1 own
-  const interleaved = [];
-  let oi = 0; // own index
-  let ri = 0; // rss index
-  
-  if (ownArts.length > 0) {
-    interleaved.push(ownArts[oi++]);
-  } else if (rssArts.length > 0) {
-    interleaved.push(rssArts[ri++]);
   }
   
-  while (ri < rssArts.length) {
-    interleaved.push(rssArts[ri++]);
-    if (ri < rssArts.length) interleaved.push(rssArts[ri++]);
-    if (oi < ownArts.length) interleaved.push(ownArts[oi++]);
-  }
-  
-  // Track main feed titles for sidebar exclusion
   window._mainFeedTitles = new Set(interleaved.map(x => x.title));
   
-  let count = 0;
-  interleaved.forEach(x => {
-    const s = (count === 0 && x.image && window.innerWidth > 1000) ? 'card-hero' : '';
+  interleaved.forEach((x, index) => {
+    // Hero styling for top article with image
+    const s = (index === 0 && x.image && window.innerWidth > 1000) ? 'card-hero' : '';
     f.appendChild(buildCard(x, EMOJI[x.sport] || '✨', s));
-    count++;
   });
   
   o.appendChild(f);
@@ -213,9 +198,12 @@ async function renderNews() {
  * Generate navigation tabs
  */
 function generateTabs(list) {
-  const activeTabs = ['main', 'ipl'];
+  // Pin Net Sessions and IPL to the front of the navigation
+  const activeTabs = ['main', 'ipl', 'net-sessions'];
   list.forEach(s => {
-    if (s !== 'ipl') activeTabs.push(s);
+    if (s !== 'ipl' && s !== 'net-sessions' && s !== 'main') {
+        activeTabs.push(s);
+    }
   });
   
   let desktopH = '';
@@ -223,8 +211,9 @@ function generateTabs(list) {
   
   activeTabs.forEach(s => {
     const activeClass = s === currentSport ? ' active' : '';
-    desktopH += `<div class="tab${activeClass}" data-sport="${s}" onclick="setActive('${s}')">${LABEL[s]}</div>`;
-    mobileH += `<div class="mobile-tab${activeClass}" data-sport="${s}" onclick="setActive('${s}'); toggleMenu();">${LABEL[s]}</div>`;
+    const label = LABEL[s] || s.toUpperCase();
+    desktopH += `<div class="tab${activeClass}" data-sport="${s}" onclick="setActive('${s}')">${label}</div>`;
+    mobileH += `<div class="mobile-tab${activeClass}" data-sport="${s}" onclick="setActive('${s}'); toggleMenu();">${label}</div>`;
   });
   
   document.getElementById('desktopTabs').innerHTML = desktopH;
