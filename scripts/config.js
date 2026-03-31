@@ -5,16 +5,17 @@
  * Change settings here instead of searching through code!
  */
 
-// Worker URL - Switch between DEV and PROD
-// const WORKER = 'https://mango-sports-worker-dev.ravi-kompel.workers.dev'; // DEV
-const WORKER = 'https://mango-test-v1.ravi-kompel.workers.dev'; // New Test Instance
+// Worker URL - Primary Heart Aggregator
+// We use the Master Merge version of the worker.
+const WORKER = 'https://mango-test-v1.ravi-kompel.workers.dev'; 
 
 // IPL Live Score Worker
-// const IPL_WORKER_URL = 'https://mango-test-v1.ravi-kompel.workers.dev';
+const IPL_WORKER_URL = 'https://ipl-live-score.ravi-kompel.workers.dev';
 
 // Emoji map for sports
 const EMOJI = {
   ipl: '🏏',
+  'net-sessions': '🏏', // Net Sessions Icon (Editorial)
   f1: '🏎️',
   cricket: '🏏',
   basketball: '🏀',
@@ -33,9 +34,10 @@ const EMOJI = {
   main: '🏆'
 };
 
-// Fallback sports list (if API fails)
+// Fallback sports list (if dynamic loading fails)
 const PRIORITY_SPORTS_FALLBACK = [
   'ipl',
+  'net-sessions', // Added to top priority
   'f1',
   'cricket',
   'basketball',
@@ -53,9 +55,10 @@ const PRIORITY_SPORTS_FALLBACK = [
   'videos'
 ];
 
-// Fallback labels (if API fails)
+// Fallback labels
 const LABEL_FALLBACK = {
   ipl: 'IPL 2026',
+  'net-sessions': 'Net Sessions', // Editorial Tab Name
   f1: 'Formula 1',
   cricket: 'Cricket',
   basketball: 'NBA',
@@ -74,9 +77,10 @@ const LABEL_FALLBACK = {
 };
 
 // Priority sports for initial load
+// Positioning: IPL | Net Sessions | Others
 const PRIORITY_FIRST = window.innerWidth < 768 
-  ? ['ipl'] 
-  : ['ipl', 'cricket', 'football', 'f1', 'basketball'];
+  ? ['ipl', 'net-sessions'] 
+  : ['ipl', 'net-sessions', 'cricket', 'football', 'f1', 'basketball'];
 
 const PRIORITY_REST = [
   'cricket',
