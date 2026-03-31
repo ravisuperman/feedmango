@@ -46,7 +46,7 @@ async function fetchSport(s) {
     let a = d.articles || [];
     
     // On mobile - show only 25 articles per sport
-    if (isMobile) a = a.slice(0, 25);
+  //  if (isMobile) a = a.slice(0, 25);
     
     // IPL filtering
     if (s === 'ipl') {
