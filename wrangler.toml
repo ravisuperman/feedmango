@@ -28,16 +28,16 @@ crons = ["*/10 * * * *", "5/10 * * * *"]
 
 [[kv_namespaces]]
 binding = "NEWS_KV"
-id = "8d29125cd0b045018b406222f5e382e6"
+id = "d7a9cfe5a184479282f37c6649cc8b0e"
 
 [[kv_namespaces]]
 binding = "CURATED_KV"
-id = "71817ccefb094cfd9570015fca011af9"
+id = "f3b832f557f9460dba6cc3b02bd19974"
 
 [[kv_namespaces]]
 binding = "MY_NEWS_KV"
-id = "dea6671028ed4caf9b5e956fb865411c"
+id = "79de7e8dc0d14a278ffccba2f87f9856"
 
 [[kv_namespaces]]
 binding = "CONTROL_PANEL_KV"
-id = "36d21591a1af4e1390789bf8c81c4954"
+id = "48d64b2177f448efbb7e3212acd970be"
