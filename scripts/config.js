@@ -1,6 +1,6 @@
 /**
  * ============================================================
- * CONFIGURATION - API URLs, Constants, Settings
+ * CONFIGURATION - API URLs, Constantss, Settings
  * ============================================================
  */
 
