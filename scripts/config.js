@@ -9,8 +9,8 @@
 //     when deploying to a new Cloudflare account / domain.
 // ============================================================
 const INSTANCE = {
-workerUrl: 'https://sportsrip-main-worker.ravi-kompel.workers.dev', // ← Your main worker URL
-//   workerUrl: 'https://sportsrip-backup-worker.ravi-kompel.workers.dev', // ← Your backup worker URL
+//   workerUrl: 'https://sportsrip-main-worker.ravi-kompel.workers.dev', // ← Your main worker URL
+workerUrl: 'https://sportsrip-backup-worker.ravi-kompel.workers.dev', // ← Your backup worker URL
   siteName:  'SPORTSrip',                                     // ← Your site display name
 };
 // ============================================================
