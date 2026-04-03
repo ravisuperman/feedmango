@@ -1,0 +1,81 @@
+/* ============================================================
+   CSS VARIABLES - Light & Dark Mode
+   Purpose: All colors defined here as variables.
+   Toggling [data-theme="dark"] on <html> switches the whole site.
+   DO NOT hardcode colors elsewhere - always use var(--X).
+   ============================================================ */
+
+:root {
+  /* Brand Colors */
+  --espn-blue: #035bb0;
+  --whitish-blue: #94bdff;
+  --accent-red: #cc0000;
+  --accent-gold: #f0a500;
+  --accent-gold-dark: #ff8c00;
+  --yell: #ffff00;
+  
+  /* Light Mode */
+  --bg: #f4f4f4;
+  --surface: #fff;
+  --surface2: #fdfdfd;
+  --border: #eee;
+  --border2: #e0e0e0;
+  --text: #141414;
+  --text2: #555;
+  --text3: #666;
+  
+  /* Shadows - Enhanced for depth */
+  --shadow: rgba(0,0,0,0.08);
+  --shadow2: rgba(0,0,0,0.12);
+  --shadow3: rgba(0,0,0,0.18);
+  
+  /* Footer */
+  --footer-bg: #fff;
+  --footer-border: #ddd;
+  --footer-text: #444;
+  
+  /* Sidebar */
+  --sidebar-placeholder: #eee;
+  
+  /* Cricket Widget */
+  --cricket-red: #e63946;
+  --cricket-blue: #457b9d;
+  --cricket-gray: #6c757d;
+}
+
+[data-theme="dark"] {
+  /* Dark Mode */
+  --bg: #0f0f13;
+  --surface: #1a1a22;
+  --surface2: #1e1e28;
+  --border: #2a2a38;
+  --border2: #2a2a38;
+  --text: #f0f0f0;
+  --text2: #aaa;
+  --text3: #888;
+  --shadow: rgba(0,0,0,0.3);
+  --shadow2: rgba(0,0,0,0.4);
+  --shadow3: rgba(0,0,0,0.5);
+  --footer-bg: #1a1a22;
+  --footer-border: #2a2a38;
+  --footer-text: #888;
+  --sidebar-placeholder: #2a2a38;
+}
+
+/* Global Resets */
+* { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+
+body { 
+  background: var(--bg); 
+  color: var(--text); 
+  font-family: 'Assistant', sans-serif; 
+  min-height: 100vh; 
+  display: flex; 
+  flex-direction: column; 
+  overflow-x: hidden; 
+  transition: background 0.3s, color 0.3s;
+}
