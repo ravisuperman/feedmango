@@ -45,17 +45,30 @@ function renderSidebar() {
 
   if (!allCache.length) return;
 
-  const sidebarPool = pinnedSort(allCache.filter(function (article) {
+  // Keep sidebar focused on fresh external stories instead of letting own articles dominate it.
+  const externalWithImage = pinnedSort(allCache.filter(function (article) {
+    return !article.isOwn && article.image && !mainTitles.has(article.title);
+  }));
+
+  const mixedWithImageFallback = pinnedSort(allCache.filter(function (article) {
     return article.image && !mainTitles.has(article.title);
   }));
+
+  const sidebarPool = externalWithImage.length ? externalWithImage : mixedWithImageFallback;
 
   sidebarPool.slice(0, 6).forEach(function (article) {
     trending.appendChild(buildSidebarItem(article, getTabMeta(article.sport).emoji));
   });
 
-  const recentPool = pinnedSort(allCache.filter(function (article) {
+  const externalRecent = pinnedSort(allCache.filter(function (article) {
+    return !article.isOwn && !mainTitles.has(article.title);
+  }));
+
+  const mixedRecentFallback = pinnedSort(allCache.filter(function (article) {
     return !mainTitles.has(article.title);
   }));
+
+  const recentPool = externalRecent.length ? externalRecent : mixedRecentFallback;
 
   recentPool.slice(0, 5).forEach(function (article) {
     recent.appendChild(buildSidebarItem(article, getTabMeta(article.sport).emoji));
