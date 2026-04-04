@@ -5,8 +5,8 @@
  */
 
 const INSTANCE = {
-//  workerUrl: 'https://sportsrip-main-worker.ravi-kompel.workers.dev',
- workerUrl: ''https://sportsrip-backup-worker.ravi-kompel.workers.dev',
+workerUrl: 'https://sportsrip-main-worker.ravi-kompel.workers.dev',
+//   workerUrl: ''https://sportsrip-backup-worker.ravi-kompel.workers.dev',
   siteName: 'SPORTSrip',
   topStoriesLabel: 'Top Stories'
 };
