@@ -1,6 +1,6 @@
 /**
  * ============================================================
- * CONFIGURATION - API URLs, Labels, Shared UI States
+ * CONFIGURATION - API URLs, Labels, Shared UI State
  * ============================================================
  */
 
