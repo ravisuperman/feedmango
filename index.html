@@ -355,7 +355,7 @@
       gap: 22px;
       border-radius: 0;
       border-bottom: 1px solid #dbe4ee;
-      background: #ffffff;
+      background: #f7f8fb;
       color: #13233a;
       box-shadow: none;
       width: 100%;
@@ -421,6 +421,57 @@
     html[data-template="editorial"] .dark-toggle {
       display: none;
     }
+    .template-switch {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 38px;
+      height: 22px;
+      flex-shrink: 0;
+      margin-left: 4px;
+    }
+    .template-switch input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      margin: 0;
+      z-index: 2;
+    }
+    .template-slider {
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.28);
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .template-slider::after {
+      content: '';
+      display: block;
+      width: 16px;
+      height: 16px;
+      margin: 2px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+      transition: transform 0.2s ease;
+    }
+    .template-switch input:checked + .template-slider {
+      background: rgba(17,128,235,0.34);
+      border-color: rgba(255,255,255,0.44);
+    }
+    .template-switch input:checked + .template-slider::after {
+      transform: translateX(16px);
+    }
+    html[data-template="editorial"] .template-slider {
+      background: #dfe6ee;
+      border-color: #c7d3e1;
+    }
+    html[data-template="editorial"] .template-switch input:checked + .template-slider {
+      background: #c7d6e8;
+      border-color: #b3c4da;
+    }
     html[data-template="editorial"] .layout-box {
       padding: 20px 28px 40px;
     }
@@ -436,7 +487,7 @@
       align-items: center;
       gap: 16px;
       padding: 10px 16px;
-      border-radius: 6px;
+      border-radius: 12px;
       background: #082b67;
       color: #d8e6ff;
     }
@@ -464,8 +515,8 @@
     }
     .editorial-hero {
       min-height: 500px;
-      border-radius: 8px;
-      box-shadow: none;
+      border-radius: 28px;
+      box-shadow: 0 16px 36px rgba(16, 35, 61, 0.12);
     }
     .editorial-hero-overlay {
       min-height: 500px;
@@ -487,17 +538,28 @@
       font-size: 17px;
       line-height: 1.65;
     }
-    .editorial-side-rail,
-    .editorial-insight-box,
     .editorial-block,
     .editorial-tile {
       border: 0;
+    }
+    .editorial-block {
       border-radius: 0;
       box-shadow: none;
+    }
+    .editorial-tile {
+      border-radius: 24px;
+      box-shadow: 0 12px 28px rgba(19, 35, 58, 0.08);
+      background: #fff;
     }
     .editorial-side-rail,
     .editorial-block {
       padding: 0;
+    }
+    .editorial-side-rail {
+      padding: 22px;
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 12px 30px rgba(19, 35, 58, 0.08);
     }
     .editorial-side-title {
       margin-bottom: 18px;
@@ -524,7 +586,7 @@
     }
     .editorial-thumb {
       aspect-ratio: 1.55 / 1;
-      border-radius: 4px;
+      border-radius: 24px;
       overflow: hidden;
     }
     .editorial-copy {
@@ -537,15 +599,11 @@
       font-size: 14px;
       line-height: 1.6;
     }
-    .editorial-lower-grid {
-      grid-template-columns: minmax(0, 1.75fr) 340px;
-    }
-    .editorial-insight-box {
-      padding: 28px;
-      border-radius: 4px;
+    .editorial-more-section {
+      margin-top: 8px;
     }
     .editorial-empty {
-      border-radius: 8px;
+      border-radius: 24px;
     }
     @media (max-width: 1100px) {
       html[data-template="editorial"] #main-header {
@@ -554,8 +612,7 @@
         flex-wrap: wrap;
       }
       .editorial-livebar,
-      .editorial-hero-grid,
-      .editorial-lower-grid {
+      .editorial-hero-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -593,6 +650,10 @@
     </div>
   </a>
   <nav class="nav-tabs" id="desktopTabs"></nav>
+  <label class="template-switch" aria-label="Switch theme">
+    <input id="templateToggle" type="checkbox" onchange="toggleTemplate()">
+    <span class="template-slider"></span>
+  </label>
   <div class="header-right" id="clockDisplay"></div>
   <button class="dark-toggle" id="darkToggle" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
   <div class="hamburger" id="hamburger" onclick="toggleMenu()">
