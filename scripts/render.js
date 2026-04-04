@@ -228,13 +228,12 @@ function renderEditorialNews(articles) {
   const shell = document.createElement('div');
   shell.className = 'editorial-shell';
 
-  const masthead = document.createElement('section');
-  masthead.className = 'editorial-topbar';
-  masthead.innerHTML =
-    '<div class="editorial-brand">DailyWire Edition</div>' +
-    '<div class="editorial-rail">' + getTabMeta(currentSport).label + '</div>' +
-    '<div class="editorial-weather">Global desk</div>';
-  shell.appendChild(masthead);
+  const livebar = document.createElement('section');
+  livebar.className = 'editorial-livebar';
+  livebar.innerHTML =
+    '<span class="editorial-live-pill">Live</span>' +
+    '<div class="editorial-live-copy">' + (feature.title || ('Latest ' + getTabMeta(currentSport).label + ' updates')) + '</div>';
+  shell.appendChild(livebar);
 
   const heroGrid = document.createElement('section');
   heroGrid.className = 'editorial-hero-grid';
