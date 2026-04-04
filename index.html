@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="google-site-verification" content="Jht59lHwkn9XZKP7kyAcKtk9SMl9tPmllXm4ehBH-7c" />
 
-  <title>SPORTStrip — Live Sport Feed</title>
+  <title>SPORTStrip — Live Sport Feeds</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -341,6 +341,281 @@
         font-size: 34px;
       }
     }
+
+    /* Editorial refinement override */
+    html[data-template="editorial"] body {
+      background: #f7f8fb;
+    }
+    html[data-template="editorial"] #main-header {
+      height: 96px;
+      max-width: 1380px;
+      margin: 0 auto;
+      margin-top: 0;
+      padding: 0 28px;
+      gap: 22px;
+      border-radius: 0;
+      border-bottom: 1px solid #dbe4ee;
+      background: #ffffff;
+      color: #13233a;
+      box-shadow: none;
+      width: 100%;
+    }
+    html[data-template="editorial"] .brand {
+      margin-right: 8px;
+    }
+    html[data-template="editorial"] .logo-text {
+      display: none;
+    }
+    .editorial-logo {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      color: #10233d;
+    }
+    html[data-template="editorial"] .editorial-logo {
+      display: inline-flex;
+    }
+    .editorial-logo-mark {
+      font-size: 24px;
+      line-height: 1;
+      color: #10233d;
+    }
+    .editorial-logo-word {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+    html[data-template="editorial"] .nav-tabs {
+      justify-content: flex-start;
+      flex: 1;
+      gap: 4px;
+      overflow: visible;
+    }
+    html[data-template="editorial"] .tab {
+      height: auto;
+      padding: 8px 10px;
+      border-bottom: 0;
+      border-radius: 10px;
+      color: #334860;
+      font-size: 15px;
+      font-weight: 700;
+      background: transparent;
+    }
+    html[data-template="editorial"] .tab:hover {
+      color: #10233d;
+      background: #f3f6fa;
+    }
+    html[data-template="editorial"] .tab.active {
+      color: #10233d;
+      background: #eef3f8;
+      border-bottom: 0;
+    }
+    html[data-template="editorial"] #clockDisplay,
+    html[data-template="editorial"] .dark-toggle {
+      display: none;
+    }
+    .editorial-header-tools {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+    html[data-template="editorial"] .editorial-header-tools {
+      display: inline-flex;
+    }
+    .editorial-search-shell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 320px;
+      padding: 16px 18px;
+      background: #f2f4f7;
+      color: #536881;
+    }
+    .editorial-search-icon {
+      font-size: 22px;
+      line-height: 1;
+      color: #22374f;
+    }
+    .editorial-search-text {
+      font-size: 16px;
+      color: #536881;
+    }
+    .editorial-icon-btn {
+      width: 52px;
+      height: 52px;
+      border: 0;
+      background: #f2f4f7;
+      color: #14253d;
+      font-size: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: default;
+    }
+    html[data-template="editorial"] .layout-box {
+      padding: 20px 28px 40px;
+    }
+    html[data-template="editorial"] .section-label {
+      display: none;
+    }
+    .editorial-shell {
+      gap: 34px;
+    }
+    .editorial-livebar {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 16px;
+      border-radius: 6px;
+      background: #082b67;
+      color: #d8e6ff;
+    }
+    .editorial-live-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background: #1180eb;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .editorial-live-copy {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    .editorial-hero-grid {
+      grid-template-columns: minmax(0, 1.75fr) 340px;
+      gap: 28px;
+    }
+    .editorial-hero {
+      min-height: 500px;
+      border-radius: 8px;
+      box-shadow: none;
+    }
+    .editorial-hero-overlay {
+      min-height: 500px;
+      padding: 34px 36px;
+    }
+    .editorial-kicker {
+      margin-bottom: 18px;
+      padding: 7px 12px;
+      border-radius: 4px;
+      background: #1477d4;
+    }
+    .editorial-hero h1 {
+      margin: 0 0 14px;
+      font-size: clamp(40px, 4.6vw, 62px);
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+    }
+    .editorial-hero p {
+      font-size: 17px;
+      line-height: 1.65;
+    }
+    .editorial-side-rail,
+    .editorial-insight-box,
+    .editorial-block,
+    .editorial-tile {
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .editorial-side-rail,
+    .editorial-block {
+      padding: 0;
+    }
+    .editorial-side-title {
+      margin-bottom: 18px;
+      font-size: 18px;
+    }
+    .editorial-rank-item {
+      padding: 18px 0;
+    }
+    .editorial-rank-no {
+      font-size: 48px;
+    }
+    .editorial-rank-title {
+      font-size: 16px;
+    }
+    .editorial-section-head {
+      padding-bottom: 14px;
+      border-bottom: 1px solid #dbe4ee;
+    }
+    .editorial-section-head h2 {
+      font-size: 20px;
+    }
+    .editorial-card-grid {
+      gap: 28px;
+    }
+    .editorial-thumb {
+      aspect-ratio: 1.55 / 1;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .editorial-copy {
+      padding: 16px 2px 2px;
+    }
+    .editorial-copy h3 {
+      margin: 0 0 8px;
+    }
+    .editorial-copy p {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .editorial-lower-grid {
+      grid-template-columns: minmax(0, 1.75fr) 340px;
+    }
+    .editorial-insight-box {
+      padding: 28px;
+      border-radius: 4px;
+    }
+    .editorial-empty {
+      border-radius: 8px;
+    }
+    @media (max-width: 1100px) {
+      html[data-template="editorial"] #main-header {
+        height: auto;
+        padding: 18px 18px 20px;
+        flex-wrap: wrap;
+      }
+      html[data-template="editorial"] .editorial-header-tools {
+        order: 4;
+        width: 100%;
+      }
+      .editorial-search-shell {
+        min-width: 0;
+        flex: 1;
+      }
+      .editorial-livebar,
+      .editorial-hero-grid,
+      .editorial-lower-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 780px) {
+      html[data-template="editorial"] .nav-tabs {
+        order: 3;
+        width: 100%;
+        padding-top: 8px;
+        overflow-x: auto;
+      }
+      .editorial-hero {
+        min-height: 360px;
+      }
+      .editorial-hero-overlay {
+        min-height: 360px;
+      }
+      .editorial-hero h1 {
+        font-size: 36px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -351,9 +626,21 @@
 <header id="main-header">
   <a href="/" class="brand">
     <div class="logo-text"><span>SPORTS</span><em>rip</em></div>
+    <div class="editorial-logo">
+      <span class="editorial-logo-mark">✦</span>
+      <span class="editorial-logo-word">DailyWire</span>
+    </div>
   </a>
   <nav class="nav-tabs" id="desktopTabs"></nav>
   <div class="header-right" id="clockDisplay"></div>
+  <div class="editorial-header-tools">
+    <div class="editorial-search-shell">
+      <span class="editorial-search-icon">⌕</span>
+      <span class="editorial-search-text">Search Markets, News...</span>
+    </div>
+    <button class="editorial-icon-btn" type="button" aria-label="Notifications">◔</button>
+    <button class="editorial-icon-btn" type="button" aria-label="Profile">◎</button>
+  </div>
   <button class="dark-toggle" id="darkToggle" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
   <div class="hamburger" id="hamburger" onclick="toggleMenu()">
     <div class="line1"></div>
