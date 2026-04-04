@@ -361,7 +361,7 @@
       width: 100%;
     }
     html[data-template="editorial"] .brand {
-      margin-right: 8px;
+      margin-right: 22px;
     }
     html[data-template="editorial"] .logo-text {
       display: none;
@@ -369,89 +369,57 @@
     .editorial-logo {
       display: none;
       align-items: center;
-      gap: 12px;
+      gap: 0;
       color: #10233d;
     }
     html[data-template="editorial"] .editorial-logo {
       display: inline-flex;
     }
-    .editorial-logo-mark {
-      font-size: 24px;
-      line-height: 1;
-      color: #10233d;
-    }
     .editorial-logo-word {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0;
       font-size: 28px;
-      font-weight: 800;
       letter-spacing: -0.04em;
+      line-height: 1;
+    }
+    .editorial-logo-sports {
+      font-weight: 800;
+      color: #0f223d;
+    }
+    .editorial-logo-rip {
+      font-style: italic;
+      font-weight: 400;
+      color: #6d84a3;
     }
     html[data-template="editorial"] .nav-tabs {
       justify-content: flex-start;
       flex: 1;
-      gap: 4px;
+      gap: 10px;
       overflow: visible;
     }
     html[data-template="editorial"] .tab {
       height: auto;
-      padding: 8px 10px;
+      padding: 8px 6px;
       border-bottom: 0;
-      border-radius: 10px;
       color: #334860;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 500;
+      letter-spacing: 0;
       background: transparent;
     }
     html[data-template="editorial"] .tab:hover {
       color: #10233d;
-      background: #f3f6fa;
+      background: transparent;
     }
     html[data-template="editorial"] .tab.active {
       color: #10233d;
-      background: #eef3f8;
+      background: transparent;
       border-bottom: 0;
     }
     html[data-template="editorial"] #clockDisplay,
     html[data-template="editorial"] .dark-toggle {
       display: none;
-    }
-    .editorial-header-tools {
-      display: none;
-      align-items: center;
-      gap: 12px;
-      margin-left: auto;
-    }
-    html[data-template="editorial"] .editorial-header-tools {
-      display: inline-flex;
-    }
-    .editorial-search-shell {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 320px;
-      padding: 16px 18px;
-      background: #f2f4f7;
-      color: #536881;
-    }
-    .editorial-search-icon {
-      font-size: 22px;
-      line-height: 1;
-      color: #22374f;
-    }
-    .editorial-search-text {
-      font-size: 16px;
-      color: #536881;
-    }
-    .editorial-icon-btn {
-      width: 52px;
-      height: 52px;
-      border: 0;
-      background: #f2f4f7;
-      color: #14253d;
-      font-size: 24px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: default;
     }
     html[data-template="editorial"] .layout-box {
       padding: 20px 28px 40px;
@@ -585,14 +553,6 @@
         padding: 18px 18px 20px;
         flex-wrap: wrap;
       }
-      html[data-template="editorial"] .editorial-header-tools {
-        order: 4;
-        width: 100%;
-      }
-      .editorial-search-shell {
-        min-width: 0;
-        flex: 1;
-      }
       .editorial-livebar,
       .editorial-hero-grid,
       .editorial-lower-grid {
@@ -627,20 +587,13 @@
   <a href="/" class="brand">
     <div class="logo-text"><span>SPORTS</span><em>rip</em></div>
     <div class="editorial-logo">
-      <span class="editorial-logo-mark">✦</span>
-      <span class="editorial-logo-word">DailyWire</span>
+      <span class="editorial-logo-word">
+        <span class="editorial-logo-sports">SPORTS</span><span class="editorial-logo-rip">rip</span>
+      </span>
     </div>
   </a>
   <nav class="nav-tabs" id="desktopTabs"></nav>
   <div class="header-right" id="clockDisplay"></div>
-  <div class="editorial-header-tools">
-    <div class="editorial-search-shell">
-      <span class="editorial-search-icon">⌕</span>
-      <span class="editorial-search-text">Search Markets, News...</span>
-    </div>
-    <button class="editorial-icon-btn" type="button" aria-label="Notifications">◔</button>
-    <button class="editorial-icon-btn" type="button" aria-label="Profile">◎</button>
-  </div>
   <button class="dark-toggle" id="darkToggle" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
   <div class="hamburger" id="hamburger" onclick="toggleMenu()">
     <div class="line1"></div>
