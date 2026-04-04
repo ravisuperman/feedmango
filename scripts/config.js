@@ -9,7 +9,8 @@ const INSTANCE = {
   // workerUrl: 'https://sportsrip-backup-worker.ravi-kompel.workers.dev',
   siteName: 'SPORTSrip',
   topStoriesLabel: 'Top Stories',
-  defaultTheme: 'sportsrip'
+ // defaultTheme: 'sportsrip'
+  defaultTheme: 'editorial'
 };
 
 const WORKER = INSTANCE.workerUrl;
