@@ -316,17 +316,10 @@ function renderEditorialNews(articles) {
   }
 
   const lowerGrid = document.createElement('section');
-  lowerGrid.className = 'editorial-lower-grid';
+  lowerGrid.className = 'editorial-block editorial-more-section';
   lowerGrid.innerHTML =
-    '<div class="editorial-more-stories">' +
-      '<div class="editorial-section-head"><h2>More Stories</h2><span>Desk file</span></div>' +
-      '<div class="editorial-card-grid" id="editorialMoreStories"></div>' +
-    '</div>' +
-    '<aside class="editorial-insight-box">' +
-      '<h3>Deep Insight Awards</h3>' +
-      '<p>Switch between templates anytime with <code>?theme=sportsrip</code> or <code>?theme=editorial</code>.</p>' +
-      '<a href="?theme=sportsrip">Back to SPORTSrip Classic</a>' +
-    '</aside>';
+    '<div class="editorial-section-head"><h2>More Stories</h2><span>Desk file</span></div>' +
+    '<div class="editorial-card-grid" id="editorialMoreStories"></div>';
   moreStories.forEach(function(article) {
     lowerGrid.querySelector('#editorialMoreStories').appendChild(buildEditorialTile(article, 'editorial-story-tile'));
   });
