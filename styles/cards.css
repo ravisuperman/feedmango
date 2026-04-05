@@ -237,3 +237,61 @@
   width: 40%; 
   justify-content: center; 
 }
+
+.card-skeleton {
+  pointer-events: none;
+}
+
+.card-skeleton:hover {
+  transform: none;
+  box-shadow: 0 2px 8px var(--shadow), 0 1px 3px rgba(0,0,0,0.04);
+  border-color: var(--border);
+}
+
+.card-img-skeleton {
+  width: 100%;
+  height: 200px;
+  border-radius: 16px 16px 0 0;
+}
+
+.card-skeleton.card-hero {
+  height: 360px;
+}
+
+.card-skeleton.card-hero .card-img-skeleton {
+  width: 60%;
+  height: 100%;
+  border-radius: 16px 0 0 16px;
+  flex-shrink: 0;
+}
+
+.card-skeleton.card-hero .card-body {
+  width: 40%;
+}
+
+.skeleton-line {
+  height: 13px;
+  border-radius: 999px;
+}
+
+.skeleton-line.small { width: 34%; }
+.skeleton-line.medium { width: 68%; }
+.skeleton-line.long { width: 100%; }
+
+.skeleton-pill {
+  width: 110px;
+  height: 28px;
+  border-radius: 10px;
+}
+
+.card-skeleton .card-body {
+  justify-content: center;
+}
+
+.card-img-skeleton,
+.skeleton-line,
+.skeleton-pill {
+  background: linear-gradient(90deg, #eef3fa 0%, #f8fbff 50%, #eef3fa 100%);
+  background-size: 200% 100%;
+  animation: skeletonShift 1.4s ease-in-out infinite;
+}
