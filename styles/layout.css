@@ -221,6 +221,14 @@ header {
   gap: 12px; 
 }
 
+.loading-copy {
+  grid-column: 1 / -1;
+  padding: 18px 0 4px;
+  color: var(--text2);
+  font-size: 14px;
+  font-weight: 700;
+}
+
 /* ── Sidebar ── */
 .sidebar { 
   width: 340px; 
@@ -314,6 +322,59 @@ header {
   color: var(--espn-blue); 
   font-weight: 800; 
   text-transform: uppercase; 
+}
+
+.tab-skeleton {
+  width: 84px;
+  height: 18px;
+  border-radius: 999px;
+  margin: 0 10px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.14), rgba(255,255,255,0.34), rgba(255,255,255,0.14));
+  background-size: 200% 100%;
+  animation: skeletonShift 1.4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.sidebar-skeleton {
+  display: flex;
+  gap: 14px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+
+.sidebar-skeleton-thumb {
+  width: 140px;
+  height: 105px;
+  border-radius: 10px;
+}
+
+.sidebar-skeleton-copy {
+  flex: 1;
+  display: grid;
+  gap: 10px;
+}
+
+.sidebar-skeleton-line {
+  height: 12px;
+  border-radius: 999px;
+}
+
+.sidebar-skeleton-line.short {
+  width: 62%;
+}
+
+.skeleton-block,
+.sidebar-skeleton-thumb,
+.sidebar-skeleton-line {
+  background: linear-gradient(90deg, #eef3fa 0%, #f8fbff 50%, #eef3fa 100%);
+  background-size: 200% 100%;
+  animation: skeletonShift 1.4s ease-in-out infinite;
+}
+
+@keyframes skeletonShift {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* ── Footer ── */
