@@ -4,7 +4,7 @@
 
 /* ── Header ── */
 header { 
-  background: #a8b2bf; 
+  background: var(--espn-blue); 
   color: #fff; 
   padding: 0 24px; 
   display: flex; 
@@ -353,7 +353,7 @@ footer {
   z-index: 1000; 
   font-size: 16px; 
   font-weight: 800; 
-  box-shadow: 0 3px 12px rgba(123,136,150,0.35); 
+  box-shadow: 0 3px 12px rgba(3,91,176,0.4); 
   transition: all 0.3s ease;
   opacity: 0;
 }
@@ -361,7 +361,7 @@ footer {
 #backToTop.visible { display: flex; opacity: 1; }
 #backToTop:hover { 
   transform: translateY(-2px); 
-  box-shadow: 0 6px 16px rgba(123,136,150,0.45); 
+  box-shadow: 0 6px 16px rgba(3,91,176,0.5); 
 }
 
 /* ── Responsive - Mobile ── */
