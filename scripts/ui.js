@@ -18,27 +18,11 @@ function toggleDark() {
   applyTheme(!isDark);
 }
 
-function applyTemplateToggleState() {
-  const toggle = document.getElementById('templateToggle');
-  if (!toggle) return;
-  toggle.checked = THEME === 'editorial';
-}
-
-function toggleTemplate() {
-  const nextTheme = THEME === 'editorial' ? 'sportsrip' : 'editorial';
-  localStorage.setItem('sportsrip-template', nextTheme);
-  const url = new URL(window.location.href);
-  url.searchParams.set('theme', nextTheme);
-  window.location.href = url.toString();
-}
-
 // Apply saved theme immediately on load
 (function() {
   const saved = localStorage.getItem('sportsrip-theme');
   if (saved === 'dark') applyTheme(true);
 })();
-
-applyTemplateToggleState();
 
 /**
  * Mobile Scroll Magic
