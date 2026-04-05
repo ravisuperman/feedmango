@@ -11,6 +11,12 @@ const INSTANCE = {
   topStoriesLabel: 'Top Stories'
 };
 
+const PERFORMANCE = {
+  cacheKey: 'sportsrip-home-cache-v1',
+  cacheMaxAgeMs: 30 * 60 * 1000,
+  initialCategoryBatch: 4
+};
+
 const WORKER = INSTANCE.workerUrl;
 
 const STATIC_TAB_META = {
