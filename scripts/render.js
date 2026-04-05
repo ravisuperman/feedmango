@@ -134,6 +134,60 @@ function buildSidebarItem(a, e) {
   return el;
 }
 
+function buildSkeletonCard(size) {
+  var card = document.createElement('div');
+  card.className = 'card card-skeleton ' + (size || '');
+  card.innerHTML =
+    '<div class="card-img-skeleton"></div>' +
+    '<div class="card-body">' +
+      '<div class="skeleton-pill"></div>' +
+      '<div class="skeleton-line long"></div>' +
+      '<div class="skeleton-line long"></div>' +
+      '<div class="skeleton-line medium"></div>' +
+      '<div class="skeleton-line long"></div>' +
+      '<div class="skeleton-line medium"></div>' +
+    '</div>';
+  return card;
+}
+
+function renderFeedSkeleton(count) {
+  const output = document.getElementById('output');
+  output.innerHTML = '';
+
+  const fragment = document.createDocumentFragment();
+  const copy = document.createElement('div');
+  copy.className = 'loading-copy';
+  copy.textContent = 'Loading the latest stories...';
+  fragment.appendChild(copy);
+
+  for (let i = 0; i < count; i++) {
+    fragment.appendChild(buildSkeletonCard(i === 0 && window.innerWidth > 1000 ? 'card-hero' : ''));
+  }
+
+  output.appendChild(fragment);
+}
+
+function renderSidebarSkeleton() {
+  const trending = document.getElementById('trendingList');
+  const recent = document.getElementById('recentList');
+
+  function skeletonRow() {
+    return (
+      '<div class="sidebar-skeleton">' +
+        '<div class="sidebar-skeleton-thumb skeleton-block"></div>' +
+        '<div class="sidebar-skeleton-copy">' +
+          '<div class="sidebar-skeleton-line"></div>' +
+          '<div class="sidebar-skeleton-line"></div>' +
+          '<div class="sidebar-skeleton-line short"></div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  trending.innerHTML = skeletonRow() + skeletonRow() + skeletonRow();
+  recent.innerHTML = skeletonRow() + skeletonRow();
+}
+
 function getTabMeta(tabKey) {
   return CATEGORY_META[tabKey] || {
     label: tabKey,
@@ -146,7 +200,6 @@ function getTabMeta(tabKey) {
  */
 async function renderNews() {
   const o = document.getElementById('output');
-  o.innerHTML = 'Connecting to feeds...';
   
   let a = currentSport === 'main' ? allCache : (sportCache[currentSport] || []);
   
