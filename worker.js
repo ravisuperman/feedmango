@@ -32,6 +32,10 @@ var CONFIG = {
 //          Once feeds are saved via admin panel, this is ignored.
 //          DO NOT REMOVE — keeps site working if KV is empty.
 // ============================================================
+// TESTING NOTE:
+// This historical fallback map is retained only as a manual reference.
+// Runtime fallback is intentionally disabled further below in
+// loadFeedsConfig(), so this block is not used during FEEDS_KV-only testing.
 var SPORTS_FALLBACK = {
   'net-sessions': { label:'Net Sessions', feeds:[] },
   ipl:        { label:'IPL',        feeds:[{name:'ESPN Cricinfo',url:'https://www.espncricinfo.com/rss/content/story/feeds/0.xml'},{name:'CricTracker',url:'https://crictracker.com/feed'},{name:'Hindustan Times',url:'https://www.hindustantimes.com/feeds/rss/cricket/ipl/rssfeed.xml'},{name:'Times of India',url:'https://timesofindia.indiatimes.com/rssfeeds/54829575.cms'}]},
@@ -306,22 +310,39 @@ async function loadFeedsConfig(env) {
     }
   }
 
-  try {
-    var rawLegacyConfig = await env.CONTROL_PANEL_KV.get('feeds_config');
-    if (rawLegacyConfig) {
-      return {
-        source: 'CONTROL_PANEL_KV',
-        config: convertFlatFeedsToConfig(JSON.parse(rawLegacyConfig))
-      };
-    }
-  } catch (e) {
-    console.error('CONTROL_PANEL_KV feeds_config load failed:', e.message);
-  }
+  // FALLBACK DISABLED FOR TESTING
+  // We are intentionally not reading feed config from CONTROL_PANEL_KV here.
+  // Reason:
+  // - FEEDS_KV is the single source of truth we are validating.
+  // - If FEEDS_KV is missing or malformed, we want that failure to be
+  //   visible immediately instead of being hidden by legacy data.
+  //
+  // try {
+  //   var rawLegacyConfig = await env.CONTROL_PANEL_KV.get('feeds_config');
+  //   if (rawLegacyConfig) {
+  //     return {
+  //       source: 'CONTROL_PANEL_KV',
+  //       config: convertFlatFeedsToConfig(JSON.parse(rawLegacyConfig))
+  //     };
+  //   }
+  // } catch (e) {
+  //   console.error('CONTROL_PANEL_KV feeds_config load failed:', e.message);
+  // }
 
-  return {
-    source: 'SPORTS_FALLBACK',
-    config: convertSportsFallbackToConfig()
-  };
+  // FALLBACK DISABLED FOR TESTING
+  // We are also intentionally not falling back to SPORTS_FALLBACK.
+  // Reason:
+  // - During FEEDS_KV-only testing, silent fallback makes root-cause
+  //   analysis harder.
+  // - If FEEDS_KV is unavailable, we prefer a clear failure and can
+  //   recover operationally from backup snapshots when needed.
+  //
+  // return {
+  //   source: 'SPORTS_FALLBACK',
+  //   config: convertSportsFallbackToConfig()
+  // };
+
+  throw new Error('FEEDS_KV feeds_config_v1 is required. Runtime fallback is intentionally disabled for testing.');
 }
 
 async function saveFeedsConfig(env, config) {
@@ -332,10 +353,17 @@ async function saveFeedsConfig(env, config) {
     await env.FEEDS_KV.put('feeds_config_v1', JSON.stringify(normalizedConfig));
   }
 
-  await env.CONTROL_PANEL_KV.put('feeds_config', JSON.stringify(flattenedFeeds));
+  // LEGACY MIRROR WRITE DISABLED FOR TESTING
+  // We are intentionally not mirroring feed config into CONTROL_PANEL_KV.
+  // Reason:
+  // - We want FEEDS_KV to be the only active source during this test.
+  // - Mirroring old feed data would make it harder to detect whether
+  //   runtime behavior is truly coming from FEEDS_KV.
+  //
+  // await env.CONTROL_PANEL_KV.put('feeds_config', JSON.stringify(flattenedFeeds));
 
   return {
-    source: env.FEEDS_KV ? 'FEEDS_KV+CONTROL_PANEL_KV' : 'CONTROL_PANEL_KV',
+    source: 'FEEDS_KV',
     config: normalizedConfig,
     feeds: flattenedFeeds
   };
@@ -374,7 +402,17 @@ async function getVisibleCategories(env) {
       ownCount = ownRaw ? JSON.parse(ownRaw).length : 0;
     } catch (e) {}
 
-    if (curatedCount + ownCount === 0) continue;
+    // CATEGORY VISIBILITY RULE
+    // We intentionally keep enabled categories visible even when they
+    // currently have zero articles.
+    // Reason:
+    // - FEEDS_KV is the source of truth for menu structure.
+    // - A category should not disappear from the frontend just because
+    //   its current curated/own article count is temporarily zero.
+    // - This keeps the frontend stable and aligned with the configured
+    //   category list in FEEDS_KV.
+    //
+    // if (curatedCount + ownCount === 0) continue;
 
     visibleCategories.push({
       sport: sport,
@@ -432,7 +470,7 @@ function parseRSS(xml, sourceName) {
     if(mm)img=mm[1]; else if(thumb)img=thumb[1]; else if(enc)img=enc; else if(iid)img=iid[1];
     if(!title||!link)continue;
     var published=pub?new Date(pub):new Date();
-    if((Date.now()-published.getTime())/3600000>72)continue; // Skip articles older than 72hrs
+    if((Date.now()-published.getTime())/3600000>168)continue; // Skip articles older than 7 days
     if(sourceName==='Sky Sports Cricket'&&!link.toLowerCase().includes('cricket'))continue;
     articles.push({title:cleanText(title),link:link.trim(),pubDate:published.toISOString(),description:cleanText(stripHtml(desc||'')),image:img,source:sourceName});
   }
@@ -776,6 +814,20 @@ export default {
       myArticles.forEach(function(a){a.isOwn=true;a.sport=sport;});
       var rssRaw=await env.CURATED_KV.get('curated:'+sport);
       var rssArticles=rssRaw?JSON.parse(rssRaw):[];
+      if(!rssArticles.length){
+        try{
+          await fetchRawSport(sport,SPORTS[sport],env,20);
+          await curateSport(sport,env);
+          rssRaw=await env.CURATED_KV.get('curated:'+sport);
+          rssArticles=rssRaw?JSON.parse(rssRaw):[];
+          if(!rssArticles.length){
+            var rawFallback=await env.NEWS_KV.get('raw:'+sport);
+            rssArticles=rawFallback?JSON.parse(rawFallback):[];
+          }
+        }catch(e){
+          console.error('On-demand refresh failed for '+sport+':'+e.message);
+        }
+      }
       var articles=myArticles.concat(rssArticles);
       return new Response(JSON.stringify({sport,articles,count:articles.length}),{headers:cors});
     }
