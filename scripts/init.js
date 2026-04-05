@@ -80,20 +80,21 @@ async function init() {
     });
 
     const results = await Promise.allSettled(categoryKeys.map(fetchSport));
-    const activeCategories = [];
 
     results.forEach(function (result, index) {
       const categoryKey = categoryKeys[index];
-      if (result.status !== 'fulfilled' || !result.value.length) return;
+      if (result.status !== 'fulfilled') {
+        sportCache[categoryKey] = [];
+        return;
+      }
 
-      sportCache[categoryKey] = pinnedSort(result.value);
-      activeCategories.push(categoryKey);
+      sportCache[categoryKey] = pinnedSort(result.value || []);
     });
 
-    CATEGORY_ORDER = activeCategories;
-    allCache = buildMainFeed(activeCategories);
+    CATEGORY_ORDER = categoryKeys;
+    allCache = buildMainFeed(categoryKeys);
 
-    generateTabs(activeCategories);
+    generateTabs(categoryKeys);
     renderSidebar();
     setActive('main');
   } catch (e) {
