@@ -505,22 +505,3 @@ footer {
   .logo-text { font-size: 20px; letter-spacing: -1px; }
   .section-label { font-size: 17px; }
 }
-
-selector .e-loop-item {
-grid-column: span 1;
-}
-
-selector .e-loop-item:nth-of-type(3n-2) {
-grid-column: span 2;
-grid-row: span 3;
-}
-
-selector .e-loop-item:nth-of-type(3n-2) {
-grid-column: span 1;
-grid-row: span 2;
-}
-
-selector .e-loop-item:nth-of-type(3n) {
-grid-column: span 2;
-grid-row: span 1;
-}
