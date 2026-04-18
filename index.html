@@ -53,9 +53,11 @@
      LIVE SCOREBOARD TICKER
      ═══════════════════════════════════════════════════════════ -->
 <div class="scoreboard-wrapper" id="scoreboardWrapper" style="display:none;">
+  <button class="scroll-arrow scroll-left" onclick="scrollScoreboard(-1)">‹</button>
   <div class="scoreboard-scroll" id="scoreboardScroll">
     <!-- Match Cards Injected Here via JS -->
   </div>
+  <button class="scroll-arrow scroll-right" onclick="scrollScoreboard(1)">›</button>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
