@@ -322,9 +322,17 @@ function generateTabs(list) {
 
 /**
  * ═══════════════════════════════════════════════════════════
- * SCOREBOARD RENDERER
+ * SCOREBOARD RENDERER & LOGIC
  * ═══════════════════════════════════════════════════════════
  */
+function scrollScoreboard(dir) {
+  const scroll = document.getElementById('scoreboardScroll');
+  if (scroll) {
+    // Scroll by roughly one and a half cards (350px)
+    scroll.scrollBy({ left: dir * 350, behavior: 'smooth' });
+  }
+}
+
 function renderScoreboardTicker(matches) {
   const wrapper = document.getElementById('scoreboardWrapper');
   const scroll = document.getElementById('scoreboardScroll');
@@ -334,8 +342,15 @@ function renderScoreboardTicker(matches) {
     return;
   }
 
+  // 1. Sort matches chronologically (Past -> Present -> Future)
+  const sortedMatches = matches.slice().sort((a, b) => {
+    const timeA = new Date(a.dateTimeGMT + 'Z').getTime();
+    const timeB = new Date(b.dateTimeGMT + 'Z').getTime();
+    return timeA - timeB;
+  });
+
   let html = '';
-  matches.forEach(m => {
+  sortedMatches.forEach(m => {
     // Determine status class
     let sClass = 'upcoming';
     let sText = (m.status || 'Upcoming').toUpperCase();
@@ -368,7 +383,6 @@ function renderScoreboardTicker(matches) {
     // Scores
     let s1 = '', s2 = '';
     if (m.score && m.score.length > 0) {
-       // cricapi returns scores array. usually [ {inning: "...", r: 150, w: 2, o: 20}, ... ]
        const inn1 = m.score[0];
        s1 = inn1 ? `${inn1.r}/${inn1.w} (${inn1.o})` : '';
        if (m.score.length > 1) {
@@ -381,7 +395,7 @@ function renderScoreboardTicker(matches) {
     const flag2 = img2 ? `<img src="${img2}" class="score-team-flag" alt="${t2}">` : `<div class="score-team-flag"></div>`;
 
     html += `
-      <div class="score-card">
+      <div class="score-card" data-timeline="${sClass}">
         <div class="score-card-header">
           <span>${m.matchType ? m.matchType.toUpperCase() : 'T20'} • ${m.name.split(',')[0]}</span>
           <span class="score-status-indicator ${sClass}">${sText}</span>
@@ -404,4 +418,23 @@ function renderScoreboardTicker(matches) {
 
   scroll.innerHTML = html;
   wrapper.style.display = 'flex';
+
+  // 2. Timeline Scroll Focus Logic
+  // Hide past matches to the left by focusing on the first live or upcoming match
+  setTimeout(() => {
+    // Find the first active/future match
+    const firstActive = scroll.querySelector('.score-card[data-timeline="live"]') || 
+                        scroll.querySelector('.score-card[data-timeline="upcoming"]');
+    
+    if (firstActive) {
+      // Snap scroll position to the target card
+      scroll.style.scrollBehavior = 'auto'; // Disable smooth scrolling momentarily for instant snap
+      scroll.scrollLeft = firstActive.offsetLeft - 48; // offset for padding
+      
+      // Re-enable smooth scrolling for arrow bumps
+      setTimeout(() => {
+         scroll.style.scrollBehavior = 'smooth';
+      }, 50);
+    }
+  }, 100);
 }
