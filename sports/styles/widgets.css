@@ -1143,6 +1143,9 @@
   .shorts-nav-left { display: none; }
   .shorts-nav-left.visible { display: flex; }
 
+  /* Hide IPL team filter chips on mobile */
+  .team-filter-bar { display: none !important; }
+
   /* Add 5px gap between circles rail and news cards below on mobile */
   .shorts-rail-wrapper { margin-bottom: 5px; }
 
