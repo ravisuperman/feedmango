@@ -146,16 +146,14 @@ export default {
 
 // ── Handler: IPL Points Table ────────────────────────────────
 // Strategy:
-//  1. Fetch series_points (match stats per team) + series_info (team names)
-//  2. Build teamId → name map from series_info.data.teamList
-//  3. Calculate losses (played - won - tied - noResult)
-//  4. Calculate points using IPL formula (won×2 + tied + noResult)
-//     because cricapi often returns pts=0 and nrr=0
-//  5. Sort standings by points DESC, then NRR DESC
+//  1. Fetch series_points (match stats per team)
+//  2. Use the exact fields provided by CricAPI: teamname, shortname, img, matches, wins, loss, ties, nr
+//  3. Calculate points using IPL formula (won×2 + tied + noResult) since pts is missing
+//  4. Sort standings by points DESC
 async function handlePointsTable(env, ctx) {
   try {
-    // v3 — fresh key busts all previous cached data
-    const CACHE_KEY = 'ipl_points_table_v3';
+    // v4 — fresh key busts all previous cached data
+    const CACHE_KEY = 'ipl_points_table_v4';
 
     if (env.IPL_KV) {
       const cached = await env.IPL_KV.get(CACHE_KEY);
@@ -165,80 +163,46 @@ async function handlePointsTable(env, ctx) {
     const apiKey = env.CRICKET_API_KEY;
     if (!apiKey) throw new Error('Missing CRICKET_API_KEY secret binding.');
 
-    // Fetch both endpoints in parallel
-    const [pointsRes, seriesRes] = await Promise.allSettled([
-      fetch(`https://api.cricapi.com/v1/series_points?apikey=${apiKey}&id=${IPL_SERIES_ID}`,
-            { signal: AbortSignal.timeout(8000) }),
-      fetch(`https://api.cricapi.com/v1/series_info?apikey=${apiKey}&id=${IPL_SERIES_ID}`,
-            { signal: AbortSignal.timeout(8000) })
-    ]);
+    // Fetch series_points
+    const pointsRes = await fetch(`https://api.cricapi.com/v1/series_points?apikey=${apiKey}&id=${IPL_SERIES_ID}`,
+          { signal: AbortSignal.timeout(8000) });
 
-    // ── 1. Build teamId → name/short map from series_info ──────────
-    const nameMap = {}; // { teamId: { name, short, logo } }
-    if (seriesRes.status === 'fulfilled' && seriesRes.value.ok) {
-      const sd = await seriesRes.value.json();
-      if (sd.status === 'success' && sd.data) {
-        // series_info may expose teams in teamList or teams array
-        const teamArr = sd.data.teamList || sd.data.teams || [];
-        teamArr.forEach(t => {
-          if (!t) return;
-          const id = t.teamId || t.id;
-          if (id) nameMap[id] = {
-            name:  t.teamName  || t.name      || '',
-            short: t.teamSName || t.shortname || '',
-            logo:  t.img       || t.logo      || ''
-          };
-        });
-      }
-    }
-
-    // ── 2. Parse series_points ──────────────────────────────────
-    if (pointsRes.status !== 'fulfilled' || !pointsRes.value.ok) {
-      throw new Error('series_points API call failed');
-    }
-    const pd = await pointsRes.value.json();
+    if (!pointsRes.ok) throw new Error('series_points API call failed');
+    
+    const pd = await pointsRes.json();
     if (pd.status !== 'success' || !Array.isArray(pd.data)) {
       throw new Error('Unexpected series_points response');
     }
 
-    // ── 3. Normalise + enrich each row ───────────────────────────
+    // ── Normalise + enrich each row ───────────────────────────
     const standings = pd.data.map(t => {
-      const id       = t.teamId || t.id || '';
-      const mapEntry = nameMap[id] || {};
+      const teamName  = t.teamname  || t.teamName || 'Unknown';
+      const teamShort = t.shortname || t.teamSName || teamName.substring(0, 4).toUpperCase();
+      const logo      = t.img       || t.logo || '';
 
-      // Team name: prefer series_info map, fall back to series_points fields
-      const teamName  = mapEntry.name  || t.teamName  || t.name      || t.team_name  || 'Unknown';
-      const teamShort = mapEntry.short || t.teamSName || t.shortname || t.team_sname ||
-                        teamName.substring(0, 4).toUpperCase();
-      const logo      = t.img   || mapEntry.logo || t.logo || '';
-
-      // Match stats (try all known field name variants)
-      const played   = +(t.matchesPlayed   || t.matches || t.played   || t.mp  || 0);
-      const won      = +(t.matchesWon      || t.won     || t.wins     || t.w   || 0);
-      const tied     = +(t.matchesTied     || t.tied    || t.t        || 0);
-      const noResult = +(t.matchesNoResult || t.nr      || t.no_result|| 0);
-
-      // Calculate losses since the API often returns 0
-      const lost = Math.max(0, played - won - tied - noResult);
+      // Match stats (using exact fields from debug response)
+      const played   = +(t.matches || 0);
+      const won      = +(t.wins    || 0);
+      const lost     = +(t.loss    || 0);
+      const tied     = +(t.ties    || 0);
+      const noResult = +(t.nr      || 0);
 
       // Calculate IPL points (won×2 + tied×1 + noResult×1)
-      // Use API value if > 0, otherwise calculate
-      const apiPts = +(t.pts || t.points || t.pt || 0);
+      const apiPts = +(t.pts || t.points || 0);
       const points  = apiPts > 0 ? apiPts : (won * 2) + tied + noResult;
 
-      // NRR — use API value if available, else 0
-      let nrrNum = parseFloat(t.nrr) || 0;
-      const nrr  = nrrNum; // keep as number for sorting
+      // NRR — use API value if available, else 0 (cricapi doesn't seem to provide it here)
+      const nrr  = parseFloat(t.nrr) || 0;
 
-      return { id, teamName, teamShort, logo, played, won, lost, tied, noResult, points, nrr };
+      return { id: '', teamName, teamShort, logo, played, won, lost, tied, noResult, points, nrr };
     });
 
-    // ── 4. Sort by points DESC, then NRR DESC ──────────────────
+    // ── Sort by points DESC, then NRR DESC ──────────────────
     standings.sort((a, b) =>
       b.points !== a.points ? b.points - a.points : b.nrr - a.nrr
     );
 
-    // ── 5. Add rank + format NRR for display ──────────────────
+    // ── Add rank + format NRR for display ──────────────────
     const final = standings.map((t, i) => ({
       rank:      i + 1,
       teamId:    t.id,
@@ -251,7 +215,8 @@ async function handlePointsTable(env, ctx) {
       tied:      t.tied,
       noResult:  t.noResult,
       points:    t.points,
-      nrr:       (t.nrr >= 0 ? '+' : '') + t.nrr.toFixed(3)
+      // Only prefix '+' if NRR > 0, otherwise it's just '0.000' or '-0.500'
+      nrr:       (t.nrr > 0 ? '+' : '') + t.nrr.toFixed(3)
     }));
 
     const payload = JSON.stringify({
@@ -260,7 +225,7 @@ async function handlePointsTable(env, ctx) {
       standings:    final
     });
 
-    // Cache 15 minutes (updates more often mid-tournament)
+    // Cache 15 minutes
     if (env.IPL_KV) {
       ctx.waitUntil(env.IPL_KV.put(CACHE_KEY, payload, { expirationTtl: 900 }));
     }
