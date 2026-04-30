@@ -1159,41 +1159,43 @@
   .scoreboard-scroll {
     display: flex;
     gap: 0;
-    padding: 0 44px; /* space for arrows */
+    padding: 0;            /* no padding — card fills full width */
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
+  .scoreboard-scroll::-webkit-scrollbar { display: none; }
+
   .score-card {
-    flex: 0 0 calc(100% - 88px); /* full width minus arrow padding */
+    flex: 0 0 100%;        /* each card = 100% of scroll container */
     min-width: 0;
     max-width: none;
-    scroll-snap-align: center;
-    margin: 0 8px;
-    padding: 12px 16px;
+    scroll-snap-align: start;
+    margin: 0;
+    padding: 14px 56px;    /* side padding leaves room for absolute arrows */
     font-size: 14px;
+    box-sizing: border-box;
   }
-  .score-card-header {
-    font-size: 11px;
-  }
-  .score-time-badge {
-    font-size: 11px;
-    padding: 4px 8px;
-  }
-  .score-team-row {
-    gap: 8px;
-  }
-  .score-team-flag {
-    width: 26px;
-    height: 26px;
-  }
+  .score-card-header { font-size: 11px; }
+  .score-team-flag { width: 26px; height: 26px; }
+
+  /* Arrows float absolutely over the card */
   .scroll-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     width: 36px;
     height: 36px;
     font-size: 22px;
+    z-index: 10;
   }
-  .scroll-left  { left: 2px; }
-  .scroll-right { right: 2px; }
+  .scroll-left  { left: 4px; }
+  .scroll-right { right: 4px; }
+
+  /* Hide IPL Points Table bar on mobile */
+  #ptsLinkBar { display: none !important; }
+
 
   #ptsModalBox {
     max-height: 88vh;
