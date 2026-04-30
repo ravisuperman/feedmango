@@ -328,7 +328,7 @@ header.scrolled .dark-toggle {
 }
 
 .sidebar-title { 
-  border-top: 4px solid var(--espn-blue); 
+  border-top: 0; 
   padding: 14px 18px; 
   font-size: 14px; 
   font-weight: 800; 
