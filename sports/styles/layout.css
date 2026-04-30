@@ -629,6 +629,7 @@ footer {
 
 @media (max-width: 600px) {
   .layout { padding: 4px 12px 15px; }
+  .section-label { margin-bottom: 11px; } /* +5px gap on mobile only */
   #output { grid-template-columns: 1fr; grid-auto-rows: auto; gap: 15px; }
   /* All bento variants collapse to single column on mobile */
   .card.bento-featured,
