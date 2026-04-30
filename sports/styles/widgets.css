@@ -292,7 +292,7 @@
 .score-card {
   flex: 0 0 auto;
   background: var(--bg);
-  border-left: 3px solid var(--espn-blue);
+  border-left: 3px solid var(--border2);
   border-radius: 6px;
   padding: 8px 12px;
   min-width: 200px;
