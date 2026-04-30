@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="google-site-verification" content="Jht59lHwkn9XZKP7kyAcKtk9SMl9tPmllXm4ehBH-7c" />
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SPORTSrip">
+  <meta name="theme-color" content="#035bb0">
+
+  <title>SPORTStrip — Live Sport Feed</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><circle cx=%2212%22 cy=%2212%22 r=%2210.5%22 fill=%22%23035bb0%22 stroke=%22%23fff%22 stroke-width=%223%22/><path d=%22M12 1.5v21M1.5 12h21%22 stroke=%22%23fff%22 stroke-width=%223%22/></svg>">  
+
+  <!-- Modular Stylesheets -->
+  <link rel="stylesheet" href="styles/variables.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/cards.css">
+  <link rel="stylesheet" href="styles/widgets.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════════════════ -->
+<header id="main-header">
+  <a href="/" class="brand">
+    <div class="logo-text"><span>SPORTS</span><em>rip</em></div>
+  </a>
+  <nav class="nav-tabs" id="desktopTabs">
+    <div class="tab active" data-sport="main">Top Stories</div>
+    <div class="tab-skeleton"></div>
+    <div class="tab-skeleton"></div>
+    <div class="tab-skeleton"></div>
+    <div class="tab-skeleton"></div>
+  </nav>
+  <div class="header-right" id="clockDisplay"></div>
+  <button class="dark-toggle" id="darkToggle" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <div class="line1"></div>
+    <div class="line2"></div>
+    <div class="line3"></div>
+  </div>
+</header>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     LIVE SCOREBOARD TICKER
+     ═══════════════════════════════════════════════════════════ -->
+<div class="scoreboard-wrapper" id="scoreboardWrapper" style="display:none;">
+  <button class="scroll-arrow scroll-left" onclick="scrollScoreboard(-1)">‹</button>
+  <div class="scoreboard-scroll" id="scoreboardScroll">
+    <!-- Match Cards Injected Here via JS -->
+  </div>
+  <button class="scroll-arrow scroll-right" onclick="scrollScoreboard(1)">›</button>
+</div>
+
+<!-- Points Table Trigger Bar -->
+<div class="pts-link-bar" id="ptsLinkBar" style="display:none;">
+  <button class="pts-link-btn" id="ptsLinkBtn" onclick="openPointsTable()">
+    🏆 IPL Points Table
+    <span class="pts-link-arrow">›</span>
+  </button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN LAYOUT
+     ═══════════════════════════════════════════════════════════ -->
+<div class="layout-box">
+<div class="layout">
+  
+  <!-- Main Content Area -->
+  <div class="main-pane">
+    <div class="section-label" id="sectionLabel">🏆 Top Stories</div>
+    <div id="output">
+      <div class="loading-copy">Loading the latest stories...</div>
+      <div class="card card-skeleton card-hero">
+        <div class="card-img-skeleton"></div>
+        <div class="card-body">
+          <div class="skeleton-pill"></div>
+          <div class="skeleton-line long"></div>
+          <div class="skeleton-line long"></div>
+          <div class="skeleton-line medium"></div>
+          <div class="skeleton-line long"></div>
+          <div class="skeleton-line medium"></div>
+        </div>
+      </div>
+      <div class="card card-skeleton">
+        <div class="card-img-skeleton"></div>
+        <div class="card-body">
+          <div class="skeleton-pill"></div>
+          <div class="skeleton-line long"></div>
+          <div class="skeleton-line medium"></div>
+          <div class="skeleton-line long"></div>
+        </div>
+      </div>
+      <div class="card card-skeleton">
+        <div class="card-img-skeleton"></div>
+        <div class="card-body">
+          <div class="skeleton-pill"></div>
+          <div class="skeleton-line long"></div>
+          <div class="skeleton-line medium"></div>
+          <div class="skeleton-line long"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    
+      <!-- Featured Videos -->
+      <div class="sidebar-section" id="videoSection" style="display:none;">
+        <div class="sidebar-title">FEATURED VIDEOS</div>
+        <div id="videosList">
+          <!-- Skeleton -->
+          <div class="sidebar-skeleton" style="flex-direction:column; padding:0;">
+            <div class="sidebar-skeleton-thumb skeleton-block" style="width:100%; height:180px; border-radius:0;"></div>
+            <div class="sidebar-skeleton-copy" style="padding:15px; width:100%;">
+              <div class="sidebar-skeleton-line"></div>
+              <div class="sidebar-skeleton-line short"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Specials / Feed -->
+      <div class="sidebar-section sticky-widget">
+        <div class="sidebar-title">SPECIALS</div>
+        <div id="specialsList">
+          <div class="sidebar-skeleton" style="flex-direction:column; padding:0;">
+            <div class="sidebar-skeleton-thumb skeleton-block" style="width:100%; height:180px; border-radius:0;"></div>
+            <div class="sidebar-skeleton-copy" style="padding:15px; width:100%;">
+              <div class="sidebar-skeleton-line"></div>
+              <div class="sidebar-skeleton-line short"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="disclaimer">
+    Disclaimer: Headlines are sourced from official RSS feeds of their respective publishers. 
+    All rights and copyrights remain with the original content owners.
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODALS
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- YouTube Video Modal -->
+<div id="ytModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;" onclick="closeYT(event)">
+  <div style="position:relative;width:90%;max-width:900px;background:#000;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <button onclick="closeYTBtn()" style="position:absolute;top:10px;right:12px;background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:20px;width:36px;height:36px;border-radius:50%;cursor:pointer;z-index:10;">✕</button>
+    <div style="position:relative;padding-bottom:56.25%;height:0;">
+      <iframe id="ytFrame" src="" frameborder="0" allow="autoplay;encrypted-media" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- Article Modal -->
+<div id="artModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;" onclick="closeArtModal(event)">
+  <div id="artModalBox" style="position:relative;width:calc(25vw + 10px);height:calc(75vh + 25px);background:#faf8f3;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+    <button onclick="closeArtModalBtn()" style="position:absolute;top:12px;right:14px;background:rgba(0,0,0,0.12);border:none;font-size:18px;width:34px;height:34px;border-radius:50%;cursor:pointer;z-index:10;color:#2c2418;font-weight:700;">✕</button>
+    <div id="artModalContent" style="overflow-y:auto;flex:1;font-family:Georgia,serif;color:#2c2418;"></div>
+  </div>
+</div>
+
+<!-- Responsive Modal Styles -->
+<style>
+@media(max-width:768px){
+  #artModalBox { width:92vw !important; height:80vh !important; border-radius:8px !important; background:#fff !important; }
+  #artModalContent { padding:20px 18px 30px !important; background:#fff !important; font-size:14px !important; color:#000 !important; }
+}
+@media(min-width:769px) and (max-width:1024px){
+  #artModalBox { width:75vw !important; height:75vh !important; }
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FLOATING CONTROLS
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- Back to Top Button -->
+<button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+
+<!-- ═══════════════════════════════════════════════════════════
+     IPL POINTS TABLE MODAL
+     ═══════════════════════════════════════════════════════════ -->
+<div id="ptsModal" onclick="closePtsModal(event)" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.78);z-index:9998;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
+  <div id="ptsModalBox">
+    <!-- Header -->
+    <div class="pts-modal-header">
+      <div class="pts-modal-title">
+        <span class="pts-modal-trophy">🏆</span>
+        <div>
+          <div class="pts-modal-h1">IPL 2026 Points Table</div>
+          <div class="pts-modal-sub">Indian Premier League · Season Standings</div>
+        </div>
+      </div>
+      <button class="pts-modal-close" onclick="closePtsModalBtn()" title="Close">✕</button>
+    </div>
+    <!-- Table Container -->
+    <div class="pts-modal-body" id="ptsModalBody">
+      <!-- Filled by JS -->
+    </div>
+    <!-- Footer -->
+    <div class="pts-modal-footer">
+      <span id="ptsLastUpdated"></span>
+      <span class="pts-source">via cricapi.com</span>
+    </div>
+  </div>
+</div>
+
+<!-- Floating Hamburger (Mobile) -->
+<div class="float-menu" id="floatMenu" onclick="toggleMenu()">
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODULAR JAVASCRIPT
+     Load order: config → api → render → ui → init
+     ═══════════════════════════════════════════════════════════ -->
+<script src="scripts/config.js"></script>
+<script src="scripts/api.js"></script>
+<script src="scripts/render.js"></script>
+<script src="scripts/ui.js"></script>
+<script src="scripts/init.js"></script>
+<!-- PWA: load after config.js so WORKER url is available -->
+<script src="scripts/pwa.js"></script>
+
+</body>
+</html>
