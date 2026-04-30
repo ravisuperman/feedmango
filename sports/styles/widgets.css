@@ -219,12 +219,10 @@
    ═══════════════════════════════════════════════════════════ */
 .scoreboard-wrapper {
   width: 100%;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background: transparent;
   padding: 10px 0;
   display: flex;
   align-items: center;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   overflow: hidden;
   z-index: 50; /* Stay under header but above layout */
   position: relative;
@@ -496,8 +494,7 @@
    ═══════════════════════════════════════════════════════════ */
 .pts-link-bar {
   width: 100%;
-  background: var(--surface2);
-  border-bottom: 1px solid var(--border);
+  background: transparent;
   padding: 5px 16px;
   display: flex;
   align-items: center;
@@ -885,9 +882,8 @@
    ═══════════════════════════════════════════════════════════ */
 .shorts-rail-wrapper {
   width: 100%;
-  padding: 12px 16px 8px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  padding: 8px 16px;
+  background: transparent;
   overflow: hidden;
   margin-bottom: 16px;
 }
