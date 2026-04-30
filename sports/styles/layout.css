@@ -276,7 +276,7 @@ header.scrolled .dark-toggle {
   text-transform: uppercase; 
   border-left: 6px solid var(--espn-blue); 
   padding-left: 14px; 
-  margin-bottom: 15px; 
+  margin-bottom: 6px; 
 }
 
 /* ── Bento Grid ── */
