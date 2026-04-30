@@ -45,9 +45,5 @@ id = "48d64b2177f448efbb7e3212acd970be"
 binding = "FEEDS_KV"
 id = "88ceff9930d147329b2f61cc60208cc7"
 
-[[kv_namespaces]]
-binding = "FEEDS_KV"
-id = "86aef7a9bee84ec4af561461e5d09a59"
-
 
 
