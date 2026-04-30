@@ -103,15 +103,18 @@
   
   <!-- Main Content Area -->
   <div class="main-pane">
-    <div class="section-label" id="sectionLabel">🏆 Top Stories</div>
-    
-    <!-- Sports Shorts Rail -->
-    <div class="shorts-rail-wrapper" id="shortsRailWrapper" style="display:none; position:relative;">
-      <button class="shorts-nav-btn shorts-nav-left" onclick="scrollShortsRail(-1)">‹</button>
-      <div class="shorts-rail" id="shortsRail"></div>
-      <button class="shorts-nav-btn shorts-nav-right" onclick="scrollShortsRail(1)">›</button>
+    <!-- Section heading + Shorts Rail on the same row -->
+    <div class="section-label-row">
+      <div class="section-label" id="sectionLabel">🏆 Top Stories</div>
+
+      <!-- Sports Shorts Rail (inline, right of heading) -->
+      <div class="shorts-rail-wrapper" id="shortsRailWrapper" style="display:none; position:relative;">
+        <button class="shorts-nav-btn shorts-nav-left" onclick="scrollShortsRail(-1)">‹</button>
+        <div class="shorts-rail" id="shortsRail"></div>
+        <button class="shorts-nav-btn shorts-nav-right" onclick="scrollShortsRail(1)">›</button>
+      </div>
     </div>
-    
+
     <div id="output">
       <div class="loading-copy">Loading the latest stories...</div>
       <div class="card card-skeleton card-hero">
