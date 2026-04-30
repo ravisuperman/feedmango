@@ -270,6 +270,30 @@ header.scrolled .dark-toggle {
 
 .main-pane { flex: 3; min-width: 0; }
 
+/* ── Section Label Row (heading + shorts rail on same line) ── */
+.section-label-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 11px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* When inside the row, the label has no bottom margin (row handles it) */
+.section-label-row .section-label {
+  margin-bottom: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Rail fills the remaining space in the row */
+.section-label-row .shorts-rail-wrapper {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+}
+
 .section-label { 
   font-size: 19px; 
   font-weight: 800; 
