@@ -891,7 +891,7 @@
    ═══════════════════════════════════════════════════════════ */
 .shorts-rail-wrapper {
   width: 100%;
-  padding: 4px 16px 2px;
+  padding: 0px 16px 3px;
   background: transparent;
   overflow: hidden;
 }
