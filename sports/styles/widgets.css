@@ -1251,6 +1251,9 @@
   /* Hide inline scoreboard on mobile — replaced by the bottom sheet */
   #scoreboardWrapper { display: none !important; }
 
+  /* Hide Instagram-style circles rail on mobile */
+  #shortsRailWrapper { display: none !important; }
+
   /* Add 5px gap between circles rail and news cards below on mobile */
   .shorts-rail-wrapper { margin-bottom: 5px; }
 
