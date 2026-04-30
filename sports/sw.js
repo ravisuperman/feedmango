@@ -7,11 +7,17 @@
  *   2. Receive push messages from the server
  *   3. Show rich notifications with actions
  *   4. Handle notification clicks (open correct page)
+ *
+ * ── CACHE BUSTING ──────────────────────────────────────────
+ * IMPORTANT: Bump CACHE_VERSION on every deploy so users
+ * automatically get fresh CSS/JS/HTML without clearing cache.
+ * Format: sportsrip-YYYYMMDD-NN (NN = deploy number that day)
  * ============================================================
  */
 
-const CACHE_NAME = 'sportsrip-v1';
-const CACHE_URLS = ['/', '/index.html'];
+const CACHE_VERSION = 'sportsrip-20260430-01';
+const CACHE_NAME    = CACHE_VERSION;
+const CACHE_URLS    = ['/', '/index.html'];
 
 // ── Install: cache static shell ──────────────────────────────
 self.addEventListener('install', function (event) {
@@ -39,28 +45,40 @@ self.addEventListener('activate', function (event) {
   );
 });
 
-// ── Fetch: serve from cache, fallback to network ─────────────
+// ── Fetch: Network-first for HTML, Stale-While-Revalidate for CSS/JS ──
 self.addEventListener('fetch', function (event) {
-  // Only cache GET requests for our own origin
   if (event.request.method !== 'GET') return;
   if (!event.request.url.startsWith(self.location.origin)) return;
 
-  event.respondWith(
-    caches.match(event.request).then(function (cached) {
-      if (cached) return cached;
-      return fetch(event.request).then(function (response) {
-        // Cache successful HTML/CSS/JS responses
-        if (response && response.status === 200) {
-          const ct = response.headers.get('content-type') || '';
-          if (ct.includes('text/html') || ct.includes('text/css') || ct.includes('javascript')) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then(function (c) { c.put(event.request, clone); });
-          }
-        }
+  const url = new URL(event.request.url);
+  const isHTML = event.request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname === '/';
+
+  if (isHTML) {
+    // NETWORK-FIRST for HTML so layout changes are always visible
+    event.respondWith(
+      fetch(event.request).then(function (response) {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(function (cache) { cache.put(event.request, clone); });
         return response;
-      });
-    })
-  );
+      }).catch(function () {
+        return caches.match(event.request);
+      })
+    );
+  } else {
+    // STALE-WHILE-REVALIDATE for CSS/JS
+    event.respondWith(
+      caches.match(event.request).then(function (cached) {
+        const networkFetch = fetch(event.request).then(function (response) {
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then(function (cache) { cache.put(event.request, clone); });
+          }
+          return response;
+        });
+        return cached || networkFetch;
+      })
+    );
+  }
 });
 
 // ── Push: receive notification from server ───────────────────
