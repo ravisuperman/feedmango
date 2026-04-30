@@ -280,14 +280,25 @@ async function renderNews() {
       window._shortsData = shortCandidates.slice(0, 8);
       let railHtml = '';
       window._shortsData.forEach((short, idx) => {
-        // Use a tiny initials avatar if no source image
-        const init = (short.source || 'SR').substring(0,2).toUpperCase();
+        // Extract a sport abbreviation
+        const src = (short.source || '').toUpperCase();
+        const sport = (short.sport || '').toUpperCase();
+        const combined = src + ' ' + sport;
+        let abbr = 'SPR';
+        if (combined.includes('CRIC') || combined.includes('IPL')) abbr = 'CRIC';
+        else if (combined.includes('FOOTBALL') || combined.includes('SOCCER')) abbr = 'FTB';
+        else if (combined.includes('BASKETBALL') || combined.includes('NBA')) abbr = 'BB';
+        else if (combined.includes('BADMINTON')) abbr = 'BAD';
+        else if (combined.includes('TENNIS')) abbr = 'TEN';
+        else if (combined.includes('F1') || combined.includes('FORMULA')) abbr = 'F1';
+        else if (combined.includes('WWE') || combined.includes('WRESTLING')) abbr = 'WWE';
+        else if (short.source) abbr = short.source.replace(/ESPN|BBC|THE/gi, '').trim().substring(0,3).toUpperCase();
+        
         railHtml += `
           <div class="short-bubble" onclick="openShortsViewer(${idx})">
             <div class="short-avatar-ring">
-              <div class="short-avatar" style="font-size:16px; font-weight:800; color:#000; letter-spacing:-0.5px;">${init}</div>
+              <div class="short-avatar" style="font-size:14px; font-weight:800; color:var(--text); letter-spacing:-0.5px;">${abbr}</div>
             </div>
-            <div class="short-title">${short.source || 'SPORTSrip'}</div>
           </div>
         `;
       });
