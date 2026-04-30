@@ -512,7 +512,6 @@ function renderPointsTable(standings, container) {
         <td class="pts-num pts-l">${t.lost}</td>
         <td class="pts-num">${t.tied > 0 ? t.tied : t.noResult > 0 ? t.noResult : '-'}</td>
         <td class="pts-num pts-pts">${t.points}</td>
-        <td class="pts-num pts-nrr ${nrrIsNeg ? 'nrr-neg' : 'nrr-pos'}">${nrr}</td>
       </tr>`;
   });
 
@@ -528,7 +527,6 @@ function renderPointsTable(standings, container) {
             <th class="pts-th">L</th>
             <th class="pts-th">N/R</th>
             <th class="pts-th pts-pts">Pts</th>
-            <th class="pts-th">NRR</th>
           </tr>
         </thead>
         <tbody>${rows}</tbody>
